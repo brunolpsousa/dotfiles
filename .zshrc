@@ -346,6 +346,25 @@ else
   echo "$(date '+%Y-%m-%d %H:%M:%S') - Failed to load zsh-autosuggestions.zsh" >> "$HOME/.alert"
 fi
 #------------------------------------------------------------------------------#
+# Completions
+if [[ ! -d '/usr/share/licenses/zsh-completions' ]]; then
+  if  [[ -d "$XDG_DATA_HOME/zsh/zsh-completions" ]]; then
+    source "$XDG_DATA_HOME/zsh/zsh-completions/zsh-completions.plugin.zsh"
+  else
+    echo 'Downloading zsh-completions...'
+    dirvar="$PWD"
+    builtin cd -q "$XDG_CACHE_HOME"
+    [[ -f "$XDG_CACHE_HOME/zsh-completions-master.zip" ]] || curl -sL 'https://github.com/zsh-users/zsh-completions/archive/refs/heads/master.zip' -o "$XDG_CACHE_HOME/zsh-completions-master.zip"
+    sumvar='c730c58377c576333f030335b859d52c98d6222c43f36b70734cdb72abf7d7f7327a8848321a4b54fa204b9f9598450ff87da8de8ef799099308a055bc0e5b0f'
+    sumvar2="$(sha512sum $XDG_CACHE_HOME/zsh-completions-master.zip | cut -d ' ' -f1)" 2>/dev/null
+    unzip -uq "$XDG_CACHE_HOME/zsh-completions-master.zip" zsh-completions-master/{zsh-completions.plugin.zsh,"src/*"} -d "$XDG_DATA_HOME/zsh" 2>/dev/null
+    command mv "$XDG_DATA_HOME/zsh/zsh-completions-master" "$XDG_DATA_HOME/zsh/zsh-completions" 2>/dev/null
+    [[ $sumvar == $sumvar2 ]] && source "$XDG_DATA_HOME/zsh/zsh-completions/zsh-completions.plugin.zsh" || echo "$(date '+%Y-%m-%d %H:%M:%S') - Failed to load zsh-completions.zsh" >> "$HOME/.alert"
+    builtin cd -q "$dirvar"
+    unset sumvar sumvar2 dirvar
+  fi
+fi
+#------------------------------------------------------------------------------#
 # History substring search
 if [[ -f '/usr/share/zsh/plugins/zsh-history-substring-search/zsh-history-substring-search.zsh' ]]; then
   source '/usr/share/zsh/plugins/zsh-history-substring-search/zsh-history-substring-search.zsh'
@@ -950,7 +969,7 @@ arch-base() {
   select yne in 'Yes' 'No' 'Exit'; do
     case $yne in
       Yes )
-        sh -c "${varsu} pacman -Syu --needed sbctl neovim wl-clipboard alacritty tmux xdg-desktop-portal xdg-desktop-portal-gtk yt-dlp firefox ufw neofetch ntfs-3g exfat-utils unrar zip p7zip zsh zsh-autosuggestions zsh-history-substring-search zsh-syntax-highlighting steam pcsclite qbittorrent libreoffice-fresh libreoffice-fresh-pt-br fzf hunspell-en_US noto-fonts noto-fonts-cjk noto-fonts-emoji ttf-liberation gsfonts lib32-gst-plugins-good gnuchess java-runtime-common base-devel networkmanager reflector android-udev android-tools pkgstats pipewire pipewire-alsa pipewire-pulse wireplumber $(case $(lscpu | awk '/Model name:/{print $3}') in AMD) echo -n 'amd-ucode';; Intel\(R\)) echo -n 'intel-ucode';; esac)"
+        sh -c "${varsu} pacman -Syu --needed sbctl neovim wl-clipboard alacritty tmux xdg-desktop-portal xdg-desktop-portal-gtk yt-dlp firefox ufw neofetch ntfs-3g exfat-utils unrar zip p7zip zsh zsh-autosuggestions zsh-completions zsh-history-substring-search zsh-syntax-highlighting steam pcsclite qbittorrent libreoffice-fresh libreoffice-fresh-pt-br fzf hunspell-en_US noto-fonts noto-fonts-cjk noto-fonts-emoji ttf-liberation gsfonts lib32-gst-plugins-good gnuchess java-runtime-common base-devel networkmanager reflector android-udev android-tools pkgstats pipewire pipewire-alsa pipewire-pulse wireplumber $(case $(lscpu | awk '/Model name:/{print $3}') in AMD) echo -n 'amd-ucode';; Intel\(R\)) echo -n 'intel-ucode';; esac)"
         if [[ "$EUID" != 0 && ! -x /usr/bin/paru ]]; then
           command mkdir -p $HOME/{.cache/paru/clone,.config/paru}
           git clone https://aur.archlinux.org/paru-bin $XDG_CACHE_HOME/paru/clone/paru-bin
