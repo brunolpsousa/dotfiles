@@ -4,34 +4,34 @@
 # Environment
 cdpath=(.. ~)
 export EDITOR=nvim
-export VISUAL=$EDITOR
-export XDG_CACHE_HOME=$HOME/.cache
-export XDG_CONFIG_HOME=$HOME/.config
-export XDG_DATA_HOME=$HOME/.local/share
-export XDG_STATE_HOME=$HOME/.local/state
-export ELECTRUMDIR=$XDG_DATA_HOME/electrum
-export GNUPGHOME=$XDG_DATA_HOME/gnupg
-export LESSHISTFILE=$XDG_STATE_HOME/lesshst
+export VISUAL="$EDITOR"
+export XDG_CACHE_HOME="$HOME/.cache"
+export XDG_CONFIG_HOME="$HOME/.config"
+export XDG_DATA_HOME="$HOME/.local/share"
+export XDG_STATE_HOME="$HOME/.local/state"
+export ELECTRUMDIR="$XDG_DATA_HOME/electrum"
+export GNUPGHOME="$XDG_DATA_HOME/gnupg"
+export LESSHISTFILE="$XDG_STATE_HOME/lesshst"
 export MOZ_ENABLE_WAYLAND=1
-export QT_QPA_PLATFORM=wayland
-export QT_QPA_PLATFORMTHEME=gnome
-export CARGO_HOME=$XDG_DATA_HOME/cargo
-export NPM_CONFIG_CACHE=$XDG_CACHE_HOME/npm
-export NPM_CONFIG_PREFIX=$XDG_DATA_HOME/npm
-export NPM_CONFIG_USERCONFIG=$XDG_CONFIG_HOME/npm/config
+export QT_QPA_PLATFORM='wayland'
+export QT_QPA_PLATFORMTHEME='gnome'
+export CARGO_HOME="$XDG_DATA_HOME/cargo"
+export NPM_CONFIG_CACHE="$XDG_CACHE_HOME/npm"
+export NPM_CONFIG_PREFIX="$XDG_DATA_HOME/npm"
+export NPM_CONFIG_USERCONFIG="$XDG_CONFIG_HOME/npm/config"
 export LESS='-R --mouse --wheel-lines=3'
 # https://github.com/trapd00r/LS_COLORS/blob/master/lscolors.sh
 export LS_COLORS='*.7z=38;5;40:*.WARC=38;5;40:*.a=38;5;40:*.arj=38;5;40:*.bz2=38;5;40:*.cpio=38;5;40:*.gz=38;5;40:*.lrz=38;5;40:*.lz=38;5;40:*.lzma=38;5;40:*.lzo=38;5;40:*.rar=38;5;40:*.s7z=38;5;40:*.sz=38;5;40:*.tar=38;5;40:*.tbz=38;5;40:*.tgz=38;5;40:*.warc=38;5;40:*.xz=38;5;40:*.z=38;5;40:*.zip=38;5;40:*.zipx=38;5;40:*.zoo=38;5;40:*.zpaq=38;5;40:*.zst=38;5;40:*.zstd=38;5;40:*.zz=38;5;40:*@.service=38;5;45:*AUTHORS=38;5;220;1:*CHANGES=38;5;220;1:*CONTRIBUTORS=38;5;220;1:*COPYING=38;5;220;1:*COPYRIGHT=38;5;220;1:*CodeResources=38;5;239:*Dockerfile=38;5;155:*HISTORY=38;5;220;1:*INSTALL=38;5;220;1:*LICENSE=38;5;220;1:*LS_COLORS=48;5;89;38;5;197;1;3;4;7:*MANIFEST=38;5;243:*Makefile=38;5;155:*NOTICE=38;5;220;1:*PATENTS=38;5;220;1:*PkgInfo=38;5;239:*README=38;5;220;1:*README.md=38;5;220;1:*README.rst=38;5;220;1:*VERSION=38;5;220;1:*authorized_keys=1:*cfg=1:*conf=1:*config=1:*core=38;5;241:*id_dsa=38;5;192;3:*id_ecdsa=38;5;192;3:*id_ed25519=38;5;192;3:*id_rsa=38;5;192;3:*known_hosts=1:*lock=38;5;248:*lockfile=38;5;248:*pm_to_blib=38;5;240:*rc=1:*.1p=38;5;7:*.32x=38;5;213:*.3g2=38;5;115:*.3ga=38;5;137;1:*.3gp=38;5;115:*.3p=38;5;7:*.82p=38;5;121:*.83p=38;5;121:*.8eu=38;5;121:*.8xe=38;5;121:*.8xp=38;5;121:*.A64=38;5;213:*.BAT=38;5;172:*.BUP=38;5;241:*.C=38;5;81:*.CFUserTextEncoding=38;5;239:*.DS_Store=38;5;239:*.F=38;5;81:*.F03=38;5;81:*.F08=38;5;81:*.F90=38;5;81:*.F95=38;5;81:*.H=38;5;110:*.IFO=38;5;114:*.JPG=38;5;97:*.M=38;5;110:*.MOV=38;5;114:*.PDF=38;5;141:*.PFA=38;5;66:*.PL=38;5;160:*.R=38;5;49:*.RData=38;5;178:*.Rproj=38;5;11:*.S=38;5;110:*.S3M=38;5;137;1:*.SKIP=38;5;244:*.TIFF=38;5;97:*.VOB=38;5;115;1:*.a00=38;5;213:*.a52=38;5;213:*.a64=38;5;213:*.a78=38;5;213:*.aac=38;5;137;1:*.accdb=38;5;60:*.accde=38;5;60:*.accdr=38;5;60:*.accdt=38;5;60:*.adf=38;5;213:*.adoc=38;5;184:*.afm=38;5;66:*.agda=38;5;81:*.agdai=38;5;110:*.ahk=38;5;41:*.ai=38;5;99:*.aiff=38;5;136;1:*.alac=38;5;136;1:*.allow=38;5;112:*.am=38;5;242:*.amr=38;5;137;1:*.ape=38;5;136;1:*.apk=38;5;215:*.application=38;5;116:*.aria2=38;5;241:*.asc=38;5;192;3:*.asciidoc=38;5;184:*.asf=38;5;115:*.asm=38;5;81:*.ass=38;5;117:*.atr=38;5;213:*.au=38;5;137;1:*.automount=38;5;45:*.avi=38;5;114:*.awk=38;5;172:*.bak=38;5;241:*.bash=38;5;172:*.bash_login=1:*.bash_logout=1:*.bash_profile=1:*.bat=38;5;172:*.bfe=38;5;192;3:*.bib=38;5;178:*.bin=38;5;124:*.bmp=38;5;97:*.bsp=38;5;215:*.c=38;5;81:*.c++=38;5;81:*.cab=38;5;215:*.caf=38;5;137;1:*.cap=38;5;29:*.car=38;5;57:*.cbr=38;5;141:*.cbz=38;5;141:*.cc=38;5;81:*.cda=38;5;136;1:*.cdi=38;5;213:*.cdr=38;5;97:*.chm=38;5;141:*.cl=38;5;81:*.clj=38;5;41:*.cljc=38;5;41:*.cljs=38;5;41:*.cljw=38;5;41:*.cnc=38;5;7:*.coffee=38;5;074;1:*.cp=38;5;81:*.cpp=38;5;81:*.cr=38;5;81:*.crx=38;5;215:*.cs=38;5;81:*.css=38;5;125;1:*.csv=38;5;78:*.ctp=38;5;81:*.cue=38;5;116:*.cxx=38;5;81:*.dart=38;5;51:*.dat=38;5;137;1:*.db=38;5;60:*.deb=38;5;215:*.def=38;5;7:*.deny=38;5;196:*.description=38;5;116:*.device=38;5;45:*.dhall=38;5;178:*.dicom=38;5;97:*.diff=48;5;197;38;5;232:*.directory=38;5;116:*.divx=38;5;114:*.djvu=38;5;141:*.dll=38;5;241:*.dmg=38;5;215:*.dmp=38;5;29:*.doc=38;5;111:*.dockerignore=38;5;240:*.docm=38;5;111;4:*.docx=38;5;111:*.drw=38;5;99:*.dtd=38;5;178:*.dts=38;5;137;1:*.dump=38;5;241:*.dwg=38;5;216:*.dylib=38;5;241:*.ear=38;5;215:*.el=38;5;81:*.elc=38;5;241:*.eln=38;5;241:*.eml=38;5;125;1:*.enc=38;5;192;3:*.entitlements=1:*.epf=1:*.eps=38;5;99:*.epsf=38;5;99:*.epub=38;5;141:*.err=38;5;160;1:*.error=38;5;160;1:*.etx=38;5;184:*.ex=38;5;7:*.example=38;5;7:*.f=38;5;81:*.f03=38;5;81:*.f08=38;5;81:*.f4v=38;5;115:*.f90=38;5;81:*.f95=38;5;81:*.fcm=38;5;137;1:*.feature=38;5;7:*.flac=38;5;136;1:*.flif=38;5;97:*.flv=38;5;115:*.fm2=38;5;213:*.fmp12=38;5;60:*.fnt=38;5;66:*.fon=38;5;66:*.for=38;5;81:*.fp7=38;5;60:*.ftn=38;5;81:*.fvd=38;5;124:*.fxml=38;5;178:*.gb=38;5;213:*.gba=38;5;213:*.gbc=38;5;213:*.gbr=38;5;7:*.gel=38;5;213:*.gemspec=38;5;41:*.ger=38;5;7:*.gg=38;5;213:*.ggl=38;5;213:*.gif=38;5;97:*.git=38;5;197:*.gitattributes=38;5;240:*.gitignore=38;5;240:*.gitmodules=38;5;240:*.go=38;5;81:*.gp3=38;5;115:*.gp4=38;5;115:*.gpg=38;5;192;3:*.gs=38;5;81:*.h=38;5;110:*.h++=38;5;110:*.hi=38;5;110:*.hidden-color-scheme=1:*.hidden-tmTheme=1:*.hin=38;5;242:*.hpp=38;5;110:*.hs=38;5;81:*.htm=38;5;125;1:*.html=38;5;125;1:*.hxx=38;5;110:*.icns=38;5;97:*.ico=38;5;97:*.ics=38;5;7:*.ii=38;5;110:*.img=38;5;124:*.iml=38;5;166:*.in=38;5;242:*.info=38;5;184:*.ini=1:*.ipa=38;5;215:*.ipk=38;5;213:*.ipynb=38;5;41:*.iso=38;5;124:*.j64=38;5;213:*.jad=38;5;215:*.jar=38;5;215:*.java=38;5;074;1:*.jhtm=38;5;125;1:*.jpeg=38;5;97:*.jpg=38;5;97:*.js=38;5;074;1:*.jsm=38;5;074;1:*.json=38;5;178:*.jsonl=38;5;178:*.jsonnet=38;5;178:*.jsp=38;5;074;1:*.jxl=38;5;97:*.kak=38;5;172:*.key=38;5;166:*.lagda=38;5;81:*.lagda.md=38;5;81:*.lagda.rst=38;5;81:*.lagda.tex=38;5;81:*.last-run=1:*.less=38;5;125;1:*.lhs=38;5;81:*.libsonnet=38;5;142:*.lisp=38;5;81:*.lnk=38;5;39:*.localized=38;5;239:*.localstorage=38;5;60:*.log=38;5;190:*.lua=38;5;81:*.m=38;5;110:*.m2v=38;5;114:*.m3u=38;5;116:*.m3u8=38;5;116:*.m4=38;5;242:*.m4a=38;5;137;1:*.m4v=38;5;114:*.map=38;5;7:*.markdown=38;5;184:*.md=38;5;184:*.md5=38;5;116:*.mdb=38;5;60:*.mde=38;5;60:*.mdump=38;5;241:*.merged-ca-bundle=1:*.mf=38;5;7:*.mfasl=38;5;7:*.mht=38;5;125;1:*.mi=38;5;7:*.mid=38;5;136;1:*.midi=38;5;136;1:*.mjs=38;5;074;1:*.mkd=38;5;184:*.mkv=38;5;114:*.mm=38;5;7:*.mobi=38;5;141:*.mod=38;5;137;1:*.moon=38;5;81:*.mount=38;5;45:*.mov=38;5;114:*.mp3=38;5;137;1:*.mp4=38;5;114:*.mp4a=38;5;137;1:*.mpeg=38;5;114:*.mpg=38;5;114:*.msg=38;5;178:*.msql=38;5;222:*.mtx=38;5;7:*.mustache=38;5;125;1:*.mysql=38;5;222:*.nc=38;5;60:*.ndjson=38;5;178:*.nds=38;5;213:*.nes=38;5;213:*.nfo=38;5;184:*.nib=38;5;57:*.nim=38;5;81:*.nimble=38;5;81:*.nix=38;5;155:*.nrg=38;5;124:*.nth=38;5;97:*.numbers=38;5;112:*.o=38;5;241:*.odb=38;5;111:*.odp=38;5;166:*.ods=38;5;112:*.odt=38;5;111:*.oga=38;5;137;1:*.ogg=38;5;137;1:*.ogm=38;5;114:*.ogv=38;5;115:*.old=38;5;242:*.opus=38;5;137;1:*.org=38;5;184:*.orig=38;5;241:*.otf=38;5;66:*.out=38;5;242:*.p12=38;5;192;3:*.p7s=38;5;192;3:*.pacnew=38;5;33:*.pages=38;5;111:*.pak=38;5;215:*.part=38;5;239:*.patch=48;5;197;38;5;232;1:*.path=38;5;45:*.pbxproj=1:*.pc=38;5;7:*.pcap=38;5;29:*.pcb=38;5;7:*.pcf=1:*.pcm=38;5;136;1:*.pdf=38;5;141:*.pem=38;5;192;3:*.pfa=38;5;66:*.pfb=38;5;66:*.pfm=38;5;66:*.pgn=38;5;178:*.pgp=38;5;192;3:*.pgsql=38;5;222:*.php=38;5;81:*.pi=38;5;7:*.pid=38;5;248:*.pk3=38;5;215:*.pl=38;5;208:*.plist=1:*.plt=38;5;7:*.ply=38;5;216:*.pm=38;5;203:*.png=38;5;97:*.pod=38;5;184:*.pot=38;5;7:*.pps=38;5;166:*.ppt=38;5;166:*.ppts=38;5;166:*.pptsm=38;5;166;4:*.pptx=38;5;166:*.pptxm=38;5;166;4:*.profile=1:*.properties=38;5;116:*.ps=38;5;99:*.psd=38;5;97:*.psf=1:*.pxd=38;5;97:*.pxm=38;5;97:*.py=38;5;41:*.pyc=38;5;240:*.qcow=38;5;124:*.r=38;5;49:*.r[0-9]{0,2}=38;5;239:*.rake=38;5;155:*.rb=38;5;41:*.rdata=38;5;178:*.rdf=38;5;7:*.rkt=38;5;81:*.rlib=38;5;241:*.rmvb=38;5;114:*.rnc=38;5;178:*.rng=38;5;178:*.rom=38;5;213:*.rpm=38;5;215:*.rs=38;5;81:*.rss=38;5;178:*.rst=38;5;184:*.rstheme=1:*.rtf=38;5;111:*.ru=38;5;7:*.s=38;5;110:*.s3m=38;5;137;1:*.sample=38;5;114:*.sass=38;5;125;1:*.sassc=38;5;244:*.sav=38;5;213:*.sc=38;5;41:*.scala=38;5;41:*.scan=38;5;242:*.sch=38;5;7:*.scm=38;5;7:*.scpt=38;5;219:*.scss=38;5;125;1:*.sed=38;5;172:*.service=38;5;45:*.sfv=38;5;116:*.sgml=38;5;178:*.sh=38;5;172:*.sid=38;5;137;1:*.sig=38;5;192;3:*.signature=38;5;192;3:*.sis=38;5;7:*.sms=38;5;213:*.snapshot=38;5;45:*.socket=38;5;45:*.sparseimage=38;5;124:*.spl=38;5;7:*.sql=38;5;222:*.sqlite=38;5;60:*.srt=38;5;117:*.ssa=38;5;117:*.st=38;5;213:*.stackdump=38;5;241:*.state=38;5;248:*.stderr=38;5;160;1:*.stl=38;5;216:*.storyboard=38;5;196:*.strings=1:*.sty=38;5;7:*.sub=38;5;117:*.sublime-build=1:*.sublime-commands=1:*.sublime-keymap=1:*.sublime-project=1:*.sublime-settings=1:*.sublime-snippet=1:*.sublime-workspace=1:*.sug=38;5;7:*.sup=38;5;117:*.svg=38;5;99:*.swap=38;5;45:*.swift=38;5;219:*.swo=38;5;244:*.swp=38;5;244:*.sx=38;5;81:*.t=38;5;114:*.target=38;5;45:*.tcc=38;5;110:*.tcl=38;5;64;1:*.tdy=38;5;7:*.tex=38;5;184:*.textile=38;5;184:*.tf=38;5;168:*.tfm=38;5;7:*.tfnt=38;5;7:*.tfstate=38;5;168:*.tfvars=38;5;168:*.tg=38;5;7:*.theme=38;5;116:*.tif=38;5;97:*.tiff=38;5;97:*.timer=38;5;45:*.tmTheme=1:*.tmp=38;5;244:*.toast=38;5;124:*.toml=38;5;178:*.torrent=38;5;116:*.ts=38;5;115:*.tsv=38;5;78:*.ttf=38;5;66:*.twig=38;5;81:*.txt=38;5;253:*.typelib=38;5;60:*.un~=38;5;241:*.urlview=38;5;116:*.user-ca-bundle=1:*.v=38;5;81:*.vala=38;5;81:*.vapi=38;5;81:*.vb=38;5;81:*.vba=38;5;81:*.vbs=38;5;81:*.vcard=38;5;7:*.vcd=38;5;124:*.vcf=38;5;7:*.vdf=38;5;215:*.vdi=38;5;124:*.vfd=38;5;124:*.vhd=38;5;124:*.vhdx=38;5;124:*.vim=38;5;172:*.viminfo=1:*.vmdk=38;5;124:*.vob=38;5;115;1:*.vpk=38;5;215:*.vtt=38;5;117:*.war=38;5;215:*.wav=38;5;136;1:*.webloc=38;5;116:*.webm=38;5;115:*.webp=38;5;97:*.wma=38;5;137;1:*.wmv=38;5;114:*.woff=38;5;66:*.woff2=38;5;66:*.wrl=38;5;216:*.wv=38;5;136;1:*.wvc=38;5;136;1:*.xcconfig=1:*.xcf=38;5;7:*.xcsettings=1:*.xcuserstate=1:*.xcworkspacedata=1:*.xib=38;5;208:*.xla=38;5;76:*.xln=38;5;7:*.xls=38;5;112:*.xlsx=38;5;112:*.xlsxm=38;5;112;4:*.xltm=38;5;73;4:*.xltx=38;5;73:*.xml=38;5;178:*.xpi=38;5;215:*.xpm=38;5;97:*.xsd=38;5;178:*.xsh=38;5;41:*.yaml=38;5;178:*.yml=38;5;178:*.z[0-9]{0,2}=38;5;239:*.zcompdump=38;5;241:*.zig=38;5;81:*.zlogin=1:*.zlogout=1:*.zprofile=1:*.zsh=38;5;172:*.zshenv=1:*.zwc=38;5;241:*.zx[0-9]{0,2}=38;5;239:bd=38;5;68:ca=38;5;17:cd=38;5;113;1:di=38;5;30:do=38;5;127:ex=38;5;208;1:pi=38;5;126:fi=0:ln=target:mh=38;5;222;1:no=0:or=48;5;196;38;5;232;1:ow=38;5;220;1:sg=48;5;3;38;5;0:su=38;5;220;1;3;100;1:so=38;5;197:st=38;5;86;48;5;234:tw=48;5;235;38;5;139;3:';
 # Make SSH work with GNUPG
 export GPG_TTY=$(tty)
 SSH_AGENT_PID=''
-SSH_AUTH_SOCK=${XDG_RUNTIME_DIR}/gnupg/S.gpg-agent.ssh
-[[ -d $HOME/.local/bin ]] && export PATH=$HOME/.local/bin:$PATH
-[[ -d $XDG_DATA_HOME/npm/bin ]] && export PATH=$XDG_DATA_HOME/npm/bin:$PATH
-[[ -d $XDG_DATA_HOME/cargo/bin ]] && export PATH=$XDG_DATA_HOME/cargo/bin:$PATH
-[[ $LANG == 'C'  || $LANG == '' ]] && echo "$(date '+%Y-%m-%d %H:%M:%S') - The \$LANG ($LANG) variable is not set. This can cause a lot of problems" >> "$HOME/.alert"
-[[ $EUID != 0 ]] && umask 022 && sysvar='--user' || umask 002
+SSH_AUTH_SOCK="${XDG_RUNTIME_DIR}/gnupg/S.gpg-agent.ssh"
 [[ -x $(command -v plasmashell) ]] && export GTK_USE_PORTAL=1
+[[ -d "$HOME/.local/bin" ]] && export PATH="$HOME/.local/bin:$PATH"
+[[ -d "$XDG_DATA_HOME/npm/bin" ]] && export PATH="$XDG_DATA_HOME/npm/bin:$PATH"
+[[ -d "$XDG_DATA_HOME/cargo/bin" ]] && export PATH="$XDG_DATA_HOME/cargo/bin:$PATH"
+[[ "$LANG" == 'C'  || "$LANG" == '' ]] && echo "$(date '+%Y-%m-%d %H:%M:%S') - The \$LANG ($LANG) variable is not set. This can cause a lot of problems" >> "$HOME/.alert"
+[[ "$EUID" != 0 ]] && umask 022 && sysvar='--user' || umask 002
 systemctl $sysvar import-environment EDITOR VISUAL XDG_CACHE_HOME XDG_CONFIG_HOME XDG_DATA_HOME XDG_STATE_HOME LS_COLORS MOZ_ENABLE_WAYLAND QT_QPA_PLATFORM QT_QPA_PLATFORMTHEME GTK_USE_PORTAL 2>/dev/null; unset sysvar
 # Interactive or return
 [[ $- == *i* ]] || return 
@@ -103,15 +103,15 @@ setopt hist_save_no_dups
 setopt hist_ignore_all_dups
 #------------------------------------------------------------------------------#
 # ZSH stuff
-ZDOTDIR=$HOME
-HISTFILE=$XDG_STATE_HOME/zsh/zshist
+ZDOTDIR="$HOME"
+HISTFILE="$XDG_STATE_HOME/zsh/zshist"
 HISTSIZE=1000
 SAVEHIST=$HISTSIZE
-[[ ! -d $XDG_CACHE_HOME || ! -d $XDG_DATA_HOME/zsh || ! -d $XDG_STATE_HOME/zsh ]]\
-&& mkdir -p $XDG_CACHE_HOME $XDG_DATA_HOME/zsh $XDG_STATE_HOME/zsh >/dev/null 2>&1 
+[[ ! -d "$XDG_CACHE_HOME" || ! -d "$XDG_DATA_HOME/zsh" || ! -d "$XDG_STATE_HOME/zsh" ]]\
+&& mkdir -p "$XDG_CACHE_HOME" "$XDG_DATA_HOME/zsh" "$XDG_STATE_HOME/zsh" >/dev/null 2>&1
 #------------------------------------------------------------------------------#
 # Completion
-autoload -Uz compinit && compinit -d $XDG_CACHE_HOME/zcompdump
+autoload -Uz compinit && compinit -d "$XDG_CACHE_HOME/zcompdump"
 zmodload zsh/complist
 
 # automatically load bash completion functions
@@ -121,8 +121,8 @@ autoload -U +X bashcompinit && bashcompinit
 _comp_options+=(globdots)
 zstyle ':completion:*' menu select
 zstyle ':completion::complete:*' use-cache true
-zstyle ':completion:*' cache-path $XDG_CACHE_HOME/zcompcache
-zstyle ':completion:*:default' list-colors ${(s.:.)LS_COLORS}
+zstyle ':completion:*' cache-path "$XDG_CACHE_HOME/zcompcache"
+zstyle ':completion:*:default' list-colors "${(s.:.)LS_COLORS}"
 zstyle ':completion:*' group-name ''
 zstyle ':completion:*' accept-exact '*(N)'
 zstyle ':completion:*' expand prefix suffix
@@ -146,7 +146,8 @@ function _pip_completion {
 }
 compctl -K _pip_completion pip
 #------------------------------------------------------------------------------#
-# Define word separators (for stuff like backward-word, forward-word, backward-kill-word,..)
+# Define word separators (for stuff like backward-word, forward-word,
+# backward-kill-word,..)
 # WORDCHARS='*?_-.[]~=/&;!#$%^(){}<>' # default
 # WORDCHARS=.
 # WORDCHARS='*?_[]~=&;!#$%^(){}'
@@ -202,20 +203,22 @@ if (( ${+terminfo[smkx]} && ${+terminfo[rmkx]} )); then
   add-zle-hook-widget -Uz zle-line-finish zle_application_mode_stop
 fi
 
-## For Ctrl+Left to move to the beginning of the previous word and Ctrl+Right to move to the beginning of the next word:
+# For Ctrl+Left to move to the beginning of the previous word and
+# Ctrl+Right to move to the beginning of the next word:
 key[Control-Left]="${terminfo[kLFT5]}"
 key[Control-Right]="${terminfo[kRIT5]}"
 
 [[ -n "${key[Control-Left]}"  ]] && bindkey -- "${key[Control-Left]}"  backward-word
 [[ -n "${key[Control-Right]}" ]] && bindkey -- "${key[Control-Right]}" forward-word
 
-# Tries to set Ctrl + Delete and Ctrl + Backspace to erase prev and next words, but terminals are different:
-# PS: Alt works for prev words for some reason.
+# Tries to set Ctrl + Delete and Ctrl + Backspace to erase prev and next words,
+# but terminals are different:
 [[ -n "${key[Control-Backspace]}"  ]] && bindkey -- "${key[Control-Backspace]}" backward-kill-word
 [[ -n "${key[Control-Delete]}" ]] && bindkey -- "${key[Control-Delete]}" kill-word
-bindkey '^H' backward-kill-word                                 # control + backspace
-bindkey '^[[3^' kill-word                                       # control + delete
-bindkey '^[[3;5~' kill-word                                     # control + delete
+
+bindkey '^H' backward-kill-word                           # control + backspace
+bindkey '^[[3^' kill-word                                 # control + delete
+bindkey '^[[3;5~' kill-word                               # control + delete
 #------------------------------------------------------------------------------#
 # Vim Mapping For Completion
 # https://thevaluable.dev/zsh-install-configure-mouseless/
@@ -266,7 +269,8 @@ zle -N zle-line-init
 zle -N zle-keymap-select
 #------------------------------------------------------------------------------#
 # Editing Command Lines
-# This specific function let you edit a command line in your visual editor, defined by the environment variable $VISUAL (or $EDITOR).
+# This specific function let you edit a command line in your visual editor,
+# defined by the environment variable $VISUAL (or $EDITOR).
 autoload -Uz edit-command-line
 zle -N edit-command-line
 # Restore cursor format after edit
@@ -306,30 +310,31 @@ source /usr/share/fzf/key-bindings.zsh 2>/dev/null
 source /usr/share/fzf/completion.zsh 2>/dev/null
 #------------------------------------------------------------------------------#
 # zsh-async
-if [[ -f $XDG_DATA_HOME/zsh/async.zsh ]]; then
-  source $XDG_DATA_HOME/zsh/async.zsh
+if [[ -f "$XDG_DATA_HOME/zsh/async.zsh" ]]; then
+  source "$XDG_DATA_HOME/zsh/async.zsh"
 else
   echo 'Downloading zsh-async...'
-  curl -s https://raw.githubusercontent.com/mafredri/zsh-async/master/async.zsh -o $XDG_DATA_HOME/zsh/async.zsh
-  varsum='3ca377ef528f2c6c8beaf97cfd46c969d25440412a0699f5be1bae5121406a891fde0c5fea5946f374b52f31c5afd6f723087934ed60de9f3be1f8fb72b9ac3a'
-  varsum2=$(sha512sum $XDG_DATA_HOME/zsh/async.zsh | cut -d ' ' -f1) 2>/dev/null
-  [[ $varsum == $varsum2 ]] && source $XDG_DATA_HOME/zsh/async.zsh || echo "$(date '+%Y-%m-%d %H:%M:%S') - Failed to load zsh-async" >> "$HOME/.alert"
+  curl -s 'https://raw.githubusercontent.com/mafredri/zsh-async/master/async.zsh' -o "$XDG_DATA_HOME/zsh/async.zsh"
+  sumvar='3ca377ef528f2c6c8beaf97cfd46c969d25440412a0699f5be1bae5121406a891fde0c5fea5946f374b52f31c5afd6f723087934ed60de9f3be1f8fb72b9ac3a'
+  sumvar2="$(sha512sum $XDG_DATA_HOME/zsh/async.zsh | cut -d ' ' -f1)" 2>/dev/null
+  [[ $sumvar == $sumvar2 ]] && source "$XDG_DATA_HOME/zsh/async.zsh" || echo "$(date '+%Y-%m-%d %H:%M:%S') - Failed to load zsh-async" >> "$HOME/.alert"
+  unset sumvar sumvar2
 fi
 #------------------------------------------------------------------------------#
 # Auto Suggestions
 if [[ -f '/usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh' ]]; then
-  source /usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
+  source '/usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh'
   var=1
-elif [[ -f $XDG_DATA_HOME/zsh/zsh-autosuggestions.zsh ]]; then
-  source $XDG_DATA_HOME/zsh/zsh-autosuggestions.zsh
+elif [[ -f "$XDG_DATA_HOME/zsh/zsh-autosuggestions.zsh" ]]; then
+  source "$XDG_DATA_HOME/zsh/zsh-autosuggestions.zsh"
   var=1
 else
   echo 'Downloading zsh-autosuggestions...'
-  curl -s https://raw.githubusercontent.com/zsh-users/zsh-autosuggestions/master/zsh-autosuggestions.zsh -o $XDG_DATA_HOME/zsh/zsh-autosuggestions.zsh
-  varsum='47bab685f000d242c9c204b1d7f8862a282f1b649f9b5543ae5309c8d7af87d1ad658c7ab67422191070608feb5af18eeba6f6cace798dfb92187825e1e9ba76'
-  varsum2="$(sha512sum $XDG_DATA_HOME/zsh/zsh-autosuggestions.zsh | cut -d ' ' -f1)" 2>/dev/null
-  [[ $varsum == $varsum2 ]] && source $XDG_DATA_HOME/zsh/zsh-autosuggestions.zsh && var=1
-  unset varsum varsum2
+  curl -s 'https://raw.githubusercontent.com/zsh-users/zsh-autosuggestions/master/zsh-autosuggestions.zsh' -o "$XDG_DATA_HOME/zsh/zsh-autosuggestions.zsh"
+  sumvar='47bab685f000d242c9c204b1d7f8862a282f1b649f9b5543ae5309c8d7af87d1ad658c7ab67422191070608feb5af18eeba6f6cace798dfb92187825e1e9ba76'
+  sumvar2="$(sha512sum $XDG_DATA_HOME/zsh/zsh-autosuggestions.zsh | cut -d ' ' -f1)" 2>/dev/null
+  [[ $sumvar == $sumvar2 ]] && source "$XDG_DATA_HOME/zsh/zsh-autosuggestions.zsh" && var=1
+  unset sumvar sumvar2
 fi
 if [[ -n $var ]]; then
   ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE=10
@@ -343,18 +348,18 @@ fi
 #------------------------------------------------------------------------------#
 # History substring search
 if [[ -f '/usr/share/zsh/plugins/zsh-history-substring-search/zsh-history-substring-search.zsh' ]]; then
-  source /usr/share/zsh/plugins/zsh-history-substring-search/zsh-history-substring-search.zsh
+  source '/usr/share/zsh/plugins/zsh-history-substring-search/zsh-history-substring-search.zsh'
   var=1
-elif [[ -f $XDG_DATA_HOME/zsh/zsh-history-substring-search.zsh ]]; then
-  source $XDG_DATA_HOME/zsh/zsh-history-substring-search.zsh
+elif [[ -f "$XDG_DATA_HOME/zsh/zsh-history-substring-search.zsh" ]]; then
+  source "$XDG_DATA_HOME/zsh/zsh-history-substring-search.zsh"
   var=1
 else
   echo 'Downloading zsh-history-substring-search...'
-  curl -s https://raw.githubusercontent.com/zsh-users/zsh-history-substring-search/master/zsh-history-substring-search.zsh -o $XDG_DATA_HOME/zsh/zsh-history-substring-search.zsh
-  varsum='2750c07fa5f220319cf9dd93567a5f0dc3320f562849874c38b28ee7f4ad979818caf4120aad40724f7bdf30a7edb4d2c9f42686d5396adbe539b0e74b939000'
-  varsum2="$(sha512sum $XDG_DATA_HOME/zsh/zsh-history-substring-search.zsh | cut -d ' ' -f1)" 2>/dev/null
-  [[ $varsum == $varsum2 ]] && source $XDG_DATA_HOME/zsh/zsh-history-substring-search.zsh && var=1
-  unset varsum varsum2
+  curl -s 'https://raw.githubusercontent.com/zsh-users/zsh-history-substring-search/master/zsh-history-substring-search.zsh' -o "$XDG_DATA_HOME/zsh/zsh-history-substring-search.zsh"
+  sumvar='2750c07fa5f220319cf9dd93567a5f0dc3320f562849874c38b28ee7f4ad979818caf4120aad40724f7bdf30a7edb4d2c9f42686d5396adbe539b0e74b939000'
+  sumvar2="$(sha512sum $XDG_DATA_HOME/zsh/zsh-history-substring-search.zsh | cut -d ' ' -f1)" 2>/dev/null
+  [[ $sumvar == $sumvar2 ]] && source "$XDG_DATA_HOME/zsh/zsh-history-substring-search.zsh" && var=1
+  unset sumvar sumvar2
 fi
 if [[ -n $var ]]; then
   zmodload zsh/terminfo
@@ -374,9 +379,9 @@ fi
 #------------------------------------------------------------------------------#
 # Syntax highlighting
 if [[ -f '/usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh' ]]; then
-  source /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
-elif [[ -f $XDG_DATA_HOME/zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh ]]; then
-  source $XDG_DATA_HOME/zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+  source '/usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh'
+elif [[ -f "$XDG_DATA_HOME/zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh" ]]; then
+  source "$XDG_DATA_HOME/zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
 else
   mkdir -p "$XDG_DATA_HOME/zsh/zsh-syntax-highlighting" >/dev/null 2>&1 
   echo 'Downloading zsh-syntax-highlighting...'
@@ -397,8 +402,8 @@ fi
 # Archive Extraction
 # usage: ex <file>
 ex() {
-  if [ -f $1 ] ; then
-    case $1 in
+  if [[ -f "$1" ]] ; then
+    case "$1" in
       *.tar.bz2) tar xjf    $1 ;;
       *.tar.gz)  tar xzf    $1 ;;
       *.bz2)     bunzip2    $1 ;;
@@ -424,13 +429,13 @@ ex() {
 # Useful for long rm, tar and such.
 # Usage: rm -rfv /foo | dot_progress
 dot() {
-  local i='0'
+  local i=0
   local line=''
   while read line; do
     i="$((i+1))"
-    if [ "${i}" = '25' ]; then
+    if [[ "${i}" == 25 ]]; then
       echo -n '.'
-      i='0'
+      i=0
     fi
   done
   echo
@@ -531,7 +536,7 @@ myip() {
 # by default show 3 months of calendar with week number
 # but also allow to override it
 cal() {
-  local CALENDAR=$(command -vp cal)
+  local CALENDAR="$(command -vp cal)"
   if [[ "$#" -eq 0 ]]; then
     "$CALENDAR" -w3
   else
@@ -542,7 +547,7 @@ cal() {
 #Compile and run Java code
 # https://stackoverflow.com/questions/10986794/remove-part-of-path-on-unix
 jvr() {
-  local var=$PWD
+  local var="$PWD"
   builtin cd -q $(sed 's/src.*/bin/g' <<< $var) || return 1
   class_path=$(find * -type f -name "$1*" | sed 's/.class//g')
   java "$class_path"
@@ -551,8 +556,8 @@ jvr() {
 }
 
 jvc() {
-  javac -classpath "$(find -type d)" -d $(sed 's/src.*/bin/g' <<< $PWD) $(find -type f -name "*.java")
-  [[ -z $1 ]] || jvr $1
+  javac -classpath "$(find -type d)" -d $(sed 's/src.*/bin/g' <<< "$PWD") $(find -type f -name "*.java")
+  [[ -z $1 ]] || jvr "$1"
 }
  
 # Unlock user after failed login attempt
@@ -647,16 +652,16 @@ lscolors() {
 #------------------------------------------------------------------------------#
 # If tmux is executable and not already inside a session:
   if command -v tmux >/dev/null && [[ -z $TMUX && -z $ZSH_TMUX_STARTED ]]; then
-    tvar=$(tmux list-sessions >/dev/null 2>&1 | grep main)
+    tvar="$(tmux list-sessions >/dev/null 2>&1 | grep main)"
     export ZSH_TMUX_STARTED=1
-    if grep -q attached <<< $tvar; then
+    if grep -q attached <<< "$tvar"; then
       tmux neww -t main && tmux a -t main
     elif [[ -n $tvar ]]; then
       tmux a -t main
     else
       tmux new -As main
     fi
-    unset tvar && echo
+    unset tvar; echo
   fi
 #------------------------------------------------------------------------------#
 ################################## Arch Config #################################
@@ -906,6 +911,7 @@ ns() {
 
 arch-base() {
   [[ "$EUID" != 0 ]] && local varsu='sudo'
+
   if [[ "$EUID" != 0 ]] && ! grep -q "$HOME/.zshrc" /etc/zsh/zprofile; then
     echo 'Do you wish to configure zprofile?'
     select yne in 'Yes' 'No' 'Exit'; do
@@ -916,6 +922,7 @@ arch-base() {
       esac
     done
   fi
+
   if ! grep -q ILoveCandy /etc/pacman.conf; then
     echo 'Do you wish to configure /etc/pacman.conf?'
     select yne in 'Yes' 'No' 'Exit'; do
@@ -928,6 +935,7 @@ arch-base() {
       esac
     done
   fi
+
   echo 'Do you want to update mirrors with reflector?'
   select yne in 'Yes' 'No' 'Exit'; do
     case $yne in
@@ -936,6 +944,7 @@ arch-base() {
       Exit ) return;;
     esac
   done
+
   # Base packages
   echo 'Do you wish to install base packages for Arch Linux?'
   select yne in 'Yes' 'No' 'Exit'; do
@@ -945,10 +954,10 @@ arch-base() {
         if [[ "$EUID" != 0 && ! -x /usr/bin/paru ]]; then
           command mkdir -p $HOME/{.cache/paru/clone,.config/paru}
           git clone https://aur.archlinux.org/paru-bin $XDG_CACHE_HOME/paru/clone/paru-bin
-          local var=$PWD
+          local var="$PWD"
           builtin cd -q $XDG_CACHE_HOME/paru/clone/paru-bin
           makepkg -sir
-          builtin cd -q $var
+          builtin cd -q "$var"
           unset var
           echo -e "# \$PARU_CONF\n# /etc/paru.conf\n# ~/.config/paru/paru.conf\n# GENERAL OPTIONS\n[options]\nRemoveMake\nSudoLoop\nCombinedUpgrade\nUpgradeMenu" | tee $XDG_CONFIG_HOME/paru/paru.conf >/dev/null
         fi
@@ -957,6 +966,7 @@ arch-base() {
       Exit ) return;;
     esac
   done
+
   # General system configs
   echo 'Do you wish to configure general system defaults?'
   select yne in 'Yes' 'No' 'Exit'; do
@@ -974,6 +984,7 @@ arch-base() {
       Exit ) return;;
     esac
   done
+
   # Keyboard
   echo 'Do you wish to select a keyboard layout?'
   local PT='localectl --no-convert set-x11-keymap br pc105; setxkbmap -model pc105 -layout br;echo -e "LANG=en_US.UTF-8\nLANGUAGE=\"en_US\"\nLC_TYPE=pt_BR.UTF-8\nLC_NUMERIC=pt_BR.UTF-8\nLC_TIME=pt_BR.UTF-8\nLC_MONETARY=pt_BR.UTF-8\nLC_PAPER=pt_BR.UTF-8\nLC_MEASUREMENT=pt_BR.UTF-8" | tee /etc/locale.conf;echo -e "KEYMAP=br-abnt2\nFONT=eurlatgr\nFONT_MAP=8859-1" | tee /etc/vconsole.conf'
@@ -988,76 +999,85 @@ arch-base() {
       Exit ) return;;
     esac
   done
+
   # General user configs
   if [[ "$EUID" != 0 ]]; then
     echo 'Do you wish to configure general user defaults?'
     select yne in 'Yes' 'No' 'Exit'; do
       case $yne in
+
         Yes )
           # Git config
           if [[ ! -f $XDG_CONFIG_HOME/git/config ]]; then
             echo 'Do you wish to set up git?'
             select yne in 'Yes' 'No' 'Exit'; do
               case $yne in
+
                 Yes )
-                  command mkdir -p $XDG_CONFIG_HOME/git
-                  touch $XDG_CONFIG_HOME/git/config
+                  command mkdir -p "$XDG_CONFIG_HOME/git"
+                  touch "$XDG_CONFIG_HOME/git/config"
                   echo 'Enter your name:'
                   read gitname
-                  git config --global user.name "$gitname"
+                  [[ -z $gitname ]] || git config --global user.name "$gitname"
                   echo 'Enter your e-mail:'
                   read gitemail
-                  git config --global user.email "$gitemail"
+                  [[ -z $gitemail ]] || git config --global user.email "$gitemail"
                   gpg --list-keys --with-keygrip
                   echo 'Enter your signingkey if you wish to define it'
                   read gitsigningkey
                   [[ -n "$gitsigningkey" ]] && git config --global user.signingkey "$gitsigningkey" && git config --global commit.gpgsign true
                   unset gitname gitemail gitsigningkey
                   break;;
+
                 No ) break;;
                 Exit ) return;;
               esac
             done
           fi
+
           # Firefox config
           command mkdir -p $HOME/chrome
           echo -e '@-moz-document url(about:home), url(about:newtab), url(about:privatebrowsing) {\n\t.click-target-container *, .top-sites-list * {\n\t\tcolor: #fff !important ;\n\t\ttext-shadow: 2px 2px 2px #222 !important ;\n\t}\n\n\tbody::before {\n\t\tcontent: "" ;\n\t\tz-index: -1 ;\n\t\tposition: fixed ;\n\t\ttop: 0 ;\n\t\tleft: 0 ;\n\t\tbackground: #f9a no-repeat url(img) center ;\n\t\tbackground-size: cover ;\n\t\twidth: 100vw ;\n\t\theight: 100vh ;\n\t}\n}' > $HOME/chrome/userContent.css
           command cp $HOME/Pictures/Wallpapers/Module\ Abyss\ Lapis.* $HOME/chrome/img
+
           # Nerd font config
-          if [[ ! $TTY =~ '/dev/tty[0-9]*' && ! $(find $XDG_DATA_HOME/fonts -name 'JetBrains*.ttf' 2>/dev/null) ]]; then
-            command mkdir -p $XDG_DATA_HOME/fonts
+          if [[ ! $TTY =~ '/dev/tty[0-9]*' && ! $(find "$XDG_DATA_HOME/fonts" -name 'JetBrains*.ttf' 2>/dev/null) ]]; then
+            command mkdir -p "$XDG_DATA_HOME/fonts"
             echo 'Downloading Nerd Fonts...'
-            [[ -f $XDG_CACHE_HOME/JetBrainsMono.zip ]] || curl -sL https://github.com/ryanoasis/nerd-fonts/releases/download/v2.3.0-RC/JetBrainsMono.zip -o $XDG_CACHE_HOME/JetBrainsMono.zip
-            unzip $XDG_CACHE_HOME/JetBrainsMono.zip -d $XDG_DATA_HOME/fonts
+            [[ -f "$XDG_CACHE_HOME/JetBrainsMono.zip" ]] || curl -sL 'https://github.com/ryanoasis/nerd-fonts/releases/download/v2.3.0-RC/JetBrainsMono.zip' -o "$XDG_CACHE_HOME/JetBrainsMono.zip"
+            unzip "$XDG_CACHE_HOME/JetBrainsMono.zip" -d "$XDG_DATA_HOME/fonts"
             printf '\nDone. Set JetBrainsMono as default font\n'
           fi
+
           # Neovim's config
           if command -v nvim >/dev/null; then
-            command mkdir -p $XDG_CONFIG_HOME/nvim
-            # [[ -f $XDG_CONFIG_HOME/nvim/init.lua ]] || curl -s xxx -O $XDG_CONFIG_HOME/nvim
-            _config_nvim_luafile
-            if [[ ! -x $HOME/.local/bin/shellcheck ]]; then
+            command mkdir -p "$XDG_CONFIG_HOME/nvim"
+            [[ -f "$XDG_CONFIG_HOME/nvim/init.lua" ]] || curl -s 'https://gitlab.com/N1vBruno/dotfiles/-/raw/master/init.lua' -o "$XDG_CONFIG_HOME/nvim/init.lua"
+            if [[ ! -x "$HOME/.local/bin/shellcheck" ]]; then
               echo 'Downloading shellcheck...'
-              [[ -f $XDG_CACHE_HOME/shellcheck.tar.xz ]] || curl -sL https://github.com/koalaman/shellcheck/releases/download/v0.8.0/shellcheck-v0.8.0.linux.x86_64.tar.xz -o $XDG_CACHE_HOME/shellcheck.tar.xz
-              local varsum="$(sha512sum $XDG_CACHE_HOME/shellcheck.tar.xz | cut -d ' ' -f1)" 2>/dev/null
-              if [[ $varsum == 89317d97adb341e627b709e86477734ce236e9fb290de8a8c41cdc62769a3225622fa609deffebeabe9edb71f5639a086f61b677947e3ec4bc07c540fcbd0973 ]]; then
+              [[ -f "$XDG_CACHE_HOME/shellcheck.tar.xz" ]] || curl -sL 'https://github.com/koalaman/shellcheck/releases/download/v0.8.0/shellcheck-v0.8.0.linux.x86_64.tar.xz' -o "$XDG_CACHE_HOME/shellcheck.tar.xz"
+              local sumvar='89317d97adb341e627b709e86477734ce236e9fb290de8a8c41cdc62769a3225622fa609deffebeabe9edb71f5639a086f61b677947e3ec4bc07c540fcbd0973'
+              local sumvar2="$(sha512sum $XDG_CACHE_HOME/shellcheck.tar.xz | cut -d ' ' -f1)" 2>/dev/null
+              if [[ $sumvar == $sumvar2 ]]; then
                 command mkdir -p $HOME/.local/bin
-                local var=$PWD
-                builtin cd -q $XDG_CACHE_HOME
-                tar -Jxf $XDG_CACHE_HOME/shellcheck.tar.xz shellcheck-v0.8.0/shellcheck
-                command mv shellcheck-v0.8.0/shellcheck $HOME/.local/bin
-                builtin cd -q $var
-                unset var varsum
+                local var="$PWD"
+                builtin cd -q "$XDG_CACHE_HOME"
+                tar -Jxf "$XDG_CACHE_HOME/shellcheck.tar.xz" shellcheck-v0.8.0/shellcheck
+                command mv shellcheck-v0.8.0/shellcheck "$HOME/.local/bin"
+                builtin cd -q "$var"
+                unset var sumvar
               else
                 echo '\nerror: unmatched cheksum for shellcheck\n'
               fi
             fi
           fi
+
           # Alacritty's config
           if command -v alacritty >/dev/null; then
             command mkdir -p $XDG_CONFIG_HOME/alacritty
-            echo -e "colors:\n  primary:\n    background: '#282a36'\n    foreground: '#f8f8f2'\n    bright_foreground: '#ffffff'\n  cursor:\n    text: CellBackground\n    cursor: CellForeground\n  vi_mode_cursor:\n    text: CellBackground\n    cursor: CellForeground\n  search:\n    matches:\n      foreground: '#44475a'\n      background: '#50fa7b'\n    focused_match:\n      foreground: '#44475a'\n      background: '#ffb86c'\n  footer_bar:\n    background: '#282a36'\n    foreground: '#f8f8f2'\n  hints:\n    start:\n      foreground: '#282a36'\n      background: '#f1fa8c'\n    end:\n      foreground: '#f1fa8c'\n      background: '#282a36'\n  line_indicator:\n    foreground: None\n    background: None\n  selection:\n    text: CellForeground\n    background: '#44475a'\n  normal:\n    black: '#21222c'\n    red: '#ff5555'\n    green: '#50fa7b'\n    yellow: '#f1fa8c'\n    blue: '#bd93f9'\n    magenta: '#ff79c6'\n    cyan: '#8be9fd'\n    white: '#f8f8f2'\n  bright:\n    black: '#6272a4'\n    red: '#ff6e6e'\n    green: '#69ff94'\n    yellow: '#ffffa5'\n    blue: '#d6acff'\n    magenta: '#ff92df'\n    cyan: '#a4ffff'\n    white: '#ffffff'\nwindow:\n  dynamic_padding: true\n  dimensions:\n    $(case $(lscpu | awk '/Model name:/{print $3}') in AMD) echo -n 'columns: 146\n    lines: 45' ;; Intel\(R\)) echo -n "columns: 115\n    lines: 32";; esac)\n  opacity: 0.9\nfont:\n  normal:\n    family: JetBrainsMono Nerd Font Mono\n    style: Medium\n  bold:\n    family: JetBrainsMono Nerd Font Mono\n  italic:\n    family: JetBrainsMono Nerd Font Mono\n  bold_italic:\n    family: JetBrainsMono Nerd Font Mono\n  size: 10\nkey_bindings:\n  - { key: T,   mods: Control|Shift, action: SpawnNewInstance }\n  - { key: W,   mods: Control|Shift, action: Quit }" > "$XDG_CONFIG_HOME/alacritty/alacritty.yml"
+            echo -e "window:\n  dynamic_padding: true\n  dimensions:\n    $(case $(lscpu | awk '/Model name:/{print $3}') in AMD) echo -n 'columns: 146\n    lines: 45' ;; Intel\(R\)) echo -n 'columns: 115\n    lines: 32';; esac)\n  opacity: 0.9\n\nfont:\n  normal:\n    family: JetBrainsMono Nerd Font Mono\n    style: Medium\n  bold:\n    family: JetBrainsMono Nerd Font Mono\n  italic:\n    family: JetBrainsMono Nerd Font Mono\n  bold_italic:\n    family: JetBrainsMono Nerd Font Mono\n  size: 10\n\nkey_bindings:\n  - { key: T, mods: Control|Shift, action: SpawnNewInstance }\n  - { key: W, mods: Control|Shift, action: Quit }\n\n# https://draculatheme.com/alacritty\ncolors:\n  primary:\n    background: '#282a36'\n    foreground: '#f8f8f2'\n    bright_foreground: '#ffffff'\n  cursor:\n    text: CellBackground\n    cursor: CellForeground\n  vi_mode_cursor:\n    text: CellBackground\n    cursor: CellForeground\n  search:\n    matches:\n      foreground: '#44475a'\n      background: '#50fa7b'\n    focused_match:\n      foreground: '#44475a'\n      background: '#ffb86c'\n  footer_bar:\n    background: '#282a36'\n    foreground: '#f8f8f2'\n  hints:\n    start:\n      foreground: '#282a36'\n      background: '#f1fa8c'\n    end:\n      foreground: '#f1fa8c'\n      background: '#282a36'\n  line_indicator:\n    foreground: None\n    background: None\n  selection:\n    text: CellForeground\n    background: '#44475a'\n  normal:\n    black: '#21222c'\n    red: '#ff5555'\n    green: '#50fa7b'\n    yellow: '#f1fa8c'\n    blue: '#bd93f9'\n    magenta: '#ff79c6'\n    cyan: '#8be9fd'\n    white: '#f8f8f2'\n  bright:\n    black: '#6272a4'\n    red: '#ff6e6e'\n    green: '#69ff94'\n    yellow: '#ffffa5'\n    blue: '#d6acff'\n    magenta: '#ff92df'\n    cyan: '#a4ffff'\n    white: '#ffffff'" > "$XDG_CONFIG_HOME/alacritty/alacritty.yml"
           fi
+
           # Tmux's config
           # Vim color fix: https://gist.github.com/andersevenrud/015e61af2fd264371032763d4ed965b6
           if command -v tmux >/dev/null; then
@@ -1065,21 +1085,25 @@ arch-base() {
             echo 'set -g default-command "${SHELL}"\nset -ga terminal-overrides ",$TERM:Tc"\nset -g set-titles on\nset -g set-titles-string "#T"\nset -g mouse on\nset -g status-interval 1\nset -gs escape-time 0\nset -g status on\nset -g status-left ""\nset -g status-right ""\nset -g status-justify centre\nset-window-option -g window-status-format "#Iː#W "\nset-window-option -g window-status-current-format "#Iː#W•"\nset -gw mode-style fg=colour226,bold\nset -g status-style fg=colour254\nset -g message-style fg=colour254\nset -g pane-border-style fg=colour243,bg=default\nset -g pane-active-border-style fg=colour243,bg=default\nbind h split-window -v\nbind v split-window -h' > "$XDG_CONFIG_HOME/tmux/tmux.conf"
             [[ ! $TTY =~ '/dev/tty[0-9]*' ]] || echo '# remap prefix from C-b to C-a\nunbind C-b\nset-option -g prefix C-a\nbind-key C-a send-prefix' >> "$XDG_CONFIG_HOME/tmux/tmux.conf"
           fi
+
           # mpv's config
-          if command -v celluloid >/dev/null && [[ ! -f $XDG_CONFIG_HOME/celluloid/scripts/nextfile.lua ]]; then
+          if command -v celluloid >/dev/null && [[ ! -f "$XDG_CONFIG_HOME/celluloid/scripts/nextfile.lua" ]]; then
             command mkdir -p $XDG_CONFIG_HOME/celluloid/scripts
-            curl -s https://raw.githubusercontent.com/N1vBruno/mpv-nextfile/master/nextfile.lua -o $XDG_CONFIG_HOME/celluloid/scripts/nextfile.lua
+            curl -s 'https://raw.githubusercontent.com/N1vBruno/mpv-nextfile/master/nextfile.lua' -o "$XDG_CONFIG_HOME/celluloid/scripts/nextfile.lua"
           fi
           break;;
+
         No ) break;;
         Exit ) return;;
       esac
     done
   fi
+
   # Virt manager
   echo 'Do you wish to install Virt Manager?'
   select yne in 'Yes' 'No' 'Exit'; do
     case $yne in
+
       Yes )
         sh -c "${varsu} pacman -S --needed virt-manager qemu-desktop libvirt edk2-ovmf dnsmasq iptables-nft"
         sh -c "${varsu} systemctl enable --now libvirtd; ${varsu} virsh net-autostart default"
@@ -1095,21 +1119,26 @@ arch-base() {
             echo -e "\nunix_sock_group = 'libvirt'\nunix_sock_rw_perms = '0770'" | tee -a /etc/libvirt/libvirtd.conf >/dev/null
             echo -e "\nuser = \"bruno\"\ngroup = \"bruno\"" | tee -a /etc/libvirt/qemu.conf >/dev/null
           fi
-        fi; break;;
+        fi
+        break;;
+
       No ) break;;
       Exit ) return;;
     esac
   done
+
   # GNOME
   echo 'Do you wish to install and configure a basic GNOME or KDE Desktop?'
   select gke in 'GNOME' 'KDE' 'Exit'; do
     case $gke in
+
       GNOME )
-        sh -c "${varsu} pacman -S --needed xdg-desktop-portal-gnome gnome-shell gnome-session gdm nautilus gnome-control-center evince file-roller baobab gnome-calculator gnome-characters gnome-disk-utility gnome-keyring gnome-system-monitor gvfs-mtp gnome-tweaks gnome-themes-extra ffmpegthumbnailer webp-pixbuf-loader gnome-nibbles aisleriot quadrapassel gnome-taquin gnome-chess gnome-mines"
+        sh -c "${varsu} pacman -S --needed xdg-desktop-portal-gnome gnome-shell gnome-session gdm nautilus gnome-control-center evince file-roller baobab gnome-calculator gnome-characters gnome-disk-utility gnome-keyring gnome-system-monitor gvfs-mtp gnome-tweaks gnome-themes-extra ffmpegthumbnailer gnome-nibbles aisleriot quadrapassel gnome-taquin gnome-chess gnome-mines"
         sh -c "${varsu} sed -i 's/#HandleLidSwitch=suspend/HandleLidSwitch=lock/' /etc/systemd/logind.conf"
         sh -c "echo -e \"[Unit]\nDescription=Changes Wallpapers\nStartLimitIntervalSec=3\nStartLimitBurst=5\n\n[Service]\nExecStart=/home/bruno/.local/share/backgrounds/chwp.sh\nRestart=always\nRestartSec=3\n\n[Install]\nWantedBy=default.target\" | ${varsu} tee /etc/systemd/user/chwp.service >/dev/null"
         sh -c "${varsu} chmod u+x /etc/systemd/user/chwp.service"
         sudo -u gdm dbus-launch gsettings set org.gnome.desktop.peripherals.touchpad tap-to-click true
+
         if [[ "$EUID" != 0 ]]; then
           command mkdir -p "$XDG_DATA_HOME/backgrounds"
           echo -e "#!/bin/env bash\nshopt -s nullglob\nwallpaper_path=\$HOME/Pictures/Wallpapers\nwallpapers=(\n  \"\$wallpaper_path\"/*.jpg\n  \"\$wallpaper_path\"/*.jpeg\n  \"\$wallpaper_path\"/*.jxl\n  \"\$wallpaper_path\"/*.png\n  \"\$wallpaper_path\"/*.bmp\n  \"\$wallpaper_path\"/*.svg\n  \"\$wallpaper_path\"/*.tif\n  \"\$wallpaper_path\"/*.avif\n  \"\$wallpaper_path\"/*.heic\n  \"\$wallpaper_path\"/*.webp\n)\nwallpapers_size=\${#wallpapers[*]}\nwhile true; do\n  index=\$(seq 0 \$((\"\$wallpapers_size\" - 1)) | shuf)\n  for i in \$index; do\n    wp=\${wallpapers[\$i]// /%20}\n    gsettings set org.gnome.desktop.background picture-uri \"file://\$wp\"\n    gsettings set org.gnome.desktop.background picture-uri-dark \"file://\$wp\"\n    sleep 3m\n  done\ndone" > $XDG_DATA_HOME/backgrounds/.chwp
@@ -1121,6 +1150,7 @@ arch-base() {
           systemctl --user enable --now chwp.service
         fi
         break;;
+
       KDE )
         sh -c "${varsu} pacman -S --needed plasma-desktop sddm sddm-kcm plasma-wayland-session xdg-desktop-portal-kde qt5-wayland qt6-wayland bluedevil powerdevil breeze-gtk kde-gtk-config kdialog khotkeys kinfocenter kscreen kwallet-pam plasma-disks plasma-firewall plasma-nm plasma-pa dolphin-plugins ark filelight kcalc kcharselect gwenview qt5-imageformats ffmpegthumbs okular plasma-systemmonitor spectacle qt5-virtualkeyboard"
         echo "\n>>> Do you wish to install KDE Games?\n"
@@ -1128,6 +1158,7 @@ arch-base() {
         [[ -f "/etc/sddm.conf.d/kde_settings.conf" ]] && sh -c "echo -e \"\nNumlock=on\nInputMethod=qtvirtualkeyboard\nCursorTheme=Breeze_Snow\" | ${varsu} tee -a /etc/sddm.conf.d/kde_settings.conf >/dev/null"
         [[ "$EUID" != 0 ]] && paru -S --needed haruna
         break;;
+
       Exit ) return;;
     esac
   done
@@ -1168,7 +1199,7 @@ prompt_preexec() {
 }
 
 prompt_precmd() {
-  [[ -z "$NEW_LINE_BEFORE_PROMPT" ]] && NEW_LINE_BEFORE_PROMPT=1 || echo
+  [[ -z $NEW_LINE_BEFORE_PROMPT ]] && NEW_LINE_BEFORE_PROMPT=1 || echo
   [[ ! -w . ]] && DIR_LOCK='%F{red}%f ' || unset DIR_LOCK
   prompt_set_title 'expand-prompt' '%~'
   command_time_precmd
@@ -1209,31 +1240,31 @@ prompt_setup() {
 #------------------------------------------------------------------------------#
 # Set terminal title
 prompt_set_title() {
-	setopt localoptions noshwordsplit
+  setopt localoptions noshwordsplit
 
-	# Emacs terminal does not support settings the title.
-	(( ${+EMACS} || ${+INSIDE_EMACS} )) && return
+  # Emacs terminal does not support settings the title.
+  (( ${+EMACS} || ${+INSIDE_EMACS} )) && return
 
   # Don't set title over serial console.
-	case $TTY in
-		/dev/ttyS[0-9]*) return;;
-	esac
+  case $TTY in
+    /dev/ttyS[0-9]*) return;;
+  esac
 
-	# Show hostname if connected via SSH.
-	local hostname=
-	if [[ -n $PROMPT_SSH ]]; then
-		# Expand in-place in case ignore-escape is used.
+  # Show hostname if connected via SSH.
+  local hostname=
+  if [[ -n $PROMPT_SSH ]]; then
+    # Expand in-place in case ignore-escape is used.
     hostname="${(%):-(%m) }"
-	fi
+  fi
 
-	local -a opts
-	case $1 in
-		expand-prompt) opts=(-P);;
-		ignore-escape) opts=(-r);;
-	esac
+  local -a opts
+  case $1 in
+    expand-prompt) opts=(-P);;
+    ignore-escape) opts=(-r);;
+  esac
 
-	# Set title atomically in one print statement so that it works when XTRACE is enabled.
-	print -n $opts $'\e]0;'${hostname}${2}$'\a'
+  # Set title atomically in one print statement so that it works when XTRACE is enabled.
+  print -n $opts $'\e]0;'${hostname}${2}$'\a'
 }
 #------------------------------------------------------------------------------#
 # Elapsed and execution time display for commands in ZSH
@@ -1266,22 +1297,20 @@ command_time_precmd() {
 # https://vincent.bernat.ch/en/blog/2019-zsh-async-vcs-info
 # Display git info
 prompt_git_info() {
-  # Necessary for async
-  builtin cd -q $1
+  builtin cd -q "$1"
   local ZSH_THEME_GIT_PROMPT_PREFIX="$fg[white]%B on%b %242F:"
-  local ZSH_THEME_GIT_PROMPT_SUFFIX="%f"
-  local ZSH_THEME_GIT_PROMPT_DIRTY=""
-  local ZSH_THEME_GIT_PROMPT_CLEAN=""
+  local ZSH_THEME_GIT_PROMPT_SUFFIX='%f'
+  local ZSH_THEME_GIT_PROMPT_DIRTY=''
+  local ZSH_THEME_GIT_PROMPT_CLEAN=''
   vcs_info
-  # Print git info
-  [ -n "$vcs_info_msg_0_" ] && echo -n "$ZSH_THEME_GIT_PROMPT_PREFIX$vcs_info_msg_0_$ZSH_THEME_GIT_PROMPT_SUFFIX"
+  [[ -z "$vcs_info_msg_0_" ]] || echo -n "$ZSH_THEME_GIT_PROMPT_PREFIX$vcs_info_msg_0_$ZSH_THEME_GIT_PROMPT_SUFFIX"
 }
 
 prompt_git_info_done() {
-  local job=$1
-  local return_code=$2
-  local stdout=$3
-  local more=$6
+  local job="$1"
+  local return_code="$2"
+  local stdout="$3"
+  local more="$6"
   if [[ $job == '[async]' ]]; then
     if [[ $return_code -eq 2 ]]; then
       # Need to restart the worker - https://github.com/mengelbrecht/slimline/blob/master/lib/async.zsh
@@ -1290,31 +1319,31 @@ prompt_git_info_done() {
       return
     fi
   fi
-  vcs_info_msg=$stdout
+  vcs_info_msg="$stdout"
   zle reset-prompt
 }
 
 prompt_git_info_precmd() {
   async_flush_jobs vbe_vcs_info
-  async_job vbe_vcs_info prompt_git_info $PWD
+  async_job vbe_vcs_info prompt_git_info "$PWD"
 }
 
 # Display git status
 prompt_git_status() {
-  builtin cd -q $1
+  builtin cd -q "$1"
   local INDEX STATUS
   INDEX=$(command git status --porcelain -b 2>/dev/null)
-  local ZSH_THEME_GIT_PROMPT_ADDED="%F{green}+%f"
-  local ZSH_THEME_GIT_PROMPT_MODIFIED="%F{blue}%f"
-  local ZSH_THEME_GIT_PROMPT_DELETED="%F{red}-%f"
-  local ZSH_THEME_GIT_PROMPT_RENAMED="%F{magenta}➜%f"
-  local ZSH_THEME_GIT_PROMPT_UNMERGED="%F{yellow}═%f"
-  local ZSH_THEME_GIT_PROMPT_UNTRACKED="%218F?%f"
-  local ZSH_THEME_GIT_PROMPT_STASHED="%B%F{cyan}≡%f%b"
-  local ZSH_THEME_GIT_PROMPT_BEHIND="%B%F{red}%f%b"
-  local ZSH_THEME_GIT_PROMPT_AHEAD="%B%F{green}%f%b"
-
   if $(echo "$INDEX" | grep -E '^\?\? ' &> /dev/null); then
+  local ZSH_THEME_GIT_PROMPT_ADDED='%F{green}+%f'
+  local ZSH_THEME_GIT_PROMPT_MODIFIED='%F{blue}%f'
+  local ZSH_THEME_GIT_PROMPT_DELETED='%F{red}-%f'
+  local ZSH_THEME_GIT_PROMPT_RENAMED='%F{magenta}➜%f'
+  local ZSH_THEME_GIT_PROMPT_UNMERGED='%F{yellow}═%f'
+  local ZSH_THEME_GIT_PROMPT_UNTRACKED='%218F?%f'
+  local ZSH_THEME_GIT_PROMPT_STASHED='%B%F{cyan}≡%f%b'
+  local ZSH_THEME_GIT_PROMPT_BEHIND='%B%F{red}%f%b'
+  local ZSH_THEME_GIT_PROMPT_AHEAD='%B%F{green}%f%b'
+
     STATUS=" $ZSH_THEME_GIT_PROMPT_UNTRACKED$STATUS"
   fi
 
@@ -1374,10 +1403,10 @@ prompt_git_status() {
 }
 
 prompt_git_status_done() {
-  local job=$1
-  local return_code=$2
-  local stdout=$3
-  local more=$6
+  local job="$1"
+  local return_code="$2"
+  local stdout="$3"
+  local more="$6"
   if [[ $job == '[async]' ]]; then
     if [[ $return_code -eq 2 ]]; then
       async_start_worker vbe_vcs_status
@@ -1385,13 +1414,13 @@ prompt_git_status_done() {
       return
     fi
   fi
-  vcs_status_msg=$stdout
+  vcs_status_msg="$stdout"
   zle reset-prompt
 }
 
 prompt_git_status_precmd() {
   async_flush_jobs vbe_vcs_status
-  async_job vbe_vcs_status prompt_git_status $PWD
+  async_job vbe_vcs_status prompt_git_status "$PWD"
 }
 #------------------------------------------------------------------------------#
 # SSH
@@ -1401,7 +1430,7 @@ prompt_git_status_precmd() {
 # Some stuff borrowed from Spaceship
 # Updated in 2022.12.07
 spaceship_stuff() {
-  builtin cd -q $1
+  builtin cd -q "$1"
   setopt extended_glob
   VIRTUAL_ENV_DISABLE_PROMPT=true
   local SPACESHIP_PROMPT_DEFAULT_PREFIX=' '
@@ -1414,10 +1443,10 @@ spaceship_stuff() {
 }
 
 spaceship_stuff_done() {
-  local job=$1
-  local return_code=$2
-  local stdout=$3
-  local more=$6
+  local job="$1"
+  local return_code="$2"
+  local stdout="$3"
+  local more="$6"
   if [[ $job == '[async]' ]]; then
     if [[ $return_code -eq 2 ]]; then
       async_start_worker spaceship_stuff_loader
@@ -1425,23 +1454,23 @@ spaceship_stuff_done() {
       return
     fi
   fi
-  spaceship_stuff_result=$stdout
+  spaceship_stuff_result="$stdout"
   zle reset-prompt
 }
 
 spaceship_precmd() {
   async_flush_jobs spacship_stuff_loader
   async_flush_jobs spacship_battery_loader
-  async_job spaceship_stuff_loader spaceship_stuff $PWD
-  async_job spaceship_battery_loader spaceship_battery $PWD
-  spacejobs=$(spaceship_jobs)
+  async_job spaceship_stuff_loader spaceship_stuff "$PWD"
+  async_job spaceship_battery_loader spaceship_battery "$PWD"
+  spacejobs="$(spaceship_jobs)"
 }
 
 spaceship_battery_done() {
-  local job=$1
-  local return_code=$2
-  local stdout=$3
-  local more=$6
+  local job="$1"
+  local return_code="$2"
+  local stdout="$3"
+  local more="$6"
   if [[ $job == '[async]' ]]; then
     if [[ $return_code -eq 2 ]]; then
       async_start_worker spaceship_battery_loader
@@ -1449,7 +1478,7 @@ spaceship_battery_done() {
       return
     fi
   fi
-  spaceship_battery_result=$stdout
+  spaceship_battery_result="$stdout"
   zle reset-prompt
 }
 
@@ -1542,9 +1571,9 @@ spaceship::datafile() {
 spaceship_asdf() {
   local ZSH_THEME_ASDF_PROMPT_PREFIX="%{$fg_bold[magenta]%}{"
   local ZSH_THEME_ASDF_PROMPT_POSTFIX="}%{$reset_color%} "
-  local ZSH_THEME_ASDF_PROMPT_FILTER="COMPACT"
-  local ZSH_THEME_ASDF_PROMPT_VERSION_DETAIL="MINOR"
-  local ZSH_THEME_ASDF_PROMPT_VERSION_RESOLUTION="NONE"
+  local ZSH_THEME_ASDF_PROMPT_FILTER='COMPACT'
+  local ZSH_THEME_ASDF_PROMPT_VERSION_DETAIL='MINOR'
+  local ZSH_THEME_ASDF_PROMPT_VERSION_RESOLUTION='NONE'
 
   # If asdf isn't present nothing to do
   (( ${+commands[asdf]} )) || return 0
@@ -1711,7 +1740,7 @@ spaceship_battery() {
     battery_status=$battery_status_and_percent_array[1]:l
     battery_percent=$battery_status_and_percent_array[2]
 
-	# If battery is 0% charge, battery likely doesn't exist.
+  # If battery is 0% charge, battery likely doesn't exist.
     [[ $battery_percent == "0" ]] && return
 
   else
@@ -1733,7 +1762,7 @@ spaceship_battery() {
   fi
 
   # Battery indicator based on current status of battery
-  if [[ $battery_status == "charging" ]];then
+  if [[ $battery_status == "charging" ]]; then
     battery_symbol="${SPACESHIP_BATTERY_SYMBOL_CHARGING}"
   elif [[ $battery_status =~ "^[dD]ischarg.*" ]]; then
     battery_symbol="${SPACESHIP_BATTERY_SYMBOL_DISCHARGING}"
@@ -1857,7 +1886,7 @@ spaceship_deno() {
   local is_deno_project="$(spaceship::upsearch deno.json deno.jsonc)"
   [[ -n "$is_deno_project" || -n {mod,dep,main,cli}.ts(#qN^/) ]] || return
 
-  local deno_version=$(deno --version 2>/dev/null | head -1 | cut -d' ' -f2)
+  local deno_version=$(deno --version 2>/dev/null | head -1 | cut -d ' ' -f2)
 
   [[ "$deno_version" == "$SPACESHIP_DENO_DEFAULT_VERSION" ]] && return
 
@@ -1927,7 +1956,7 @@ spaceship_docker_context() {
     docker_remote_context="$DOCKER_MACHINE_NAME"
   elif [[ -n $DOCKER_HOST ]]; then
     # Remove protocol (tcp://) and port number from displayed Docker host
-    docker_remote_context="$(basename $DOCKER_HOST | cut -d':' -f1)"
+    docker_remote_context="$(basename $DOCKER_HOST | cut -d ':' -f1)"
   else
     # Docker contexts can be set using either the DOCKER_CONTEXT environment variable
     # or the `docker context use` command. `docker context ls` will show the selected
@@ -3063,10 +3092,10 @@ spaceship_rust() {
   local is_rust_project="$(spaceship::upsearch Cargo.toml)"
   [[ -n "$is_rust_project" || -n *.rs(#qN^/) ]] || return
 
-  local rust_version=$(rustc --version | cut -d' ' -f2)
+  local rust_version=$(rustc --version | cut -d ' ' -f2)
 
   if [[ $SPACESHIP_RUST_VERBOSE_VERSION == false ]]; then
-  	local rust_version=$(echo $rust_version | cut -d'-' -f1) # Cut off -suffixes from version. "v1.30.0-beta.11" or "v1.30.0-nightly"
+    local rust_version=$(echo $rust_version | cut -d '-' -f1) # Cut off -suffixes from version. "v1.30.0-beta.11" or "v1.30.0-nightly"
   fi
 
   echo -n "$SPACESHIP_RUST_COLOR$SPACESHIP_RUST_PREFIX${SPACESHIP_RUST_SYMBOL}v${rust_version}$SPACESHIP_RUST_SUFFIX"
@@ -3184,7 +3213,7 @@ spaceship_vlang() {
   local v_version
 
   if command v 2>/dev/null; then
-    v_version=$(command v version | cut -d' ' -f2)
+    v_version=$(command v version | cut -d ' ' -f2)
   fi
 
   [[ -z "$v_version" ]] && return
