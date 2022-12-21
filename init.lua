@@ -93,7 +93,7 @@ vim.opt.list = true
 vim.opt.listchars:append("tab:>>,extends:▷,precedes:◁,trail:·,nbsp:~")
 vim.opt.spelllang = "en,pt"
 vim.opt.virtualedit = "none"
-vim.api.nvim_command("colorscheme habamax")
+vim.api.nvim_command("colorscheme slate")
 
 -- Autocommands
 vim.api.nvim_create_autocmd({ "FileType" }, {
@@ -143,12 +143,6 @@ vim.api.nvim_create_autocmd({ "BufWritePost" }, {
 })
 
 -- Plugins Config
-local function load_theme()
-	if pcall(vim.cmd, "colorscheme " .. "tokyonight-night") then
-		vim.api.nvim_command("colorscheme tokyonight-night")
-	end
-end
-
 local function load_telescope()
 	if pcall(require, "telescope") and pcall(require, "project_nvim") then
 		require("telescope").setup({
@@ -188,8 +182,15 @@ local function load_lualine()
 		local spaces = function()
 			return "spaces: " .. vim.api.nvim_buf_get_option(0, "shiftwidth")
 		end
+		local theme_opt = function()
+			if pcall(vim.cmd, "colorscheme tokyonight-night") then
+				return "tokyonight"
+			else
+				return "onedark"
+			end
+		end
 		require("lualine").setup({
-			options = { globalstatus = true, section_separators = "", component_separators = "" },
+			options = { theme = theme_opt(), globalstatus = true, section_separators = "", component_separators = "" },
 			sections = {
 				lualine_a = { "mode" },
 				lualine_b = { "branch" },
@@ -576,7 +577,6 @@ if pcall(require, "packer") then
 	return require("packer").startup(function(use)
 		use("wbthomason/packer.nvim")
 		use("folke/tokyonight.nvim")
-		load_theme()
 		use("numToStr/Comment.nvim")
 		use("lukas-reineke/indent-blankline.nvim")
 		use("RRethy/vim-illuminate")
