@@ -1159,7 +1159,7 @@ arch-base() {
 
         if [[ "$EUID" != 0 ]]; then
           command mkdir -p "$XDG_DATA_HOME/backgrounds"
-          echo -e "#!/bin/env bash\nshopt -s nullglob\nwallpaper_path=\$HOME/Pictures/Wallpapers\nwallpapers=(\n  \"\$wallpaper_path\"/*.jpg\n  \"\$wallpaper_path\"/*.jpeg\n  \"\$wallpaper_path\"/*.jxl\n  \"\$wallpaper_path\"/*.png\n  \"\$wallpaper_path\"/*.bmp\n  \"\$wallpaper_path\"/*.svg\n  \"\$wallpaper_path\"/*.tif\n  \"\$wallpaper_path\"/*.avif\n  \"\$wallpaper_path\"/*.heic\n  \"\$wallpaper_path\"/*.webp\n)\nwallpapers_size=\${#wallpapers[*]}\nwhile true; do\n  index=\$(seq 0 \$((\"\$wallpapers_size\" - 1)) | shuf)\n  for i in \$index; do\n    wp=\${wallpapers[\$i]// /%20}\n    gsettings set org.gnome.desktop.background picture-uri \"file://\$wp\"\n    gsettings set org.gnome.desktop.background picture-uri-dark \"file://\$wp\"\n    sleep 3m\n  done\ndone" > $XDG_DATA_HOME/backgrounds/.chwp
+          [[ -f "$XDG_CONFIG_HOME/backgrounds/chwp.sh" ]] || curl -s 'https://gitlab.com/N1vBruno/dotfiles/-/raw/master/chwp.sh' -o "$XDG_DATA_HOME/backgrounds/chwp.sh"
           chmod +x "$XDG_DATA_HOME/backgrounds/chwp.sh"
           echo -e '#!/bin/env bash\ntvar=$(tmux list-sessions | grep main)\nif grep -q attached <<< "$tvar"; then\n  tmux neww -t main -c "$PWD"\nelif [[ -n "$tvar" ]]; then\n  tmux neww -t main; alacritty\nelse\n  alacritty\nfi' > "$XDG_DATA_HOME/nautilus/scripts/open-terminal-here"
           chmod +x "$XDG_DATA_HOME/nautilus/scripts/open-terminal-here"
