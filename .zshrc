@@ -662,7 +662,7 @@ lscolors() {
   ((cols = $COLUMNS - 4))
   local s=$(printf %${cols}s)
   for i in {000..$(tput colors)}; do
-    echo -e $i $(tput setaf $i; tput setab $i)${s// /=}$(tput op);
+    echo $i $(tput setaf $i; tput setab $i)${s// /=}$(tput op);
   done
   echo
   for i in {0..255}; do print -Pn "%K{$i}  %k%F{$i}${(l:3::0:)i}%f " ${${(M)$((i%6)):#3}:+$'\n'}; done
@@ -977,7 +977,7 @@ arch-base() {
           makepkg -sir
           builtin cd -q "$var"
           unset var
-          echo -e "# \$PARU_CONF\n# /etc/paru.conf\n# ~/.config/paru/paru.conf\n# GENERAL OPTIONS\n[options]\nRemoveMake\nSudoLoop\nCombinedUpgrade\nUpgradeMenu" | tee $XDG_CONFIG_HOME/paru/paru.conf >/dev/null
+          echo "# \$PARU_CONF\n# /etc/paru.conf\n# ~/.config/paru/paru.conf\n# GENERAL OPTIONS\n[options]\nRemoveMake\nSudoLoop\nCombinedUpgrade\nUpgradeMenu" | tee $XDG_CONFIG_HOME/paru/paru.conf >/dev/null
         fi
         break;;
       No ) break;;
@@ -996,7 +996,7 @@ arch-base() {
         sh -c "${varsu} sed -i 's/#SystemMaxFileSize=/SystemMaxFileSize=50M/' /etc/systemd/journald.conf"
         sh -c "${varsu} sed -i 's/#SystemMaxFiles=100/SystemMaxFiles=5/' /etc/systemd/journald.conf"
         sh -c "${varsu} rm -rf /var/log/journal"
-        sh -c "echo -e 'vm.swappiness=10\nvm.vfs_cache_pressure=50' | ${varsu} tee /etc/sysctl.d/99-sysctl.conf"
+        sh -c "echo 'vm.swappiness=10\nvm.vfs_cache_pressure=50' | ${varsu} tee /etc/sysctl.d/99-sysctl.conf"
         break;;
       No ) break;;
       Exit ) return;;
@@ -1005,9 +1005,9 @@ arch-base() {
 
   # Keyboard
   echo 'Do you wish to select a keyboard layout?'
-  local PT='localectl --no-convert set-x11-keymap br pc105; setxkbmap -model pc105 -layout br;echo -e "LANG=en_US.UTF-8\nLANGUAGE=\"en_US\"\nLC_TYPE=pt_BR.UTF-8\nLC_NUMERIC=pt_BR.UTF-8\nLC_TIME=pt_BR.UTF-8\nLC_MONETARY=pt_BR.UTF-8\nLC_PAPER=pt_BR.UTF-8\nLC_MEASUREMENT=pt_BR.UTF-8" | tee /etc/locale.conf;echo -e "KEYMAP=br-abnt2\nFONT=eurlatgr\nFONT_MAP=8859-1" | tee /etc/vconsole.conf'
-  local US='localectl --no-convert set-x11-keymap us pc105 intl;setxkbmap -model pc105 -layout us -variant intl;echo -e "LANG=en_US.UTF-8\nLANGUAGE=\"en_US\"\nLC_TYPE=pt_BR.UTF-8\nLC_NUMERIC=pt_BR.UTF-8\nLC_TIME=pt_BR.UTF-8\nLC_MONETARY=pt_BR.UTF-8\nLC_PAPER=pt_BR.UTF-8\nLC_MEASUREMENT=pt_BR.UTF-8" | tee /etc/locale.conf;echo -e "KEYMAP=us-acentos\nFONT=eurlatgr\nFONT_MAP=8859-1" | tee /etc/vconsole.conf'
-  local both='localectl --no-convert set-x11-keymap us,br pc105 intl,;setxkbmap -model pc105 -layout us,br -variant intl,;echo -e "LANG=en_US.UTF-8\nLANGUAGE=\"en_US\"\nLC_TYPE=pt_BR.UTF-8\nLC_NUMERIC=pt_BR.UTF-8\nLC_TIME=pt_BR.UTF-8\nLC_MONETARY=pt_BR.UTF-8\nLC_PAPER=pt_BR.UTF-8\nLC_MEASUREMENT=pt_BR.UTF-8" | tee /etc/locale.conf;echo -e "KEYMAP=us-acentos\nKEYMAP_TOGGLE=br-abnt2\nFONT=eurlatgr\nFONT_MAP=8859-1" | tee /etc/vconsole.conf'
+  local PT='localectl --no-convert set-x11-keymap br pc105; setxkbmap -model pc105 -layout br;echo "LANG=en_US.UTF-8\nLANGUAGE=\"en_US\"\nLC_TYPE=pt_BR.UTF-8\nLC_NUMERIC=pt_BR.UTF-8\nLC_TIME=pt_BR.UTF-8\nLC_MONETARY=pt_BR.UTF-8\nLC_PAPER=pt_BR.UTF-8\nLC_MEASUREMENT=pt_BR.UTF-8" | tee /etc/locale.conf;echo "KEYMAP=br-abnt2\nFONT=eurlatgr\nFONT_MAP=8859-1" | tee /etc/vconsole.conf'
+  local US='localectl --no-convert set-x11-keymap us pc105 intl;setxkbmap -model pc105 -layout us -variant intl;echo "LANG=en_US.UTF-8\nLANGUAGE=\"en_US\"\nLC_TYPE=pt_BR.UTF-8\nLC_NUMERIC=pt_BR.UTF-8\nLC_TIME=pt_BR.UTF-8\nLC_MONETARY=pt_BR.UTF-8\nLC_PAPER=pt_BR.UTF-8\nLC_MEASUREMENT=pt_BR.UTF-8" | tee /etc/locale.conf;echo "KEYMAP=us-acentos\nFONT=eurlatgr\nFONT_MAP=8859-1" | tee /etc/vconsole.conf'
+  local both='localectl --no-convert set-x11-keymap us,br pc105 intl,;setxkbmap -model pc105 -layout us,br -variant intl,;echo "LANG=en_US.UTF-8\nLANGUAGE=\"en_US\"\nLC_TYPE=pt_BR.UTF-8\nLC_NUMERIC=pt_BR.UTF-8\nLC_TIME=pt_BR.UTF-8\nLC_MONETARY=pt_BR.UTF-8\nLC_PAPER=pt_BR.UTF-8\nLC_MEASUREMENT=pt_BR.UTF-8" | tee /etc/locale.conf;echo "KEYMAP=us-acentos\nKEYMAP_TOGGLE=br-abnt2\nFONT=eurlatgr\nFONT_MAP=8859-1" | tee /etc/vconsole.conf'
   select pubne in 'PT_BR' 'EN_US' 'Both' 'No' 'Exit'; do
     case $pubne in
       PT_BR ) sh -c "${varsu} sh -c '$PT'"; break;;
@@ -1054,18 +1054,26 @@ arch-base() {
           fi
 
           # Firefox config
-          command mkdir -p $HOME/chrome
-          echo -e '@-moz-document url(about:home), url(about:newtab), url(about:privatebrowsing) {\n\t.click-target-container *, .top-sites-list * {\n\t\tcolor: #fff !important ;\n\t\ttext-shadow: 2px 2px 2px #222 !important ;\n\t}\n\n\tbody::before {\n\t\tcontent: "" ;\n\t\tz-index: -1 ;\n\t\tposition: fixed ;\n\t\ttop: 0 ;\n\t\tleft: 0 ;\n\t\tbackground: #f9a no-repeat url(img) center ;\n\t\tbackground-size: cover ;\n\t\twidth: 100vw ;\n\t\theight: 100vh ;\n\t}\n}' > $HOME/chrome/userContent.css
-          command cp $HOME/Pictures/Wallpapers/Module\ Abyss\ Lapis.* $HOME/chrome/img
+          echo "Do you wish to create Firefox config in \"$HOME/chrome\" dir [y/N]?"
+          read firefoxcfg
+          if [[ $firefoxcfg =~ '^[yY]' ]]; then
+            command mkdir -p $HOME/chrome
+            echo '@-moz-document url(about:home), url(about:newtab), url(about:privatebrowsing) {\n\t.click-target-container *, .top-sites-list * {\n\t\tcolor: #fff !important ;\n\t\ttext-shadow: 2px 2px 2px #222 !important ;\n\t}\n\n\tbody::before {\n\t\tcontent: "" ;\n\t\tz-index: -1 ;\n\t\tposition: fixed ;\n\t\ttop: 0 ;\n\t\tleft: 0 ;\n\t\tbackground: #f9a no-repeat url(img) center ;\n\t\tbackground-size: cover ;\n\t\twidth: 100vw ;\n\t\theight: 100vh ;\n\t}\n}' > $HOME/chrome/userContent.css
+            ln -sf "$HOME/Pictures/Wallpapers/Module Abyss Lapis."* "$HOME/chrome/img" &>/dev/null
+          fi
+          unset firefoxcfg
 
           # Nerd font config
-          if [[ ! $TTY =~ '/dev/tty[0-9]*' && ! $(find "$XDG_DATA_HOME/fonts" -name 'JetBrains*.ttf' 2>/dev/null) ]]; then
+          if [[ ! $(find "$XDG_DATA_HOME/fonts" -name 'JetBrains*.ttf' 2>/dev/null) ]]; then
+            echo "Do you wish to install Nerd Fonts? [y/N]?" && read nerdcfg
+            [[ $nerdcfg =~ '^[yY]' ]] || return
             command mkdir -p "$XDG_DATA_HOME/fonts"
             echo 'Downloading Nerd Fonts...'
             [[ -f "$XDG_CACHE_HOME/JetBrainsMono.zip" ]] || curl -sL 'https://github.com/ryanoasis/nerd-fonts/releases/download/v2.3.0-RC/JetBrainsMono.zip' -o "$XDG_CACHE_HOME/JetBrainsMono.zip"
-            unzip "$XDG_CACHE_HOME/JetBrainsMono.zip" -d "$XDG_DATA_HOME/fonts"
-            printf '\nDone. Set JetBrainsMono as default font\n'
+            unzip -q "$XDG_CACHE_HOME/JetBrainsMono.zip" -d "$XDG_DATA_HOME/fonts" 2>/dev/null
+            echo 'Done. Set JetBrainsMono as default font\n'
           fi
+          unset nerdcfg
 
           # Neovim config
           if command -v nvim >/dev/null; then
@@ -1077,7 +1085,7 @@ arch-base() {
               local sumvar='89317d97adb341e627b709e86477734ce236e9fb290de8a8c41cdc62769a3225622fa609deffebeabe9edb71f5639a086f61b677947e3ec4bc07c540fcbd0973'
               local sumvar2="$(sha512sum $XDG_CACHE_HOME/shellcheck.tar.xz | cut -d ' ' -f1)" 2>/dev/null
               if [[ $sumvar == $sumvar2 ]]; then
-                command mkdir -p $HOME/.local/bin
+                command mkdir -p "$HOME/.local/bin"
                 local var="$PWD"
                 builtin cd -q "$XDG_CACHE_HOME"
                 tar -Jxf "$XDG_CACHE_HOME/shellcheck.tar.xz" shellcheck-v0.8.0/shellcheck
@@ -1092,21 +1100,24 @@ arch-base() {
 
           # Alacritty config
           if command -v alacritty >/dev/null; then
-            command mkdir -p $XDG_CONFIG_HOME/alacritty
-            echo -e "window:\n  dynamic_padding: true\n  dimensions:\n    $(case $(lscpu | awk '/Model name:/{print $3}') in AMD) echo -n 'columns: 146\n    lines: 45' ;; Intel\(R\)) echo -n 'columns: 115\n    lines: 32';; esac)\n  opacity: 0.9\n\nfont:\n  normal:\n    family: JetBrainsMono Nerd Font Mono\n    style: Medium\n  bold:\n    family: JetBrainsMono Nerd Font Mono\n  italic:\n    family: JetBrainsMono Nerd Font Mono\n  bold_italic:\n    family: JetBrainsMono Nerd Font Mono\n  size: 10\n\nkey_bindings:\n  - { key: T, mods: Control|Shift, action: SpawnNewInstance }\n  - { key: W, mods: Control|Shift, action: Quit }\n\n# https://draculatheme.com/alacritty\ncolors:\n  primary:\n    background: '#282a36'\n    foreground: '#f8f8f2'\n    bright_foreground: '#ffffff'\n  cursor:\n    text: CellBackground\n    cursor: CellForeground\n  vi_mode_cursor:\n    text: CellBackground\n    cursor: CellForeground\n  search:\n    matches:\n      foreground: '#44475a'\n      background: '#50fa7b'\n    focused_match:\n      foreground: '#44475a'\n      background: '#ffb86c'\n  footer_bar:\n    background: '#282a36'\n    foreground: '#f8f8f2'\n  hints:\n    start:\n      foreground: '#282a36'\n      background: '#f1fa8c'\n    end:\n      foreground: '#f1fa8c'\n      background: '#282a36'\n  line_indicator:\n    foreground: None\n    background: None\n  selection:\n    text: CellForeground\n    background: '#44475a'\n  normal:\n    black: '#21222c'\n    red: '#ff5555'\n    green: '#50fa7b'\n    yellow: '#f1fa8c'\n    blue: '#bd93f9'\n    magenta: '#ff79c6'\n    cyan: '#8be9fd'\n    white: '#f8f8f2'\n  bright:\n    black: '#6272a4'\n    red: '#ff6e6e'\n    green: '#69ff94'\n    yellow: '#ffffa5'\n    blue: '#d6acff'\n    magenta: '#ff92df'\n    cyan: '#a4ffff'\n    white: '#ffffff'" > "$XDG_CONFIG_HOME/alacritty/alacritty.yml"
+            command mkdir -p "$XDG_CONFIG_HOME/alacritty"
+            echo "window:\n  dynamic_padding: true\n  dimensions:\n    $(case $(lscpu | awk '/Model name:/{print $3}') in AMD) echo -n 'columns: 146\n    lines: 45' ;; Intel\(R\)) echo -n 'columns: 115\n    lines: 32';; esac)\n  opacity: 0.9\n\nfont:\n  normal:\n    family: JetBrainsMono Nerd Font Mono\n    style: Medium\n  bold:\n    family: JetBrainsMono Nerd Font Mono\n  italic:\n    family: JetBrainsMono Nerd Font Mono\n  bold_italic:\n    family: JetBrainsMono Nerd Font Mono\n  size: 10\n\nkey_bindings:\n  - { key: T, mods: Control|Shift, action: SpawnNewInstance }\n  - { key: W, mods: Control|Shift, action: Quit }\n\n# https://draculatheme.com/alacritty\ncolors:\n  primary:\n    background: '#282a36'\n    foreground: '#f8f8f2'\n    bright_foreground: '#ffffff'\n  cursor:\n    text: CellBackground\n    cursor: CellForeground\n  vi_mode_cursor:\n    text: CellBackground\n    cursor: CellForeground\n  search:\n    matches:\n      foreground: '#44475a'\n      background: '#50fa7b'\n    focused_match:\n      foreground: '#44475a'\n      background: '#ffb86c'\n  footer_bar:\n    background: '#282a36'\n    foreground: '#f8f8f2'\n  hints:\n    start:\n      foreground: '#282a36'\n      background: '#f1fa8c'\n    end:\n      foreground: '#f1fa8c'\n      background: '#282a36'\n  line_indicator:\n    foreground: None\n    background: None\n  selection:\n    text: CellForeground\n    background: '#44475a'\n  normal:\n    black: '#21222c'\n    red: '#ff5555'\n    green: '#50fa7b'\n    yellow: '#f1fa8c'\n    blue: '#bd93f9'\n    magenta: '#ff79c6'\n    cyan: '#8be9fd'\n    white: '#f8f8f2'\n  bright:\n    black: '#6272a4'\n    red: '#ff6e6e'\n    green: '#69ff94'\n    yellow: '#ffffa5'\n    blue: '#d6acff'\n    magenta: '#ff92df'\n    cyan: '#a4ffff'\n    white: '#ffffff'" > "$XDG_CONFIG_HOME/alacritty/alacritty.yml"
           fi
 
           # Tmux config
           # Vim color fix: https://gist.github.com/andersevenrud/015e61af2fd264371032763d4ed965b6
           if command -v tmux >/dev/null; then
-            command mkdir -p $XDG_CONFIG_HOME/tmux
+            command mkdir -p "$XDG_CONFIG_HOME/tmux"
             echo 'set -g default-command "${SHELL}"\nset -ga terminal-overrides ",$TERM:Tc"\nset -g set-titles on\nset -g set-titles-string "#T"\nset -g mouse on\nset -g status-interval 1\nset -gs escape-time 0\nset -g status on\nset -g status-left ""\nset -g status-right ""\nset -g status-justify centre\nset-window-option -g window-status-format "#Iː#W "\nset-window-option -g window-status-current-format "#Iː#W•"\nset -gw mode-style fg=colour226,bold\nset -g status-style fg=colour254\nset -g message-style fg=colour254\nset -g pane-border-style fg=colour243,bg=default\nset -g pane-active-border-style fg=colour243,bg=default\nbind h split-window -v\nbind v split-window -h' > "$XDG_CONFIG_HOME/tmux/tmux.conf"
-            [[ ! $TTY =~ '/dev/tty[0-9]*' ]] || echo '# remap prefix from C-b to C-a\nunbind C-b\nset-option -g prefix C-a\nbind-key C-a send-prefix' >> "$XDG_CONFIG_HOME/tmux/tmux.conf"
+            echo "Do you wish to remap tmux's prefix to C-['CHAR']? [y/N]" && read tmuxprefix
+            [[ $tmuxprefix =~ '^[yY]' ]] && echo 'Enter a char:' && read tmuxbind
+            [[ -n $tmuxbind ]] && echo "# remap prefix from C-b to C-$tmuxbind\nunbind C-b\nset-option -g prefix C-$tmuxbind\nbind-key C-$tmuxbind send-prefix" >> "$XDG_CONFIG_HOME/tmux/tmux.conf"
+            unset tmuxprefix tmuxbind
           fi
 
           # mpv config
           if command -v celluloid >/dev/null && [[ ! -f "$XDG_CONFIG_HOME/celluloid/scripts/nextfile.lua" ]]; then
-            command mkdir -p $XDG_CONFIG_HOME/celluloid/scripts
+            command mkdir -p "$XDG_CONFIG_HOME/celluloid/scripts"
             curl -s 'https://raw.githubusercontent.com/N1vBruno/mpv-nextfile/master/nextfile.lua' -o "$XDG_CONFIG_HOME/celluloid/scripts/nextfile.lua"
           fi
           break;;
@@ -1128,14 +1139,14 @@ arch-base() {
         if [[ "$EUID" != 0 ]]; then
           [[ -z $(groups | grep libvirt) ]] && gpasswd -a $USER libvirt
           if ! grep -q "user = \"$USER\"" /etc/libvirt/qemu.conf; then
-            echo -e "\nunix_sock_group = 'libvirt'\nunix_sock_rw_perms = '0770'" | sudo tee -a /etc/libvirt/libvirtd.conf >/dev/null
-            echo -e "\nuser = \"$USER\"\ngroup = \"$USER\"" | sudo tee -a /etc/libvirt/qemu.conf >/dev/null
+            echo "\nunix_sock_group = 'libvirt'\nunix_sock_rw_perms = '0770'" | sudo tee -a /etc/libvirt/libvirtd.conf >/dev/null
+            echo "\nuser = \"$USER\"\ngroup = \"$USER\"" | sudo tee -a /etc/libvirt/qemu.conf >/dev/null
           fi
         else
           [[ -z $(groups bruno | grep libvirt) ]] && gpasswd -a bruno libvirt
           if ! grep -q bruno /etc/libvirt/qemu.conf; then
-            echo -e "\nunix_sock_group = 'libvirt'\nunix_sock_rw_perms = '0770'" | tee -a /etc/libvirt/libvirtd.conf >/dev/null
-            echo -e "\nuser = \"bruno\"\ngroup = \"bruno\"" | tee -a /etc/libvirt/qemu.conf >/dev/null
+            echo "\nunix_sock_group = 'libvirt'\nunix_sock_rw_perms = '0770'" | tee -a /etc/libvirt/libvirtd.conf >/dev/null
+            echo "\nuser = \"bruno\"\ngroup = \"bruno\"" | tee -a /etc/libvirt/qemu.conf >/dev/null
           fi
         fi
         break;;
@@ -1153,7 +1164,7 @@ arch-base() {
       GNOME )
         sh -c "${varsu} pacman -S --needed xdg-desktop-portal-gnome gnome-shell gnome-session gdm nautilus gnome-control-center evince file-roller baobab gnome-calculator gnome-characters gnome-disk-utility gnome-keyring gnome-system-monitor gvfs-mtp gnome-tweaks gnome-themes-extra ffmpegthumbnailer gnome-nibbles aisleriot quadrapassel gnome-taquin gnome-chess gnome-mines"
         sh -c "${varsu} sed -i 's/#HandleLidSwitch=suspend/HandleLidSwitch=lock/' /etc/systemd/logind.conf"
-        sh -c "echo -e \"[Unit]\nDescription=Changes Wallpapers\nStartLimitIntervalSec=3\nStartLimitBurst=5\n\n[Service]\nExecStart=/home/bruno/.local/share/backgrounds/chwp.sh\nRestart=always\nRestartSec=3\n\n[Install]\nWantedBy=default.target\" | ${varsu} tee /etc/systemd/user/chwp.service >/dev/null"
+        sh -c "echo \"[Unit]\nDescription=Changes Wallpapers\nStartLimitIntervalSec=3\nStartLimitBurst=5\n\n[Service]\nExecStart=/home/bruno/.local/share/backgrounds/chwp.sh\nRestart=always\nRestartSec=3\n\n[Install]\nWantedBy=default.target\" | ${varsu} tee /etc/systemd/user/chwp.service >/dev/null"
         sh -c "${varsu} chmod u+x /etc/systemd/user/chwp.service"
         sudo -u gdm dbus-launch gsettings set org.gnome.desktop.peripherals.touchpad tap-to-click true
 
@@ -1161,7 +1172,7 @@ arch-base() {
           command mkdir -p "$XDG_DATA_HOME/backgrounds"
           [[ -f "$XDG_CONFIG_HOME/backgrounds/chwp.sh" ]] || curl -s 'https://gitlab.com/N1vBruno/dotfiles/-/raw/master/chwp.sh' -o "$XDG_DATA_HOME/backgrounds/chwp.sh"
           chmod +x "$XDG_DATA_HOME/backgrounds/chwp.sh"
-          echo -e '#!/bin/env bash\ntvar=$(tmux list-sessions | grep main)\nif grep -q attached <<< "$tvar"; then\n  tmux neww -t main -c "$PWD"\nelif [[ -n "$tvar" ]]; then\n  tmux neww -t main; alacritty\nelse\n  alacritty\nfi' > "$XDG_DATA_HOME/nautilus/scripts/open-terminal-here"
+          echo '#!/bin/env bash\ntvar=$(tmux list-sessions | grep main)\nif grep -q attached <<< "$tvar"; then\n  tmux neww -t main -c "$PWD"\nelif [[ -n "$tvar" ]]; then\n  tmux neww -t main; alacritty\nelse\n  alacritty\nfi' > "$XDG_DATA_HOME/nautilus/scripts/open-terminal-here"
           chmod +x "$XDG_DATA_HOME/nautilus/scripts/open-terminal-here"
           echo 'F4 open-terminal-here' > "$XDG_CONFIG_HOME/nautilus/scripts-accels"
           systemctl --user daemon-reload
@@ -1173,7 +1184,7 @@ arch-base() {
         sh -c "${varsu} pacman -S --needed plasma-desktop sddm sddm-kcm plasma-wayland-session xdg-desktop-portal-kde qt5-wayland qt6-wayland bluedevil powerdevil breeze-gtk kde-gtk-config kdialog khotkeys kinfocenter kscreen kwallet-pam plasma-disks plasma-firewall plasma-nm plasma-pa dolphin-plugins ark filelight kcalc kcharselect gwenview qt5-imageformats ffmpegthumbs okular plasma-systemmonitor spectacle qt5-virtualkeyboard"
         echo "\n>>> Do you wish to install KDE Games?\n"
         sh -c "${varsu} pacman -S --needed bomber granatier kapman kblocks kfourinline kmines knavalbattle knetwalk kollision kpat ksnakeduel kspaceduel"
-        [[ -f "/etc/sddm.conf.d/kde_settings.conf" ]] && sh -c "echo -e \"\nNumlock=on\nInputMethod=qtvirtualkeyboard\nCursorTheme=Breeze_Snow\" | ${varsu} tee -a /etc/sddm.conf.d/kde_settings.conf >/dev/null"
+        [[ -f "/etc/sddm.conf.d/kde_settings.conf" ]] && sh -c "echo \"\nNumlock=on\nInputMethod=qtvirtualkeyboard\nCursorTheme=Breeze_Snow\" | ${varsu} tee -a /etc/sddm.conf.d/kde_settings.conf >/dev/null"
         [[ "$EUID" != 0 ]] && paru -S --needed haruna
         break;;
 
