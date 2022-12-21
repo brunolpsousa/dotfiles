@@ -12,7 +12,6 @@ export XDG_STATE_HOME=$HOME/.local/state
 export ELECTRUMDIR=$XDG_DATA_HOME/electrum
 export GNUPGHOME=$XDG_DATA_HOME/gnupg
 export LESSHISTFILE=$XDG_STATE_HOME/lesshst
-export GTK_USE_PORTAL=1
 export MOZ_ENABLE_WAYLAND=1
 export QT_QPA_PLATFORM=wayland
 export QT_QPA_PLATFORMTHEME=gnome
@@ -32,6 +31,7 @@ SSH_AUTH_SOCK=${XDG_RUNTIME_DIR}/gnupg/S.gpg-agent.ssh
 [[ -d $XDG_DATA_HOME/cargo/bin ]] && export PATH=$XDG_DATA_HOME/cargo/bin:$PATH
 [[ $LANG == 'C'  || $LANG == '' ]] && echo "$(date '+%Y-%m-%d %H:%M:%S') - The \$LANG ($LANG) variable is not set. This can cause a lot of problems" >> "$HOME/.alert"
 [[ $EUID != 0 ]] && umask 022 && sysvar='--user' || umask 002
+[[ -x $(command -v plasmashell) ]] && export GTK_USE_PORTAL=1
 systemctl $sysvar import-environment EDITOR VISUAL XDG_CACHE_HOME XDG_CONFIG_HOME XDG_DATA_HOME XDG_STATE_HOME LS_COLORS MOZ_ENABLE_WAYLAND QT_QPA_PLATFORM QT_QPA_PLATFORMTHEME GTK_USE_PORTAL 2>/dev/null; unset sysvar
 # Interactive or return
 [[ $- == *i* ]] || return 
