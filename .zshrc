@@ -581,7 +581,7 @@ jvc() {
 # Unlock user after failed login attempt
 unlock() { [[ -n $1 ]] && faillock --user $1 --reset || echo 'Usage: unlock <user>' }
 
-# Display system's install date
+# Display system install date
 arch-date() { echo -n 'System was installed on '; ls -lct /etc | tail -1 | awk '{print $7, $6, $8}' }
 
 # Reset GNOME to default settings
@@ -1067,7 +1067,7 @@ arch-base() {
             printf '\nDone. Set JetBrainsMono as default font\n'
           fi
 
-          # Neovim's config
+          # Neovim config
           if command -v nvim >/dev/null; then
             command mkdir -p "$XDG_CONFIG_HOME/nvim"
             [[ -f "$XDG_CONFIG_HOME/nvim/init.lua" ]] || curl -s 'https://gitlab.com/N1vBruno/dotfiles/-/raw/master/init.lua' -o "$XDG_CONFIG_HOME/nvim/init.lua"
@@ -1090,13 +1090,13 @@ arch-base() {
             fi
           fi
 
-          # Alacritty's config
+          # Alacritty config
           if command -v alacritty >/dev/null; then
             command mkdir -p $XDG_CONFIG_HOME/alacritty
             echo -e "window:\n  dynamic_padding: true\n  dimensions:\n    $(case $(lscpu | awk '/Model name:/{print $3}') in AMD) echo -n 'columns: 146\n    lines: 45' ;; Intel\(R\)) echo -n 'columns: 115\n    lines: 32';; esac)\n  opacity: 0.9\n\nfont:\n  normal:\n    family: JetBrainsMono Nerd Font Mono\n    style: Medium\n  bold:\n    family: JetBrainsMono Nerd Font Mono\n  italic:\n    family: JetBrainsMono Nerd Font Mono\n  bold_italic:\n    family: JetBrainsMono Nerd Font Mono\n  size: 10\n\nkey_bindings:\n  - { key: T, mods: Control|Shift, action: SpawnNewInstance }\n  - { key: W, mods: Control|Shift, action: Quit }\n\n# https://draculatheme.com/alacritty\ncolors:\n  primary:\n    background: '#282a36'\n    foreground: '#f8f8f2'\n    bright_foreground: '#ffffff'\n  cursor:\n    text: CellBackground\n    cursor: CellForeground\n  vi_mode_cursor:\n    text: CellBackground\n    cursor: CellForeground\n  search:\n    matches:\n      foreground: '#44475a'\n      background: '#50fa7b'\n    focused_match:\n      foreground: '#44475a'\n      background: '#ffb86c'\n  footer_bar:\n    background: '#282a36'\n    foreground: '#f8f8f2'\n  hints:\n    start:\n      foreground: '#282a36'\n      background: '#f1fa8c'\n    end:\n      foreground: '#f1fa8c'\n      background: '#282a36'\n  line_indicator:\n    foreground: None\n    background: None\n  selection:\n    text: CellForeground\n    background: '#44475a'\n  normal:\n    black: '#21222c'\n    red: '#ff5555'\n    green: '#50fa7b'\n    yellow: '#f1fa8c'\n    blue: '#bd93f9'\n    magenta: '#ff79c6'\n    cyan: '#8be9fd'\n    white: '#f8f8f2'\n  bright:\n    black: '#6272a4'\n    red: '#ff6e6e'\n    green: '#69ff94'\n    yellow: '#ffffa5'\n    blue: '#d6acff'\n    magenta: '#ff92df'\n    cyan: '#a4ffff'\n    white: '#ffffff'" > "$XDG_CONFIG_HOME/alacritty/alacritty.yml"
           fi
 
-          # Tmux's config
+          # Tmux config
           # Vim color fix: https://gist.github.com/andersevenrud/015e61af2fd264371032763d4ed965b6
           if command -v tmux >/dev/null; then
             command mkdir -p $XDG_CONFIG_HOME/tmux
@@ -1104,7 +1104,7 @@ arch-base() {
             [[ ! $TTY =~ '/dev/tty[0-9]*' ]] || echo '# remap prefix from C-b to C-a\nunbind C-b\nset-option -g prefix C-a\nbind-key C-a send-prefix' >> "$XDG_CONFIG_HOME/tmux/tmux.conf"
           fi
 
-          # mpv's config
+          # mpv config
           if command -v celluloid >/dev/null && [[ ! -f "$XDG_CONFIG_HOME/celluloid/scripts/nextfile.lua" ]]; then
             command mkdir -p $XDG_CONFIG_HOME/celluloid/scripts
             curl -s 'https://raw.githubusercontent.com/N1vBruno/mpv-nextfile/master/nextfile.lua' -o "$XDG_CONFIG_HOME/celluloid/scripts/nextfile.lua"
