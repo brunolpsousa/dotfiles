@@ -402,18 +402,17 @@ if [[ -f '/usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting
 elif [[ -f "$XDG_DATA_HOME/zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh" ]]; then
   source "$XDG_DATA_HOME/zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
 else
-  mkdir -p "$XDG_DATA_HOME/zsh/zsh-syntax-highlighting" >/dev/null 2>&1 
   echo 'Downloading zsh-syntax-highlighting...'
-  vardir=$PWD
-  builtin cd $XDG_CACHE_HOME
-  [[ -f $XDG_CACHE_HOME/zsh-syntax-highlighting.tar.gz ]] || curl -sL 'https://github.com/zsh-users/zsh-syntax-highlighting/archive/refs/tags/0.7.1.tar.gz' -o $XDG_CACHE_HOME/zsh-syntax-highlighting.tar.gz
-  varsum='e7e86b88cdac9b9ed5f973823ba8efff99dd720b9ed929f765f9f9266b9d6e147274f5957ceb630d51a660e396fc22e97f10cfbc5cdde941b907f3773bb1ea2b'
-  varsum2="$(sha512sum $XDG_CACHE_HOME/zsh-syntax-highlighting.tar.gz | cut -d ' ' -f1)" 2>/dev/null
-  tar -zxf $XDG_CACHE_HOME/zsh-syntax-highlighting.tar.gz zsh-syntax-highlighting-0.7.1/{zsh-syntax-highlighting.zsh,highlighters,.revision-hash,.version} 2>/dev/null
-  [[ -d $XDG_CACHE_HOME/zsh-syntax-highlighting-0.7.1 ]] && command mv $XDG_CACHE_HOME/zsh-syntax-highlighting-0.7.1/{*,.*} $XDG_DATA_HOME/zsh/zsh-syntax-highlighting/
-  [[ $varsum == $varsum2 ]] && source $XDG_DATA_HOME/zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh || echo "$(date '+%Y-%m-%d %H:%M:%S') - Failed to load zsh-syntax-highlighting.zsh" >> "$HOME/.alert"
-  builtin cd $vardir 
-  unset varsum varsum2 vardir
+  dirvar="$PWD"
+  builtin cd -q "$XDG_CACHE_HOME"
+  [[ -f "$XDG_CACHE_HOME/zsh-syntax-highlighting-master.zip" ]] || curl -sL 'https://github.com/zsh-users/zsh-syntax-highlighting/archive/refs/heads/master.zip' -o "$XDG_CACHE_HOME/zsh-syntax-highlighting-master.zip"
+  sumvar='c51eaa77302f0ae74041d9e0d2a7cff3fe3420c794c29e2d67114c1f1768e2a83831cf2d3cce3983c518ec6ceef05421d88f6a8ecee9d448261bbe3567e72201'
+  sumvar2="$(sha512sum $XDG_CACHE_HOME/zsh-syntax-highlighting-master.zip | cut -d ' ' -f1)" 2>/dev/null
+  unzip -uq "$XDG_CACHE_HOME/zsh-syntax-highlighting-master.zip" zsh-syntax-highlighting-master/{zsh-syntax-highlighting.zsh,"highlighters/*",.revision-hash,.version} -d "$XDG_DATA_HOME/zsh" 2>/dev/null
+  command mv "$XDG_DATA_HOME/zsh/zsh-syntax-highlighting-master" "$XDG_DATA_HOME/zsh/zsh-syntax-highlighting/" 2>/dev/null
+  [[ $sumvar == $sumvar2 ]] && source "$XDG_DATA_HOME/zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh" || echo "$(date '+%Y-%m-%d %H:%M:%S') - Failed to load zsh-syntax-highlighting.zsh" >> "$HOME/.alert"
+  builtin cd -q "$dirvar"
+  unset sumvar sumvar2 dirvar
 fi
 #------------------------------------------------------------------------------#
 #################################### Extras ####################################
