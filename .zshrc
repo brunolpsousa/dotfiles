@@ -1455,14 +1455,14 @@ prompt_git_status_precmd() {
 [[ -n ${SSH_CONNECTION-}${SSH_CLIENT-}${SSH_TTY-} ]] && PROMPT_SSH="%F{yellow}${(%):-%m}%}ː%b%f" || unset PROMPT_SSH
 #------------------------------------------------------------------------------#
 # Some stuff borrowed from Spaceship
-# Updated in 2022.12.07
+# Updated in 2023.01.04
 spaceship_stuff() {
   builtin cd -q "$1"
   setopt extended_glob
   VIRTUAL_ENV_DISABLE_PROMPT=true
   local SPACESHIP_PROMPT_DEFAULT_PREFIX=' '
   local SPACESHIP_PROMPT_DEFAULT_SUFFIX='%f%b'
-  local SS_LIST=(asdf hg package node bun deno ruby python elm elixir xcode swift golang perl php rust haskell scala kotlin java lua dart julia crystal docker docker_compose aws gcloud venv conda dotnet ocaml vlang zig purescript erlang kubectl ansible terraform pulumi ibmcloud nix_shell gnu_screen ember flutter gradle maven)
+  local SS_LIST=(asdf hg package node bun deno ruby python elm elixir xcode swift golang perl php rust haskell scala kotlin java lua dart julia crystal docker docker_compose aws gcloud azure venv conda dotnet ocaml vlang zig purescript erlang kubectl ansible terraform pulumi ibmcloud nix_shell gnu_screen ember flutter gradle maven)
   for i in "$SS_LIST[@]"; do
     local SP="$(spaceship_$i)"
     [[ -n "$SP" ]] && echo -n "$SP"
@@ -1715,6 +1715,27 @@ spaceship_aws() {
 
   # Show prompt section
   echo -n "$SPACESHIP_AWS_COLOR$SPACESHIP_AWS_PREFIX${SPACESHIP_AWS_SYMBOL}${profile}$SPACESHIP_AWS_SUFFIX"
+}
+
+# Azure is a cloud computing platform operated by Microsoft for application management
+spaceship_azure() {
+  local SPACESHIP_AZURE_SHOW="${SPACESHIP_AZURE_SHOW=true}"
+  local SPACESHIP_AZURE_PREFIX="${SPACESHIP_AZURE_PREFIX="using "}"
+  local SPACESHIP_AZURE_SUFFIX="${SPACESHIP_AZURE_SUFFIX="$SPACESHIP_PROMPT_DEFAULT_SUFFIX"}"
+  local SPACESHIP_AZURE_SYMBOL="${SPACESHIP_AZURE_SYMBOL="☁️ "}"
+  local SPACESHIP_AZURE_COLOR="${SPACESHIP_AZURE_COLOR="%039F"}"
+  [[ $SPACESHIP_AZURE_SHOW == false ]] && return
+
+  # Check that Azure CLI is installed
+  spaceship::exists az || return
+
+  # Get Azure CLI account
+  local AZ_ACCOUNT=$(az account show --query name --output tsv 2>/dev/null)
+
+  [[ -z "$AZ_ACCOUNT" ]] && return
+
+  # Show prompt section
+  echo -n "$SPACESHIP_AZURE_COLOR$SPACESHIP_AZURE_PREFIX$SPACESHIP_AZURE_SYMBOL$AZ_ACCOUNT$SPACESHIP_AZURE_SUFFIX"
 }
 
 # Battery
@@ -2151,7 +2172,6 @@ spaceship_ember() {
 # Erlang is a general-purpose, concurrent, functional programming language
 spaceship_erlang() {
   local SPACESHIP_ERLANG_SHOW="${SPACESHIP_ERLANG_SHOW=true}"
-  local SPACESHIP_ERLANG_ASYNC="${SPACESHIP_ERLANG_ASYNC=true}"
   local SPACESHIP_ERLANG_PREFIX="${SPACESHIP_ERLANG_PREFIX="$SPACESHIP_PROMPT_DEFAULT_PREFIX"}"
   local SPACESHIP_ERLANG_SUFFIX="${SPACESHIP_ERLANG_SUFFIX="$SPACESHIP_PROMPT_DEFAULT_SUFFIX"}"
   local SPACESHIP_ERLANG_SYMBOL="${SPACESHIP_ERLANG_SYMBOL="e "}"
@@ -3017,7 +3037,6 @@ spaceship_pulumi() {
 # PureScript is a strongly-typed functional programming language that compiles to JavaScript
 spaceship_purescript() {
   local SPACESHIP_PURESCRIPT_SHOW="${SPACESHIP_PURESCRIPT_SHOW=true}"
-  local SPACESHIP_PURESCRIPT_ASYNC="${SPACESHIP_PURESCRIPT_ASYNC=true}"
   local SPACESHIP_PURESCRIPT_PREFIX="${SPACESHIP_PURESCRIPT_PREFIX="$SPACESHIP_PROMPT_DEFAULT_PREFIX"}"
   local SPACESHIP_PURESCRIPT_SUFFIX="${SPACESHIP_PURESCRIPT_SUFFIX="$SPACESHIP_PROMPT_DEFAULT_SUFFIX"}"
   local SPACESHIP_PURESCRIPT_SYMBOL="${SPACESHIP_PURESCRIPT_SYMBOL="⇔ "}"
@@ -3144,7 +3163,7 @@ spaceship_scala() {
   [[ -n "$is_scala_context" || -n *.scala(#qN^/) || -n *.sbt(#qN^/) ]] || return
 
   # pipe version info into stdout; won't work otherwise
-  local scala_version=$(scalac -version 2>&1 | grep --color=never -oe "[0-9]\.[0-9]\.[0-9]")
+  local scala_version=$(scalac -version 2>&1 | grep --color=never -Eo "[0-9]+\.[0-9]+\.[0-9]+")
 
   [[ -z "$scala_version" || "${scala_version}" == "system" ]] && return
 
@@ -3287,7 +3306,6 @@ spaceship_xcode() {
 # Zig is a general-purpose programming language and toolchain for maintaining robust, optimal and reusable software
 spaceship_zig() {
   local SPACESHIP_ZIG_SHOW="${SPACESHIP_ZIG_SHOW=true}"
-  local SPACESHIP_ZIG_ASYNC="${SPACESHIP_ZIG_ASYNC=true}"
   local SPACESHIP_ZIG_PREFIX="${SPACESHIP_ZIG_PREFIX="$SPACESHIP_PROMPT_DEFAULT_PREFIX"}"
   local SPACESHIP_ZIG_SUFFIX="${SPACESHIP_ZIG_SUFFIX="$SPACESHIP_PROMPT_DEFAULT_SUFFIX"}"
   local SPACESHIP_ZIG_SYMBOL="${SPACESHIP_ZIG_SYMBOL="⚡ "}"
