@@ -14,7 +14,6 @@ export GNUPGHOME="$XDG_DATA_HOME/gnupg"
 export LESSHISTFILE="$XDG_STATE_HOME/lesshst"
 export MOZ_ENABLE_WAYLAND=1
 export QT_QPA_PLATFORM='wayland'
-export QT_QPA_PLATFORMTHEME='gnome'
 export CARGO_HOME="$XDG_DATA_HOME/cargo"
 export NPM_CONFIG_CACHE="$XDG_CACHE_HOME/npm"
 export NPM_CONFIG_PREFIX="$XDG_DATA_HOME/npm"
@@ -26,7 +25,7 @@ export LS_COLORS='*.7z=38;5;40:*.WARC=38;5;40:*.a=38;5;40:*.arj=38;5;40:*.bz2=38
 export GPG_TTY=$(tty)
 SSH_AGENT_PID=''
 SSH_AUTH_SOCK="${XDG_RUNTIME_DIR}/gnupg/S.gpg-agent.ssh"
-[[ -x $(command -v plasmashell) ]] && export GTK_USE_PORTAL=1
+[[ -x $(command -v plasmashell) ]] && export GTK_USE_PORTAL=1 || export QT_QPA_PLATFORMTHEME='gnome'
 [[ -d "$HOME/.local/bin" ]] && export PATH="$HOME/.local/bin:$PATH"
 [[ -d "$XDG_DATA_HOME/npm/bin" ]] && export PATH="$XDG_DATA_HOME/npm/bin:$PATH"
 [[ -d "$XDG_DATA_HOME/cargo/bin" ]] && export PATH="$XDG_DATA_HOME/cargo/bin:$PATH"
@@ -597,7 +596,7 @@ reset-gnome() {
 alias reset-gnome-appgrid='gsettings reset org.gnome.shell app-picker-layout'
 
 # Display warnings from pacman
-alias paclog='grep -n -C 2 --color=auto warning: /var/log/pacman.log'
+alias paclog='grep -nC 2 --color=auto warning: /var/log/pacman.log'
 
 # Refresh Arch mirrors
 alias refresh='sudo reflector --protocol https --age 12 --latest 20 --connection-timeout 2 --download-timeout 2 --fastest 5 --sort rate --save /etc/pacman.d/mirrorlist --verbose'
@@ -946,7 +945,7 @@ arch-base() {
     select yne in 'Yes' 'No' 'Exit'; do
       case $yne in
         Yes )
-          sh -c "${varsu} sed -i -e 's/#\(Color\)/\1/g' -e 's/#\(VerbosePkgLists\)/\1/g' -e '/ParallelDownloads/ s/^#//; /ParallelDownloads/ s/5$/9\nIloveCandy/' -e '/\[multilib\]/,/Include/ s/^#//' /etc/pacman.conf"
+          sh -c "${varsu} sed -i 's/#\(Color\)/\1/g; s/#\(VerbosePkgLists\)/\1/g; /ParallelDownloads/ s/^#//; /ParallelDownloads/ s/5$/9\nIloveCandy/; /\[multilib\]/,/Include/ s/^#//' /etc/pacman.conf"
         break;;
         No ) break;;
         Exit ) return;;
@@ -996,7 +995,7 @@ arch-base() {
         sh -c "${varsu} sed -i 's/#SystemMaxFileSize=/SystemMaxFileSize=50M/' /etc/systemd/journald.conf"
         sh -c "${varsu} sed -i 's/#SystemMaxFiles=100/SystemMaxFiles=5/' /etc/systemd/journald.conf"
         sh -c "${varsu} rm -rf /var/log/journal"
-        sh -c "echo 'vm.swappiness=10\nvm.vfs_cache_pressure=50' | ${varsu} tee /etc/sysctl.d/99-sysctl.conf"
+        sh -c "echo -e 'vm.swappiness=10\nvm.vfs_cache_pressure=50' | ${varsu} tee /etc/sysctl.d/99-sysctl.conf"
         break;;
       No ) break;;
       Exit ) return;;
@@ -1005,9 +1004,9 @@ arch-base() {
 
   # Keyboard
   echo 'Do you wish to select a keyboard layout?'
-  local PT='localectl --no-convert set-x11-keymap br pc105; setxkbmap -model pc105 -layout br;echo "LANG=en_US.UTF-8\nLANGUAGE=\"en_US\"\nLC_TYPE=pt_BR.UTF-8\nLC_NUMERIC=pt_BR.UTF-8\nLC_TIME=pt_BR.UTF-8\nLC_MONETARY=pt_BR.UTF-8\nLC_PAPER=pt_BR.UTF-8\nLC_MEASUREMENT=pt_BR.UTF-8" | tee /etc/locale.conf;echo "KEYMAP=br-abnt2\nFONT=eurlatgr\nFONT_MAP=8859-1" | tee /etc/vconsole.conf'
-  local US='localectl --no-convert set-x11-keymap us pc105 intl;setxkbmap -model pc105 -layout us -variant intl;echo "LANG=en_US.UTF-8\nLANGUAGE=\"en_US\"\nLC_TYPE=pt_BR.UTF-8\nLC_NUMERIC=pt_BR.UTF-8\nLC_TIME=pt_BR.UTF-8\nLC_MONETARY=pt_BR.UTF-8\nLC_PAPER=pt_BR.UTF-8\nLC_MEASUREMENT=pt_BR.UTF-8" | tee /etc/locale.conf;echo "KEYMAP=us-acentos\nFONT=eurlatgr\nFONT_MAP=8859-1" | tee /etc/vconsole.conf'
-  local both='localectl --no-convert set-x11-keymap us,br pc105 intl,;setxkbmap -model pc105 -layout us,br -variant intl,;echo "LANG=en_US.UTF-8\nLANGUAGE=\"en_US\"\nLC_TYPE=pt_BR.UTF-8\nLC_NUMERIC=pt_BR.UTF-8\nLC_TIME=pt_BR.UTF-8\nLC_MONETARY=pt_BR.UTF-8\nLC_PAPER=pt_BR.UTF-8\nLC_MEASUREMENT=pt_BR.UTF-8" | tee /etc/locale.conf;echo "KEYMAP=us-acentos\nKEYMAP_TOGGLE=br-abnt2\nFONT=eurlatgr\nFONT_MAP=8859-1" | tee /etc/vconsole.conf'
+  local PT='localectl --no-convert set-x11-keymap br pc105; setxkbmap -model pc105 -layout br;echo -e "LANG=en_US.UTF-8\nLANGUAGE=\"en_US\"\nLC_TYPE=pt_BR.UTF-8\nLC_NUMERIC=pt_BR.UTF-8\nLC_TIME=pt_BR.UTF-8\nLC_MONETARY=pt_BR.UTF-8\nLC_PAPER=pt_BR.UTF-8\nLC_MEASUREMENT=pt_BR.UTF-8" | tee /etc/locale.conf;echo -e "KEYMAP=br-abnt2\nFONT=eurlatgr\nFONT_MAP=8859-1" | tee /etc/vconsole.conf'
+  local US='localectl --no-convert set-x11-keymap us pc105 intl;setxkbmap -model pc105 -layout us -variant intl;echo -e "LANG=en_US.UTF-8\nLANGUAGE=\"en_US\"\nLC_TYPE=pt_BR.UTF-8\nLC_NUMERIC=pt_BR.UTF-8\nLC_TIME=pt_BR.UTF-8\nLC_MONETARY=pt_BR.UTF-8\nLC_PAPER=pt_BR.UTF-8\nLC_MEASUREMENT=pt_BR.UTF-8" | tee /etc/locale.conf;echo -e "KEYMAP=us-acentos\nFONT=eurlatgr\nFONT_MAP=8859-1" | tee /etc/vconsole.conf'
+  local both='localectl --no-convert set-x11-keymap us,br pc105 intl,;setxkbmap -model pc105 -layout us,br -variant intl,;echo -e "LANG=en_US.UTF-8\nLANGUAGE=\"en_US\"\nLC_TYPE=pt_BR.UTF-8\nLC_NUMERIC=pt_BR.UTF-8\nLC_TIME=pt_BR.UTF-8\nLC_MONETARY=pt_BR.UTF-8\nLC_PAPER=pt_BR.UTF-8\nLC_MEASUREMENT=pt_BR.UTF-8" | tee /etc/locale.conf;echo -e "KEYMAP=us-acentos\nKEYMAP_TOGGLE=br-abnt2\nFONT=eurlatgr\nFONT_MAP=8859-1" | tee /etc/vconsole.conf'
   select pubne in 'PT_BR' 'EN_US' 'Both' 'No' 'Exit'; do
     case $pubne in
       PT_BR ) sh -c "${varsu} sh -c '$PT'"; break;;
@@ -1162,9 +1161,9 @@ arch-base() {
     case $gke in
 
       GNOME )
-        sh -c "${varsu} pacman -S --needed xdg-desktop-portal-gnome gnome-shell gnome-session gdm nautilus gnome-control-center evince file-roller baobab gnome-calculator gnome-characters gnome-disk-utility gnome-keyring gnome-system-monitor gvfs-mtp gnome-tweaks gnome-themes-extra ffmpegthumbnailer gnome-nibbles aisleriot quadrapassel gnome-taquin gnome-chess gnome-mines"
+        sh -c "${varsu} pacman -S --needed xdg-desktop-portal-gnome gnome-shell gnome-session gdm nautilus gnome-control-center evince file-roller baobab gnome-calculator gnome-characters gnome-disk-utility gnome-keyring gnome-system-monitor gvfs-mtp gnome-tweaks gnome-themes-extra qgnomeplatform-qt6 webp-pixbuf-loader ffmpegthumbnailer gnome-nibbles aisleriot quadrapassel gnome-taquin gnome-chess gnome-mines"
         sh -c "${varsu} sed -i 's/#HandleLidSwitch=suspend/HandleLidSwitch=lock/' /etc/systemd/logind.conf"
-        sh -c "echo \"[Unit]\nDescription=Changes Wallpapers\nStartLimitIntervalSec=3\nStartLimitBurst=5\n\n[Service]\nExecStart=/home/bruno/.local/share/backgrounds/chwp.sh\nRestart=always\nRestartSec=3\n\n[Install]\nWantedBy=default.target\" | ${varsu} tee /etc/systemd/user/chwp.service >/dev/null"
+        sh -c "echo -e '[Unit]\nDescription=Changes Wallpapers\nStartLimitIntervalSec=3\nStartLimitBurst=5\n\n[Service]\nExecStart=/home/bruno/.local/share/backgrounds/chwp.sh\nRestart=always\nRestartSec=3\n\n[Install]\nWantedBy=default.target' | ${varsu} tee /etc/systemd/user/chwp.service >/dev/null"
         sh -c "${varsu} chmod u+x /etc/systemd/user/chwp.service"
         sudo -u gdm dbus-launch gsettings set org.gnome.desktop.peripherals.touchpad tap-to-click true
 
@@ -1181,11 +1180,10 @@ arch-base() {
         break;;
 
       KDE )
-        sh -c "${varsu} pacman -S --needed plasma-desktop sddm sddm-kcm plasma-wayland-session xdg-desktop-portal-kde qt5-wayland qt6-wayland bluedevil powerdevil breeze-gtk kde-gtk-config kdialog khotkeys kinfocenter kscreen kwallet-pam plasma-disks plasma-firewall plasma-nm plasma-pa dolphin-plugins ark filelight kcalc kcharselect gwenview qt5-imageformats ffmpegthumbs okular plasma-systemmonitor spectacle qt5-virtualkeyboard"
+        sh -c "${varsu} pacman -S --needed plasma-desktop sddm sddm-kcm plasma-wayland-session xdg-desktop-portal-kde qt5-wayland qt6-wayland bluedevil powerdevil breeze-gtk kde-gtk-config kdialog khotkeys kinfocenter kscreen kwallet-pam plasma-disks plasma-firewall plasma-nm plasma-pa dolphin-plugins ark filelight kcalc kcharselect gwenview qt5-imageformats ffmpegthumbs okular plasma-systemmonitor spectacle qt5-virtualkeyboard haruna"
         echo "\n>>> Do you wish to install KDE Games?\n"
         sh -c "${varsu} pacman -S --needed bomber granatier kapman kblocks kfourinline kmines knavalbattle knetwalk kollision kpat ksnakeduel kspaceduel"
-        [[ -f "/etc/sddm.conf.d/kde_settings.conf" ]] && sh -c "echo \"\nNumlock=on\nInputMethod=qtvirtualkeyboard\nCursorTheme=Breeze_Snow\" | ${varsu} tee -a /etc/sddm.conf.d/kde_settings.conf >/dev/null"
-        [[ "$EUID" != 0 ]] && paru -S --needed haruna
+        [[ -f '/etc/sddm.conf.d/kde_settings.conf' ]] && ! grep -q Breeze_Snow /etc/sddm.conf.d/kde_settings.conf && sh -c "${varsu} sed -i '/^RebootCommand/ s/$/\nNumlock=on\nInputMethod=qtvirtualkeyboard/; /=breeze$/ s/$/\nCursorTheme=Breeze_Snow/' /etc/sddm.conf.d/kde_settings.conf"
         break;;
 
       Exit ) return;;
