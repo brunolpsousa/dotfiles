@@ -102,12 +102,12 @@ setopt hist_save_no_dups
 setopt hist_ignore_all_dups
 #------------------------------------------------------------------------------#
 # ZSH stuff
-ZDOTDIR="$HOME"
 HISTFILE="$XDG_STATE_HOME/zsh/zshist"
-HISTSIZE=1000
+HISTSIZE=10000
 SAVEHIST=$HISTSIZE
-[[ ! -d "$XDG_CACHE_HOME" || ! -d "$XDG_DATA_HOME/zsh" || ! -d "$XDG_STATE_HOME/zsh" ]]\
-&& mkdir -p "$XDG_CACHE_HOME" "$XDG_DATA_HOME/zsh" "$XDG_STATE_HOME/zsh" >/dev/null 2>&1
+[[ ! -d "$ZDOTDIR" || ! -d "$XDG_CACHE_HOME" || ! -d "$XDG_DATA_HOME/zsh" \
+|| ! -d "$XDG_STATE_HOME/zsh" ]] && mkdir -p "$ZDOTDIR" "$XDG_CACHE_HOME" \
+"$XDG_DATA_HOME/zsh" "$XDG_STATE_HOME/zsh" >/dev/null 2>&1
 #------------------------------------------------------------------------------#
 # Completion
 autoload -Uz compinit && compinit -d "$XDG_CACHE_HOME/zcompdump"
@@ -927,13 +927,15 @@ ns() {
 }
 
 arch-base() {
-  [[ "$EUID" != 0 ]] && local varsu='sudo'
-
-  if [[ "$EUID" != 0 ]] && ! grep -q "$HOME/.zshrc" /etc/zsh/zprofile; then
-    echo 'Do you wish to configure zprofile?'
+  [[ "$EUID" != 0 ]] && local sudovar='sudo'
+  local zenv=$(grep 'ZDOTDIR="\$HOME/.config/zsh"' /etc/zsh/zshenv 2>/dev/null)
+  local zprof=$(grep 'source "\$ZDOTDIR/.zshrc"' /etc/zsh/zprofile 2>/dev/null)
+  if [[ -z $zenv || -z $zprof ]]; then
+    echo 'Do you wish to configure zshenv and zprofile?'
     select yne in 'Yes' 'No' 'Exit'; do
       case $yne in
-        Yes ) echo "source $HOME/.zshrc" | sudo tee -a /etc/zsh/zprofile >/dev/null; break;;
+        Yes ) [[ -n $zenv ]] || echo '[[ -f "$HOME/.config/zsh/.zshrc" ]] && ZDOTDIR="$HOME/.config/zsh" || ZDOTDIR="$HOME"' | $sudovar tee -a /etc/zsh/zshenv >/dev/null
+              [[ -n $zprof ]] || echo 'source "$ZDOTDIR/.zshrc"' | $sudovar tee -a /etc/zsh/zprofile >/dev/null; break;;
         No ) break;;
         Exit ) return;;
       esac
@@ -944,9 +946,7 @@ arch-base() {
     echo 'Do you wish to configure /etc/pacman.conf?'
     select yne in 'Yes' 'No' 'Exit'; do
       case $yne in
-        Yes )
-          sh -c "${varsu} sed -i 's/#\(Color\)/\1/g; s/#\(VerbosePkgLists\)/\1/g; /ParallelDownloads/ s/^#//; /ParallelDownloads/ s/5$/9\nIloveCandy/; /\[multilib\]/,/Include/ s/^#//' /etc/pacman.conf"
-        break;;
+        Yes ) $sudovar sh -c "sed -i 's/#\(Color\)/\1/g; s/#\(VerbosePkgLists\)/\1/g; /ParallelDownloads/ s/^#//; /ParallelDownloads/ s/5$/9\nIloveCandy/; /\[multilib\]/,/Include/ s/^#//' /etc/pacman.conf"; break;;
         No ) break;;
         Exit ) return;;
       esac
@@ -956,7 +956,7 @@ arch-base() {
   echo 'Do you want to update mirrors with reflector?'
   select yne in 'Yes' 'No' 'Exit'; do
     case $yne in
-      Yes ) sh -c "${varsu} pacman -S --needed reflector;reflector --protocol https --age 12 --latest 20 --connection-timeout 2 --download-timeout 2 --fastest 5 --sort rate --save /etc/pacman.d/mirrorlist --verbose"; break;;
+      Yes ) $sudovar sh -c "pacman -S --needed reflector; reflector --protocol https --age 12 --latest 20 --connection-timeout 2 --download-timeout 2 --fastest 5 --sort rate --save /etc/pacman.d/mirrorlist --verbose"; break;;
       No ) break;;
       Exit ) return;;
     esac
@@ -967,12 +967,12 @@ arch-base() {
   select yne in 'Yes' 'No' 'Exit'; do
     case $yne in
       Yes )
-        sh -c "${varsu} pacman -Syu --needed sbctl neovim wl-clipboard alacritty tmux xdg-desktop-portal xdg-desktop-portal-gtk yt-dlp firefox ufw neofetch ntfs-3g exfat-utils unrar zip p7zip zsh zsh-autosuggestions zsh-completions zsh-history-substring-search zsh-syntax-highlighting steam pcsclite qbittorrent libreoffice-fresh libreoffice-fresh-pt-br fzf hunspell-en_US noto-fonts noto-fonts-cjk noto-fonts-emoji ttf-liberation gsfonts lib32-gst-plugins-good gnuchess java-runtime-common base-devel networkmanager reflector android-udev android-tools pkgstats pipewire pipewire-alsa pipewire-pulse wireplumber $(case $(lscpu | awk '/Model name:/{print $3}') in AMD) echo -n 'amd-ucode';; Intel\(R\)) echo -n 'intel-ucode';; esac)"
+        $sudovar sh -c "pacman -Syu --needed sbctl neovim wl-clipboard alacritty tmux xdg-desktop-portal xdg-desktop-portal-gtk yt-dlp firefox ufw neofetch man-db tldr ntfs-3g exfat-utils unrar zip p7zip zsh zsh-autosuggestions zsh-completions zsh-history-substring-search zsh-syntax-highlighting steam qbittorrent libreoffice-fresh libreoffice-fresh-pt-br fzf hunspell-en_US noto-fonts noto-fonts-cjk noto-fonts-emoji ttf-liberation gsfonts lib32-gst-plugins-good gnuchess java-runtime-common base-devel networkmanager reflector android-udev android-tools pkgstats pipewire pipewire-alsa pipewire-pulse wireplumber $(case $(lscpu | awk '/Model name:/{print $3}') in AMD) echo -n 'amd-ucode';; Intel\(R\)) echo -n 'intel-ucode';; esac)"
         if [[ "$EUID" != 0 && ! -x /usr/bin/paru ]]; then
           command mkdir -p $HOME/{.cache/paru/clone,.config/paru}
           git clone https://aur.archlinux.org/paru-bin $XDG_CACHE_HOME/paru/clone/paru-bin
           local var="$PWD"
-          builtin cd -q $XDG_CACHE_HOME/paru/clone/paru-bin
+          builtin cd -q "$XDG_CACHE_HOME/paru/clone/paru-bin"
           makepkg -sir
           builtin cd -q "$var"
           unset var
@@ -988,15 +988,7 @@ arch-base() {
   echo 'Do you wish to configure general system defaults?'
   select yne in 'Yes' 'No' 'Exit'; do
     case $yne in
-      Yes )
-        sh -c "${varsu} ufw enable"
-        sh -c "${varsu} systemctl enable fstrim.timer pcscd systemd-oomd bluetooth ufw"
-        sh -c "${varsu} sed -i 's/#Storage=auto/Storage=volatile/' /etc/systemd/journald.conf"
-        sh -c "${varsu} sed -i 's/#SystemMaxFileSize=/SystemMaxFileSize=50M/' /etc/systemd/journald.conf"
-        sh -c "${varsu} sed -i 's/#SystemMaxFiles=100/SystemMaxFiles=5/' /etc/systemd/journald.conf"
-        sh -c "${varsu} rm -rf /var/log/journal"
-        sh -c "echo -e 'vm.swappiness=10\nvm.vfs_cache_pressure=50' | ${varsu} tee /etc/sysctl.d/99-sysctl.conf"
-        break;;
+      Yes ) $sudovar sh -c "ufw enable; systemctl enable fstrim.timer systemd-oomd bluetooth ufw"; break;;
       No ) break;;
       Exit ) return;;
     esac
@@ -1009,9 +1001,9 @@ arch-base() {
   local both='localectl --no-convert set-x11-keymap us,br pc105 intl,;setxkbmap -model pc105 -layout us,br -variant intl,;echo -e "LANG=en_US.UTF-8\nLANGUAGE=\"en_US\"\nLC_TYPE=pt_BR.UTF-8\nLC_NUMERIC=pt_BR.UTF-8\nLC_TIME=pt_BR.UTF-8\nLC_MONETARY=pt_BR.UTF-8\nLC_PAPER=pt_BR.UTF-8\nLC_MEASUREMENT=pt_BR.UTF-8" | tee /etc/locale.conf;echo -e "KEYMAP=us-acentos\nKEYMAP_TOGGLE=br-abnt2\nFONT=eurlatgr\nFONT_MAP=8859-1" | tee /etc/vconsole.conf'
   select pubne in 'PT_BR' 'EN_US' 'Both' 'No' 'Exit'; do
     case $pubne in
-      PT_BR ) sh -c "${varsu} sh -c '$PT'"; break;;
-      EN_US ) sh -c "${varsu} sh -c '$US'"; break;;
-      Both ) sh -c "${varsu} sh -c '$both'"; break;;
+      PT_BR ) $sudovar sh -c "$PT"; break;;
+      EN_US ) $sudovar sh -c "$US"; break;;
+      Both ) $sudovar sh -c "$both"; break;;
       No ) break;;
       Exit ) return;;
     esac
@@ -1053,18 +1045,18 @@ arch-base() {
           fi
 
           # Firefox config
-          echo "Do you wish to create Firefox config in \"$HOME/chrome\" dir [y/N]?"
+          echo 'Do you wish to create Firefox config in "$HOME/chrome" [y/N]?'
           read firefoxcfg
           if [[ $firefoxcfg =~ '^[yY]' ]]; then
-            command mkdir -p $HOME/chrome
-            echo '@-moz-document url(about:home), url(about:newtab), url(about:privatebrowsing) {\n\t.click-target-container *, .top-sites-list * {\n\t\tcolor: #fff !important ;\n\t\ttext-shadow: 2px 2px 2px #222 !important ;\n\t}\n\n\tbody::before {\n\t\tcontent: "" ;\n\t\tz-index: -1 ;\n\t\tposition: fixed ;\n\t\ttop: 0 ;\n\t\tleft: 0 ;\n\t\tbackground: #f9a no-repeat url(img) center ;\n\t\tbackground-size: cover ;\n\t\twidth: 100vw ;\n\t\theight: 100vh ;\n\t}\n}' > $HOME/chrome/userContent.css
+            command mkdir -p "$HOME/chrome"
+            echo '@-moz-document url(about:home), url(about:newtab), url(about:privatebrowsing) {\n\t.click-target-container *, .top-sites-list * {\n\t\tcolor: #fff !important ;\n\t\ttext-shadow: 2px 2px 2px #222 !important ;\n\t}\n\n\tbody::before {\n\t\tcontent: "" ;\n\t\tz-index: -1 ;\n\t\tposition: fixed ;\n\t\ttop: 0 ;\n\t\tleft: 0 ;\n\t\tbackground: #f9a no-repeat url(img) center ;\n\t\tbackground-size: cover ;\n\t\twidth: 100vw ;\n\t\theight: 100vh ;\n\t}\n}' > "$HOME/chrome/userContent.css"
             ln -sf "$HOME/Pictures/Wallpapers/Module Abyss Lapis."* "$HOME/chrome/img" &>/dev/null
           fi
           unset firefoxcfg
 
           # Nerd font config
           if [[ ! $(find "$XDG_DATA_HOME/fonts" -name 'JetBrains*.ttf' 2>/dev/null) ]]; then
-            echo "Do you wish to install Nerd Fonts? [y/N]?" && read nerdcfg
+            echo 'Do you wish to install Nerd Fonts? [y/N]?' && read nerdcfg
             [[ $nerdcfg =~ '^[yY]' ]] || return
             command mkdir -p "$XDG_DATA_HOME/fonts"
             echo 'Downloading Nerd Fonts...'
@@ -1133,8 +1125,8 @@ arch-base() {
     case $yne in
 
       Yes )
-        sh -c "${varsu} pacman -S --needed virt-manager qemu-desktop libvirt edk2-ovmf dnsmasq iptables-nft"
-        sh -c "${varsu} systemctl enable --now libvirtd; ${varsu} virsh net-autostart default"
+        sh -c "${sudovar} pacman -S --needed virt-manager qemu-desktop libvirt edk2-ovmf dnsmasq iptables-nft"
+        sh -c "${sudovar} systemctl enable --now libvirtd; ${sudovar} virsh net-autostart default"
         if [[ "$EUID" != 0 ]]; then
           [[ -z $(groups | grep libvirt) ]] && gpasswd -a $USER libvirt
           if ! grep -q "user = \"$USER\"" /etc/libvirt/qemu.conf; then
@@ -1161,10 +1153,10 @@ arch-base() {
     case $gke in
 
       GNOME )
-        sh -c "${varsu} pacman -S --needed xdg-desktop-portal-gnome gnome-shell gnome-session gdm nautilus gnome-control-center evince file-roller baobab gnome-calculator gnome-characters gnome-disk-utility gnome-keyring gnome-system-monitor gvfs-mtp gnome-tweaks gnome-themes-extra qgnomeplatform-qt6 webp-pixbuf-loader ffmpegthumbnailer gnome-nibbles aisleriot quadrapassel gnome-taquin gnome-chess gnome-mines"
-        sh -c "${varsu} sed -i 's/#HandleLidSwitch=suspend/HandleLidSwitch=lock/' /etc/systemd/logind.conf"
-        sh -c "echo -e '[Unit]\nDescription=Changes Wallpapers\nStartLimitIntervalSec=3\nStartLimitBurst=5\n\n[Service]\nExecStart=/home/bruno/.local/share/backgrounds/chwp.sh\nRestart=always\nRestartSec=3\n\n[Install]\nWantedBy=default.target' | ${varsu} tee /etc/systemd/user/chwp.service >/dev/null"
-        sh -c "${varsu} chmod u+x /etc/systemd/user/chwp.service"
+        sh -c "${sudovar} pacman -S --needed xdg-desktop-portal-gnome gnome-shell gnome-session gdm nautilus gnome-control-center evince file-roller baobab gnome-calculator gnome-characters gnome-disk-utility gnome-keyring gnome-system-monitor gvfs-mtp gnome-tweaks gnome-themes-extra qgnomeplatform-qt6 webp-pixbuf-loader ffmpegthumbnailer gnome-nibbles aisleriot quadrapassel gnome-taquin gnome-chess gnome-mines"
+        sh -c "${sudovar} sed -i 's/#HandleLidSwitch=suspend/HandleLidSwitch=lock/' /etc/systemd/logind.conf"
+        sh -c "echo -e '[Unit]\nDescription=Changes Wallpapers\nStartLimitIntervalSec=3\nStartLimitBurst=5\n\n[Service]\nExecStart=/home/bruno/.local/share/backgrounds/chwp.sh\nRestart=always\nRestartSec=3\n\n[Install]\nWantedBy=default.target' | ${sudovar} tee /etc/systemd/user/chwp.service >/dev/null"
+        sh -c "${sudovar} chmod u+x /etc/systemd/user/chwp.service"
         sudo -u gdm dbus-launch gsettings set org.gnome.desktop.peripherals.touchpad tap-to-click true
 
         if [[ "$EUID" != 0 ]]; then
@@ -1180,16 +1172,16 @@ arch-base() {
         break;;
 
       KDE )
-        sh -c "${varsu} pacman -S --needed plasma-desktop sddm sddm-kcm plasma-wayland-session xdg-desktop-portal-kde qt5-wayland qt6-wayland bluedevil powerdevil breeze-gtk kde-gtk-config kdialog khotkeys kinfocenter kscreen kwallet-pam plasma-disks plasma-firewall plasma-nm plasma-pa dolphin-plugins ark filelight kcalc kcharselect gwenview qt5-imageformats ffmpegthumbs okular plasma-systemmonitor spectacle qt5-virtualkeyboard haruna"
+        sh -c "${sudovar} pacman -S --needed plasma-desktop sddm sddm-kcm plasma-wayland-session xdg-desktop-portal-kde qt5-wayland qt6-wayland bluedevil powerdevil breeze-gtk kde-gtk-config kdialog khotkeys kinfocenter kscreen kwallet-pam plasma-disks plasma-firewall plasma-nm plasma-pa dolphin-plugins ark filelight kcalc kcharselect gwenview qt5-imageformats ffmpegthumbs okular plasma-systemmonitor spectacle qt5-virtualkeyboard haruna"
         echo "\n>>> Do you wish to install KDE Games?\n"
-        sh -c "${varsu} pacman -S --needed bomber granatier kapman kblocks kfourinline kmines knavalbattle knetwalk kollision kpat ksnakeduel kspaceduel"
-        [[ -f '/etc/sddm.conf.d/kde_settings.conf' ]] && ! grep -q Breeze_Snow /etc/sddm.conf.d/kde_settings.conf && sh -c "${varsu} sed -i '/^RebootCommand/ s/$/\nNumlock=on\nInputMethod=qtvirtualkeyboard/; /=breeze$/ s/$/\nCursorTheme=Breeze_Snow/' /etc/sddm.conf.d/kde_settings.conf"
+        sh -c "${sudovar} pacman -S --needed bomber granatier kapman kblocks kfourinline kmines knavalbattle knetwalk kollision kpat ksnakeduel kspaceduel"
+        [[ -f '/etc/sddm.conf.d/kde_settings.conf' ]] && ! grep -q Breeze_Snow /etc/sddm.conf.d/kde_settings.conf && sh -c "${sudovar} sed -i '/^RebootCommand/ s/$/\nNumlock=on\nInputMethod=qtvirtualkeyboard/; /=breeze$/ s/$/\nCursorTheme=Breeze_Snow/' /etc/sddm.conf.d/kde_settings.conf"
         break;;
 
       Exit ) return;;
     esac
   done
-  unset varsu
+  unset sudovar
 }
 #------------------------------------------------------------------------------#
 #################################### Prompt ####################################
