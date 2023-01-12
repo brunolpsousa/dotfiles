@@ -49,9 +49,9 @@ alias ln='ln -v'
 alias df='df -h'
 alias ip='ip --color=auto'
 alias diff='diff -Nuar --color=auto'
-alias ls='ls --color=auto --hyperlink=auto --human-readable --literal --group-directories-first --classify'
+alias ls='ls -v --color=auto --hyperlink=auto --human-readable --literal --group-directories-first --classify'
 alias la='ls -v --color=auto --hyperlink=auto --human-readable --literal --group-directories-first --classify --almost-all'
-alias ll='ls -l --color=auto --hyperlink=auto --human-readable --literal --group-directories-first --classify'
+alias ll='ls -lv --color=auto --hyperlink=auto --human-readable --literal --group-directories-first --classify'
 alias lla='ls -lv --color=auto --hyperlink=auto --human-readable --literal --group-directories-first --classify --almost-all'
 alias g='grep -n -C 3 --color=auto'
 alias grep='grep --color=auto'
@@ -601,9 +601,6 @@ alias paclog='grep -nC 2 --color=auto warning: /var/log/pacman.log'
 # Refresh Arch mirrors
 alias refresh='sudo reflector --protocol https --age 12 --latest 20 --connection-timeout 2 --download-timeout 2 --fastest 5 --sort rate --save /etc/pacman.d/mirrorlist --verbose'
 
-# Ignore local modifications
-alias git-ignore='git reset --hard HEAD && git merge "@{u}"'
-
 # Weather by wttr.in
 alias weather='curl https://wttr.in'
 
@@ -967,7 +964,7 @@ arch-base() {
   select yne in 'Yes' 'No' 'Exit'; do
     case $yne in
       Yes )
-        $sudovar sh -c "pacman -Syu --needed sbctl neovim wl-clipboard alacritty tmux xdg-desktop-portal xdg-desktop-portal-gtk yt-dlp firefox ufw neofetch man-db tldr ntfs-3g exfat-utils unrar zip p7zip zsh zsh-autosuggestions zsh-completions zsh-history-substring-search zsh-syntax-highlighting steam qbittorrent libreoffice-fresh libreoffice-fresh-pt-br fzf hunspell-en_US noto-fonts noto-fonts-cjk noto-fonts-emoji ttf-liberation gsfonts lib32-gst-plugins-good gnuchess java-runtime-common base-devel networkmanager reflector android-udev android-tools pkgstats pipewire pipewire-alsa pipewire-pulse wireplumber $(case $(lscpu | awk '/Model name:/{print $3}') in AMD) echo -n 'amd-ucode';; Intel\(R\)) echo -n 'intel-ucode';; esac)"
+        $sudovar sh -c "pacman -Syu --needed sbctl neovim wl-clipboard alacritty tmux xdg-desktop-portal xdg-desktop-portal-gtk yt-dlp firefox mpv ufw neofetch man-db tldr ntfs-3g exfat-utils unrar zip p7zip zsh zsh-autosuggestions zsh-completions zsh-history-substring-search zsh-syntax-highlighting steam qbittorrent libreoffice-fresh libreoffice-fresh-pt-br fzf hunspell-en_US noto-fonts noto-fonts-cjk noto-fonts-emoji ttf-liberation gsfonts lib32-gst-plugins-good gnuchess java-runtime-common base-devel networkmanager reflector android-udev android-tools pkgstats pipewire pipewire-alsa pipewire-pulse wireplumber $(case $(lscpu | awk '/Model name:/{print $3}') in AMD) echo -n 'amd-ucode';; Intel\(R\)) echo -n 'intel-ucode';; esac)"
         if [[ "$EUID" != 0 && ! -x /usr/bin/paru ]]; then
           command mkdir -p $HOME/{.cache/paru/clone,.config/paru}
           git clone https://aur.archlinux.org/paru-bin $XDG_CACHE_HOME/paru/clone/paru-bin
@@ -1107,9 +1104,19 @@ arch-base() {
           fi
 
           # mpv config
-          if command -v celluloid >/dev/null && [[ ! -f "$XDG_CONFIG_HOME/celluloid/scripts/nextfile.lua" ]]; then
-            command mkdir -p "$XDG_CONFIG_HOME/celluloid/scripts"
-            curl -s 'https://raw.githubusercontent.com/N1vBruno/mpv-nextfile/master/nextfile.lua' -o "$XDG_CONFIG_HOME/celluloid/scripts/nextfile.lua"
+          if command -v mpv >/dev/null; then
+            command mkdir -p "$XDG_CONFIG_HOME/mpv/scripts"
+            echo 'Ctrl+q quit\nF11 cycle fullscreen\nENTER cycle fullscreen\nKP_ENTER cycle fullscreen\nWHEEL_UP osd-msg-bar seek 3\nWHEEL_DOWN osd-msg-bar seek -3\nLEFT osd-msg-bar seek -5\nRIGHT osd-msg-bar seek  5\nUP osd-msg-bar seek 15\nDOWN osd-msg-bar seek -15\nkp9 add volume -2\nkp0 add volume 2' > "$XDG_CONFIG_HOME/mpv/input.conf"
+            echo 'idle=yes\nvolume=25\nautofit-smaller=50%x50%\nautofit-larger=90%x90%' > "$XDG_CONFIG_HOME/mpv/mpv.conf"
+            [[ ! -f "$XDG_CONFIG_HOME/mpv/scripts/nextfile.lua" ]] && curl -s 'https://raw.githubusercontent.com/N1vBruno/mpv-nextfile/master/nextfile.lua' -o "$XDG_CONFIG_HOME/mpv/scripts/nextfile.lua"
+            if [[ ! -f "$XDG_CONFIG_HOME/mpv/scripts/playlistmanager.lua" ]]; then
+              curl -s 'https://raw.githubusercontent.com/jonniek/mpv-playlistmanager/master/playlistmanager.lua' -o "$XDG_CONFIG_HOME/mpv/scripts/playlistmanager.lua"
+              local sumvar='9d6ea30ece763728343ed49852c40535ab189001933f86f78f250d3eccc9c8f3b5100631b4410f44f332f4d601cbcc623c844d1ad5538a39468288f4596315fe'
+              local sumvar2="$(sha512sum $XDG_CONFIG_HOME/mpv/scripts/playlistmanager.lua | cut -d ' ' -f1)" 2>/dev/null
+              [[ $sumvar != $sumvar2 ]] && command rm "$XDG_CONFIG_HOME/mpv/scripts/playlistmanager.lua" && echo "$(date '+%Y-%m-%d %H:%M:%S') - mpv-playlistmanager checksum mismatch" >> "$HOME/.alert"
+              unset sumvar sumvar2
+            fi
+            sed -i 's/\(key_loadfiles = "\)/\1CTRL+l/g' "$XDG_CONFIG_HOME/mpv/scripts/playlistmanager.lua"
           fi
           break;;
 
@@ -1172,7 +1179,7 @@ arch-base() {
         break;;
 
       KDE )
-        sh -c "${sudovar} pacman -S --needed plasma-desktop sddm sddm-kcm plasma-wayland-session xdg-desktop-portal-kde qt5-wayland qt6-wayland bluedevil powerdevil breeze-gtk kde-gtk-config kdialog khotkeys kinfocenter kscreen kwallet-pam plasma-disks plasma-firewall plasma-nm plasma-pa dolphin-plugins ark filelight kcalc kcharselect gwenview qt5-imageformats ffmpegthumbs okular plasma-systemmonitor spectacle qt5-virtualkeyboard haruna"
+        sh -c "${sudovar} pacman -S --needed plasma-desktop sddm sddm-kcm plasma-wayland-session xdg-desktop-portal-kde qt5-wayland qt6-wayland bluedevil powerdevil breeze-gtk kde-gtk-config kdialog khotkeys kinfocenter kscreen kwallet-pam plasma-disks plasma-firewall plasma-nm plasma-pa dolphin-plugins ark filelight kcalc kcharselect gwenview qt5-imageformats ffmpegthumbs okular plasma-systemmonitor spectacle qt5-virtualkeyboard"
         echo "\n>>> Do you wish to install KDE Games?\n"
         sh -c "${sudovar} pacman -S --needed bomber granatier kapman kblocks kfourinline kmines knavalbattle knetwalk kollision kpat ksnakeduel kspaceduel"
         [[ -f '/etc/sddm.conf.d/kde_settings.conf' ]] && ! grep -q Breeze_Snow /etc/sddm.conf.d/kde_settings.conf && sh -c "${sudovar} sed -i '/^RebootCommand/ s/$/\nNumlock=on\nInputMethod=qtvirtualkeyboard/; /=breeze$/ s/$/\nCursorTheme=Breeze_Snow/' /etc/sddm.conf.d/kde_settings.conf"
