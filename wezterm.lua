@@ -1,5 +1,3 @@
--- https://github.com/thanhvule0310/dotfiles/blob/main/config/wezterm/wezterm.lua
-
 local wezterm = require("wezterm")
 local function is_dark()
 	local success, stdout = wezterm.run_child_process({
@@ -171,7 +169,7 @@ end)
 wezterm.on("update-right-status", function(window)
 	window:set_right_status(wezterm.format({
 		{ Attribute = { Intensity = "Bold" } },
-		{ Text = wezterm.strftime(" %A, %d %B %Y %I:%M %p ") },
+		{ Text = wezterm.strftime(" %A, %d %B %Y %H:%M ") },
 	}))
 end)
 
