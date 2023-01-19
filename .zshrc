@@ -218,6 +218,14 @@ key[Control-Right]="${terminfo[kRIT5]}"
 bindkey '^H' backward-kill-word                           # control + backspace
 bindkey '^[[3^' kill-word                                 # control + delete
 bindkey '^[[3;5~' kill-word                               # control + delete
+bindkey '^[[7~' beginning-of-line                         # Home key
+bindkey '^[[H' beginning-of-line                          # Home key
+bindkey -M vicmd '^[[7~' beginning-of-line                # Home key
+bindkey -M vicmd '^[[H' beginning-of-line                 # Home key
+bindkey '^[[8~' end-of-line                               # End key
+bindkey '^[[F' end-of-line                                # End key
+bindkey -M vicmd '^[[8~' end-of-line                      # End key
+bindkey -M vicmd '^[[F' end-of-line                       # End key
 #------------------------------------------------------------------------------#
 # Vim Mapping For Completion
 # https://thevaluable.dev/zsh-install-configure-mouseless/
@@ -664,20 +672,6 @@ lscolors() {
   for i in {0..255}; do print -Pn "%K{$i}  %k%F{$i}${(l:3::0:)i}%f " ${${(M)$((i%6)):#3}:+$'\n'}; done
 }
 #------------------------------------------------------------------------------#
-# If tmux is executable and not already inside a session:
-  if command -v tmux >/dev/null && [[ -z $TMUX && -z $ZSH_TMUX_STARTED ]]; then
-    tvar="$(tmux list-sessions >/dev/null 2>&1 | grep main)"
-    export ZSH_TMUX_STARTED=1
-    if grep -q attached <<< "$tvar"; then
-      tmux neww -t main && tmux a -t main
-    elif [[ -n $tvar ]]; then
-      tmux a -t main
-    else
-      tmux new -As main
-    fi
-    unset tvar; echo
-  fi
-#------------------------------------------------------------------------------#
 ################################## Arch Config #################################
 #------------------------------------------------------------------------------#
 # Colors
@@ -964,7 +958,7 @@ arch-base() {
   select yne in 'Yes' 'No' 'Exit'; do
     case $yne in
       Yes )
-        $sudovar sh -c "pacman -Syu --needed sbctl neovim wl-clipboard alacritty tmux xdg-desktop-portal xdg-desktop-portal-gtk yt-dlp firefox mpv ufw neofetch man-db tldr ntfs-3g exfat-utils unrar zip p7zip zsh zsh-autosuggestions zsh-completions zsh-history-substring-search zsh-syntax-highlighting steam qbittorrent libreoffice-fresh libreoffice-fresh-pt-br fzf hunspell-en_US noto-fonts noto-fonts-cjk noto-fonts-emoji ttf-liberation gsfonts lib32-gst-plugins-good gnuchess java-runtime-common base-devel networkmanager reflector android-udev android-tools pkgstats pipewire pipewire-alsa pipewire-pulse wireplumber $(case $(lscpu | awk '/Model name:/{print $3}') in AMD) echo -n 'amd-ucode';; Intel\(R\)) echo -n 'intel-ucode';; esac)"
+        $sudovar sh -c "pacman -Syu --needed sbctl neovim wl-clipboard wezterm xdg-desktop-portal xdg-desktop-portal-gtk yt-dlp firefox mpv ufw neofetch man-db tldr ntfs-3g exfat-utils unrar zip p7zip zsh zsh-autosuggestions zsh-completions zsh-history-substring-search zsh-syntax-highlighting steam qbittorrent libreoffice-fresh libreoffice-fresh-pt-br fzf hunspell-en_US noto-fonts noto-fonts-cjk noto-fonts-emoji ttf-liberation gsfonts lib32-gst-plugins-good gnuchess java-runtime-common base-devel networkmanager reflector android-udev android-tools pkgstats pipewire pipewire-alsa pipewire-pulse wireplumber $(case $(lscpu | awk '/Model name:/{print $3}') in AMD) echo -n 'amd-ucode';; Intel\(R\)) echo -n 'intel-ucode';; esac)"
         if [[ "$EUID" != 0 && ! -x /usr/bin/paru ]]; then
           command mkdir -p $HOME/{.cache/paru/clone,.config/paru}
           git clone https://aur.archlinux.org/paru-bin $XDG_CACHE_HOME/paru/clone/paru-bin
@@ -1086,10 +1080,12 @@ arch-base() {
             fi
           fi
 
-          # Alacritty config
-          if command -v alacritty >/dev/null; then
-            command mkdir -p "$XDG_CONFIG_HOME/alacritty"
-            echo "window:\n  dynamic_padding: true\n  dimensions:\n    $(case $(lscpu | awk '/Model name:/{print $3}') in AMD) echo -n 'columns: 146\n    lines: 45' ;; Intel\(R\)) echo -n 'columns: 115\n    lines: 32';; esac)\n  opacity: 0.9\n\nfont:\n  normal:\n    family: JetBrainsMono Nerd Font Mono\n    style: Medium\n  bold:\n    family: JetBrainsMono Nerd Font Mono\n  italic:\n    family: JetBrainsMono Nerd Font Mono\n  bold_italic:\n    family: JetBrainsMono Nerd Font Mono\n  size: 10\n\nkey_bindings:\n  - { key: T, mods: Control|Shift, action: SpawnNewInstance }\n  - { key: W, mods: Control|Shift, action: Quit }\n\n# https://draculatheme.com/alacritty\ncolors:\n  primary:\n    background: '#282a36'\n    foreground: '#f8f8f2'\n    bright_foreground: '#ffffff'\n  cursor:\n    text: CellBackground\n    cursor: CellForeground\n  vi_mode_cursor:\n    text: CellBackground\n    cursor: CellForeground\n  search:\n    matches:\n      foreground: '#44475a'\n      background: '#50fa7b'\n    focused_match:\n      foreground: '#44475a'\n      background: '#ffb86c'\n  footer_bar:\n    background: '#282a36'\n    foreground: '#f8f8f2'\n  hints:\n    start:\n      foreground: '#282a36'\n      background: '#f1fa8c'\n    end:\n      foreground: '#f1fa8c'\n      background: '#282a36'\n  line_indicator:\n    foreground: None\n    background: None\n  selection:\n    text: CellForeground\n    background: '#44475a'\n  normal:\n    black: '#21222c'\n    red: '#ff5555'\n    green: '#50fa7b'\n    yellow: '#f1fa8c'\n    blue: '#bd93f9'\n    magenta: '#ff79c6'\n    cyan: '#8be9fd'\n    white: '#f8f8f2'\n  bright:\n    black: '#6272a4'\n    red: '#ff6e6e'\n    green: '#69ff94'\n    yellow: '#ffffa5'\n    blue: '#d6acff'\n    magenta: '#ff92df'\n    cyan: '#a4ffff'\n    white: '#ffffff'" > "$XDG_CONFIG_HOME/alacritty/alacritty.yml"
+          # Wezterm config
+          if command -v wezterm >/dev/null; then
+            command mkdir -p "$XDG_CONFIG_HOME/wezterm"
+            [[ -f "$XDG_CONFIG_HOME/wezterm/wezterm.lua" ]] || curl -s 'https://gitlab.com/N1vBruno/dotfiles/-/raw/master/wezterm.lua' -o "$XDG_CONFIG_HOME/wezterm/wezterm.lua"
+            case $(lscpu | awk '/Model name:/{print $3}') in Intel\(R\)) sed -i 's/\(initial_cols = \)148/\1112/g; s/\(initial_rows = \)40/\130/g' "$XDG_CONFIG_HOME/wezterm/wezterm.lua";; esac
+            echo '#!/usr/bin/env bash\nwezterm start "$@"' | sudo tee /usr/local/bin/xterm
           fi
 
           # Tmux config
@@ -1170,7 +1166,7 @@ arch-base() {
           command mkdir -p "$XDG_DATA_HOME/backgrounds"
           [[ -f "$XDG_CONFIG_HOME/backgrounds/chwp.sh" ]] || curl -s 'https://gitlab.com/N1vBruno/dotfiles/-/raw/master/chwp.sh' -o "$XDG_DATA_HOME/backgrounds/chwp.sh"
           chmod +x "$XDG_DATA_HOME/backgrounds/chwp.sh"
-          echo '#!/bin/env bash\ntvar=$(tmux list-sessions | grep main)\nif grep -q attached <<< "$tvar"; then\n  tmux neww -t main -c "$PWD"\nelif [[ -n "$tvar" ]]; then\n  tmux neww -t main; alacritty\nelse\n  alacritty\nfi' > "$XDG_DATA_HOME/nautilus/scripts/open-terminal-here"
+          echo '#!/bin/env bash\nwezterm start --cwd "$PWD" -- "$@"' > "$XDG_DATA_HOME/nautilus/scripts/open-terminal-here"
           chmod +x "$XDG_DATA_HOME/nautilus/scripts/open-terminal-here"
           echo 'F4 open-terminal-here' > "$XDG_CONFIG_HOME/nautilus/scripts-accels"
           systemctl --user daemon-reload
