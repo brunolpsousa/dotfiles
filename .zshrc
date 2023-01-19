@@ -1086,6 +1086,7 @@ arch-base() {
             [[ -f "$XDG_CONFIG_HOME/wezterm/wezterm.lua" ]] || curl -s 'https://gitlab.com/N1vBruno/dotfiles/-/raw/master/wezterm.lua' -o "$XDG_CONFIG_HOME/wezterm/wezterm.lua"
             case $(lscpu | awk '/Model name:/{print $3}') in Intel\(R\)) sed -i 's/\(initial_cols = \)148/\1112/g; s/\(initial_rows = \)40/\130/g' "$XDG_CONFIG_HOME/wezterm/wezterm.lua";; esac
             echo '#!/usr/bin/env bash\nwezterm start "$@"' | sudo tee /usr/local/bin/xterm
+            sudo chmod +x /usr/local/bin/xterm
           fi
 
           # Tmux config
@@ -1107,12 +1108,12 @@ arch-base() {
             [[ ! -f "$XDG_CONFIG_HOME/mpv/scripts/nextfile.lua" ]] && curl -s 'https://raw.githubusercontent.com/N1vBruno/mpv-nextfile/master/nextfile.lua' -o "$XDG_CONFIG_HOME/mpv/scripts/nextfile.lua"
             if [[ ! -f "$XDG_CONFIG_HOME/mpv/scripts/playlistmanager.lua" ]]; then
               curl -s 'https://raw.githubusercontent.com/jonniek/mpv-playlistmanager/master/playlistmanager.lua' -o "$XDG_CONFIG_HOME/mpv/scripts/playlistmanager.lua"
-              local sumvar='9d6ea30ece763728343ed49852c40535ab189001933f86f78f250d3eccc9c8f3b5100631b4410f44f332f4d601cbcc623c844d1ad5538a39468288f4596315fe'
+              local sumvar='4dea313558df39909d7d90f517d884f5b267216f184cf09e95b71ed2d3729305e5b895ff7c1d5f94dcfbe10e245c5d95b940ae28b2d76b77e86cc6dcb51fa611'
               local sumvar2="$(sha512sum $XDG_CONFIG_HOME/mpv/scripts/playlistmanager.lua | cut -d ' ' -f1)" 2>/dev/null
               [[ $sumvar != $sumvar2 ]] && command rm "$XDG_CONFIG_HOME/mpv/scripts/playlistmanager.lua" && echo "$(date '+%Y-%m-%d %H:%M:%S') - mpv-playlistmanager checksum mismatch" >> "$HOME/.alert"
               unset sumvar sumvar2
             fi
-            sed -i 's/\(key_loadfiles = "\)/\1CTRL+l/g' "$XDG_CONFIG_HOME/mpv/scripts/playlistmanager.lua"
+            sed -i 's/\(key_loadfiles = "\)"/\1CTRL+l"/g' "$XDG_CONFIG_HOME/mpv/scripts/playlistmanager.lua"
           fi
           break;;
 
