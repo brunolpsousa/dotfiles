@@ -1041,6 +1041,7 @@ arch-base() {
           if [[ $firefoxcfg =~ '^[yY]' ]]; then
             command mkdir -p "$HOME/chrome"
             echo '@-moz-document url(about:home), url(about:newtab), url(about:privatebrowsing) {\n\t.click-target-container *, .top-sites-list * {\n\t\tcolor: #fff !important ;\n\t\ttext-shadow: 2px 2px 2px #222 !important ;\n\t}\n\n\tbody::before {\n\t\tcontent: "" ;\n\t\tz-index: -1 ;\n\t\tposition: fixed ;\n\t\ttop: 0 ;\n\t\tleft: 0 ;\n\t\tbackground: #f9a no-repeat url(img) center ;\n\t\tbackground-size: cover ;\n\t\twidth: 100vw ;\n\t\theight: 100vh ;\n\t}\n}' > "$HOME/chrome/userContent.css"
+            echo '/* #PlacesToolbarItems { filter: grayscale(1); } */\n#unified-extensions-button{\n  width: 0.1px;\n  padding-inline: 0 !important\n}\n#unified-extensions-button > .toolbarbutton-icon{\n  width: 0 !important;\n}' > "$HOME/chrome/userChrome.css"
             ln -sf "$HOME/Pictures/Wallpapers/Module Abyss Lapis."* "$HOME/chrome/img" &>/dev/null
           fi
           unset firefoxcfg
