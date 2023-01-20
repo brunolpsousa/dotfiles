@@ -189,7 +189,6 @@ return {
 	}),
 	font_size = 10,
 	max_fps = 120,
-	enable_wayland = false,
 	pane_focus_follows_mouse = false,
 	warn_about_missing_glyphs = false,
 	show_update_window = false,
@@ -219,7 +218,6 @@ return {
 	tab_max_width = 50,
 	hide_tab_bar_if_only_one_tab = true,
 	disable_default_key_bindings = true,
-	front_end = "WebGpu",
 	color_scheme = is_dark() and "Dracula" or "Dracula",
 	colors = {
 		cursor_fg = is_dark() and colors.base or colors.crust,
