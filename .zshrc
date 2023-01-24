@@ -422,6 +422,20 @@ else
   unset sumvar sumvar2 dirvar
 fi
 #------------------------------------------------------------------------------#
+# If tmux is executable and not already inside a session:
+if command -v tmux >/dev/null && [[ -z $TMUX && -z $ZSH_TMUX_STARTED ]]; then
+  tvar="$(tmux list-sessions &>/dev/null | grep main)"
+  export ZSH_TMUX_STARTED=1
+  if grep -q attached <<< "$tvar"; then
+    tmux neww -t=main -c "$PWD" && tmux a -t=main
+  elif [[ -n $tvar ]]; then
+    tmux a -t=main
+  else
+    tmux new -As main -c "$PWD"
+  fi
+  unset tvar && NEW_LINE_BEFORE_PROMPT=1
+fi
+#------------------------------------------------------------------------------#
 #################################### Extras ####################################
 #------------------------------------------------------------------------------#
 # Archive Extraction
@@ -958,7 +972,7 @@ arch-base() {
   select yne in 'Yes' 'No' 'Exit'; do
     case $yne in
       Yes )
-        $sudovar sh -c "pacman -Syu --needed sbctl neovim wl-clipboard wezterm xdg-desktop-portal xdg-desktop-portal-gtk yt-dlp firefox mpv ufw neofetch man-db tldr ntfs-3g exfat-utils unrar zip p7zip zsh zsh-autosuggestions zsh-completions zsh-history-substring-search zsh-syntax-highlighting steam qbittorrent libreoffice-fresh libreoffice-fresh-pt-br fzf hunspell-en_US noto-fonts noto-fonts-cjk noto-fonts-emoji ttf-liberation gsfonts lib32-gst-plugins-good gnuchess java-runtime-common base-devel networkmanager reflector android-udev android-tools pkgstats pipewire pipewire-alsa pipewire-pulse wireplumber $(case $(lscpu | awk '/Model name:/{print $3}') in AMD) echo -n 'amd-ucode';; Intel\(R\)) echo -n 'intel-ucode';; esac)"
+        $sudovar sh -c "pacman -Syu --needed sbctl neovim wl-clipboard alacritty tmux xdg-desktop-portal xdg-desktop-portal-gtk yt-dlp firefox mpv ufw neofetch man-db tldr ntfs-3g exfat-utils unrar zip p7zip zsh zsh-autosuggestions zsh-completions zsh-history-substring-search zsh-syntax-highlighting steam qbittorrent libreoffice-fresh libreoffice-fresh-pt-br fzf hunspell-en_US noto-fonts noto-fonts-cjk noto-fonts-emoji ttf-liberation gsfonts lib32-gst-plugins-good gnuchess java-runtime-common base-devel networkmanager reflector android-udev android-tools pkgstats pipewire pipewire-alsa pipewire-pulse wireplumber $(case $(lscpu | awk '/Model name:/{print $3}') in AMD) echo -n 'amd-ucode';; Intel\(R\)) echo -n 'intel-ucode';; esac)"
         if [[ "$EUID" != 0 && ! -x /usr/bin/paru ]]; then
           command mkdir -p $HOME/{.cache/paru/clone,.config/paru}
           git clone https://aur.archlinux.org/paru-bin $XDG_CACHE_HOME/paru/clone/paru-bin
@@ -1081,24 +1095,50 @@ arch-base() {
             fi
           fi
 
-          # Wezterm config
-          if command -v wezterm >/dev/null; then
-            command mkdir -p "$XDG_CONFIG_HOME/wezterm"
-            [[ -f "$XDG_CONFIG_HOME/wezterm/wezterm.lua" ]] || curl -s 'https://gitlab.com/N1vBruno/dotfiles/-/raw/master/wezterm.lua' -o "$XDG_CONFIG_HOME/wezterm/wezterm.lua"
-            case $(lscpu | awk '/Model name:/{print $3}') in Intel\(R\)) sed -i 's/\(initial_cols = \)148/\1112/g; s/\(initial_rows = \)40/\130/g' "$XDG_CONFIG_HOME/wezterm/wezterm.lua";; esac
-            echo '#!/usr/bin/env bash\nwezterm start "$@"' | sudo tee /usr/local/bin/xterm
-            sudo chmod +x /usr/local/bin/xterm
+          # Alacritty config
+          if command -v alacritty >/dev/null; then
+            command mkdir -p "$XDG_CONFIG_HOME/alacritty"
+            echo "window:\n  dynamic_padding: true\n  dimensions:\n    $(case $(lscpu | awk '/Model name:/{print $3}') in AMD) echo -n 'columns: 146\n    lines: 45' ;; Intel\(R\)) echo -n 'columns: 115\n    lines: 32';; esac)\n  opacity: 0.9\n\nfont:\n  normal:\n    family: JetBrainsMono Nerd Font Mono\n    style: Medium\n  bold:\n    family: JetBrainsMono Nerd Font Mono\n  italic:\n    family: JetBrainsMono Nerd Font Mono\n  bold_italic:\n    family: JetBrainsMono Nerd Font Mono\n  size: 10\n\ncursor:\n  blink_timeout: 90\n\nkey_bindings:\n  - { key: T, mods: Control|Shift, action: SpawnNewInstance }\n  - { key: W, mods: Control|Shift, action: Quit }\n\n# https://draculatheme.com/alacritty\ncolors:\n  primary:\n    background: '#282a36'\n    foreground: '#f8f8f2'\n    bright_foreground: '#ffffff'\n  cursor:\n    text: CellBackground\n    cursor: CellForeground\n  vi_mode_cursor:\n    text: CellBackground\n    cursor: CellForeground\n  search:\n    matches:\n      foreground: '#44475a'\n      background: '#50fa7b'\n    focused_match:\n      foreground: '#44475a'\n      background: '#ffb86c'\n  footer_bar:\n    background: '#282a36'\n    foreground: '#f8f8f2'\n  hints:\n    start:\n      foreground: '#282a36'\n      background: '#f1fa8c'\n    end:\n      foreground: '#f1fa8c'\n      background: '#282a36'\n  line_indicator:\n    foreground: None\n    background: None\n  selection:\n    text: CellForeground\n    background: '#44475a'\n  normal:\n    black: '#21222c'\n    red: '#ff5555'\n    green: '#50fa7b'\n    yellow: '#f1fa8c'\n    blue: '#bd93f9'\n    magenta: '#ff79c6'\n    cyan: '#8be9fd'\n    white: '#f8f8f2'\n  bright:\n    black: '#6272a4'\n    red: '#ff6e6e'\n    green: '#69ff94'\n    yellow: '#ffffa5'\n    blue: '#d6acff'\n    magenta: '#ff92df'\n    cyan: '#a4ffff'\n    white: '#ffffff'" > "$XDG_CONFIG_HOME/alacritty/alacritty.yml"
+            if [[ -f '/usr/local/bin/xterm' ]]; then
+              ls -lh '/usr/local/bin/xterm' && cat '/usr/local/bin/xterm'
+              echo "Do you wish to delete xterm to install Alacritty tweak? [y/N]" && read xtermVar
+              [[ $xtermVar =~ '^[yY]' ]] && sudo rm -i '/usr/local/bin/xterm'
+              unset xtermVar
+            fi
+            if [[ ! -f '/usr/local/bin/xterm' ]] && command -v tmux >/dev/null; then
+              echo '#!/usr/bin/env bash\ntvar="$(tmux list-sessions | grep main)"\nif grep -q attached <<< "$tvar"; then\n  tmux neww -t=main -c "$@" \nelif [[ -n "$tvar" && -n "$*" ]]; then\n  tmux neww -t=main -c "$@"\n  alacritty\nelif [[ -z "$tvar" || -z "$*" ]]; then\n  alacritty\nelse\n  tmux new-session -d -s main -c "$HOME"\n  tmux neww -t=main -c "$@"\n  alacritty\nfi' | sudo tee '/usr/local/bin/xterm' >/dev/null
+              sudo chmod +x '/usr/local/bin/xterm'
+              [[ ! -f '/bin/xterm' ]] || echo "$(date '+%Y-%m-%d %H:%M:%S') - Warning: /bin/xterm exists and overlaps with /usr/local/bin/xterm" >> "$HOME/.alert"
+            fi
           fi
 
           # Tmux config
           # Vim color fix: https://gist.github.com/andersevenrud/015e61af2fd264371032763d4ed965b6
           if command -v tmux >/dev/null; then
             command mkdir -p "$XDG_CONFIG_HOME/tmux"
-            echo 'set -g default-command "${SHELL}"\nset -ga terminal-overrides ",$TERM:Tc"\nset -g set-titles on\nset -g set-titles-string "#T"\nset -g mouse on\nset -g status-interval 1\nset -gs escape-time 0\nset -g status on\nset -g status-left ""\nset -g status-right ""\nset -g status-justify centre\nset-window-option -g window-status-format "#Iː#W "\nset-window-option -g window-status-current-format "#Iː#W•"\nset -gw mode-style fg=colour226,bold\nset -g status-style fg=colour254\nset -g message-style fg=colour254\nset -g pane-border-style fg=colour243,bg=default\nset -g pane-active-border-style fg=colour243,bg=default\nbind h split-window -v\nbind v split-window -h' > "$XDG_CONFIG_HOME/tmux/tmux.conf"
+            echo 'set -g default-command "${SHELL}"\nset -ga terminal-overrides ",$TERM:Tc"\nset -ga terminal-features ",*:hyperlinks"\nset -g set-titles on\nset -g set-titles-string "#T"\nset -g mouse on\nset -g status-interval 1\nset -gs escape-time 0\nset -g status on\nset -g status-left ""\nset -g status-right ""\nset -g status-justify centre\nset-window-option -g window-status-format "#Iː#W "\nset-window-option -g window-status-current-format "#Iː#W•"\nset -gw mode-style fg=colour226,bold\nset -g status-style fg=colour254\nset -g message-style fg=colour254\nset -g pane-border-style fg=colour243,bg=default\nset -g pane-active-border-style fg=colour243,bg=default\nset -g renumber-windows on\nbind-key -n M-h split-window -v\nbind-key -n M-v split-window -h\nbind-key -n M-Right next-window\nbind-key -n M-Left previous-window\nbind-key -n M-c new-window\nbind-key -n M-x kill-window' > "$XDG_CONFIG_HOME/tmux/tmux.conf"
             echo "Do you wish to remap tmux's prefix to C-['CHAR']? [y/N]" && read tmuxprefix
             [[ $tmuxprefix =~ '^[yY]' ]] && echo 'Enter a char:' && read tmuxbind
             [[ -n $tmuxbind ]] && echo "# remap prefix from C-b to C-$tmuxbind\nunbind C-b\nset-option -g prefix C-$tmuxbind\nbind-key C-$tmuxbind send-prefix" >> "$XDG_CONFIG_HOME/tmux/tmux.conf"
             unset tmuxprefix tmuxbind
+          fi
+
+          # Wezterm config
+          if command -v wezterm >/dev/null; then
+            command mkdir -p "$XDG_CONFIG_HOME/wezterm"
+            [[ -f "$XDG_CONFIG_HOME/wezterm/wezterm.lua" ]] || curl -s 'https://gitlab.com/N1vBruno/dotfiles/-/raw/master/wezterm.lua' -o "$XDG_CONFIG_HOME/wezterm/wezterm.lua"
+            case $(lscpu | awk '/Model name:/{print $3}') in Intel\(R\)) sed -i 's/\(initial_cols = \)148/\1112/g; s/\(initial_rows = \)40/\130/g' "$XDG_CONFIG_HOME/wezterm/wezterm.lua";; esac
+            if [[ -f '/usr/local/bin/xterm' ]]; then
+              ls -lh '/usr/local/bin/xterm' && cat '/usr/local/bin/xterm'
+              echo "Do you wish to delete xterm to install Wezterm tweak? [y/N]" && read xtermVar
+              [[ $xtermVar =~ '^[yY]' ]] && sudo rm -i '/usr/local/bin/xterm'
+              unset xtermVar
+            fi
+            if [[ ! -f '/usr/local/bin/xterm' ]]; then
+              echo '#!/usr/bin/env bash\nwezterm start --cwd "$PWD" -- "$@"' | sudo tee '/usr/local/bin/xterm' >/dev/null
+              sudo chmod +x '/usr/local/bin/xterm'
+              [[ ! -f '/bin/xterm' ]] || echo "$(date '+%Y-%m-%d %H:%M:%S') - Warning: /bin/xterm exists and overlaps with /usr/local/bin/xterm" >> "$HOME/.alert"
+            fi
           fi
 
           # mpv config
@@ -1158,7 +1198,7 @@ arch-base() {
     case $gke in
 
       GNOME )
-        sh -c "${sudovar} pacman -S --needed xdg-desktop-portal-gnome gnome-shell gnome-session gdm nautilus gnome-control-center evince file-roller baobab gnome-calculator gnome-characters gnome-disk-utility gnome-keyring gnome-system-monitor gvfs-mtp gnome-tweaks gnome-themes-extra qgnomeplatform-qt6 webp-pixbuf-loader ffmpegthumbnailer gnome-nibbles aisleriot quadrapassel gnome-taquin gnome-chess gnome-mines"
+        sh -c "${sudovar} pacman -S --needed xdg-desktop-portal-gnome gst-plugin-pipewire gnome-shell gnome-session gdm nautilus gnome-control-center evince file-roller baobab gnome-calculator gnome-characters gnome-disk-utility gnome-keyring gnome-system-monitor gvfs-mtp gnome-tweaks gnome-themes-extra qgnomeplatform-qt6 webp-pixbuf-loader ffmpegthumbnailer gnome-nibbles aisleriot quadrapassel gnome-taquin gnome-chess gnome-mines"
         sh -c "${sudovar} sed -i 's/#HandleLidSwitch=suspend/HandleLidSwitch=lock/' /etc/systemd/logind.conf"
         sh -c "echo -e '[Unit]\nDescription=Changes Wallpapers\nStartLimitIntervalSec=3\nStartLimitBurst=5\n\n[Service]\nExecStart=/home/bruno/.local/share/backgrounds/chwp.sh\nRestart=always\nRestartSec=3\n\n[Install]\nWantedBy=default.target' | ${sudovar} tee /etc/systemd/user/chwp.service >/dev/null"
         sh -c "${sudovar} chmod u+x /etc/systemd/user/chwp.service"
@@ -1168,9 +1208,9 @@ arch-base() {
           command mkdir -p "$XDG_DATA_HOME/backgrounds"
           [[ -f "$XDG_CONFIG_HOME/backgrounds/chwp.sh" ]] || curl -s 'https://gitlab.com/N1vBruno/dotfiles/-/raw/master/chwp.sh' -o "$XDG_DATA_HOME/backgrounds/chwp.sh"
           chmod +x "$XDG_DATA_HOME/backgrounds/chwp.sh"
-          echo '#!/bin/env bash\nwezterm start --cwd "$PWD" -- "$@"' > "$XDG_DATA_HOME/nautilus/scripts/open-terminal-here"
-          chmod +x "$XDG_DATA_HOME/nautilus/scripts/open-terminal-here"
-          echo 'F4 open-terminal-here' > "$XDG_CONFIG_HOME/nautilus/scripts-accels"
+          echo '#!/usr/bin/env bash\nxterm' > "$XDG_DATA_HOME/nautilus/scripts/Terminal"
+          chmod +x "$XDG_DATA_HOME/nautilus/scripts/Terminal"
+          echo 'F4 Terminal' > "$XDG_CONFIG_HOME/nautilus/scripts-accels"
           systemctl --user daemon-reload
           systemctl --user enable --now chwp.service
         fi
@@ -1223,7 +1263,7 @@ prompt_preexec() {
 }
 
 prompt_precmd() {
-  [[ -z $NEW_LINE_BEFORE_PROMPT ]] && NEW_LINE_BEFORE_PROMPT=1 || echo
+  [[ -n $NEW_LINE_BEFORE_PROMPT ]] && echo || NEW_LINE_BEFORE_PROMPT=1
   [[ ! -w . ]] && DIR_LOCK='%F{red}%f ' || unset DIR_LOCK
   prompt_set_title 'expand-prompt' '%~'
   command_time_precmd
@@ -1462,7 +1502,7 @@ spaceship_stuff() {
   local SS_LIST=(asdf hg package node bun deno ruby python elm elixir xcode swift golang perl php rust haskell scala kotlin java lua dart julia crystal docker docker_compose aws gcloud azure venv conda dotnet ocaml vlang zig purescript erlang kubectl ansible terraform pulumi ibmcloud nix_shell gnu_screen ember flutter gradle maven)
   for i in "$SS_LIST[@]"; do
     local SP="$(spaceship_$i)"
-    [[ -n "$SP" ]] && echo -n "$SP"
+    [[ -z "$SP" ]] || echo -n "$SP"
   done
 }
 
@@ -2960,7 +3000,7 @@ spaceship_package() {
       continue
     fi
 
-    echo -n "$SPACESHIP_PACKAGE_COLOR$SPACESHIP_PACKAGE_PREFIX${SPACESHIP_PACKAGE_SYMBOL}v${package_version}$SPACESHIP_PACKAGE_SUFFIX"
+    echo -n "$SPACESHIP_PACKAGE_COLOR$SPACESHIP_PACKAGE_PREFIX$SPACESHIP_PACKAGE_SYMBOL$package_version$SPACESHIP_PACKAGE_SUFFIX"
 
     return
   done

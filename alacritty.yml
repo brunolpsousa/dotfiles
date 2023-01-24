@@ -17,6 +17,9 @@ font:
     family: JetBrainsMono Nerd Font Mono
   size: 10
 
+cursor:
+  blink_timeout: 90
+
 key_bindings:
   - { key: T, mods: Control|Shift, action: SpawnNewInstance }
   - { key: W, mods: Control|Shift, action: Quit }
