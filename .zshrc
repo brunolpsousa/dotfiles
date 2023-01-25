@@ -1106,7 +1106,7 @@ arch-base() {
               unset xtermVar
             fi
             if [[ ! -f '/usr/local/bin/xterm' ]] && command -v tmux >/dev/null; then
-              echo '#!/usr/bin/env bash\ntvar="$(tmux list-sessions | grep main)"\nif grep -q attached <<< "$tvar"; then\n  tmux neww -t=main -c "$@" \nelif [[ -n "$tvar" && -n "$*" ]]; then\n  tmux neww -t=main -c "$@"\n  alacritty\nelif [[ -z "$tvar" || -z "$*" ]]; then\n  alacritty\nelse\n  tmux new-session -d -s main -c "$HOME"\n  tmux neww -t=main -c "$@"\n  alacritty\nfi' | sudo tee '/usr/local/bin/xterm' >/dev/null
+              echo '#!/usr/bin/env bash\nTERMX="alacritty"\n[[ -n "$ZSH_TMUX_STARTED" ]] || tmux new-session -d -s main -c "$HOME"\ntvar="$(tmux list-sessions | grep main)"\nif grep -q attached <<< "$tvar" && pgrep "$TERMX"; then\n  tmux neww -t=main -c "$@"\nelif [[ -n "$tvar" && -z "$*" && -z "$TERMX_NAUTILUS" ]] && ! pgrep "$TERMX"; then\n  "$TERMX"\nelse\n  tmux neww -t=main -c "$@"\n  "$TERMX"\nf' | sudo tee '/usr/local/bin/xterm' >/dev/null
               sudo chmod +x '/usr/local/bin/xterm'
               [[ ! -f '/bin/xterm' ]] || echo "$(date '+%Y-%m-%d %H:%M:%S') - Warning: /bin/xterm exists and overlaps with /usr/local/bin/xterm" >> "$HOME/.alert"
             fi
@@ -1116,7 +1116,7 @@ arch-base() {
           # Vim color fix: https://gist.github.com/andersevenrud/015e61af2fd264371032763d4ed965b6
           if command -v tmux >/dev/null; then
             command mkdir -p "$XDG_CONFIG_HOME/tmux"
-            echo 'set -g default-command "${SHELL}"\nset -ga terminal-overrides ",$TERM:Tc"\nset -ga terminal-features ",*:hyperlinks"\nset -g set-titles on\nset -g set-titles-string "#T"\nset -g mouse on\nset -g status-interval 1\nset -gs escape-time 0\nset -g status on\nset -g status-left ""\nset -g status-right ""\nset -g status-justify centre\nset-window-option -g window-status-format "#Iː#W "\nset-window-option -g window-status-current-format "#Iː#W•"\nset -gw mode-style fg=colour226,bold\nset -g status-style fg=colour254\nset -g message-style fg=colour254\nset -g pane-border-style fg=colour243,bg=default\nset -g pane-active-border-style fg=colour243,bg=default\nset -g renumber-windows on\nbind-key -n M-h split-window -v\nbind-key -n M-v split-window -h\nbind-key -n M-Right next-window\nbind-key -n M-Left previous-window\nbind-key -n M-c new-window\nbind-key -n M-x kill-window' > "$XDG_CONFIG_HOME/tmux/tmux.conf"
+            echo 'set -g default-command "${SHELL}"\nset -ga terminal-overrides ",*:Tc"\nset -ga terminal-features ",*:hyperlinks"\nset -g set-titles on\nset -g set-titles-string "#T"\nset -g mouse on\nset -g status-interval 1\nset -gs escape-time 0\nset -g status on\nset -g status-left ""\nset -g status-right ""\nset -g status-justify centre\nset-window-option -g window-status-format "#Iː#W "\nset-window-option -g window-status-current-format "#Iː#W•"\nset -gw mode-style fg=colour226,bold\nset -g status-style fg=colour254\nset -g message-style fg=colour254\nset -g pane-border-style fg=colour243,bg=default\nset -g pane-active-border-style fg=colour243,bg=default\nset -g renumber-windows on\nbind-key -n M-h split-window -v\nbind-key -n M-v split-window -h\nbind-key -n M-Right next-window\nbind-key -n M-Left previous-window\nbind-key -n M-c new-window\nbind-key -n M-x kill-window' > "$XDG_CONFIG_HOME/tmux/tmux.conf"
             echo "Do you wish to remap tmux's prefix to C-['CHAR']? [y/N]" && read tmuxprefix
             [[ $tmuxprefix =~ '^[yY]' ]] && echo 'Enter a char:' && read tmuxbind
             [[ -n $tmuxbind ]] && echo "# remap prefix from C-b to C-$tmuxbind\nunbind C-b\nset-option -g prefix C-$tmuxbind\nbind-key C-$tmuxbind send-prefix" >> "$XDG_CONFIG_HOME/tmux/tmux.conf"
@@ -1208,7 +1208,7 @@ arch-base() {
           command mkdir -p "$XDG_DATA_HOME/backgrounds"
           [[ -f "$XDG_CONFIG_HOME/backgrounds/chwp.sh" ]] || curl -s 'https://gitlab.com/N1vBruno/dotfiles/-/raw/master/chwp.sh' -o "$XDG_DATA_HOME/backgrounds/chwp.sh"
           chmod +x "$XDG_DATA_HOME/backgrounds/chwp.sh"
-          echo '#!/usr/bin/env bash\nxterm' > "$XDG_DATA_HOME/nautilus/scripts/Terminal"
+          echo '#!/usr/bin/env bash\nexport TERMX_NAUTILUS=1 && xterm' > "$XDG_DATA_HOME/nautilus/scripts/Terminal"
           chmod +x "$XDG_DATA_HOME/nautilus/scripts/Terminal"
           echo 'F4 Terminal' > "$XDG_CONFIG_HOME/nautilus/scripts-accels"
           systemctl --user daemon-reload
