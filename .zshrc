@@ -33,7 +33,7 @@ SSH_AUTH_SOCK="${XDG_RUNTIME_DIR}/gnupg/S.gpg-agent.ssh"
 [[ "$EUID" != 0 ]] && umask 022 && sysvar='--user' || umask 002
 systemctl $sysvar import-environment EDITOR VISUAL XDG_CACHE_HOME XDG_CONFIG_HOME XDG_DATA_HOME XDG_STATE_HOME LS_COLORS MOZ_ENABLE_WAYLAND QT_QPA_PLATFORM QT_QPA_PLATFORMTHEME GTK_USE_PORTAL 2>/dev/null; unset sysvar
 # Interactive or return
-[[ $- == *i* ]] || return 
+[[ $- == *i* ]] || return
 #------------------------------------------------------------------------------#
 #################################### Aliases ###################################
 #------------------------------------------------------------------------------#
@@ -47,7 +47,7 @@ alias mkdir='mkdir -vp'
 alias rmdir='rmdir -v'
 alias ln='ln -v'
 alias df='df -h'
-alias ip='ip --color=auto'
+alias ip='ip -c'
 alias diff='diff -Nuar --color=auto'
 alias ls='ls -v --color=auto --hyperlink=auto --human-readable --literal --group-directories-first --classify'
 alias la='ls -v --color=auto --hyperlink=auto --human-readable --literal --group-directories-first --classify --almost-all'
@@ -507,7 +507,7 @@ todec() {
   fi
 }
 
-## print values in different bases of a decimal number 
+## print values in different bases of a decimal number
 dec() {
   if [[ $1 -gt 0 && $2 -eq 16 ]]; then
     printf '%d (base 10) equals to %x (base %d)\n' $1 $2 $1
@@ -529,7 +529,7 @@ dec() {
 bd() {
   while true; do
     selection="$(command ls -aNv --group-directories-first 2>/dev/null | fzf --height 95% --reverse --info hidden --prompt "$(pwd)/" --preview ' cd_pre="$(echo $(pwd)/$(echo {}))";
-            echo $cd_pre 2>/dev/null; 
+            echo $cd_pre 2>/dev/null;
             echo;
             command ls -ANv --group-directories-first --color=always "${cd_pre}" 2>/dev/null;
             command less -F {} 2>/dev/null' --bind ctrl-j:preview-down,ctrl-k:preview-up --preview-window=right:65%)"
@@ -543,7 +543,7 @@ bd() {
           xdg-open "$selection" >/dev/null 2>&1
         fi
       done
-    else 
+    else
       break
     fi
   done
@@ -598,7 +598,7 @@ jvc() {
   javac -classpath "$(find -type d)" -d $(sed 's/src.*/bin/g' <<< "$PWD") $(find -type f -name "*.java")
   [[ -z $1 ]] || jvr "$1"
 }
- 
+
 # Unlock user after failed login attempt
 unlock() { [[ -n $1 ]] && faillock --user $1 --reset || echo 'Usage: unlock <user>' }
 
@@ -809,7 +809,7 @@ gnome-extensions() {
 }
 
 # Vim Cheatsheet
-ns() { 
+ns() {
   echo "\n\t$IWhite### Navigation ###
   ${IBlack}[${BIBlue}N$IBlack]$Color_Off B|b   - Prev word
   ${IBlack}[${BIBlue}N$IBlack]$Color_Off W|w   - Next word
@@ -817,7 +817,7 @@ ns() {
   ${IBlack}[${BIBlue}N$IBlack]$Color_Off ^     - BOL (after whitespace)
   ${IBlack}[${BIBlue}N$IBlack]$Color_Off T|t   - Find prev
   ${IBlack}[${BIBlue}N$IBlack]$Color_Off F|f   - Find next
-  ${IBlack}[${BIBlue}N$IBlack]$Color_Off ;|,   - Repeat previous f|t|F|T 
+  ${IBlack}[${BIBlue}N$IBlack]$Color_Off ;|,   - Repeat previous f|t|F|T
   ${IBlack}[${BIBlue}N$IBlack]$Color_Off #|*   - Prev|next word under cursor
   ${IBlack}[${BIPurple}V$IBlack]$Color_Off {|}   - Jump to prev|next paragraph
   ${IBlack}[${BIBlue}N$IBlack]$Color_Off ]s|[s - Next|prev spelling
@@ -832,9 +832,9 @@ ns() {
   ${IBlack}[${BIBlue}N$IBlack]$Color_Off g-|g+   - Undo|Redo branches
   ${IBlack}[${BIBlue}N$IBlack]$Color_Off S|s     - Delete line|char and insert
   ${IBlack}[${BIBlue}N$IBlack]$Color_Off C       - Delete until EOL and insert
-  ${IBlack}[${BIBlue}N$IBlack]$Color_Off <cmd>iw - Cmd inner word 
-  ${IBlack}[${BIBlue}N$IBlack]$Color_Off <cmd>ip - Cmd inner paragraph 
-  ${IBlack}[${BIBlue}N$IBlack]$Color_Off <cmd>a\" - Cmd around quotes 
+  ${IBlack}[${BIBlue}N$IBlack]$Color_Off <cmd>iw - Cmd inner word
+  ${IBlack}[${BIBlue}N$IBlack]$Color_Off <cmd>ip - Cmd inner paragraph
+  ${IBlack}[${BIBlue}N$IBlack]$Color_Off <cmd>a\" - Cmd around quotes
   ${IBlack}[${BIBlue}N$IBlack]$Color_Off ]p      - Paste and adjust indent
   ${IBlack}[${BIBlue}N$IBlack]$Color_Off d/hello - Delete until hello
   ${IBlack}[${BIBlue}N$IBlack]$Color_Off J       - Join line
@@ -847,7 +847,7 @@ ns() {
   ${IBlack}[${BIBlue}N$IBlack]$Color_Off SPC-/   - Comment
   \n\t$IWhite### Insert ###
   ${IBlack}[${BIGreen}I$IBlack]$Color_Off C-r0 - Paste last yanked
-  ${IBlack}[${BIGreen}I$IBlack]$Color_Off C-h  - Delete char before cursor 
+  ${IBlack}[${BIGreen}I$IBlack]$Color_Off C-h  - Delete char before cursor
   ${IBlack}[${BIGreen}I$IBlack]$Color_Off C-w  - Delete word before cursor
   ${IBlack}[${BIGreen}I$IBlack]$Color_Off C-j  - Begin new line
   ${IBlack}[${BIGreen}I$IBlack]$Color_Off C-t  - Indent line
@@ -1106,7 +1106,7 @@ arch-base() {
               unset xtermVar
             fi
             if [[ ! -f '/usr/local/bin/xterm' ]] && command -v tmux >/dev/null; then
-              echo '#!/usr/bin/env bash\nTERMX="alacritty"\n[[ -n "$ZSH_TMUX_STARTED" ]] || tmux new-session -d -s main -c "$HOME"\ntvar="$(tmux list-sessions | grep main)"\nif grep -q attached <<< "$tvar" && pgrep "$TERMX"; then\n  tmux neww -t=main -c "$@"\nelif [[ -n "$tvar" && -z "$*" && -z "$TERMX_NAUTILUS" ]] && ! pgrep "$TERMX"; then\n  "$TERMX"\nelse\n  tmux neww -t=main -c "$@"\n  "$TERMX"\nf' | sudo tee '/usr/local/bin/xterm' >/dev/null
+              echo '#!/usr/bin/env bash\nTERMX="alacritty"\n[[ -n "$ZSH_TMUX_STARTED" ]] || tmux new-session -d -s main -c "$HOME"\ntvar="$(tmux list-sessions | grep main)"\nif grep -q attached <<< "$tvar" && pgrep "$TERMX"; then\n  tmux neww -t=main -c "$@"\nelif [[ -n "$tvar" && -z "$*" && -z "$TERMX_NAUTILUS" ]] && ! pgrep "$TERMX"; then\n  "$TERMX"\nelse\n  tmux neww -t=main -c "$@"\n  "$TERMX"\nfi' | sudo tee '/usr/local/bin/xterm' >/dev/null
               sudo chmod +x '/usr/local/bin/xterm'
               [[ ! -f '/bin/xterm' ]] || echo "$(date '+%Y-%m-%d %H:%M:%S') - Warning: /bin/xterm exists and overlaps with /usr/local/bin/xterm" >> "$HOME/.alert"
             fi
@@ -1256,7 +1256,7 @@ arch-base() {
 # \e8   => restore cursor position
 # \e[K  => clears everything after the cursor on the current line
 # \e[2K => clear everything on the current line
-  
+
 prompt_preexec() {
   command_time_preexec
   prompt_set_title 'ignore-escape' "$PWD:t: $2"
@@ -1291,7 +1291,7 @@ prompt_setup() {
   autoload -Uz add-zsh-hook
   add-zsh-hook precmd prompt_precmd
   add-zsh-hook preexec prompt_preexec
-  autoload -Uz vcs_info 
+  autoload -Uz vcs_info
   zstyle ':vcs_info:*' enable git
   zstyle ':vcs_info:git:*' formats '%b'
   setopt prompt_subst
@@ -1654,7 +1654,7 @@ spaceship_asdf() {
 
   # Decide if anything is left to process and return if not.
   [[ -z "${currenttools// }" ]] && return
- 
+
   local toolslist=$(echo $currenttools | awk '{ print $1 }')
   local versionslist
   # Decide if we do semi-major version (default) or full version info
@@ -1682,7 +1682,7 @@ spaceship_asdf() {
   else
     originslist=$(echo $currenttools | awk '{ print ""}' -)
   fi
-  # Paste columns together  
+  # Paste columns together
   local reassembled=$(paste  <(echo $toolslist) <(echo $versionslist) \
     <(echo $originslist))
   # Structure info in nice, separate lines
@@ -2466,7 +2466,7 @@ spaceship_hg_branch() {
   local SPACESHIP_HG_BRANCH_COLOR="${SPACESHIP_HG_BRANCH_COLOR="%F{magenta}"}"
 
   [[ $SPACESHIP_HG_BRANCH_SHOW == false ]] && return
-  
+
   local hg_info=$(hg log -r . --template '{activebookmark}')
 
   if [[ -z $hg_info ]]; then
@@ -2659,7 +2659,7 @@ spaceship_kubectl_version() {
   #  check if a context isn't loaded, avoiding the issue entirely.
   local kube_context=$(kubectl config current-context 2>/dev/null)
   [[ -z $kube_context ]] && return
-  
+
   # if kubectl can't connect kubernetes cluster, kubernetes version section will be not shown
   local kubectl_version=$(kubectl version --short 2>/dev/null | grep "Server Version" | sed 's/Server Version: \(.*\)/\1/')
   [[ -z $kubectl_version ]] && return
@@ -2986,7 +2986,7 @@ spaceship_package() {
 
     pubspec_file=$(spaceship::upsearch pubspec.yaml pubspec.yml) || return
 
-    spaceship::datafile --yaml $pubspec_file "version" 
+    spaceship::datafile --yaml $pubspec_file "version"
   }
 
   # Show package version only when repository is a package
