@@ -1292,8 +1292,6 @@ prompt_setup() {
   add-zsh-hook precmd prompt_precmd
   add-zsh-hook preexec prompt_preexec
   autoload -Uz vcs_info
-  zstyle ':vcs_info:*' enable git
-  zstyle ':vcs_info:git:*' formats '%b'
   setopt prompt_subst
   prompt_async_loader
   autoload -Uz colors && colors
@@ -1364,10 +1362,17 @@ prompt_git_info() {
   builtin cd -q "$1"
   local ZSH_THEME_GIT_PROMPT_PREFIX="$fg[white]%B on%b %242F:"
   local ZSH_THEME_GIT_PROMPT_SUFFIX='%f'
-  local ZSH_THEME_GIT_PROMPT_DIRTY=''
-  local ZSH_THEME_GIT_PROMPT_CLEAN=''
+
+  zstyle ':vcs_info:*' enable git
+  zstyle ':vcs_info:*' use-simple true
+  zstyle ':vcs_info:*' max-exports 3
+  zstyle ':vcs_info:git*' formats '%b' '%R' '%a'
+  zstyle ':vcs_info:git*' actionformats '%b' '%R' '%a'
+
   vcs_info
-  [[ -z "$vcs_info_msg_0_" ]] || echo -n "$ZSH_THEME_GIT_PROMPT_PREFIX$vcs_info_msg_0_$ZSH_THEME_GIT_PROMPT_SUFFIX"
+
+  [[ -z "$vcs_info_msg_2_" ]] || local vcs_action="::$vcs_info_msg_2_"
+  [[ -z "$vcs_info_msg_0_" ]] || echo -n "$ZSH_THEME_GIT_PROMPT_PREFIX${vcs_info_msg_0_//\%/%%}$vcs_action$ZSH_THEME_GIT_PROMPT_SUFFIX"
 }
 
 prompt_git_info_done() {
