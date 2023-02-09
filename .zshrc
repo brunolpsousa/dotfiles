@@ -322,7 +322,7 @@ if [[ -f "$XDG_DATA_HOME/zsh/async.zsh" ]]; then
 else
   echo 'Downloading zsh-async...'
   curl -s 'https://raw.githubusercontent.com/mafredri/zsh-async/master/async.zsh' -o "$XDG_DATA_HOME/zsh/async.zsh"
-  sumvar='3ca377ef528f2c6c8beaf97cfd46c969d25440412a0699f5be1bae5121406a891fde0c5fea5946f374b52f31c5afd6f723087934ed60de9f3be1f8fb72b9ac3a'
+  sumvar='423f21b05afec4da0681a4e954dcb2cf8a11f530243435c6f1949a97c07416f8ab518e7a82287d0768e27ae4805fa9d8fa265bd64df48f50860be49fca401e4a'
   sumvar2="$(sha512sum $XDG_DATA_HOME/zsh/async.zsh | cut -d ' ' -f1)" 2>/dev/null
   [[ $sumvar == $sumvar2 ]] && source "$XDG_DATA_HOME/zsh/async.zsh" || echo "$(date '+%Y-%m-%d %H:%M:%S') - Failed to load zsh-async" >> "$HOME/.alert"
   unset sumvar sumvar2
