@@ -1295,8 +1295,9 @@ prompt_setup() {
   setopt prompt_subst
   prompt_async_loader
   autoload -Uz colors && colors
+  VIRTUAL_ENV_DISABLE_PROMPT=true
 
-  PS1='$PROMPT_SSH%(!.%{$fg[red]%}%n %{$fg[white]%B%}in $DIR_LOCK%{$fg[yellow]%}%(4~|%-1~/.../%2~|%~)%u%b${vcs_info_msg}${vcs_status_msg} >%{$fg[yellow]%}>%B%(?.%{$fg[yellow]%}.%{$fg[red]%})>%b%f .%{$fg[green]%}%n %{$fg[white]%B%}in $DIR_LOCK%{$fg[cyan]%}%(4~|%-1~/.../%2~|%~)%u%b${vcs_info_msg}${vcs_status_msg} >%{$fg[cyan]%}>%B%(?.%{$fg[cyan]%}.%{$fg[red]%})>%b%f '
+  PS1='$PROMPT_SSH%(!.%{$fg[red]%}%n %{$fg[white]%B%}in $DIR_LOCK%{$fg[yellow]%}%(4~|%-1~/.../%2~|%~)%u%b${vcs_info_msg}${vcs_status_msg} >%{$fg[yellow]%}>%B%(?.%{$fg[yellow]%}.%{$fg[red]%})>%b%f .%{$fg[green]%}%n %{$fg[white]%B%}in $DIR_LOCK%{$fg[cyan]%}%(4~|%-1~/.../%2~|%~)%u%b${vcs_info_msg}${vcs_status_msg}${spacevenv} >%{$fg[cyan]%}>%B%(?.%{$fg[cyan]%}.%{$fg[red]%})>%b%f '
   RPS1='$spacejobs$spaceship_stuff_result$ELAPSED$spaceship_battery_result %246F%* %(?.%{$fg[green]%}✓%b%f.%{$fg[red]%}✗%b%f'
 }
 #------------------------------------------------------------------------------#
@@ -1483,14 +1484,13 @@ prompt_git_status_precmd() {
 [[ -n ${SSH_CONNECTION-}${SSH_CLIENT-}${SSH_TTY-} ]] && PROMPT_SSH="%F{yellow}${(%):-%m}%}ː%b%f" || unset PROMPT_SSH
 #------------------------------------------------------------------------------#
 # Some stuff borrowed from Spaceship
-# Updated in 2023.01.04
+# Updated in 2023.02.09
 spaceship_stuff() {
   builtin cd -q "$1"
   setopt extended_glob
-  VIRTUAL_ENV_DISABLE_PROMPT=true
   local SPACESHIP_PROMPT_DEFAULT_PREFIX=' '
   local SPACESHIP_PROMPT_DEFAULT_SUFFIX='%f%b'
-  local SS_LIST=(asdf hg package node bun deno ruby python elm elixir xcode swift golang perl php rust haskell scala kotlin java lua dart julia crystal docker docker_compose aws gcloud azure venv conda dotnet ocaml vlang zig purescript erlang kubectl ansible terraform pulumi ibmcloud nix_shell gnu_screen ember flutter gradle maven)
+  local SS_LIST=(asdf hg package node bun deno ruby python elm elixir xcode swift golang perl php rust haskell scala kotlin java lua dart julia crystal docker docker_compose aws gcloud azure conda dotnet ocaml vlang zig purescript erlang kubectl ansible terraform pulumi ibmcloud nix_shell gnu_screen ember flutter gradle maven)
   for i in "$SS_LIST[@]"; do
     local SP="$(spaceship_$i)"
     [[ -z "$SP" ]] || echo -n "$SP"
@@ -1519,6 +1519,7 @@ spaceship_precmd() {
   async_job spaceship_stuff_loader spaceship_stuff "$PWD"
   async_job spaceship_battery_loader spaceship_battery "$PWD"
   spacejobs="$(spaceship_jobs)"
+  spacevenv="$(spaceship_venv)"
 }
 
 spaceship_battery_done() {
@@ -1621,7 +1622,7 @@ spaceship::datafile() {
 }
 #------------------------------------------------------------------------------#
 # asdf-prompt plugin for zsh/oh-my-zsh
-# Updated 2022.11.05
+# Updated 2023.02.09
 # https://github.com/CurryEleison/zsh-asdf-prompt
 spaceship_asdf() {
   local ZSH_THEME_ASDF_PROMPT_PREFIX="%{$fg_bold[magenta]%}{"
@@ -3250,8 +3251,8 @@ spaceship_terraform() {
 # Show current virtual environment (Python).
 spaceship_venv() {
   local SPACESHIP_VENV_SHOW="${SPACESHIP_VENV_SHOW=true}"
-  local SPACESHIP_VENV_PREFIX="${SPACESHIP_VENV_PREFIX="$SPACESHIP_PROMPT_DEFAULT_PREFIX"}"
-  local SPACESHIP_VENV_SUFFIX="${SPACESHIP_VENV_SUFFIX="$SPACESHIP_PROMPT_DEFAULT_SUFFIX"}"
+  local SPACESHIP_VENV_PREFIX="${SPACESHIP_VENV_PREFIX=" v:"}"
+  local SPACESHIP_VENV_SUFFIX="${SPACESHIP_VENV_SUFFIX="%f%b"}"
   local SPACESHIP_VENV_SYMBOL="${SPACESHIP_VENV_SYMBOL=""}"
   # The (A) expansion flag creates an array, the '=' activates word splitting
   local SPACESHIP_VENV_GENERIC_NAMES="${(A)=SPACESHIP_VENV_GENERIC_NAMES=virtualenv venv .venv}"
