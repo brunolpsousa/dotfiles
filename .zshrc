@@ -1279,6 +1279,7 @@ prompt_async_loader() {
   async_register_callback vbe_vcs_status prompt_git_status_done
 
   async_start_worker spaceship_stuff_loader
+  async_worker_eval spaceship_stuff_loader setopt extended_glob
   async_register_callback spaceship_stuff_loader spaceship_stuff_done
 
   async_start_worker spaceship_battery_loader
@@ -1297,8 +1298,8 @@ prompt_setup() {
   autoload -Uz colors && colors
   VIRTUAL_ENV_DISABLE_PROMPT=true
 
-  PS1='$PROMPT_SSH%(!.%{$fg[red]%}%n %{$fg[white]%B%}in $DIR_LOCK%{$fg[yellow]%}%(4~|%-1~/.../%2~|%~)%u%b${vcs_info_msg}${vcs_status_msg} >%{$fg[yellow]%}>%B%(?.%{$fg[yellow]%}.%{$fg[red]%})>%b%f .%{$fg[green]%}%n %{$fg[white]%B%}in $DIR_LOCK%{$fg[cyan]%}%(4~|%-1~/.../%2~|%~)%u%b${vcs_info_msg}${vcs_status_msg}${spacevenv} >%{$fg[cyan]%}>%B%(?.%{$fg[cyan]%}.%{$fg[red]%})>%b%f '
-  RPS1='$spacejobs$spaceship_stuff_result$ELAPSED$spaceship_battery_result %246F%* %(?.%{$fg[green]%}✓%b%f.%{$fg[red]%}✗%b%f'
+  PS1='$PROMPT_SSH%(!.%{$fg[red]%}%n %{$fg[white]%B%}in $DIR_LOCK%{$fg[yellow]%}%(4~|%-1~/.../%2~|%~)%u%b${VCS_INFO_MSG}${VCS_STATUS_MSG} >%{$fg[yellow]%}>%B%(?.%{$fg[yellow]%}.%{$fg[red]%})>%b%f .%{$fg[green]%}%n %{$fg[white]%B%}in $DIR_LOCK%{$fg[cyan]%}%(4~|%-1~/.../%2~|%~)%u%b${VCS_INFO_MSG}${VCS_STATUS_MSG} >%{$fg[cyan]%}>%B%(?.%{$fg[cyan]%}.%{$fg[red]%})>%b%f '
+  RPS1='$SPACE_NOASYNC$SPACE_ASYNC$ELAPSED$SPACE_BATTERY %246F%* %(?.%{$fg[green]%}✓%b%f.%{$fg[red]%}✗%b%f'
 }
 #------------------------------------------------------------------------------#
 # Set terminal title
@@ -1389,7 +1390,7 @@ prompt_git_info_done() {
       return
     fi
   fi
-  vcs_info_msg="$stdout"
+  VCS_INFO_MSG="$stdout"
   zle reset-prompt
 }
 
@@ -1470,7 +1471,7 @@ prompt_git_status_done() {
       return
     fi
   fi
-  vcs_status_msg="$stdout"
+  VCS_STATUS_MSG="$stdout"
   zle reset-prompt
 }
 
@@ -1485,15 +1486,25 @@ prompt_git_status_precmd() {
 #------------------------------------------------------------------------------#
 # Some stuff borrowed from Spaceship
 # Updated in 2023.02.09
-spaceship_stuff() {
-  builtin cd -q "$1"
-  setopt extended_glob
+
+spaceship_noasync() {
   local SPACESHIP_PROMPT_DEFAULT_PREFIX=' '
   local SPACESHIP_PROMPT_DEFAULT_SUFFIX='%f%b'
-  local SS_LIST=(asdf hg package node bun deno ruby python elm elixir xcode swift golang perl php rust haskell scala kotlin java lua dart julia crystal docker docker_compose aws gcloud azure conda dotnet ocaml vlang zig purescript erlang kubectl ansible terraform pulumi ibmcloud nix_shell gnu_screen ember flutter gradle maven)
-  for i in "$SS_LIST[@]"; do
-    local SP="$(spaceship_$i)"
-    [[ -z "$SP" ]] || echo -n "$SP"
+  local SS_LIST=(jobs venv aws conda gnu_screen nix_shell)
+  for noasync_section in "$SS_LIST[@]"; do
+    local result="$(spaceship_$noasync_section)"
+    [[ -z "$result" ]] || echo -n "$result"
+  done
+}
+
+spaceship_stuff() {
+  builtin cd -q "$1"
+  local SPACESHIP_PROMPT_DEFAULT_PREFIX=' '
+  local SPACESHIP_PROMPT_DEFAULT_SUFFIX='%f%b'
+  local SS_LIST=(asdf hg package node bun deno ruby python elm elixir xcode swift golang perl php rust haskell scala kotlin java lua dart julia crystal docker docker_compose gcloud azure dotnet ocaml vlang zig purescript erlang kubectl ansible terraform pulumi ibmcloud ember flutter gradle maven)
+  for async_section in "$SS_LIST[@]"; do
+    local result="$(spaceship_$async_section)"
+    [[ -z "$result" ]] || echo -n "$result"
   done
 }
 
@@ -1509,17 +1520,8 @@ spaceship_stuff_done() {
       return
     fi
   fi
-  spaceship_stuff_result="$stdout"
+  SPACE_ASYNC="$stdout"
   zle reset-prompt
-}
-
-spaceship_precmd() {
-  async_flush_jobs spacship_stuff_loader
-  async_flush_jobs spacship_battery_loader
-  async_job spaceship_stuff_loader spaceship_stuff "$PWD"
-  async_job spaceship_battery_loader spaceship_battery "$PWD"
-  spacejobs="$(spaceship_jobs)"
-  spacevenv="$(spaceship_venv)"
 }
 
 spaceship_battery_done() {
@@ -1534,8 +1536,16 @@ spaceship_battery_done() {
       return
     fi
   fi
-  spaceship_battery_result="$stdout"
+  SPACE_BATTERY="$stdout"
   zle reset-prompt
+}
+
+spaceship_precmd() {
+  SPACE_NOASYNC="$(spaceship_noasync)"
+  async_flush_jobs spacship_stuff_loader
+  async_flush_jobs spacship_battery_loader
+  async_job spaceship_stuff_loader spaceship_stuff "$PWD"
+  async_job spaceship_battery_loader spaceship_battery "$PWD"
 }
 
 # Utils
@@ -1551,17 +1561,24 @@ spaceship::upsearch() {
 
   while [ "$root" ]; do
     for file in "${files[@]}"; do
-      local filepath="$root/$file"
-      if [[ -e "$filepath" ]]; then
-        [[ -z "$silent" ]] && echo "$filepath"
+      local find_match="$(find $root -maxdepth 1 -name $file -print -quit 2>/dev/null)"
+      local filename="$root/$file"
+      if [[ -n "$find_match" ]]; then
+        [[ -z "$silent" ]] && echo "$find_match"
+        return 0
+      elif [[ -e "$filename" ]]; then
+        [[ -z "$silent" ]] && echo "$filename"
         return 0
       fi
     done
+
     if [[ -d "$root/.git" || -d "$root/.hg" ]]; then
       return 1
     fi
+
     root="${root%/*}"
   done
+
   return 1
 }
 
