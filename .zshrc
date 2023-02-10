@@ -464,6 +464,59 @@ ex() {
   fi
 }
 
+# Portable shell through SSH
+# https://github.com/romkatv/dotfiles-public/blob/6dfc6a34e91a8d87bb0716cf7c6f8e57487efb78/bin/ssh.zsh
+
+ssh() {
+  emulate zsh -o pipefail -o extended_glob
+
+  # If there is no zsh on the remote machine, install this.
+  local zsh_url='https://raw.githubusercontent.com/romkatv/zsh-bin/master/install'
+  # If there is no ~/.zshrc on the remote machine, install this.
+  local zshrc_url='https://raw.githubusercontent.com/N1vBruno/dotfiles/master/.zshrc'
+
+  # Copy all these files and directories (relative to $HOME) from local machine
+  # to remote. Silently skip files that don't exist locally and override existing
+  # files on the remote machine.
+  local local_files=(.p10k.zsh)
+
+  if (( ARGC == 0 )); then
+    print -ru2 -- 'usage: ssh [ssh-options] [user@]hostname'
+    return 1
+  fi
+
+  # Tar, compress and base64-encode $local_files.
+  local dump
+  local_files=(~/$^local_files(N))
+  dump=$(tar -C ~ -pczT <(print -rl -- ${(@)local_files#$HOME/}) | base64) || return
+
+  command ssh -t "$@" '
+    set -ue
+    printf "%s" '${(q)dump//$'\n'}' | base64 -d | tar -C ~ -xzpo
+    fetch() {
+      if command -v curl >/dev/null 2>&1; then
+        curl -fsSL -- "$1"
+      else
+        wget -O- -- "$1"
+      fi
+    }
+    if [ ! -e ~/.zshrc ] && [ ! -e ~/.config/zsh/.zshrc ]; then
+      fetch '${(q)zshrc_url}' > ~/.zshrc.tmp.$$
+      mv ~/.zshrc.tmp.$$ ~/.zshrc
+    fi
+    export PATH="$HOME/.local/bin:$PATH"
+    if ! command -v zsh >/dev/null 2>&1; then
+      if [ ! -x ~/.local/bin/zsh ]; then
+        fetch '${(q)zsh_url}' > ~/.zsh-bin_install.tmp.$$
+        mv ~/.zsh-bin_install.tmp.$$ ~/.zsh-bin_install
+        chmod +x ~/.zsh-bin_install
+        ./.zsh-bin_install -d ~/.local -e yes -q
+        [ ! -e ~/.zsh-bin_install ] || rm -I ~/.zsh-bin_install
+      fi
+    fi
+    exec zsh -il'
+}
+
 # Fancy progress function from Landley's Aboriginal Linux.
 # Useful for long rm, tar and such.
 # Usage: rm -rfv /foo | dot_progress
