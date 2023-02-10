@@ -673,6 +673,9 @@ alias reset-gnome-appgrid='gsettings reset org.gnome.shell app-picker-layout'
 # Display warnings from pacman
 alias paclog='grep -nC 2 --color=auto warning: /var/log/pacman.log'
 
+# Update .zshrc
+alias zupd='curl -fsSL https://gitlab.com/N1vBruno/dotfiles/-/raw/master/.zshrc > $ZDOTDIR/.zshrc && source $ZDOTDIR/.zshrc'
+
 # Refresh Arch mirrors
 alias refresh='sudo reflector --protocol https --age 12 --latest 20 --connection-timeout 2 --download-timeout 2 --fastest 5 --sort rate --save /etc/pacman.d/mirrorlist --verbose'
 
