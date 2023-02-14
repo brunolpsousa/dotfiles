@@ -594,6 +594,12 @@ require("lazy").setup({
 	{ "numToStr/Comment.nvim", event = "BufRead" },
 	{ "RRethy/vim-illuminate", event = "VeryLazy" },
 	{
+		"NvChad/nvim-colorizer.lua",
+		config = function()
+			require("colorizer").setup()
+		end,
+	},
+	{
 		"lewis6991/gitsigns.nvim",
 		event = "BufReadPre",
 		config = function()
