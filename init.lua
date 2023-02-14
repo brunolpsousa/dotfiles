@@ -178,15 +178,16 @@ local function load_lualine()
 		local spaces = function()
 			return "spaces: " .. vim.api.nvim_buf_get_option(0, "shiftwidth")
 		end
-		local theme_opt = function()
-			if pcall(vim.cmd, "colorscheme tokyonight-night") then
+		local function themeOpt()
+			local colorscheme = vim.api.nvim_command_output("colorscheme")
+			if colorscheme:match("tokyonight") then
 				return "tokyonight"
 			else
 				return "onedark"
 			end
 		end
 		require("lualine").setup({
-			options = { theme = theme_opt(), globalstatus = true, section_separators = "", component_separators = "" },
+			options = { theme = themeOpt(), globalstatus = true, section_separators = "", component_separators = "" },
 			sections = {
 				lualine_a = { "mode" },
 				lualine_b = { "branch" },
