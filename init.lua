@@ -546,67 +546,108 @@ local function load_gitsigns()
 end
 
 -- Plugins
--- Clone Packer if not installed
-local install_path = vim.fn.stdpath("data") .. "/site/pack/packer/start/packer.nvim"
-if vim.fn.empty(vim.fn.glob(install_path)) > 0 then
-	PACKER_BOOTSTRAP = vim.fn.system({
+local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
+if not vim.loop.fs_stat(lazypath) then
+	vim.fn.system({
 		"git",
 		"clone",
-		"--depth",
-		"1",
-		"https://github.com/wbthomason/packer.nvim",
-		install_path,
+		"--filter=blob:none",
+		"https://github.com/folke/lazy.nvim.git",
+		"--branch=stable",
+		lazypath,
 	})
-	print("Installing packer... please close and reopen Neovim")
-	vim.cmd([[packadd packer.nvim]])
 end
--- Have Packer use a popup window
-require("packer").init({
-	display = {
-		open_fn = function()
-			return require("packer.util").float({ border = "rounded" })
+vim.opt.rtp:prepend(lazypath)
+require("lazy").setup({
+	{
+		"folke/tokyonight.nvim",
+		lazy = false,
+		priority = 1000,
+		config = function()
+			vim.cmd.colorscheme("tokyonight-night")
 		end,
 	},
-	git = { clone_timeout = 120 },
+	{
+		"nvim-lualine/lualine.nvim",
+		dependencies = { "kyazdani42/nvim-web-devicons" },
+		config = function()
+			load_lualine()
+		end,
+	},
+	{ "lukas-reineke/indent-blankline.nvim", event = "BufReadPre" },
+	{
+		"nvim-telescope/telescope.nvim",
+		event = "BufEnter",
+		dependencies = { "nvim-lua/plenary.nvim", "ahmedkhalf/project.nvim" },
+		config = function()
+			load_telescope()
+		end,
+	},
+	{
+		"windwp/nvim-autopairs",
+		event = "InsertEnter",
+		config = function()
+			load_autopairs()
+		end,
+	},
+	{ "numToStr/Comment.nvim", event = "BufRead" },
+	{ "RRethy/vim-illuminate", event = "VeryLazy" },
+	{
+		"lewis6991/gitsigns.nvim",
+		event = "BufReadPre",
+		config = function()
+			load_gitsigns()
+		end,
+	},
+	{
+		"nvim-treesitter/nvim-treesitter",
+		event = "BufReadPost",
+		config = function()
+			load_treesitter()
+		end,
+	},
+	{
+		"hrsh7th/nvim-cmp",
+		event = "InsertEnter",
+		dependencies = {
+			"hrsh7th/cmp-buffer",
+			"hrsh7th/cmp-path",
+			"hrsh7th/cmp-nvim-lsp",
+			"saadparwaiz1/cmp_luasnip",
+		},
+		config = function()
+			load_cmp()
+		end,
+	},
+	{
+		"L3MON4D3/LuaSnip",
+		event = "InsertEnter",
+		dependencies = { "rafamadriz/friendly-snippets" },
+	},
+	{
+		"neovim/nvim-lspconfig",
+		lazy = true,
+	},
+	{
+		"williamboman/mason.nvim",
+		dependencies = { "williamboman/mason-lspconfig.nvim" },
+		config = function()
+			load_lsp()
+		end,
+	},
+	{
+		"jose-elias-alvarez/null-ls.nvim",
+		event = "BufReadPre",
+		config = function()
+			load_null_ls()
+		end,
+	},
+	{
+		"rcarriga/nvim-dap-ui",
+		event = "VeryLazy",
+		dependencies = { "mfussenegger/nvim-dap" },
+		config = function()
+			load_dap()
+		end,
+	},
 })
--- Load plugins
-if pcall(require, "packer") then
-	return require("packer").startup(function(use)
-		use("wbthomason/packer.nvim")
-		use("folke/tokyonight.nvim")
-		use("numToStr/Comment.nvim")
-		use("lukas-reineke/indent-blankline.nvim")
-		use("RRethy/vim-illuminate")
-		use({ "nvim-telescope/telescope.nvim", requires = { "nvim-lua/plenary.nvim", "ahmedkhalf/project.nvim" } })
-		load_telescope()
-		use({ "nvim-lualine/lualine.nvim", requires = { "kyazdani42/nvim-web-devicons" } })
-		load_lualine()
-		use("windwp/nvim-autopairs")
-		load_autopairs()
-		use("nvim-treesitter/nvim-treesitter")
-		load_treesitter()
-		use({ "neovim/nvim-lspconfig", requires = { "williamboman/mason.nvim", "williamboman/mason-lspconfig.nvim" } })
-		load_lsp()
-		use({
-			"hrsh7th/nvim-cmp",
-			requires = {
-				"hrsh7th/cmp-buffer",
-				"hrsh7th/cmp-path",
-				"hrsh7th/cmp-nvim-lsp",
-				"L3MON4D3/LuaSnip",
-				"rafamadriz/friendly-snippets",
-				"saadparwaiz1/cmp_luasnip",
-			},
-		})
-		load_cmp()
-		use("jose-elias-alvarez/null-ls.nvim")
-		load_null_ls()
-		use({ "rcarriga/nvim-dap-ui", requires = { "mfussenegger/nvim-dap" } })
-		load_dap()
-		use("lewis6991/gitsigns.nvim")
-		load_gitsigns()
-		if PACKER_BOOTSTRAP then
-			require("packer").sync()
-		end
-	end)
-end
