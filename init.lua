@@ -242,17 +242,15 @@ local function load_treesitter()
 end
 
 local function load_lsp()
-	if pcall(require, "mason-lspconfig") and pcall(require, "mason") then
+	if pcall(require, "mason") and pcall(require, "mason-lspconfig") then
 		local servers = {
 			"html",
 			"cssls",
 			"yamlls",
-			"bashls",
-			"clangd",
-			"jdtls",
-			"lua_ls",
 			"jsonls",
 			"tsserver",
+			"bashls",
+			"lua_ls",
 			"pyright",
 		}
 
@@ -329,7 +327,7 @@ local function load_lsp()
 		end
 
 		local opts = {}
-		for _, server in pairs(servers) do
+		for _, server in pairs(require("mason-lspconfig").get_installed_servers()) do
 			opts = {
 				on_attach = on_attach,
 				capabilities = capabilities,
