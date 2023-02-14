@@ -559,102 +559,107 @@ if not vim.loop.fs_stat(lazypath) then
 	})
 end
 vim.opt.rtp:prepend(lazypath)
-require("lazy").setup({
-	{
-		"folke/tokyonight.nvim",
-		lazy = false,
-		priority = 1000,
-		config = function()
-			vim.cmd.colorscheme("tokyonight-night")
-		end,
-	},
-	{
-		"nvim-lualine/lualine.nvim",
-		dependencies = { "kyazdani42/nvim-web-devicons" },
-		config = function()
-			load_lualine()
-		end,
-	},
-	{ "lukas-reineke/indent-blankline.nvim", event = "BufReadPre" },
-	{
-		"nvim-telescope/telescope.nvim",
-		event = "BufEnter",
-		dependencies = { "nvim-lua/plenary.nvim", "ahmedkhalf/project.nvim" },
-		config = function()
-			load_telescope()
-		end,
-	},
-	{
-		"windwp/nvim-autopairs",
-		event = "InsertEnter",
-		config = function()
-			load_autopairs()
-		end,
-	},
-	{ "numToStr/Comment.nvim", event = "BufRead" },
-	{ "RRethy/vim-illuminate", event = "VeryLazy" },
-	{
-		"NvChad/nvim-colorizer.lua",
-		config = function()
-			require("colorizer").setup()
-		end,
-	},
-	{
-		"lewis6991/gitsigns.nvim",
-		event = "BufReadPre",
-		config = function()
-			load_gitsigns()
-		end,
-	},
-	{
-		"nvim-treesitter/nvim-treesitter",
-		event = "BufReadPost",
-		config = function()
-			load_treesitter()
-		end,
-	},
-	{
-		"hrsh7th/nvim-cmp",
-		event = "InsertEnter",
-		dependencies = {
-			"hrsh7th/cmp-buffer",
-			"hrsh7th/cmp-path",
-			"hrsh7th/cmp-nvim-lsp",
-			"saadparwaiz1/cmp_luasnip",
+
+if pcall(require, "lazy") then
+	require("lazy").setup({
+		{
+			"folke/tokyonight.nvim",
+			lazy = false,
+			priority = 1000,
+			config = function()
+				vim.cmd.colorscheme("tokyonight-night")
+			end,
 		},
-		config = function()
-			load_cmp()
-		end,
-	},
-	{
-		"L3MON4D3/LuaSnip",
-		event = "InsertEnter",
-		dependencies = { "rafamadriz/friendly-snippets" },
-	},
-	{
-		"neovim/nvim-lspconfig",
-		lazy = true,
-	},
-	{
-		"williamboman/mason.nvim",
-		dependencies = { "williamboman/mason-lspconfig.nvim" },
-		config = function()
-			load_lsp()
-		end,
-	},
-	{
-		"jose-elias-alvarez/null-ls.nvim",
-		event = "BufReadPre",
-		config = function()
-			load_null_ls()
-		end,
-	},
-	{
-		"rcarriga/nvim-dap-ui",
-		event = "VeryLazy",
-		dependencies = { "mfussenegger/nvim-dap" },
-		config = function()
-			load_dap()
-		end,
-	},
-})
+		{
+			"nvim-lualine/lualine.nvim",
+			dependencies = { "kyazdani42/nvim-web-devicons" },
+			config = function()
+				load_lualine()
+			end,
+		},
+		{ "lukas-reineke/indent-blankline.nvim", event = "BufReadPre" },
+		{
+			"nvim-telescope/telescope.nvim",
+			event = "BufEnter",
+			dependencies = { "nvim-lua/plenary.nvim", "ahmedkhalf/project.nvim" },
+			config = function()
+				load_telescope()
+			end,
+		},
+		{
+			"windwp/nvim-autopairs",
+			event = "InsertEnter",
+			config = function()
+				load_autopairs()
+			end,
+		},
+		{ "numToStr/Comment.nvim", event = "BufRead" },
+		{ "RRethy/vim-illuminate", event = "VeryLazy" },
+		{
+			"NvChad/nvim-colorizer.lua",
+			config = function()
+				if pcall(require, "colorizer") then
+					require("colorizer").setup({})
+				end
+			end,
+		},
+		{
+			"lewis6991/gitsigns.nvim",
+			event = "BufReadPre",
+			config = function()
+				load_gitsigns()
+			end,
+		},
+		{
+			"nvim-treesitter/nvim-treesitter",
+			event = "BufReadPost",
+			config = function()
+				load_treesitter()
+			end,
+		},
+		{
+			"hrsh7th/nvim-cmp",
+			event = "InsertEnter",
+			dependencies = {
+				"hrsh7th/cmp-buffer",
+				"hrsh7th/cmp-path",
+				"hrsh7th/cmp-nvim-lsp",
+				"saadparwaiz1/cmp_luasnip",
+			},
+			config = function()
+				load_cmp()
+			end,
+		},
+		{
+			"L3MON4D3/LuaSnip",
+			event = "InsertEnter",
+			dependencies = { "rafamadriz/friendly-snippets" },
+		},
+		{
+			"neovim/nvim-lspconfig",
+			lazy = true,
+		},
+		{
+			"williamboman/mason.nvim",
+			dependencies = { "williamboman/mason-lspconfig.nvim" },
+			config = function()
+				load_lsp()
+			end,
+		},
+		{
+			"jose-elias-alvarez/null-ls.nvim",
+			event = "BufReadPre",
+			config = function()
+				load_null_ls()
+			end,
+		},
+		{
+			"rcarriga/nvim-dap-ui",
+			event = "VeryLazy",
+			dependencies = { "mfussenegger/nvim-dap" },
+			config = function()
+				load_dap()
+			end,
+		},
+	})
+end
