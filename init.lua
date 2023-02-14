@@ -242,8 +242,21 @@ end
 
 local function load_lsp()
 	if pcall(require, "mason-lspconfig") and pcall(require, "mason") then
+		local servers = {
+			"html",
+			"cssls",
+			"yamlls",
+			"bashls",
+			"clangd",
+			"jdtls",
+			"lua_ls",
+			"jsonls",
+			"tsserver",
+			"pyright",
+		}
+
 		require("mason").setup()
-		require("mason-lspconfig").setup({ automatic_installation = true })
+		require("mason-lspconfig").setup({ ensure_installed = servers, automatic_installation = true })
 
 		local capabilities = vim.lsp.protocol.make_client_capabilities()
 		capabilities.textDocument.completion.completionItem.snippetSupport = true
@@ -309,22 +322,10 @@ local function load_lsp()
 
 			if client.name == "tsserver" then
 				client.server_capabilities.documentFormattingProvider = false
-			elseif client.name == "sumneko_lua" then
+			elseif client.name == "lua_ls" then
 				client.server_capabilities.documentFormattingProvider = false
 			end
 		end
-
-		local servers = {
-			"sumneko_lua",
-			"cssls",
-			"html",
-			"tsserver",
-			"pyright",
-			"bashls",
-			"jsonls",
-			"yamlls",
-			"jdtls",
-		}
 
 		local opts = {}
 		for _, server in pairs(servers) do
