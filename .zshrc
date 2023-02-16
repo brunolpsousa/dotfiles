@@ -19,12 +19,20 @@ export NPM_CONFIG_CACHE="$XDG_CACHE_HOME/npm"
 export NPM_CONFIG_PREFIX="$XDG_DATA_HOME/npm"
 export NPM_CONFIG_USERCONFIG="$XDG_CONFIG_HOME/npm/config"
 export LESS='-R --mouse --wheel-lines=3'
+export LESS_TERMCAP_mb=$'\e[1;32m'
+export LESS_TERMCAP_md=$'\e[1;32m'
+export LESS_TERMCAP_me=$'\e[0m'
+export LESS_TERMCAP_se=$'\e[0m'
+export LESS_TERMCAP_so=$'\e[01;33m'
+export LESS_TERMCAP_ue=$'\e[0m'
+export LESS_TERMCAP_us=$'\e[1;4;31m'
 # https://github.com/trapd00r/LS_COLORS/blob/master/lscolors.sh
 export LS_COLORS='*.7z=38;5;40:*.WARC=38;5;40:*.a=38;5;40:*.arj=38;5;40:*.bz2=38;5;40:*.cpio=38;5;40:*.gz=38;5;40:*.lrz=38;5;40:*.lz=38;5;40:*.lzma=38;5;40:*.lzo=38;5;40:*.rar=38;5;40:*.s7z=38;5;40:*.sz=38;5;40:*.tar=38;5;40:*.tbz=38;5;40:*.tgz=38;5;40:*.warc=38;5;40:*.xz=38;5;40:*.z=38;5;40:*.zip=38;5;40:*.zipx=38;5;40:*.zoo=38;5;40:*.zpaq=38;5;40:*.zst=38;5;40:*.zstd=38;5;40:*.zz=38;5;40:*@.service=38;5;45:*AUTHORS=38;5;220;1:*CHANGES=38;5;220;1:*CONTRIBUTORS=38;5;220;1:*COPYING=38;5;220;1:*COPYRIGHT=38;5;220;1:*CodeResources=38;5;239:*Dockerfile=38;5;155:*HISTORY=38;5;220;1:*INSTALL=38;5;220;1:*LICENSE=38;5;220;1:*LS_COLORS=48;5;89;38;5;197;1;3;4;7:*MANIFEST=38;5;243:*Makefile=38;5;155:*NOTICE=38;5;220;1:*PATENTS=38;5;220;1:*PkgInfo=38;5;239:*README=38;5;220;1:*README.md=38;5;220;1:*README.rst=38;5;220;1:*VERSION=38;5;220;1:*authorized_keys=1:*cfg=1:*conf=1:*config=1:*core=38;5;241:*id_dsa=38;5;192;3:*id_ecdsa=38;5;192;3:*id_ed25519=38;5;192;3:*id_rsa=38;5;192;3:*known_hosts=1:*lock=38;5;248:*lockfile=38;5;248:*pm_to_blib=38;5;240:*rc=1:*.1p=38;5;7:*.32x=38;5;213:*.3g2=38;5;115:*.3ga=38;5;137;1:*.3gp=38;5;115:*.3p=38;5;7:*.82p=38;5;121:*.83p=38;5;121:*.8eu=38;5;121:*.8xe=38;5;121:*.8xp=38;5;121:*.A64=38;5;213:*.BAT=38;5;172:*.BUP=38;5;241:*.C=38;5;81:*.CFUserTextEncoding=38;5;239:*.DS_Store=38;5;239:*.F=38;5;81:*.F03=38;5;81:*.F08=38;5;81:*.F90=38;5;81:*.F95=38;5;81:*.H=38;5;110:*.IFO=38;5;114:*.JPG=38;5;97:*.M=38;5;110:*.MOV=38;5;114:*.PDF=38;5;141:*.PFA=38;5;66:*.PL=38;5;160:*.R=38;5;49:*.RData=38;5;178:*.Rproj=38;5;11:*.S=38;5;110:*.S3M=38;5;137;1:*.SKIP=38;5;244:*.TIFF=38;5;97:*.VOB=38;5;115;1:*.a00=38;5;213:*.a52=38;5;213:*.a64=38;5;213:*.a78=38;5;213:*.aac=38;5;137;1:*.accdb=38;5;60:*.accde=38;5;60:*.accdr=38;5;60:*.accdt=38;5;60:*.adf=38;5;213:*.adoc=38;5;184:*.afm=38;5;66:*.agda=38;5;81:*.agdai=38;5;110:*.ahk=38;5;41:*.ai=38;5;99:*.aiff=38;5;136;1:*.alac=38;5;136;1:*.allow=38;5;112:*.am=38;5;242:*.amr=38;5;137;1:*.ape=38;5;136;1:*.apk=38;5;215:*.application=38;5;116:*.aria2=38;5;241:*.asc=38;5;192;3:*.asciidoc=38;5;184:*.asf=38;5;115:*.asm=38;5;81:*.ass=38;5;117:*.atr=38;5;213:*.au=38;5;137;1:*.automount=38;5;45:*.avi=38;5;114:*.awk=38;5;172:*.bak=38;5;241:*.bash=38;5;172:*.bash_login=1:*.bash_logout=1:*.bash_profile=1:*.bat=38;5;172:*.bfe=38;5;192;3:*.bib=38;5;178:*.bin=38;5;124:*.bmp=38;5;97:*.bsp=38;5;215:*.c=38;5;81:*.c++=38;5;81:*.cab=38;5;215:*.caf=38;5;137;1:*.cap=38;5;29:*.car=38;5;57:*.cbr=38;5;141:*.cbz=38;5;141:*.cc=38;5;81:*.cda=38;5;136;1:*.cdi=38;5;213:*.cdr=38;5;97:*.chm=38;5;141:*.cl=38;5;81:*.clj=38;5;41:*.cljc=38;5;41:*.cljs=38;5;41:*.cljw=38;5;41:*.cnc=38;5;7:*.coffee=38;5;074;1:*.cp=38;5;81:*.cpp=38;5;81:*.cr=38;5;81:*.crx=38;5;215:*.cs=38;5;81:*.css=38;5;125;1:*.csv=38;5;78:*.ctp=38;5;81:*.cue=38;5;116:*.cxx=38;5;81:*.dart=38;5;51:*.dat=38;5;137;1:*.db=38;5;60:*.deb=38;5;215:*.def=38;5;7:*.deny=38;5;196:*.description=38;5;116:*.device=38;5;45:*.dhall=38;5;178:*.dicom=38;5;97:*.diff=48;5;197;38;5;232:*.directory=38;5;116:*.divx=38;5;114:*.djvu=38;5;141:*.dll=38;5;241:*.dmg=38;5;215:*.dmp=38;5;29:*.doc=38;5;111:*.dockerignore=38;5;240:*.docm=38;5;111;4:*.docx=38;5;111:*.drw=38;5;99:*.dtd=38;5;178:*.dts=38;5;137;1:*.dump=38;5;241:*.dwg=38;5;216:*.dylib=38;5;241:*.ear=38;5;215:*.el=38;5;81:*.elc=38;5;241:*.eln=38;5;241:*.eml=38;5;125;1:*.enc=38;5;192;3:*.entitlements=1:*.epf=1:*.eps=38;5;99:*.epsf=38;5;99:*.epub=38;5;141:*.err=38;5;160;1:*.error=38;5;160;1:*.etx=38;5;184:*.ex=38;5;7:*.example=38;5;7:*.f=38;5;81:*.f03=38;5;81:*.f08=38;5;81:*.f4v=38;5;115:*.f90=38;5;81:*.f95=38;5;81:*.fcm=38;5;137;1:*.feature=38;5;7:*.flac=38;5;136;1:*.flif=38;5;97:*.flv=38;5;115:*.fm2=38;5;213:*.fmp12=38;5;60:*.fnt=38;5;66:*.fon=38;5;66:*.for=38;5;81:*.fp7=38;5;60:*.ftn=38;5;81:*.fvd=38;5;124:*.fxml=38;5;178:*.gb=38;5;213:*.gba=38;5;213:*.gbc=38;5;213:*.gbr=38;5;7:*.gel=38;5;213:*.gemspec=38;5;41:*.ger=38;5;7:*.gg=38;5;213:*.ggl=38;5;213:*.gif=38;5;97:*.git=38;5;197:*.gitattributes=38;5;240:*.gitignore=38;5;240:*.gitmodules=38;5;240:*.go=38;5;81:*.gp3=38;5;115:*.gp4=38;5;115:*.gpg=38;5;192;3:*.gs=38;5;81:*.h=38;5;110:*.h++=38;5;110:*.hi=38;5;110:*.hidden-color-scheme=1:*.hidden-tmTheme=1:*.hin=38;5;242:*.hpp=38;5;110:*.hs=38;5;81:*.htm=38;5;125;1:*.html=38;5;125;1:*.hxx=38;5;110:*.icns=38;5;97:*.ico=38;5;97:*.ics=38;5;7:*.ii=38;5;110:*.img=38;5;124:*.iml=38;5;166:*.in=38;5;242:*.info=38;5;184:*.ini=1:*.ipa=38;5;215:*.ipk=38;5;213:*.ipynb=38;5;41:*.iso=38;5;124:*.j64=38;5;213:*.jad=38;5;215:*.jar=38;5;215:*.java=38;5;074;1:*.jhtm=38;5;125;1:*.jpeg=38;5;97:*.jpg=38;5;97:*.js=38;5;074;1:*.jsm=38;5;074;1:*.json=38;5;178:*.jsonl=38;5;178:*.jsonnet=38;5;178:*.jsp=38;5;074;1:*.jxl=38;5;97:*.kak=38;5;172:*.key=38;5;166:*.lagda=38;5;81:*.lagda.md=38;5;81:*.lagda.rst=38;5;81:*.lagda.tex=38;5;81:*.last-run=1:*.less=38;5;125;1:*.lhs=38;5;81:*.libsonnet=38;5;142:*.lisp=38;5;81:*.lnk=38;5;39:*.localized=38;5;239:*.localstorage=38;5;60:*.log=38;5;190:*.lua=38;5;81:*.m=38;5;110:*.m2v=38;5;114:*.m3u=38;5;116:*.m3u8=38;5;116:*.m4=38;5;242:*.m4a=38;5;137;1:*.m4v=38;5;114:*.map=38;5;7:*.markdown=38;5;184:*.md=38;5;184:*.md5=38;5;116:*.mdb=38;5;60:*.mde=38;5;60:*.mdump=38;5;241:*.merged-ca-bundle=1:*.mf=38;5;7:*.mfasl=38;5;7:*.mht=38;5;125;1:*.mi=38;5;7:*.mid=38;5;136;1:*.midi=38;5;136;1:*.mjs=38;5;074;1:*.mkd=38;5;184:*.mkv=38;5;114:*.mm=38;5;7:*.mobi=38;5;141:*.mod=38;5;137;1:*.moon=38;5;81:*.mount=38;5;45:*.mov=38;5;114:*.mp3=38;5;137;1:*.mp4=38;5;114:*.mp4a=38;5;137;1:*.mpeg=38;5;114:*.mpg=38;5;114:*.msg=38;5;178:*.msql=38;5;222:*.mtx=38;5;7:*.mustache=38;5;125;1:*.mysql=38;5;222:*.nc=38;5;60:*.ndjson=38;5;178:*.nds=38;5;213:*.nes=38;5;213:*.nfo=38;5;184:*.nib=38;5;57:*.nim=38;5;81:*.nimble=38;5;81:*.nix=38;5;155:*.nrg=38;5;124:*.nth=38;5;97:*.numbers=38;5;112:*.o=38;5;241:*.odb=38;5;111:*.odp=38;5;166:*.ods=38;5;112:*.odt=38;5;111:*.oga=38;5;137;1:*.ogg=38;5;137;1:*.ogm=38;5;114:*.ogv=38;5;115:*.old=38;5;242:*.opus=38;5;137;1:*.org=38;5;184:*.orig=38;5;241:*.otf=38;5;66:*.out=38;5;242:*.p12=38;5;192;3:*.p7s=38;5;192;3:*.pacnew=38;5;33:*.pages=38;5;111:*.pak=38;5;215:*.part=38;5;239:*.patch=48;5;197;38;5;232;1:*.path=38;5;45:*.pbxproj=1:*.pc=38;5;7:*.pcap=38;5;29:*.pcb=38;5;7:*.pcf=1:*.pcm=38;5;136;1:*.pdf=38;5;141:*.pem=38;5;192;3:*.pfa=38;5;66:*.pfb=38;5;66:*.pfm=38;5;66:*.pgn=38;5;178:*.pgp=38;5;192;3:*.pgsql=38;5;222:*.php=38;5;81:*.pi=38;5;7:*.pid=38;5;248:*.pk3=38;5;215:*.pl=38;5;208:*.plist=1:*.plt=38;5;7:*.ply=38;5;216:*.pm=38;5;203:*.png=38;5;97:*.pod=38;5;184:*.pot=38;5;7:*.pps=38;5;166:*.ppt=38;5;166:*.ppts=38;5;166:*.pptsm=38;5;166;4:*.pptx=38;5;166:*.pptxm=38;5;166;4:*.profile=1:*.properties=38;5;116:*.ps=38;5;99:*.psd=38;5;97:*.psf=1:*.pxd=38;5;97:*.pxm=38;5;97:*.py=38;5;41:*.pyc=38;5;240:*.qcow=38;5;124:*.r=38;5;49:*.r[0-9]{0,2}=38;5;239:*.rake=38;5;155:*.rb=38;5;41:*.rdata=38;5;178:*.rdf=38;5;7:*.rkt=38;5;81:*.rlib=38;5;241:*.rmvb=38;5;114:*.rnc=38;5;178:*.rng=38;5;178:*.rom=38;5;213:*.rpm=38;5;215:*.rs=38;5;81:*.rss=38;5;178:*.rst=38;5;184:*.rstheme=1:*.rtf=38;5;111:*.ru=38;5;7:*.s=38;5;110:*.s3m=38;5;137;1:*.sample=38;5;114:*.sass=38;5;125;1:*.sassc=38;5;244:*.sav=38;5;213:*.sc=38;5;41:*.scala=38;5;41:*.scan=38;5;242:*.sch=38;5;7:*.scm=38;5;7:*.scpt=38;5;219:*.scss=38;5;125;1:*.sed=38;5;172:*.service=38;5;45:*.sfv=38;5;116:*.sgml=38;5;178:*.sh=38;5;172:*.sid=38;5;137;1:*.sig=38;5;192;3:*.signature=38;5;192;3:*.sis=38;5;7:*.sms=38;5;213:*.snapshot=38;5;45:*.socket=38;5;45:*.sparseimage=38;5;124:*.spl=38;5;7:*.sql=38;5;222:*.sqlite=38;5;60:*.srt=38;5;117:*.ssa=38;5;117:*.st=38;5;213:*.stackdump=38;5;241:*.state=38;5;248:*.stderr=38;5;160;1:*.stl=38;5;216:*.storyboard=38;5;196:*.strings=1:*.sty=38;5;7:*.sub=38;5;117:*.sublime-build=1:*.sublime-commands=1:*.sublime-keymap=1:*.sublime-project=1:*.sublime-settings=1:*.sublime-snippet=1:*.sublime-workspace=1:*.sug=38;5;7:*.sup=38;5;117:*.svg=38;5;99:*.swap=38;5;45:*.swift=38;5;219:*.swo=38;5;244:*.swp=38;5;244:*.sx=38;5;81:*.t=38;5;114:*.target=38;5;45:*.tcc=38;5;110:*.tcl=38;5;64;1:*.tdy=38;5;7:*.tex=38;5;184:*.textile=38;5;184:*.tf=38;5;168:*.tfm=38;5;7:*.tfnt=38;5;7:*.tfstate=38;5;168:*.tfvars=38;5;168:*.tg=38;5;7:*.theme=38;5;116:*.tif=38;5;97:*.tiff=38;5;97:*.timer=38;5;45:*.tmTheme=1:*.tmp=38;5;244:*.toast=38;5;124:*.toml=38;5;178:*.torrent=38;5;116:*.ts=38;5;115:*.tsv=38;5;78:*.ttf=38;5;66:*.twig=38;5;81:*.txt=38;5;253:*.typelib=38;5;60:*.un~=38;5;241:*.urlview=38;5;116:*.user-ca-bundle=1:*.v=38;5;81:*.vala=38;5;81:*.vapi=38;5;81:*.vb=38;5;81:*.vba=38;5;81:*.vbs=38;5;81:*.vcard=38;5;7:*.vcd=38;5;124:*.vcf=38;5;7:*.vdf=38;5;215:*.vdi=38;5;124:*.vfd=38;5;124:*.vhd=38;5;124:*.vhdx=38;5;124:*.vim=38;5;172:*.viminfo=1:*.vmdk=38;5;124:*.vob=38;5;115;1:*.vpk=38;5;215:*.vtt=38;5;117:*.war=38;5;215:*.wav=38;5;136;1:*.webloc=38;5;116:*.webm=38;5;115:*.webp=38;5;97:*.wma=38;5;137;1:*.wmv=38;5;114:*.woff=38;5;66:*.woff2=38;5;66:*.wrl=38;5;216:*.wv=38;5;136;1:*.wvc=38;5;136;1:*.xcconfig=1:*.xcf=38;5;7:*.xcsettings=1:*.xcuserstate=1:*.xcworkspacedata=1:*.xib=38;5;208:*.xla=38;5;76:*.xln=38;5;7:*.xls=38;5;112:*.xlsx=38;5;112:*.xlsxm=38;5;112;4:*.xltm=38;5;73;4:*.xltx=38;5;73:*.xml=38;5;178:*.xpi=38;5;215:*.xpm=38;5;97:*.xsd=38;5;178:*.xsh=38;5;41:*.yaml=38;5;178:*.yml=38;5;178:*.z[0-9]{0,2}=38;5;239:*.zcompdump=38;5;241:*.zig=38;5;81:*.zlogin=1:*.zlogout=1:*.zprofile=1:*.zsh=38;5;172:*.zshenv=1:*.zwc=38;5;241:*.zx[0-9]{0,2}=38;5;239:bd=38;5;68:ca=38;5;17:cd=38;5;113;1:di=38;5;30:do=38;5;127:ex=38;5;208;1:pi=38;5;126:fi=0:ln=target:mh=38;5;222;1:no=0:or=48;5;196;38;5;232;1:ow=38;5;220;1:sg=48;5;3;38;5;0:su=38;5;220;1;3;100;1:so=38;5;197:st=38;5;86;48;5;234:tw=48;5;235;38;5;139;3:';
 # Make SSH work with GNUPG
 export GPG_TTY=$(tty)
 SSH_AGENT_PID=''
 SSH_AUTH_SOCK="${XDG_RUNTIME_DIR}/gnupg/S.gpg-agent.ssh"
+[[ -z $ZDOTDIR ]] && ZDOTDIR="$HOME"
 [[ -x $(command -v plasmashell) ]] && export GTK_USE_PORTAL=1 || export QT_QPA_PLATFORMTHEME='gnome'
 [[ -d "$HOME/.local/bin" ]] && export PATH="$HOME/.local/bin:$PATH"
 [[ -d "$XDG_DATA_HOME/npm/bin" ]] && export PATH="$XDG_DATA_HOME/npm/bin:$PATH"
@@ -316,12 +324,13 @@ source /usr/share/doc/pkgfile/command-not-found.zsh 2>/dev/null
 source /usr/share/fzf/key-bindings.zsh 2>/dev/null
 source /usr/share/fzf/completion.zsh 2>/dev/null
 #------------------------------------------------------------------------------#
+fetch() { [[ $(command -v curl) ]] && curl -fsSL -- "$1" || wget -qO- -- "$1" }
 # zsh-async
 if [[ -f "$XDG_DATA_HOME/zsh/async.zsh" ]]; then
   source "$XDG_DATA_HOME/zsh/async.zsh"
 else
   echo 'Downloading zsh-async...'
-  curl -s 'https://raw.githubusercontent.com/mafredri/zsh-async/master/async.zsh' -o "$XDG_DATA_HOME/zsh/async.zsh"
+  fetch 'https://raw.githubusercontent.com/mafredri/zsh-async/master/async.zsh' > "$XDG_DATA_HOME/zsh/async.zsh"
   sumvar='423f21b05afec4da0681a4e954dcb2cf8a11f530243435c6f1949a97c07416f8ab518e7a82287d0768e27ae4805fa9d8fa265bd64df48f50860be49fca401e4a'
   sumvar2="$(sha512sum $XDG_DATA_HOME/zsh/async.zsh | cut -d ' ' -f1)" 2>/dev/null
   [[ $sumvar == $sumvar2 ]] && source "$XDG_DATA_HOME/zsh/async.zsh" || echo "$(date '+%Y-%m-%d %H:%M:%S') - Failed to load zsh-async" >> "$HOME/.alert"
@@ -337,7 +346,7 @@ elif [[ -f "$XDG_DATA_HOME/zsh/zsh-autosuggestions.zsh" ]]; then
   var=1
 else
   echo 'Downloading zsh-autosuggestions...'
-  curl -s 'https://raw.githubusercontent.com/zsh-users/zsh-autosuggestions/master/zsh-autosuggestions.zsh' -o "$XDG_DATA_HOME/zsh/zsh-autosuggestions.zsh"
+  fetch 'https://raw.githubusercontent.com/zsh-users/zsh-autosuggestions/master/zsh-autosuggestions.zsh' > "$XDG_DATA_HOME/zsh/zsh-autosuggestions.zsh"
   sumvar='47bab685f000d242c9c204b1d7f8862a282f1b649f9b5543ae5309c8d7af87d1ad658c7ab67422191070608feb5af18eeba6f6cace798dfb92187825e1e9ba76'
   sumvar2="$(sha512sum $XDG_DATA_HOME/zsh/zsh-autosuggestions.zsh | cut -d ' ' -f1)" 2>/dev/null
   [[ $sumvar == $sumvar2 ]] && source "$XDG_DATA_HOME/zsh/zsh-autosuggestions.zsh" && var=1
@@ -361,8 +370,8 @@ if [[ ! -d '/usr/share/licenses/zsh-completions' ]]; then
     echo 'Downloading zsh-completions...'
     dirvar="$PWD"
     builtin cd -q "$XDG_CACHE_HOME"
-    [[ -f "$XDG_CACHE_HOME/zsh-completions-master.zip" ]] || curl -sL 'https://github.com/zsh-users/zsh-completions/archive/refs/heads/master.zip' -o "$XDG_CACHE_HOME/zsh-completions-master.zip"
-    sumvar='c730c58377c576333f030335b859d52c98d6222c43f36b70734cdb72abf7d7f7327a8848321a4b54fa204b9f9598450ff87da8de8ef799099308a055bc0e5b0f'
+    [[ -f "$XDG_CACHE_HOME/zsh-completions-master.zip" ]] || fetch 'https://github.com/zsh-users/zsh-completions/archive/refs/heads/master.zip' > "$XDG_CACHE_HOME/zsh-completions-master.zip"
+    sumvar='8d7d1051f507475c97e1297fc1ccdc83a73de879b19645498a961f058b21547796553d773b773dba2dd97e5dc4d6fb1f7e5722b3b0ce1f4fb24d580e1cca6b09'
     sumvar2="$(sha512sum $XDG_CACHE_HOME/zsh-completions-master.zip | cut -d ' ' -f1)" 2>/dev/null
     unzip -uq "$XDG_CACHE_HOME/zsh-completions-master.zip" zsh-completions-master/{zsh-completions.plugin.zsh,"src/*"} -d "$XDG_DATA_HOME/zsh" 2>/dev/null
     command mv "$XDG_DATA_HOME/zsh/zsh-completions-master" "$XDG_DATA_HOME/zsh/zsh-completions" 2>/dev/null
@@ -381,8 +390,8 @@ elif [[ -f "$XDG_DATA_HOME/zsh/zsh-history-substring-search.zsh" ]]; then
   var=1
 else
   echo 'Downloading zsh-history-substring-search...'
-  curl -s 'https://raw.githubusercontent.com/zsh-users/zsh-history-substring-search/master/zsh-history-substring-search.zsh' -o "$XDG_DATA_HOME/zsh/zsh-history-substring-search.zsh"
-  sumvar='2750c07fa5f220319cf9dd93567a5f0dc3320f562849874c38b28ee7f4ad979818caf4120aad40724f7bdf30a7edb4d2c9f42686d5396adbe539b0e74b939000'
+  fetch 'https://raw.githubusercontent.com/zsh-users/zsh-history-substring-search/master/zsh-history-substring-search.zsh' > "$XDG_DATA_HOME/zsh/zsh-history-substring-search.zsh"
+  sumvar='d790058197dca60e9243967d6ad16efd9c1b913826f5c0befc4b1801d97398b7869436954c25830a156bf1ed9a2ac42b0232ad9d45691d48671e599151d38de8'
   sumvar2="$(sha512sum $XDG_DATA_HOME/zsh/zsh-history-substring-search.zsh | cut -d ' ' -f1)" 2>/dev/null
   [[ $sumvar == $sumvar2 ]] && source "$XDG_DATA_HOME/zsh/zsh-history-substring-search.zsh" && var=1
   unset sumvar sumvar2
@@ -412,8 +421,8 @@ else
   echo 'Downloading zsh-syntax-highlighting...'
   dirvar="$PWD"
   builtin cd -q "$XDG_CACHE_HOME"
-  [[ -f "$XDG_CACHE_HOME/zsh-syntax-highlighting-master.zip" ]] || curl -sL 'https://github.com/zsh-users/zsh-syntax-highlighting/archive/refs/heads/master.zip' -o "$XDG_CACHE_HOME/zsh-syntax-highlighting-master.zip"
-  sumvar='c51eaa77302f0ae74041d9e0d2a7cff3fe3420c794c29e2d67114c1f1768e2a83831cf2d3cce3983c518ec6ceef05421d88f6a8ecee9d448261bbe3567e72201'
+  [[ -f "$XDG_CACHE_HOME/zsh-syntax-highlighting-master.zip" ]] || fetch 'https://github.com/zsh-users/zsh-syntax-highlighting/archive/refs/heads/master.zip' > "$XDG_CACHE_HOME/zsh-syntax-highlighting-master.zip"
+  sumvar='cd34d8a62f183317c7cf02eff7b4a3c4a7b096c8fad2168cfef1dab2c1c1bc99134581955994592ceb5525568b074d17d6ab60819ef3d0721365758c613a5ef0'
   sumvar2="$(sha512sum $XDG_CACHE_HOME/zsh-syntax-highlighting-master.zip | cut -d ' ' -f1)" 2>/dev/null
   unzip -uq "$XDG_CACHE_HOME/zsh-syntax-highlighting-master.zip" zsh-syntax-highlighting-master/{zsh-syntax-highlighting.zsh,"highlighters/*",.revision-hash,.version} -d "$XDG_DATA_HOME/zsh" 2>/dev/null
   command mv "$XDG_DATA_HOME/zsh/zsh-syntax-highlighting-master" "$XDG_DATA_HOME/zsh/zsh-syntax-highlighting/" 2>/dev/null
@@ -622,8 +631,16 @@ myip() {
     '-6') api='http://v6.ipv6-test.com/api/myip.php' ;;
     *) api='https://ipv6-test.com/api/myip.php' ;;
   esac
-  curl -s "$api" && echo
+  fetch "$api" && echo
 }
+
+# Speedtest
+speedtest() {
+  local sSize
+  [[ -z $1 ]] && sSize=100 || sSize="$1"
+  local sURL="http://speedtest-blr1.digitalocean.com/${sSize}mb.test"
+  [[ $(command -v curl) ]] && curl -o /dev/null "$sURL" || wget -O /dev/null "$sURL"
+ }
 
 # by default show 3 months of calendar with week number
 # but also allow to override it
@@ -658,6 +675,9 @@ unlock() { [[ -n $1 ]] && faillock --user $1 --reset || echo 'Usage: unlock <use
 # Display system install date
 arch-date() { echo -n 'System was installed on '; ls -lct /etc | tail -1 | awk '{print $7, $6, $8}' }
 
+# Refresh Arch mirrors
+refresh() { sudo reflector --protocol https --age 12 --latest 20 --connection-timeout 2 --download-timeout 2 --fastest 5 --sort rate --save /etc/pacman.d/mirrorlist --verbose }
+
 # Reset GNOME to default settings
 reset-gnome() {
   if [[ -z $1 ]]; then
@@ -674,19 +694,13 @@ alias reset-gnome-appgrid='gsettings reset org.gnome.shell app-picker-layout'
 alias paclog='grep -nC 2 --color=auto warning: /var/log/pacman.log'
 
 # Update .zshrc
-alias zupd='curl -fsSL https://gitlab.com/N1vBruno/dotfiles/-/raw/master/.zshrc > $ZDOTDIR/.zshrc && source $ZDOTDIR/.zshrc'
-
-# Refresh Arch mirrors
-alias refresh='sudo reflector --protocol https --age 12 --latest 20 --connection-timeout 2 --download-timeout 2 --fastest 5 --sort rate --save /etc/pacman.d/mirrorlist --verbose'
+alias zupd="fetch https://gitlab.com/N1vBruno/dotfiles/-/raw/master/.zshrc > $ZDOTDIR/.zshrc && source $ZDOTDIR/.zshrc"
 
 # Weather by wttr.in
-alias weather='curl https://wttr.in'
+alias weather="fetch https://wttr.in"
 
 # Display top 10 shell commands
 alias top10='print -l ${(o)history%% *} | uniq -c | sort -nr | head -n 10'
-
-# Speedtest
-alias speedtest='curl -o /dev/null http://speedtest-blr1.digitalocean.com/100mb.test'
 
 # Display wifi networks
 alias wifi='nmcli device wifi'
@@ -1122,7 +1136,7 @@ arch-base() {
             [[ $nerdcfg =~ '^[yY]' ]] || return
             command mkdir -p "$XDG_DATA_HOME/fonts"
             echo 'Downloading Nerd Fonts...'
-            [[ -f "$XDG_CACHE_HOME/JetBrainsMono.zip" ]] || curl -sL 'https://github.com/ryanoasis/nerd-fonts/releases/download/v2.3.0-RC/JetBrainsMono.zip' -o "$XDG_CACHE_HOME/JetBrainsMono.zip"
+            [[ -f "$XDG_CACHE_HOME/JetBrainsMono.zip" ]] || fetch 'https://github.com/ryanoasis/nerd-fonts/releases/download/v2.3.3/JetBrainsMono.zip' > "$XDG_CACHE_HOME/JetBrainsMono.zip"
             unzip -q "$XDG_CACHE_HOME/JetBrainsMono.zip" -d "$XDG_DATA_HOME/fonts" 2>/dev/null
             echo 'Done. Set JetBrainsMono as default font\n'
           fi
@@ -1131,18 +1145,19 @@ arch-base() {
           # Neovim config
           if command -v nvim >/dev/null; then
             command mkdir -p "$XDG_CONFIG_HOME/nvim"
-            [[ -f "$XDG_CONFIG_HOME/nvim/init.lua" ]] || curl -s 'https://gitlab.com/N1vBruno/dotfiles/-/raw/master/init.lua' -o "$XDG_CONFIG_HOME/nvim/init.lua"
+            [[ -f "$XDG_CONFIG_HOME/nvim/init.lua" ]] || fetch 'https://gitlab.com/N1vBruno/dotfiles/-/raw/master/init.lua' > "$XDG_CONFIG_HOME/nvim/init.lua"
             if [[ ! -x "$HOME/.local/bin/shellcheck" ]]; then
+              local pkgver="v0.9.0"
               echo 'Downloading shellcheck...'
-              [[ -f "$XDG_CACHE_HOME/shellcheck.tar.xz" ]] || curl -sL 'https://github.com/koalaman/shellcheck/releases/download/v0.8.0/shellcheck-v0.8.0.linux.x86_64.tar.xz' -o "$XDG_CACHE_HOME/shellcheck.tar.xz"
-              local sumvar='89317d97adb341e627b709e86477734ce236e9fb290de8a8c41cdc62769a3225622fa609deffebeabe9edb71f5639a086f61b677947e3ec4bc07c540fcbd0973'
+              [[ -f "$XDG_CACHE_HOME/shellcheck.tar.xz" ]] || fetch "https://github.com/koalaman/shellcheck/releases/download/${pkgver}/shellcheck-${pkgver}.linux.x86_64.tar.xz" > "$XDG_CACHE_HOME/shellcheck.tar.xz"
+              local sumvar='157fd8b2c18a257f3876e23015580ea63d27b12c4f13f87d625a180e8ca042e7501271d15edeb36e7b5780da73815b45386a33e063ab1c891d838f35c778a8ac'
               local sumvar2="$(sha512sum $XDG_CACHE_HOME/shellcheck.tar.xz | cut -d ' ' -f1)" 2>/dev/null
               if [[ $sumvar == $sumvar2 ]]; then
                 command mkdir -p "$HOME/.local/bin"
                 local var="$PWD"
                 builtin cd -q "$XDG_CACHE_HOME"
-                tar -Jxf "$XDG_CACHE_HOME/shellcheck.tar.xz" shellcheck-v0.8.0/shellcheck
-                command mv shellcheck-v0.8.0/shellcheck "$HOME/.local/bin"
+                tar -Jxf "$XDG_CACHE_HOME/shellcheck.tar.xz" shellcheck-${pkgver}/shellcheck
+                command mv shellcheck-${pkgver}/shellcheck "$HOME/.local/bin"
                 builtin cd -q "$var"
                 unset var sumvar
               else
@@ -1182,7 +1197,7 @@ arch-base() {
           # Wezterm config
           if command -v wezterm >/dev/null; then
             command mkdir -p "$XDG_CONFIG_HOME/wezterm"
-            [[ -f "$XDG_CONFIG_HOME/wezterm/wezterm.lua" ]] || curl -s 'https://gitlab.com/N1vBruno/dotfiles/-/raw/master/wezterm.lua' -o "$XDG_CONFIG_HOME/wezterm/wezterm.lua"
+            [[ -f "$XDG_CONFIG_HOME/wezterm/wezterm.lua" ]] || fetch 'https://gitlab.com/N1vBruno/dotfiles/-/raw/master/wezterm.lua' > "$XDG_CONFIG_HOME/wezterm/wezterm.lua"
             case $(lscpu | awk '/Model name:/{print $3}') in Intel\(R\)) sed -i 's/\(initial_cols = \)148/\1112/g; s/\(initial_rows = \)40/\130/g' "$XDG_CONFIG_HOME/wezterm/wezterm.lua";; esac
             if [[ -f '/usr/local/bin/xterm' ]]; then
               ls -lh '/usr/local/bin/xterm' && cat '/usr/local/bin/xterm'
@@ -1202,9 +1217,9 @@ arch-base() {
             command mkdir -p "$XDG_CONFIG_HOME/mpv/scripts"
             echo 'Ctrl+q quit\nF11 cycle fullscreen\nENTER cycle fullscreen\nKP_ENTER cycle fullscreen\nWHEEL_UP osd-msg-bar seek 3\nWHEEL_DOWN osd-msg-bar seek -3\nLEFT osd-msg-bar seek -5\nRIGHT osd-msg-bar seek  5\nUP osd-msg-bar seek 15\nDOWN osd-msg-bar seek -15\nkp9 add volume -2\nkp0 add volume 2' > "$XDG_CONFIG_HOME/mpv/input.conf"
             echo 'idle=yes\nvolume=25\nautofit-smaller=50%x50%\nautofit-larger=90%x90%' > "$XDG_CONFIG_HOME/mpv/mpv.conf"
-            [[ ! -f "$XDG_CONFIG_HOME/mpv/scripts/nextfile.lua" ]] && curl -s 'https://raw.githubusercontent.com/N1vBruno/mpv-nextfile/master/nextfile.lua' -o "$XDG_CONFIG_HOME/mpv/scripts/nextfile.lua"
+            [[ ! -f "$XDG_CONFIG_HOME/mpv/scripts/nextfile.lua" ]] && fetch 'https://raw.githubusercontent.com/N1vBruno/mpv-nextfile/master/nextfile.lua' > "$XDG_CONFIG_HOME/mpv/scripts/nextfile.lua"
             if [[ ! -f "$XDG_CONFIG_HOME/mpv/scripts/playlistmanager.lua" ]]; then
-              curl -s 'https://raw.githubusercontent.com/jonniek/mpv-playlistmanager/master/playlistmanager.lua' -o "$XDG_CONFIG_HOME/mpv/scripts/playlistmanager.lua"
+              fetch 'https://raw.githubusercontent.com/jonniek/mpv-playlistmanager/master/playlistmanager.lua' > "$XDG_CONFIG_HOME/mpv/scripts/playlistmanager.lua"
               local sumvar='4dea313558df39909d7d90f517d884f5b267216f184cf09e95b71ed2d3729305e5b895ff7c1d5f94dcfbe10e245c5d95b940ae28b2d76b77e86cc6dcb51fa611'
               local sumvar2="$(sha512sum $XDG_CONFIG_HOME/mpv/scripts/playlistmanager.lua | cut -d ' ' -f1)" 2>/dev/null
               [[ $sumvar != $sumvar2 ]] && command rm "$XDG_CONFIG_HOME/mpv/scripts/playlistmanager.lua" && echo "$(date '+%Y-%m-%d %H:%M:%S') - mpv-playlistmanager checksum mismatch" >> "$HOME/.alert"
@@ -1262,7 +1277,7 @@ arch-base() {
 
         if [[ "$EUID" != 0 ]]; then
           command mkdir -p "$XDG_DATA_HOME/backgrounds"
-          [[ -f "$XDG_CONFIG_HOME/backgrounds/chwp.sh" ]] || curl -s 'https://gitlab.com/N1vBruno/dotfiles/-/raw/master/chwp.sh' -o "$XDG_DATA_HOME/backgrounds/chwp.sh"
+          [[ -f "$XDG_CONFIG_HOME/backgrounds/chwp.sh" ]] || fetch 'https://gitlab.com/N1vBruno/dotfiles/-/raw/master/chwp.sh' > "$XDG_DATA_HOME/backgrounds/chwp.sh"
           chmod +x "$XDG_DATA_HOME/backgrounds/chwp.sh"
           echo '#!/usr/bin/env bash\nexport TERMX_NAUTILUS=1 && xterm' > "$XDG_DATA_HOME/nautilus/scripts/Terminal"
           chmod +x "$XDG_DATA_HOME/nautilus/scripts/Terminal"
