@@ -590,6 +590,17 @@ if pcall(require, "lazy") then
 			end,
 		},
 		{ "numToStr/Comment.nvim", event = "BufRead" },
+		{ "mg979/vim-visual-multi", event = "VeryLazy" },
+		{
+			"jinh0/eyeliner.nvim",
+			event = "VeryLazy",
+			config = function()
+				require("eyeliner").setup({
+					highlight_on_key = true,
+					dim = true,
+				})
+			end,
+		},
 		{ "RRethy/vim-illuminate", event = "VeryLazy" },
 		{
 			"NvChad/nvim-colorizer.lua",
