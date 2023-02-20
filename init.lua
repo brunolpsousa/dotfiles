@@ -1,63 +1,64 @@
 -- Bindings
+local keymap = vim.keymap.set
 vim.g.mapleader = " "
-vim.keymap.set("n", "<S-g>", "<S-g>zz")
-vim.keymap.set("n", "<C-u>", "<C-u>zz")
-vim.keymap.set("n", "<C-d>", "<C-d>zz")
-vim.keymap.set("n", "n", "nzzzv")
-vim.keymap.set("n", "N", "Nzzzv")
-vim.keymap.set("n", "J", "mzJ`z")
-vim.keymap.set("n", "<C-h>", "<C-w>h")
-vim.keymap.set("n", "<C-j>", "<C-w>j")
-vim.keymap.set("n", "<C-k>", "<C-w>k")
-vim.keymap.set("n", "<C-l>", "<C-w>l")
-vim.keymap.set("n", "<C-Up>", ":resize -2<CR>")
-vim.keymap.set("n", "<C-Down>", ":resize +2<CR>")
-vim.keymap.set("n", "<C-Left>", ":vertical resize -2<CR>")
-vim.keymap.set("n", "<C-Right>", ":vertical resize +2<CR>")
-vim.keymap.set("n", "<C-q>", "<cmd>q<cr>")
-vim.keymap.set("n", "<C-s>", "<cmd>w<cr>")
-vim.keymap.set("n", "<S-q>", "<cmd>bd<CR>")
-vim.keymap.set("n", "<leader>Q", "<cmd>bd!<cr>")
-vim.keymap.set("n", "<leader>q", "<cmd>qa<cr>")
-vim.keymap.set("n", "<leader>s", "<cmd>wa<cr>")
-vim.keymap.set("n", "<TAB>", ":bnext<CR>")
-vim.keymap.set("n", "<S-TAB>", ":bprevious<CR>")
-vim.keymap.set("n", "<ESC><ESC>", "<cmd>nohlsearch<CR>")
-vim.keymap.set("t", "<ESC>", "<C-\\><C-N>")
-vim.keymap.set("v", "<", "<gv")
-vim.keymap.set("v", ">", ">gv")
-vim.keymap.set("n", "<A-j>", ":m.+1<CR>==")
-vim.keymap.set("n", "<A-k>", ":m.-2<CR>==")
-vim.keymap.set("i", "<A-j>", "<Esc>:m .+1<CR>==gi")
-vim.keymap.set("i", "<A-k>", "<Esc>:m .-2<CR>==gi")
-vim.keymap.set("v", "<A-j>", ":m'>+1<CR>gv=gv")
-vim.keymap.set("v", "<A-k>", ":m'<-2<CR>gv=gv")
-vim.keymap.set("v", "p", '"_dP')
-vim.keymap.set("n", "<C-\\>", "<cmd>sp term://zsh<CR><cmd>resize -8<CR>i")
-vim.keymap.set("v", "<leader>y", '"+y')
-vim.keymap.set("n", "<leader>y", '"+y')
-vim.keymap.set("v", "<leader>d", '"+ygvd')
-vim.keymap.set("v", "<leader>p", '"+p')
-vim.keymap.set("n", "<leader>p", '"+p')
-vim.keymap.set("v", "<leader>P", '"+P')
-vim.keymap.set("n", "<leader>P", '"+P')
-vim.keymap.set("n", "<leader>/", '<cmd>lua require"Comment.api".toggle.linewise.current()<CR>')
-vim.keymap.set("x", "<leader>/", '<ESC><CMD>lua require"Comment.api".toggle.linewise(vim.fn.visualmode())<CR>')
-vim.keymap.set("n", "<leader>e", ":Ex<CR>")
-vim.keymap.set("n", "<leader>fe", ":e %:h/<C-d>")
-vim.keymap.set("n", "<leader>ff", ":Telescope find_files<CR>")
-vim.keymap.set("n", "<leader>ft", ":Telescope live_grep<CR>")
-vim.keymap.set("n", "<leader>fp", ":Telescope projects<CR>")
-vim.keymap.set("n", "<leader>fb", ":Telescope buffers<CR>")
-vim.keymap.set("n", "<leader>db", '<cmd>lua require"dap".toggle_breakpoint()<cr>')
-vim.keymap.set("n", "<leader>dc", '<cmd>lua require"dap".continue()<cr>')
-vim.keymap.set("n", "<leader>di", '<cmd>lua require"dap".step_into()<cr>')
-vim.keymap.set("n", "<leader>do", '<cmd>lua require"dap".step_over()<cr>')
-vim.keymap.set("n", "<leader>dO", '<cmd>lua require"dap".step_out()<cr>')
-vim.keymap.set("n", "<leader>dr", '<cmd>lua require"dap".repl.toggle()<cr>')
-vim.keymap.set("n", "<leader>dl", '<cmd>lua require"dap".run_last()<cr>')
-vim.keymap.set("n", "<leader>du", '<cmd>lua require"dapui".toggle()<cr>')
-vim.keymap.set("n", "<leader>dt", '<cmd>lua require"dap".terminate()<cr>')
+keymap("n", "<S-g>", "<S-g>zz")
+keymap("n", "<C-u>", "<C-u>zz")
+keymap("n", "<C-d>", "<C-d>zz")
+keymap("n", "n", "nzzzv")
+keymap("n", "N", "Nzzzv")
+keymap("n", "J", "mzJ`z")
+keymap("n", "<C-h>", "<C-w>h")
+keymap("n", "<C-j>", "<C-w>j")
+keymap("n", "<C-k>", "<C-w>k")
+keymap("n", "<C-l>", "<C-w>l")
+keymap("n", "<C-Up>", ":resize -2<CR>")
+keymap("n", "<C-Down>", ":resize +2<CR>")
+keymap("n", "<C-Left>", ":vertical resize -2<CR>")
+keymap("n", "<C-Right>", ":vertical resize +2<CR>")
+keymap("n", "<C-q>", "<cmd>q<CR>")
+keymap("n", "<C-s>", "<cmd>w<CR>")
+keymap("n", "<S-q>", "<cmd>bd<CR>")
+keymap("n", "<leader>Q", "<cmd>bd!<CR>")
+keymap("n", "<leader>q", "<cmd>qa<CR>")
+keymap("n", "<leader>s", "<cmd>wa<CR>")
+keymap("n", "<Tab>", ":bnext<CR>")
+keymap("n", "<S-Tab>", ":bprevious<CR>")
+keymap("n", "<Esc><Esc>", "<cmd>nohlsearch<CR>")
+keymap("t", "<Esc>", "<C-\\><C-N>")
+keymap("v", "<", "<gv")
+keymap("v", ">", ">gv")
+keymap("n", "<A-j>", ":m.+1<CR>==")
+keymap("n", "<A-k>", ":m.-2<CR>==")
+keymap("i", "<A-j>", "<Esc>:m .+1<CR>==gi")
+keymap("i", "<A-k>", "<Esc>:m .-2<CR>==gi")
+keymap("v", "<A-j>", ":m'>+1<CR>gv=gv")
+keymap("v", "<A-k>", ":m'<-2<CR>gv=gv")
+keymap("v", "p", '"_dP')
+keymap("n", "<C-\\>", "<cmd>sp term://zsh<CR><cmd>resize -8<CR>i")
+keymap("v", "<leader>y", '"+y')
+keymap("n", "<leader>y", '"+y')
+keymap("v", "<leader>d", '"+ygvd')
+keymap("v", "<leader>p", '"+p')
+keymap("n", "<leader>p", '"+p')
+keymap("v", "<leader>P", '"+P')
+keymap("n", "<leader>P", '"+P')
+keymap("n", "<leader>/", '<cmd>lua require"Comment.api".toggle.linewise.current()<CR>')
+keymap("x", "<leader>/", '<ESC><CMD>lua require"Comment.api".toggle.linewise(vim.fn.visualmode())<CR>')
+keymap("n", "<leader>e", ":Ex<CR>")
+keymap("n", "<leader>fe", ":e %:h/<C-d>")
+keymap("n", "<leader>ff", ":Telescope find_files<CR>")
+keymap("n", "<leader>ft", ":Telescope live_grep<CR>")
+keymap("n", "<leader>fp", ":Telescope projects<CR>")
+keymap("n", "<leader>fb", ":Telescope buffers<CR>")
+keymap("n", "<leader>db", '<cmd>lua require"dap".toggle_breakpoint()<CR>')
+keymap("n", "<leader>dc", '<cmd>lua require"dap".continue()<CR>')
+keymap("n", "<leader>di", '<cmd>lua require"dap".step_into()<CR>')
+keymap("n", "<leader>do", '<cmd>lua require"dap".step_over()<CR>')
+keymap("n", "<leader>dO", '<cmd>lua require"dap".step_out()<CR>')
+keymap("n", "<leader>dr", '<cmd>lua require"dap".repl.toggle()<CR>')
+keymap("n", "<leader>dl", '<cmd>lua require"dap".run_last()<CR>')
+keymap("n", "<leader>du", '<cmd>lua require"dapui".toggle()<CR>')
+keymap("n", "<leader>dt", '<cmd>lua require"dap".terminate()<CR>')
 
 -- Options
 vim.opt.termguicolors = true
@@ -79,7 +80,7 @@ vim.opt.splitright = true
 vim.opt.undofile = true
 vim.opt.backup = false
 vim.opt.writebackup = false
-vim.opt.updatetime = 300
+vim.opt.updatetime = 250
 vim.opt.scrolloff = 8
 vim.opt.sidescrolloff = 20
 vim.opt.wrap = false
@@ -295,33 +296,30 @@ local function load_lsp()
 			vim.api.nvim_buf_set_option(bufnr, "omnifunc", "v:lua.vim.lsp.omnifunc")
 
 			-- Mappings.
-			-- See `:help vim.lsp.*` for documentation on any of the below functions
 			local bufopts = { noremap = true, silent = true, buffer = bufnr }
-			vim.keymap.set("n", "gD", vim.lsp.buf.declaration, bufopts)
-			vim.keymap.set("n", "gd", vim.lsp.buf.definition, bufopts)
-			vim.keymap.set("n", "K", vim.lsp.buf.hover, bufopts)
-			vim.keymap.set("n", "gi", vim.lsp.buf.implementation, bufopts)
-			vim.keymap.set("n", "gr", vim.lsp.buf.references, bufopts)
-			vim.keymap.set("n", "gl", vim.diagnostic.open_float, bufopts)
-			vim.keymap.set("n", "<space>lf", function()
+			keymap("n", "gD", vim.lsp.buf.declaration, bufopts)
+			keymap("n", "gd", vim.lsp.buf.definition, bufopts)
+			keymap("n", "K", vim.lsp.buf.hover, bufopts)
+			keymap("n", "gi", vim.lsp.buf.implementation, bufopts)
+			keymap("n", "gr", vim.lsp.buf.references, bufopts)
+			keymap("n", "gl", vim.diagnostic.open_float, bufopts)
+			keymap("n", "<space>lf", function()
 				vim.lsp.buf.format({ async = true })
 			end, bufopts)
-			vim.keymap.set("n", "<space>la", vim.lsp.buf.code_action, bufopts)
-			vim.keymap.set("n", "<space>lk", vim.diagnostic.goto_next, bufopts)
-			vim.keymap.set("n", "<space>lj", vim.diagnostic.goto_prev, bufopts)
-			vim.keymap.set("n", "<leader>ls", vim.lsp.buf.signature_help, bufopts)
-			vim.keymap.set("n", "<space>lr", vim.lsp.buf.rename, bufopts)
-			vim.keymap.set("n", "<space>lq", vim.diagnostic.setloclist, bufopts)
-			vim.keymap.set("n", "<space>D", vim.lsp.buf.type_definition, bufopts)
-			vim.keymap.set("n", "<space>wa", vim.lsp.buf.add_workspace_folder, bufopts)
-			vim.keymap.set("n", "<space>wr", vim.lsp.buf.remove_workspace_folder, bufopts)
-			vim.keymap.set("n", "<space>wl", function()
+			keymap("n", "<space>la", vim.lsp.buf.code_action, bufopts)
+			keymap("n", "<space>lj", vim.diagnostic.goto_next, bufopts)
+			keymap("n", "<space>lk", vim.diagnostic.goto_prev, bufopts)
+			keymap("n", "<leader>ls", vim.lsp.buf.signature_help, bufopts)
+			keymap("n", "<space>lr", vim.lsp.buf.rename, bufopts)
+			keymap("n", "<space>lq", vim.diagnostic.setloclist, bufopts)
+			keymap("n", "<space>D", vim.lsp.buf.type_definition, bufopts)
+			keymap("n", "<space>wa", vim.lsp.buf.add_workspace_folder, bufopts)
+			keymap("n", "<space>wr", vim.lsp.buf.remove_workspace_folder, bufopts)
+			keymap("n", "<space>wl", function()
 				print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
 			end, bufopts)
 
-			if client.name == "tsserver" then
-				client.server_capabilities.documentFormattingProvider = false
-			elseif client.name == "lua_ls" then
+			if client.name == "tsserver" or client.name == "lua_ls" then
 				client.server_capabilities.documentFormattingProvider = false
 			end
 		end
@@ -351,7 +349,7 @@ end
 local function load_cmp()
 	if pcall(require, "cmp") and pcall(require, "luasnip") then
 		require("luasnip.loaders.from_vscode").lazy_load()
-		vim.opt.completeopt = { "menu", "menuone", "noselect" }
+		vim.opt.completeopt = { "menuone", "noselect" }
 		local kind_icons = {
 			Text = "",
 			Method = "",
@@ -388,8 +386,8 @@ local function load_cmp()
 			mapping = require("cmp").mapping.preset.insert({
 				["<C-k>"] = require("cmp").mapping.select_prev_item(),
 				["<C-j>"] = require("cmp").mapping.select_next_item(),
-				["<C-b>"] = require("cmp").mapping(require("cmp").mapping.scroll_docs(-1), { "i", "c" }),
-				["<C-f>"] = require("cmp").mapping(require("cmp").mapping.scroll_docs(1), { "i", "c" }),
+				["<C-u>"] = require("cmp").mapping(require("cmp").mapping.scroll_docs(-1), { "i", "c" }),
+				["<C-d>"] = require("cmp").mapping(require("cmp").mapping.scroll_docs(1), { "i", "c" }),
 				["<C-Space>"] = require("cmp").mapping(require("cmp").mapping.complete(), { "i", "c" }),
 				["<C-c>"] = require("cmp").mapping({
 					i = require("cmp").mapping.abort(),
