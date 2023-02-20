@@ -90,7 +90,6 @@ vim.opt.list = true
 vim.opt.listchars:append("tab:>>,extends:▷,precedes:◁,trail:·,nbsp:~")
 vim.opt.spelllang = "en,pt"
 vim.opt.virtualedit = "none"
-vim.api.nvim_command("colorscheme slate")
 
 -- Autocommands
 vim.api.nvim_create_autocmd({ "FileType" }, {
@@ -179,16 +178,8 @@ local function load_lualine()
 		local spaces = function()
 			return "spaces: " .. vim.api.nvim_buf_get_option(0, "shiftwidth")
 		end
-		local function themeOpt()
-			local colorscheme = vim.api.nvim_command_output("colorscheme")
-			if colorscheme:match("tokyonight") then
-				return "tokyonight"
-			else
-				return "onedark"
-			end
-		end
 		require("lualine").setup({
-			options = { theme = themeOpt(), globalstatus = true, section_separators = "", component_separators = "" },
+			options = { globalstatus = true, section_separators = "", component_separators = "" },
 			sections = {
 				lualine_a = { "mode" },
 				lualine_b = { "branch" },
@@ -208,17 +199,6 @@ local function load_autopairs()
 			ts_config = {
 				lua = { "string", "source" },
 				javascript = { "string", "template_string" },
-			},
-			fast_wrap = {
-				map = "<M-e>",
-				chars = { "{", "[", "(", '"', "'" },
-				pattern = string.gsub([[ [%'%"%)%>%]%)%}%,] ]], "%s+", ""),
-				offset = 0,
-				end_key = "$",
-				keys = "qwertyuiopzxcvbnmasdfghjkl",
-				check_comma = true,
-				highlight = "PmenuSel",
-				highlight_grey = "LineNr",
 			},
 		})
 		local cmp_autopairs = require("nvim-autopairs.completion.cmp")
@@ -245,14 +225,8 @@ end
 local function load_lsp()
 	if pcall(require, "mason") and pcall(require, "mason-lspconfig") then
 		local servers = {
-			"html",
-			"cssls",
-			"yamlls",
-			"jsonls",
-			"tsserver",
 			"bashls",
 			"lua_ls",
-			"pyright",
 		}
 
 		require("mason").setup()
@@ -436,7 +410,7 @@ local function load_cmp()
 				{ name = "buffer" },
 				{ name = "path" },
 			},
-			confirm_opts = { behavior = require("cmp").ConfirmBehavior.Replace, select = false },
+			confirm_opts = { behavior = require("cmp").ConfirmBehavior.Replace, select = true },
 			window = {
 				completion = require("cmp").config.window.bordered(),
 				documentation = require("cmp").config.window.bordered(),
@@ -589,7 +563,7 @@ if pcall(require, "lazy") then
 				load_autopairs()
 			end,
 		},
-		{ "numToStr/Comment.nvim", event = "BufRead" },
+		{ "numToStr/Comment.nvim", lazy = true },
 		{ "mg979/vim-visual-multi", event = "VeryLazy" },
 		{
 			"jinh0/eyeliner.nvim",
@@ -604,6 +578,7 @@ if pcall(require, "lazy") then
 		{ "RRethy/vim-illuminate", event = "VeryLazy" },
 		{
 			"NvChad/nvim-colorizer.lua",
+			event = "BufReadPost",
 			config = function()
 				if pcall(require, "colorizer") then
 					require("colorizer").setup({})
@@ -632,15 +607,12 @@ if pcall(require, "lazy") then
 				"hrsh7th/cmp-path",
 				"hrsh7th/cmp-nvim-lsp",
 				"saadparwaiz1/cmp_luasnip",
+				"L3MON4D3/LuaSnip",
+				"rafamadriz/friendly-snippets",
 			},
 			config = function()
 				load_cmp()
 			end,
-		},
-		{
-			"L3MON4D3/LuaSnip",
-			event = "InsertEnter",
-			dependencies = { "rafamadriz/friendly-snippets" },
 		},
 		{
 			"neovim/nvim-lspconfig",
@@ -662,7 +634,7 @@ if pcall(require, "lazy") then
 		},
 		{
 			"rcarriga/nvim-dap-ui",
-			event = "VeryLazy",
+			lazy = true,
 			dependencies = { "mfussenegger/nvim-dap" },
 			config = function()
 				load_dap()
