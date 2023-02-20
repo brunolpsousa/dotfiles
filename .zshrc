@@ -38,8 +38,8 @@ SSH_AUTH_SOCK="${XDG_RUNTIME_DIR}/gnupg/S.gpg-agent.ssh"
 [[ -d "$XDG_DATA_HOME/npm/bin" ]] && export PATH="$XDG_DATA_HOME/npm/bin:$PATH"
 [[ -d "$XDG_DATA_HOME/cargo/bin" ]] && export PATH="$XDG_DATA_HOME/cargo/bin:$PATH"
 [[ "$LANG" == 'C'  || "$LANG" == '' ]] && echo "$(date '+%Y-%m-%d %H:%M:%S') - The \$LANG ($LANG) variable is not set. This can cause a lot of problems" >> "$HOME/.alert"
-[[ "$EUID" != 0 ]] && umask 022 && sysvar='--user' || umask 002
-systemctl $sysvar import-environment EDITOR VISUAL XDG_CACHE_HOME XDG_CONFIG_HOME XDG_DATA_HOME XDG_STATE_HOME LS_COLORS MOZ_ENABLE_WAYLAND QT_QPA_PLATFORM QT_QPA_PLATFORMTHEME GTK_USE_PORTAL 2>/dev/null; unset sysvar
+[[ "$EUID" != 0 ]] && umask 022 && s_local='--user' || umask 002
+systemctl $s_local import-environment EDITOR VISUAL XDG_CACHE_HOME XDG_CONFIG_HOME XDG_DATA_HOME XDG_STATE_HOME LS_COLORS MOZ_ENABLE_WAYLAND QT_QPA_PLATFORM QT_QPA_PLATFORMTHEME GTK_USE_PORTAL 2>/dev/null; unset s_local
 # Interactive or return
 [[ $- == *i* ]] || return
 #------------------------------------------------------------------------------#
@@ -314,6 +314,8 @@ bindkey '^Z' ctrl-z-toggle
 #------------------------------------------------------------------------------#
 #################################### Plugins ###################################
 #------------------------------------------------------------------------------#
+fetch() { [[ $(command -v curl) ]] && curl -fsSL -- "$1" || wget -qO- -- "$1" }
+#------------------------------------------------------------------------------#
 # asdf
 source /opt/asdf-vm/asdf.sh 2>/dev/null
 #------------------------------------------------------------------------------#
@@ -324,40 +326,32 @@ source /usr/share/doc/pkgfile/command-not-found.zsh 2>/dev/null
 source /usr/share/fzf/key-bindings.zsh 2>/dev/null
 source /usr/share/fzf/completion.zsh 2>/dev/null
 #------------------------------------------------------------------------------#
-fetch() { [[ $(command -v curl) ]] && curl -fsSL -- "$1" || wget -qO- -- "$1" }
 # zsh-async
 if [[ -f "$XDG_DATA_HOME/zsh/async.zsh" ]]; then
   source "$XDG_DATA_HOME/zsh/async.zsh"
 else
   echo 'Downloading zsh-async...'
   fetch 'https://raw.githubusercontent.com/mafredri/zsh-async/master/async.zsh' > "$XDG_DATA_HOME/zsh/async.zsh"
-  sumvar='423f21b05afec4da0681a4e954dcb2cf8a11f530243435c6f1949a97c07416f8ab518e7a82287d0768e27ae4805fa9d8fa265bd64df48f50860be49fca401e4a'
-  sumvar2="$(sha512sum $XDG_DATA_HOME/zsh/async.zsh | cut -d ' ' -f1)" 2>/dev/null
-  [[ $sumvar == $sumvar2 ]] && source "$XDG_DATA_HOME/zsh/async.zsh" || echo "$(date '+%Y-%m-%d %H:%M:%S') - Failed to load zsh-async" >> "$HOME/.alert"
-  unset sumvar sumvar2
+  source "$XDG_DATA_HOME/zsh/async.zsh" || echo "$(date '+%Y-%m-%d %H:%M:%S') - Failed to load zsh-async" >> "$HOME/.alert"
 fi
 #------------------------------------------------------------------------------#
 # Auto Suggestions
-if [[ -f '/usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh' ]]; then
-  source '/usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh'
-  var=1
-elif [[ -f "$XDG_DATA_HOME/zsh/zsh-autosuggestions.zsh" ]]; then
-  source "$XDG_DATA_HOME/zsh/zsh-autosuggestions.zsh"
-  var=1
-else
-  echo 'Downloading zsh-autosuggestions...'
-  fetch 'https://raw.githubusercontent.com/zsh-users/zsh-autosuggestions/master/zsh-autosuggestions.zsh' > "$XDG_DATA_HOME/zsh/zsh-autosuggestions.zsh"
-  sumvar='47bab685f000d242c9c204b1d7f8862a282f1b649f9b5543ae5309c8d7af87d1ad658c7ab67422191070608feb5af18eeba6f6cace798dfb92187825e1e9ba76'
-  sumvar2="$(sha512sum $XDG_DATA_HOME/zsh/zsh-autosuggestions.zsh | cut -d ' ' -f1)" 2>/dev/null
-  [[ $sumvar == $sumvar2 ]] && source "$XDG_DATA_HOME/zsh/zsh-autosuggestions.zsh" && var=1
-  unset sumvar sumvar2
-fi
-if [[ -n $var ]]; then
+load_autoSuggestions() {
+  if [[ -f '/usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh' ]]; then
+    source '/usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh'
+  elif [[ -f "$XDG_DATA_HOME/zsh/zsh-autosuggestions.zsh" ]]; then
+    source "$XDG_DATA_HOME/zsh/zsh-autosuggestions.zsh"
+  else
+    echo 'Downloading zsh-autosuggestions...'
+    fetch 'https://raw.githubusercontent.com/zsh-users/zsh-autosuggestions/master/zsh-autosuggestions.zsh' > "$XDG_DATA_HOME/zsh/zsh-autosuggestions.zsh"
+    source "$XDG_DATA_HOME/zsh/zsh-autosuggestions.zsh"
+  fi
+}
+if load_autoSuggestions; then
   ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE=10
   ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=8,underline'
   ZSH_AUTOSUGGEST_STRATEGY=(history completion)
   zmodload zsh/zpty
-  unset var
 else
   echo "$(date '+%Y-%m-%d %H:%M:%S') - Failed to load zsh-autosuggestions.zsh" >> "$HOME/.alert"
 fi
@@ -368,41 +362,31 @@ if [[ ! -d '/usr/share/licenses/zsh-completions' ]]; then
     source "$XDG_DATA_HOME/zsh/zsh-completions/zsh-completions.plugin.zsh"
   else
     echo 'Downloading zsh-completions...'
-    dirvar="$PWD"
-    builtin cd -q "$XDG_CACHE_HOME"
     [[ -f "$XDG_CACHE_HOME/zsh-completions-master.zip" ]] || fetch 'https://github.com/zsh-users/zsh-completions/archive/refs/heads/master.zip' > "$XDG_CACHE_HOME/zsh-completions-master.zip"
-    sumvar='8d7d1051f507475c97e1297fc1ccdc83a73de879b19645498a961f058b21547796553d773b773dba2dd97e5dc4d6fb1f7e5722b3b0ce1f4fb24d580e1cca6b09'
-    sumvar2="$(sha512sum $XDG_CACHE_HOME/zsh-completions-master.zip | cut -d ' ' -f1)" 2>/dev/null
     unzip -uq "$XDG_CACHE_HOME/zsh-completions-master.zip" zsh-completions-master/{zsh-completions.plugin.zsh,"src/*"} -d "$XDG_DATA_HOME/zsh" 2>/dev/null
     command mv "$XDG_DATA_HOME/zsh/zsh-completions-master" "$XDG_DATA_HOME/zsh/zsh-completions" 2>/dev/null
-    [[ $sumvar == $sumvar2 ]] && source "$XDG_DATA_HOME/zsh/zsh-completions/zsh-completions.plugin.zsh" || echo "$(date '+%Y-%m-%d %H:%M:%S') - Failed to load zsh-completions.zsh" >> "$HOME/.alert"
-    builtin cd -q "$dirvar"
-    unset sumvar sumvar2 dirvar
+    source "$XDG_DATA_HOME/zsh/zsh-completions/zsh-completions.plugin.zsh" || echo "$(date '+%Y-%m-%d %H:%M:%S') - Failed to load zsh-completions.zsh" >> "$HOME/.alert"
   fi
 fi
 #------------------------------------------------------------------------------#
 # History substring search
-if [[ -f '/usr/share/zsh/plugins/zsh-history-substring-search/zsh-history-substring-search.zsh' ]]; then
-  source '/usr/share/zsh/plugins/zsh-history-substring-search/zsh-history-substring-search.zsh'
-  var=1
-elif [[ -f "$XDG_DATA_HOME/zsh/zsh-history-substring-search.zsh" ]]; then
-  source "$XDG_DATA_HOME/zsh/zsh-history-substring-search.zsh"
-  var=1
-else
-  echo 'Downloading zsh-history-substring-search...'
-  fetch 'https://raw.githubusercontent.com/zsh-users/zsh-history-substring-search/master/zsh-history-substring-search.zsh' > "$XDG_DATA_HOME/zsh/zsh-history-substring-search.zsh"
-  sumvar='d790058197dca60e9243967d6ad16efd9c1b913826f5c0befc4b1801d97398b7869436954c25830a156bf1ed9a2ac42b0232ad9d45691d48671e599151d38de8'
-  sumvar2="$(sha512sum $XDG_DATA_HOME/zsh/zsh-history-substring-search.zsh | cut -d ' ' -f1)" 2>/dev/null
-  [[ $sumvar == $sumvar2 ]] && source "$XDG_DATA_HOME/zsh/zsh-history-substring-search.zsh" && var=1
-  unset sumvar sumvar2
-fi
-if [[ -n $var ]]; then
+load_historySubstringSearch() {
+  if [[ -f '/usr/share/zsh/plugins/zsh-history-substring-search/zsh-history-substring-search.zsh' ]]; then
+    source '/usr/share/zsh/plugins/zsh-history-substring-search/zsh-history-substring-search.zsh'
+  elif [[ -f "$XDG_DATA_HOME/zsh/zsh-history-substring-search.zsh" ]]; then
+    source "$XDG_DATA_HOME/zsh/zsh-history-substring-search.zsh"
+  else
+    echo 'Downloading zsh-history-substring-search...'
+    fetch 'https://raw.githubusercontent.com/zsh-users/zsh-history-substring-search/master/zsh-history-substring-search.zsh' > "$XDG_DATA_HOME/zsh/zsh-history-substring-search.zsh"
+    source "$XDG_DATA_HOME/zsh/zsh-history-substring-search.zsh"
+  fi
+}
+if load_historySubstringSearch; then
   zmodload zsh/terminfo
   bindkey '^[[A' history-substring-search-up
   bindkey '^[[B' history-substring-search-down
   [[ -n "${key[Up]}"   ]] && bindkey -- "${key[Up]}"   history-substring-search-up
   [[ -n "${key[Down]}" ]] && bindkey -- "${key[Down]}" history-substring-search-down
-  unset var
 else
   echo "$(date '+%Y-%m-%d %H:%M:%S') - Failed to load zsh-history-substring-search.zsh" >> "$HOME/.alert"
   autoload -Uz up-line-or-beginning-search down-line-or-beginning-search
@@ -419,16 +403,10 @@ elif [[ -f "$XDG_DATA_HOME/zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.z
   source "$XDG_DATA_HOME/zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
 else
   echo 'Downloading zsh-syntax-highlighting...'
-  dirvar="$PWD"
-  builtin cd -q "$XDG_CACHE_HOME"
   [[ -f "$XDG_CACHE_HOME/zsh-syntax-highlighting-master.zip" ]] || fetch 'https://github.com/zsh-users/zsh-syntax-highlighting/archive/refs/heads/master.zip' > "$XDG_CACHE_HOME/zsh-syntax-highlighting-master.zip"
-  sumvar='cd34d8a62f183317c7cf02eff7b4a3c4a7b096c8fad2168cfef1dab2c1c1bc99134581955994592ceb5525568b074d17d6ab60819ef3d0721365758c613a5ef0'
-  sumvar2="$(sha512sum $XDG_CACHE_HOME/zsh-syntax-highlighting-master.zip | cut -d ' ' -f1)" 2>/dev/null
   unzip -uq "$XDG_CACHE_HOME/zsh-syntax-highlighting-master.zip" zsh-syntax-highlighting-master/{zsh-syntax-highlighting.zsh,"highlighters/*",.revision-hash,.version} -d "$XDG_DATA_HOME/zsh" 2>/dev/null
   command mv "$XDG_DATA_HOME/zsh/zsh-syntax-highlighting-master" "$XDG_DATA_HOME/zsh/zsh-syntax-highlighting/" 2>/dev/null
-  [[ $sumvar == $sumvar2 ]] && source "$XDG_DATA_HOME/zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh" || echo "$(date '+%Y-%m-%d %H:%M:%S') - Failed to load zsh-syntax-highlighting.zsh" >> "$HOME/.alert"
-  builtin cd -q "$dirvar"
-  unset sumvar sumvar2 dirvar
+  source "$XDG_DATA_HOME/zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh" || echo "$(date '+%Y-%m-%d %H:%M:%S') - Failed to load zsh-syntax-highlighting.zsh" >> "$HOME/.alert"
 fi
 #------------------------------------------------------------------------------#
 # If tmux is executable and not already inside a session:
@@ -636,8 +614,8 @@ myip() {
 
 # Speedtest
 speedtest() {
-  local sSize
-  [[ -z $1 ]] && sSize=100 || sSize="$1"
+  local st_size
+  [[ -z $1 ]] && st_ize=100 || st_size="$1"
   local sURL="http://speedtest-blr1.digitalocean.com/${sSize}mb.test"
   [[ $(command -v curl) ]] && curl -o /dev/null "$sURL" || wget -O /dev/null "$sURL"
  }
@@ -656,12 +634,12 @@ cal() {
 #Compile and run Java code
 # https://stackoverflow.com/questions/10986794/remove-part-of-path-on-unix
 jvr() {
-  local var="$PWD"
-  builtin cd -q $(sed 's/src.*/bin/g' <<< $var) || return 1
+  local current_dir="$PWD"
+  builtin cd -q $(sed 's/src.*/bin/g' <<< $current_dir) || return 1
   class_path=$(find * -type f -name "$1*" | sed 's/.class//g')
   java "$class_path"
-  builtin cd -q $var
-  unset var class_path
+  builtin cd -q $current_dir
+  unset current_dir class_path
 }
 
 jvc() {
@@ -943,8 +921,8 @@ ns() {
   ${IBlack}[${BIBlue}N$IBlack]$Color_Off gl     - Open float
   ${IBlack}[${BIBlue}N$IBlack]$Color_Off SPC-lf - Format
   ${IBlack}[${BIBlue}N$IBlack]$Color_Off SPC-la - Code action
-  ${IBlack}[${BIBlue}N$IBlack]$Color_Off SPC-lj - Diagnostic - prev
-  ${IBlack}[${BIBlue}N$IBlack]$Color_Off SPC-lk - Diagnostic - next
+  ${IBlack}[${BIBlue}N$IBlack]$Color_Off SPC-lj - Diagnostic - next
+  ${IBlack}[${BIBlue}N$IBlack]$Color_Off SPC-lk - Diagnostic - prev
   ${IBlack}[${BIBlue}N$IBlack]$Color_Off SPC-lr - Rename
   ${IBlack}[${BIBlue}N$IBlack]$Color_Off SPC-ls - Signature help
   ${IBlack}[${BIBlue}N$IBlack]$Color_Off SPC-lq - Set loc list
@@ -954,8 +932,8 @@ ns() {
   \n\t$IWhite### CMP ###
   ${IBlack}[${BIGreen}I$IBlack]$Color_Off C-c   - Close CMP
   ${IBlack}[${BIGreen}I$IBlack]$Color_Off C-SPC - Complete CMP
-  ${IBlack}[${BIGreen}I$IBlack]$Color_Off C-b|f - Scroll docs
-  ${IBlack}[${BIGreen}I$IBlack]$Color_Off TAB   - Expand snip
+  ${IBlack}[${BIGreen}I$IBlack]$Color_Off C-d|u - Scroll docs
+  ${IBlack}[${BIGreen}I$IBlack]$Color_Off TAB   - Next snip
   ${IBlack}[${BIGreen}I$IBlack]$Color_Off S-TAB - Prev snip
   \n\t$IWhite### DAP ###
   ${IBlack}[${BIBlue}N$IBlack]$Color_Off SPC-db - Toggle breakpoint
@@ -1002,15 +980,15 @@ ns() {
 }
 
 arch-base() {
-  [[ "$EUID" != 0 ]] && local sudovar='sudo'
+  [[ "$EUID" != 0 ]] && local use_sudo='sudo'
   local zenv=$(grep 'ZDOTDIR="\$HOME/.config/zsh"' /etc/zsh/zshenv 2>/dev/null)
   local zprof=$(grep 'source "\$ZDOTDIR/.zshrc"' /etc/zsh/zprofile 2>/dev/null)
   if [[ -z $zenv || -z $zprof ]]; then
     echo 'Do you wish to configure zshenv and zprofile?'
     select yne in 'Yes' 'No' 'Exit'; do
       case $yne in
-        Yes ) [[ -n $zenv ]] || echo '[[ -f "$HOME/.config/zsh/.zshrc" ]] && ZDOTDIR="$HOME/.config/zsh" || ZDOTDIR="$HOME"' | $sudovar tee -a /etc/zsh/zshenv >/dev/null
-              [[ -n $zprof ]] || echo 'source "$ZDOTDIR/.zshrc"' | $sudovar tee -a /etc/zsh/zprofile >/dev/null; break;;
+        Yes ) [[ -n $zenv ]] || echo '[[ -f "$HOME/.config/zsh/.zshrc" ]] && ZDOTDIR="$HOME/.config/zsh" || ZDOTDIR="$HOME"' | $use_sudo tee -a /etc/zsh/zshenv >/dev/null
+              [[ -n $zprof ]] || echo 'source "$ZDOTDIR/.zshrc"' | $use_sudo tee -a /etc/zsh/zprofile >/dev/null; break;;
         No ) break;;
         Exit ) return;;
       esac
@@ -1021,7 +999,7 @@ arch-base() {
     echo 'Do you wish to configure /etc/pacman.conf?'
     select yne in 'Yes' 'No' 'Exit'; do
       case $yne in
-        Yes ) $sudovar sh -c "sed -i 's/#\(Color\)/\1/g; s/#\(VerbosePkgLists\)/\1/g; /ParallelDownloads/ s/^#//; /ParallelDownloads/ s/5$/9\nIloveCandy/; /\[multilib\]/,/Include/ s/^#//' /etc/pacman.conf"; break;;
+        Yes ) $use_sudo sh -c "sed -i 's/#\(Color\)/\1/g; s/#\(VerbosePkgLists\)/\1/g; /ParallelDownloads/ s/^#//; /ParallelDownloads/ s/5$/9\nIloveCandy/; /\[multilib\]/,/Include/ s/^#//' /etc/pacman.conf"; break;;
         No ) break;;
         Exit ) return;;
       esac
@@ -1031,7 +1009,7 @@ arch-base() {
   echo 'Do you want to update mirrors with reflector?'
   select yne in 'Yes' 'No' 'Exit'; do
     case $yne in
-      Yes ) $sudovar sh -c "pacman -S --needed reflector; reflector --protocol https --age 12 --latest 20 --connection-timeout 2 --download-timeout 2 --fastest 5 --sort rate --save /etc/pacman.d/mirrorlist --verbose"; break;;
+      Yes ) $use_sudo sh -c "pacman -S --needed reflector; reflector --protocol https --age 12 --latest 20 --connection-timeout 2 --download-timeout 2 --fastest 5 --sort rate --save /etc/pacman.d/mirrorlist --verbose"; break;;
       No ) break;;
       Exit ) return;;
     esac
@@ -1042,15 +1020,15 @@ arch-base() {
   select yne in 'Yes' 'No' 'Exit'; do
     case $yne in
       Yes )
-        $sudovar sh -c "pacman -Syu --needed sbctl neovim wl-clipboard alacritty tmux xdg-desktop-portal xdg-desktop-portal-gtk yt-dlp firefox mpv ufw neofetch man-db tldr ntfs-3g exfat-utils unrar zip p7zip zsh zsh-autosuggestions zsh-completions zsh-history-substring-search zsh-syntax-highlighting steam qbittorrent libreoffice-fresh libreoffice-fresh-pt-br fzf hunspell-en_US noto-fonts noto-fonts-cjk noto-fonts-emoji ttf-liberation gsfonts lib32-gst-plugins-good gnuchess java-runtime-common base-devel networkmanager reflector android-udev android-tools pkgstats pipewire pipewire-alsa pipewire-pulse wireplumber $(case $(lscpu | awk '/Model name:/{print $3}') in AMD) echo -n 'amd-ucode';; Intel\(R\)) echo -n 'intel-ucode';; esac)"
+        $use_sudo sh -c "pacman -Syu --needed sbctl neovim wl-clipboard alacritty tmux xdg-desktop-portal xdg-desktop-portal-gtk yt-dlp firefox mpv ufw neofetch man-db tldr ntfs-3g exfat-utils unrar zip p7zip zsh zsh-autosuggestions zsh-completions zsh-history-substring-search zsh-syntax-highlighting steam qbittorrent libreoffice-fresh libreoffice-fresh-pt-br fzf hunspell-en_US noto-fonts noto-fonts-cjk noto-fonts-emoji ttf-liberation gsfonts lib32-gst-plugins-good gnuchess java-runtime-common base-devel networkmanager reflector android-udev android-tools pkgstats pipewire pipewire-alsa pipewire-pulse wireplumber $(case $(lscpu | awk '/Model name:/{print $3}') in AMD) echo -n 'amd-ucode';; Intel\(R\)) echo -n 'intel-ucode';; esac)"
         if [[ "$EUID" != 0 && ! -x /usr/bin/paru ]]; then
           command mkdir -p $HOME/{.cache/paru/clone,.config/paru}
           git clone https://aur.archlinux.org/paru-bin $XDG_CACHE_HOME/paru/clone/paru-bin
-          local var="$PWD"
+          local current_dir="$PWD"
           builtin cd -q "$XDG_CACHE_HOME/paru/clone/paru-bin"
           makepkg -sir
-          builtin cd -q "$var"
-          unset var
+          builtin cd -q "$current_dir"
+          unset current_dir
           echo "# \$PARU_CONF\n# /etc/paru.conf\n# ~/.config/paru/paru.conf\n# GENERAL OPTIONS\n[options]\nRemoveMake\nSudoLoop\nCombinedUpgrade\nUpgradeMenu" | tee $XDG_CONFIG_HOME/paru/paru.conf >/dev/null
         fi
         break;;
@@ -1063,7 +1041,7 @@ arch-base() {
   echo 'Do you wish to configure general system defaults?'
   select yne in 'Yes' 'No' 'Exit'; do
     case $yne in
-      Yes ) $sudovar sh -c "ufw enable; systemctl enable fstrim.timer systemd-oomd bluetooth ufw"; break;;
+      Yes ) $use_sudo sh -c "ufw enable; systemctl enable fstrim.timer systemd-oomd bluetooth ufw"; break;;
       No ) break;;
       Exit ) return;;
     esac
@@ -1076,9 +1054,9 @@ arch-base() {
   local both='localectl --no-convert set-x11-keymap us,br pc105 intl,;setxkbmap -model pc105 -layout us,br -variant intl,;echo -e "LANG=en_US.UTF-8\nLANGUAGE=\"en_US\"\nLC_TYPE=pt_BR.UTF-8\nLC_NUMERIC=pt_BR.UTF-8\nLC_TIME=pt_BR.UTF-8\nLC_MONETARY=pt_BR.UTF-8\nLC_PAPER=pt_BR.UTF-8\nLC_MEASUREMENT=pt_BR.UTF-8" | tee /etc/locale.conf;echo -e "KEYMAP=us-acentos\nKEYMAP_TOGGLE=br-abnt2\nFONT=eurlatgr\nFONT_MAP=8859-1" | tee /etc/vconsole.conf'
   select pubne in 'PT_BR' 'EN_US' 'Both' 'No' 'Exit'; do
     case $pubne in
-      PT_BR ) $sudovar sh -c "$PT"; break;;
-      EN_US ) $sudovar sh -c "$US"; break;;
-      Both ) $sudovar sh -c "$both"; break;;
+      PT_BR ) $use_sudo sh -c "$PT"; break;;
+      EN_US ) $use_sudo sh -c "$US"; break;;
+      Both ) $use_sudo sh -c "$both"; break;;
       No ) break;;
       Exit ) return;;
     esac
@@ -1133,12 +1111,13 @@ arch-base() {
           # Nerd font config
           if [[ ! $(find "$XDG_DATA_HOME/fonts" -name 'JetBrains*.ttf' 2>/dev/null) ]]; then
             echo 'Do you wish to install Nerd Fonts? [y/N]?' && read nerdcfg
-            [[ $nerdcfg =~ '^[yY]' ]] || return
-            command mkdir -p "$XDG_DATA_HOME/fonts"
-            echo 'Downloading Nerd Fonts...'
-            [[ -f "$XDG_CACHE_HOME/JetBrainsMono.zip" ]] || fetch 'https://github.com/ryanoasis/nerd-fonts/releases/download/v2.3.3/JetBrainsMono.zip' > "$XDG_CACHE_HOME/JetBrainsMono.zip"
-            unzip -q "$XDG_CACHE_HOME/JetBrainsMono.zip" -d "$XDG_DATA_HOME/fonts" 2>/dev/null
-            echo 'Done. Set JetBrainsMono as default font\n'
+            if [[ $nerdcfg =~ '^[yY]' ]]; then
+              command mkdir -p "$XDG_DATA_HOME/fonts"
+              echo 'Downloading Nerd Fonts...'
+              [[ -f "$XDG_CACHE_HOME/JetBrainsMono.zip" ]] || fetch 'https://github.com/ryanoasis/nerd-fonts/releases/download/v2.3.3/JetBrainsMono.zip' > "$XDG_CACHE_HOME/JetBrainsMono.zip"
+              unzip -q "$XDG_CACHE_HOME/JetBrainsMono.zip" -d "$XDG_DATA_HOME/fonts" 2>/dev/null
+              echo 'Done. Set JetBrainsMono as default font\n'
+            fi
           fi
           unset nerdcfg
 
@@ -1150,16 +1129,16 @@ arch-base() {
               local pkgver="v0.9.0"
               echo 'Downloading shellcheck...'
               [[ -f "$XDG_CACHE_HOME/shellcheck.tar.xz" ]] || fetch "https://github.com/koalaman/shellcheck/releases/download/${pkgver}/shellcheck-${pkgver}.linux.x86_64.tar.xz" > "$XDG_CACHE_HOME/shellcheck.tar.xz"
-              local sumvar='157fd8b2c18a257f3876e23015580ea63d27b12c4f13f87d625a180e8ca042e7501271d15edeb36e7b5780da73815b45386a33e063ab1c891d838f35c778a8ac'
-              local sumvar2="$(sha512sum $XDG_CACHE_HOME/shellcheck.tar.xz | cut -d ' ' -f1)" 2>/dev/null
-              if [[ $sumvar == $sumvar2 ]]; then
+              local cheksum='157fd8b2c18a257f3876e23015580ea63d27b12c4f13f87d625a180e8ca042e7501271d15edeb36e7b5780da73815b45386a33e063ab1c891d838f35c778a8ac'
+              local cheksum2="$(sha512sum $XDG_CACHE_HOME/shellcheck.tar.xz | cut -d ' ' -f1)" 2>/dev/null
+              if [[ $cheksum == $cheksum2 ]]; then
                 command mkdir -p "$HOME/.local/bin"
-                local var="$PWD"
+                local current_dir="$PWD"
                 builtin cd -q "$XDG_CACHE_HOME"
                 tar -Jxf "$XDG_CACHE_HOME/shellcheck.tar.xz" shellcheck-${pkgver}/shellcheck
                 command mv shellcheck-${pkgver}/shellcheck "$HOME/.local/bin"
-                builtin cd -q "$var"
-                unset var sumvar
+                builtin cd -q "$current_dir"
+                unset current_dir cheksum cheksum2
               else
                 echo '\nerror: unmatched cheksum for shellcheck\n'
               fi
@@ -1171,7 +1150,7 @@ arch-base() {
             command mkdir -p "$XDG_CONFIG_HOME/alacritty"
             echo "window:\n  dynamic_padding: true\n  dimensions:\n    $(case $(lscpu | awk '/Model name:/{print $3}') in AMD) echo -n 'columns: 146\n    lines: 45' ;; Intel\(R\)) echo -n 'columns: 115\n    lines: 32';; esac)\n  opacity: 0.9\n\nfont:\n  normal:\n    family: JetBrainsMono Nerd Font Mono\n    style: Medium\n  bold:\n    family: JetBrainsMono Nerd Font Mono\n  italic:\n    family: JetBrainsMono Nerd Font Mono\n  bold_italic:\n    family: JetBrainsMono Nerd Font Mono\n  size: 10\n\ncursor:\n  blink_timeout: 90\n\nkey_bindings:\n  - { key: T, mods: Control|Shift, action: SpawnNewInstance }\n  - { key: W, mods: Control|Shift, action: Quit }\n\n# https://draculatheme.com/alacritty\ncolors:\n  primary:\n    background: '#282a36'\n    foreground: '#f8f8f2'\n    bright_foreground: '#ffffff'\n  cursor:\n    text: CellBackground\n    cursor: CellForeground\n  vi_mode_cursor:\n    text: CellBackground\n    cursor: CellForeground\n  search:\n    matches:\n      foreground: '#44475a'\n      background: '#50fa7b'\n    focused_match:\n      foreground: '#44475a'\n      background: '#ffb86c'\n  footer_bar:\n    background: '#282a36'\n    foreground: '#f8f8f2'\n  hints:\n    start:\n      foreground: '#282a36'\n      background: '#f1fa8c'\n    end:\n      foreground: '#f1fa8c'\n      background: '#282a36'\n  line_indicator:\n    foreground: None\n    background: None\n  selection:\n    text: CellForeground\n    background: '#44475a'\n  normal:\n    black: '#21222c'\n    red: '#ff5555'\n    green: '#50fa7b'\n    yellow: '#f1fa8c'\n    blue: '#bd93f9'\n    magenta: '#ff79c6'\n    cyan: '#8be9fd'\n    white: '#f8f8f2'\n  bright:\n    black: '#6272a4'\n    red: '#ff6e6e'\n    green: '#69ff94'\n    yellow: '#ffffa5'\n    blue: '#d6acff'\n    magenta: '#ff92df'\n    cyan: '#a4ffff'\n    white: '#ffffff'" > "$XDG_CONFIG_HOME/alacritty/alacritty.yml"
             if [[ -f '/usr/local/bin/xterm' ]]; then
-              ls -lh '/usr/local/bin/xterm' && cat '/usr/local/bin/xterm'
+              echo && ls -lh '/usr/local/bin/xterm' && echo && cat '/usr/local/bin/xterm' && echo
               echo "Do you wish to delete xterm to install Alacritty tweak? [y/N]" && read xtermVar
               [[ $xtermVar =~ '^[yY]' ]] && sudo rm -i '/usr/local/bin/xterm'
               unset xtermVar
@@ -1197,10 +1176,10 @@ arch-base() {
           # Wezterm config
           if command -v wezterm >/dev/null; then
             command mkdir -p "$XDG_CONFIG_HOME/wezterm"
-            [[ -f "$XDG_CONFIG_HOME/wezterm/wezterm.lua" ]] || fetch 'https://gitlab.com/N1vBruno/dotfiles/-/raw/master/wezterm.lua' > "$XDG_CONFIG_HOME/wezterm/wezterm.lua"
+            fetch 'https://gitlab.com/N1vBruno/dotfiles/-/raw/master/wezterm.lua' > "$XDG_CONFIG_HOME/wezterm/wezterm.lua"
             case $(lscpu | awk '/Model name:/{print $3}') in Intel\(R\)) sed -i 's/\(initial_cols = \)148/\1112/g; s/\(initial_rows = \)40/\130/g' "$XDG_CONFIG_HOME/wezterm/wezterm.lua";; esac
             if [[ -f '/usr/local/bin/xterm' ]]; then
-              ls -lh '/usr/local/bin/xterm' && cat '/usr/local/bin/xterm'
+              echo && ls -lh '/usr/local/bin/xterm' && echo && cat '/usr/local/bin/xterm' && echo
               echo "Do you wish to delete xterm to install Wezterm tweak? [y/N]" && read xtermVar
               [[ $xtermVar =~ '^[yY]' ]] && sudo rm -i '/usr/local/bin/xterm'
               unset xtermVar
@@ -1217,14 +1196,8 @@ arch-base() {
             command mkdir -p "$XDG_CONFIG_HOME/mpv/scripts"
             echo 'Ctrl+q quit\nF11 cycle fullscreen\nENTER cycle fullscreen\nKP_ENTER cycle fullscreen\nWHEEL_UP osd-msg-bar seek 3\nWHEEL_DOWN osd-msg-bar seek -3\nLEFT osd-msg-bar seek -5\nRIGHT osd-msg-bar seek  5\nUP osd-msg-bar seek 15\nDOWN osd-msg-bar seek -15\nkp9 add volume -2\nkp0 add volume 2' > "$XDG_CONFIG_HOME/mpv/input.conf"
             echo 'idle=yes\nvolume=25\nautofit-smaller=50%x50%\nautofit-larger=90%x90%' > "$XDG_CONFIG_HOME/mpv/mpv.conf"
-            [[ ! -f "$XDG_CONFIG_HOME/mpv/scripts/nextfile.lua" ]] && fetch 'https://raw.githubusercontent.com/N1vBruno/mpv-nextfile/master/nextfile.lua' > "$XDG_CONFIG_HOME/mpv/scripts/nextfile.lua"
-            if [[ ! -f "$XDG_CONFIG_HOME/mpv/scripts/playlistmanager.lua" ]]; then
-              fetch 'https://raw.githubusercontent.com/jonniek/mpv-playlistmanager/master/playlistmanager.lua' > "$XDG_CONFIG_HOME/mpv/scripts/playlistmanager.lua"
-              local sumvar='4dea313558df39909d7d90f517d884f5b267216f184cf09e95b71ed2d3729305e5b895ff7c1d5f94dcfbe10e245c5d95b940ae28b2d76b77e86cc6dcb51fa611'
-              local sumvar2="$(sha512sum $XDG_CONFIG_HOME/mpv/scripts/playlistmanager.lua | cut -d ' ' -f1)" 2>/dev/null
-              [[ $sumvar != $sumvar2 ]] && command rm "$XDG_CONFIG_HOME/mpv/scripts/playlistmanager.lua" && echo "$(date '+%Y-%m-%d %H:%M:%S') - mpv-playlistmanager checksum mismatch" >> "$HOME/.alert"
-              unset sumvar sumvar2
-            fi
+            fetch 'https://raw.githubusercontent.com/N1vBruno/mpv-nextfile/master/nextfile.lua' > "$XDG_CONFIG_HOME/mpv/scripts/nextfile.lua"
+            fetch 'https://raw.githubusercontent.com/jonniek/mpv-playlistmanager/master/playlistmanager.lua' > "$XDG_CONFIG_HOME/mpv/scripts/playlistmanager.lua"
             sed -i 's/\(key_loadfiles = "\)"/\1CTRL+l"/g' "$XDG_CONFIG_HOME/mpv/scripts/playlistmanager.lua"
           fi
           break;;
@@ -1241,8 +1214,8 @@ arch-base() {
     case $yne in
 
       Yes )
-        sh -c "${sudovar} pacman -S --needed virt-manager qemu-desktop libvirt edk2-ovmf dnsmasq iptables-nft"
-        sh -c "${sudovar} systemctl enable --now libvirtd; ${sudovar} virsh net-autostart default"
+        sh -c "${use_sudo} pacman -S --needed virt-manager qemu-desktop libvirt edk2-ovmf dnsmasq iptables-nft"
+        sh -c "${use_sudo} systemctl enable --now libvirtd; ${use_sudo} virsh net-autostart default"
         if [[ "$EUID" != 0 ]]; then
           [[ -z $(groups | grep libvirt) ]] && gpasswd -a $USER libvirt
           if ! grep -q "user = \"$USER\"" /etc/libvirt/qemu.conf; then
@@ -1269,10 +1242,10 @@ arch-base() {
     case $gke in
 
       GNOME )
-        sh -c "${sudovar} pacman -S --needed xdg-desktop-portal-gnome gst-plugin-pipewire gnome-shell gnome-session gdm nautilus gnome-control-center evince file-roller baobab gnome-calculator gnome-characters gnome-disk-utility gnome-keyring gnome-system-monitor gvfs-mtp gnome-tweaks gnome-themes-extra qgnomeplatform-qt6 webp-pixbuf-loader ffmpegthumbnailer gnome-nibbles aisleriot quadrapassel gnome-taquin gnome-chess gnome-mines"
-        sh -c "${sudovar} sed -i 's/#HandleLidSwitch=suspend/HandleLidSwitch=lock/' /etc/systemd/logind.conf"
-        sh -c "echo -e '[Unit]\nDescription=Changes Wallpapers\nStartLimitIntervalSec=3\nStartLimitBurst=5\n\n[Service]\nExecStart=/home/bruno/.local/share/backgrounds/chwp.sh\nRestart=always\nRestartSec=3\n\n[Install]\nWantedBy=default.target' | ${sudovar} tee /etc/systemd/user/chwp.service >/dev/null"
-        sh -c "${sudovar} chmod u+x /etc/systemd/user/chwp.service"
+        sh -c "${use_sudo} pacman -S --needed xdg-desktop-portal-gnome gst-plugin-pipewire gnome-shell gnome-session gdm nautilus gnome-control-center evince file-roller baobab gnome-calculator gnome-characters gnome-disk-utility gnome-keyring gnome-system-monitor gvfs-mtp gnome-tweaks gnome-themes-extra qgnomeplatform-qt6 webp-pixbuf-loader ffmpegthumbnailer gnome-nibbles aisleriot quadrapassel gnome-taquin gnome-chess gnome-mines"
+        sh -c "${use_sudo} sed -i 's/#HandleLidSwitch=suspend/HandleLidSwitch=lock/' /etc/systemd/logind.conf"
+        sh -c "echo -e '[Unit]\nDescription=Changes Wallpapers\nStartLimitIntervalSec=3\nStartLimitBurst=5\n\n[Service]\nExecStart=/home/bruno/.local/share/backgrounds/chwp.sh\nRestart=always\nRestartSec=3\n\n[Install]\nWantedBy=default.target' | ${use_sudo} tee /etc/systemd/user/chwp.service >/dev/null"
+        sh -c "${use_sudo} chmod u+x /etc/systemd/user/chwp.service"
         sudo -u gdm dbus-launch gsettings set org.gnome.desktop.peripherals.touchpad tap-to-click true
 
         if [[ "$EUID" != 0 ]]; then
@@ -1288,16 +1261,16 @@ arch-base() {
         break;;
 
       KDE )
-        sh -c "${sudovar} pacman -S --needed plasma-desktop sddm sddm-kcm plasma-wayland-session xdg-desktop-portal-kde qt5-wayland qt6-wayland bluedevil powerdevil breeze-gtk kde-gtk-config kdialog khotkeys kinfocenter kscreen kwallet-pam plasma-disks plasma-firewall plasma-nm plasma-pa dolphin-plugins ark filelight kcalc kcharselect gwenview qt5-imageformats ffmpegthumbs okular plasma-systemmonitor spectacle qt5-virtualkeyboard"
+        sh -c "${use_sudo} pacman -S --needed plasma-desktop sddm sddm-kcm plasma-wayland-session xdg-desktop-portal-kde qt5-wayland qt6-wayland bluedevil powerdevil breeze-gtk kde-gtk-config kdialog khotkeys kinfocenter kscreen kwallet-pam plasma-disks plasma-firewall plasma-nm plasma-pa dolphin-plugins ark filelight kcalc kcharselect gwenview qt5-imageformats ffmpegthumbs okular plasma-systemmonitor spectacle qt5-virtualkeyboard"
         echo "\n>>> Do you wish to install KDE Games?\n"
-        sh -c "${sudovar} pacman -S --needed bomber granatier kapman kblocks kfourinline kmines knavalbattle knetwalk kollision kpat ksnakeduel kspaceduel"
-        [[ -f '/etc/sddm.conf.d/kde_settings.conf' ]] && ! grep -q Breeze_Snow /etc/sddm.conf.d/kde_settings.conf && sh -c "${sudovar} sed -i '/^RebootCommand/ s/$/\nNumlock=on\nInputMethod=qtvirtualkeyboard/; /=breeze$/ s/$/\nCursorTheme=Breeze_Snow/' /etc/sddm.conf.d/kde_settings.conf"
+        sh -c "${use_sudo} pacman -S --needed bomber granatier kapman kblocks kfourinline kmines knavalbattle knetwalk kollision kpat ksnakeduel kspaceduel"
+        [[ -f '/etc/sddm.conf.d/kde_settings.conf' ]] && ! grep -q Breeze_Snow /etc/sddm.conf.d/kde_settings.conf && sh -c "${use_sudo} sed -i '/^RebootCommand/ s/$/\nNumlock=on\nInputMethod=qtvirtualkeyboard/; /=breeze$/ s/$/\nCursorTheme=Breeze_Snow/' /etc/sddm.conf.d/kde_settings.conf"
         break;;
 
       Exit ) return;;
     esac
   done
-  unset sudovar
+  unset use_sudo
 }
 #------------------------------------------------------------------------------#
 #################################### Prompt ####################################
