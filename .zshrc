@@ -1123,7 +1123,7 @@ arch-base() {
 
           # Neovim config
           if command -v nvim >/dev/null; then
-            command mkdir -p "$XDG_CONFIG_HOME/nvim"
+            command mkdir -p "$XDG_CONFIG_HOME/nvim/spell"
             [[ -f "$XDG_CONFIG_HOME/nvim/init.lua" ]] || fetch 'https://gitlab.com/N1vBruno/dotfiles/-/raw/master/init.lua' > "$XDG_CONFIG_HOME/nvim/init.lua"
             if [[ ! -x "$HOME/.local/bin/shellcheck" ]]; then
               local pkgver="v0.9.0"
