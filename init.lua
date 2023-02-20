@@ -87,9 +87,10 @@ vim.opt.wrap = false
 vim.opt.breakindent = true
 vim.opt.linebreak = true
 vim.opt.list = true
-vim.opt.listchars:append("tab:>>,extends:▷,precedes:◁,trail:·,nbsp:~")
-vim.opt.spelllang = "en,pt"
+vim.opt.spelllang = "en_us,pt_br"
 vim.opt.virtualedit = "none"
+vim.opt.listchars:append("tab:>>,extends:▷,precedes:◁,trail:·,nbsp:~")
+vim.api.nvim_command("aunmenu PopUp")
 
 -- Autocommands
 vim.api.nvim_create_autocmd({ "FileType" }, {
@@ -113,21 +114,6 @@ vim.api.nvim_create_autocmd({ "FileType" }, {
 vim.api.nvim_create_autocmd({ "TextYankPost" }, {
 	callback = function()
 		vim.highlight.on_yank({ higroup = "Visual", timeout = 200 })
-	end,
-})
-
-vim.api.nvim_create_autocmd({ "VimEnter" }, {
-	callback = function()
-		vim.cmd("hi link illuminatedWord LspReferenceText")
-	end,
-})
-
-vim.api.nvim_create_autocmd({ "BufWinEnter" }, {
-	callback = function()
-		local line_count = vim.api.nvim_buf_line_count(0)
-		if line_count >= 5000 then
-			vim.cmd("IlluminatePauseBuf")
-		end
 	end,
 })
 
@@ -296,6 +282,14 @@ local function load_lsp()
 			if client.name == "tsserver" or client.name == "lua_ls" then
 				client.server_capabilities.documentFormattingProvider = false
 			end
+			vim.cmd([[:amenu PopUp.Go\ to\ Definition <cmd>:lua vim.lsp.buf.definition()<CR>]])
+			vim.cmd([[:amenu PopUp.Go\ to\ Type\ Definition <cmd>:lua vim.lsp.buf.type_definition()<CR>]])
+			vim.cmd([[:amenu PopUp.Go\ to\ Implementations <cmd>:lua vim.lsp.buf.implementation()<CR>]])
+			vim.cmd([[:amenu PopUp.Go\ to\ References <cmd>:lua vim.lsp.buf.references()<CR>]])
+			vim.cmd([[:amenu PopUp.-Sep- :]])
+			vim.cmd([[:amenu PopUp.Rename\ Definition <cmd>:lua vim.lsp.buf.rename()<CR>]])
+			vim.cmd([[:amenu PopUp.Code\ Actions <cmd>:lua vim.lsp.buf.code_action()<CR>]])
+			vim.cmd([[:amenu PopUp.Format\ Document <cmd>:lua vim.lsp.buf.format({ async = true })<CR>]])
 		end
 
 		local opts = {}
@@ -550,7 +544,7 @@ if pcall(require, "lazy") then
 		{ "lukas-reineke/indent-blankline.nvim", event = "BufReadPre" },
 		{
 			"nvim-telescope/telescope.nvim",
-			event = "BufEnter",
+			event = "VeryLazy",
 			dependencies = { "nvim-lua/plenary.nvim", "ahmedkhalf/project.nvim" },
 			config = function()
 				load_telescope()
