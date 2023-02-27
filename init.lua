@@ -561,7 +561,6 @@ if pcall(require, "lazy") then
 		{
 			"jinh0/eyeliner.nvim",
 			event = "VeryLazy",
-      commit = "e1df20beed2560914492db95ee7675d44c4ce96f",
 			config = function()
 				require("eyeliner").setup({
 					highlight_on_key = true,
