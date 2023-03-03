@@ -1342,8 +1342,8 @@ prompt_setup() {
   autoload -Uz colors && colors
   VIRTUAL_ENV_DISABLE_PROMPT=true
 
-  PS1='$PROMPT_SSH%(!.%{$fg[red]%}%n %{$fg[white]%B%}in $DIR_LOCK%{$fg[yellow]%}%(4~|%-1~/.../%2~|%~)%u%b${VCS_INFO_MSG}${VCS_STATUS_MSG} >%{$fg[yellow]%}>%B%(?.%{$fg[yellow]%}.%{$fg[red]%})>%b%f .%{$fg[green]%}%n %{$fg[white]%B%}in $DIR_LOCK%{$fg[cyan]%}%(4~|%-1~/.../%2~|%~)%u%b${VCS_INFO_MSG}${VCS_STATUS_MSG} >%{$fg[cyan]%}>%B%(?.%{$fg[cyan]%}.%{$fg[red]%})>%b%f '
-  RPS1='$SPACE_NOASYNC$SPACE_ASYNC$ELAPSED$SPACE_BATTERY %246F%* %(?.%{$fg[green]%}✓%b%f.%{$fg[red]%}✗%b%f'
+  PS1='$PROMPT_SSH%(!.%{$fg[red]%}%n %{$fg[white]%B%}in ${DIR_LOCK}%{$fg[yellow]%}%(4~|%-1~/.../%2~|%~)%u%b${VCS_INFO_MSG//./․}${VCS_STATUS_MSG} >%{$fg[yellow]%}>%B%(?.%{$fg[yellow]%}.%{$fg[red]%})>%b%f .%{$fg[green]%}%n %{$fg[white]%B%}in ${DIR_LOCK}%{$fg[cyan]%}%(4~|%-1~/.../%2~|%~)%u%b${VCS_INFO_MSG}${VCS_STATUS_MSG} >%{$fg[cyan]%}>%B%(?.%{$fg[cyan]%}.%{$fg[red]%})>%b%f '
+  RPS1='${SPACE_NOASYNC}${SPACE_ASYNC}${ELAPSED}${SPACE_BATTERY} %246F%* %(?.%{$fg[green]%}✓.%{$fg[red]%}✗)%b%f'
 }
 #------------------------------------------------------------------------------#
 # Set terminal title
