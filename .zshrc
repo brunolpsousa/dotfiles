@@ -1342,8 +1342,8 @@ prompt_setup() {
   autoload -Uz colors && colors
   VIRTUAL_ENV_DISABLE_PROMPT=true
 
-  PS1='$PROMPT_SSH%(!.%{$fg[red]%}%n %{$fg[white]%B%}in ${DIR_LOCK}%{$fg[yellow]%}%(4~|%-1~/.../%2~|%~)%u%b${VCS_INFO_MSG//./․}${VCS_STATUS_MSG} >%{$fg[yellow]%}>%B%(?.%{$fg[yellow]%}.%{$fg[red]%})>%b%f .%{$fg[green]%}%n %{$fg[white]%B%}in ${DIR_LOCK}%{$fg[cyan]%}%(4~|%-1~/.../%2~|%~)%u%b${VCS_INFO_MSG}${VCS_STATUS_MSG} >%{$fg[cyan]%}>%B%(?.%{$fg[cyan]%}.%{$fg[red]%})>%b%f '
-  RPS1='${SPACE_NOASYNC}${SPACE_ASYNC}${ELAPSED}${SPACE_BATTERY} %246F%* %(?.%{$fg[green]%}✓.%{$fg[red]%}✗)%b%f'
+  PS1='${PROMPT_SSH}%(!^%F{red}%n %F{white}%Bin ${DIR_LOCK}%F{yellow}%(4~|%-1~/.../%2~|%~)%f%b${VCS_INFO_MSG}${VCS_STATUS_MSG} >%F{yellow}>%B%(?.%F{yellow}.%F{red})>%f%b^%F{green}%n %F{white}%Bin ${DIR_LOCK}%F{cyan}%(4~|%-1~/.../%2~|%~)%f%b${VCS_INFO_MSG}${VCS_STATUS_MSG} >%F{cyan}>%B%(?.%F{cyan}.%F{red})>)%f%b '
+  RPS1='${SPACE_NOASYNC}${SPACE_ASYNC}${ELAPSED}${SPACE_BATTERY} %246F%* %(?.%F{green}✓.%F{red}✗)%f%b'
 }
 #------------------------------------------------------------------------------#
 # Set terminal title
@@ -1406,7 +1406,7 @@ command_time_precmd() {
 # Display git info
 prompt_git_info() {
   builtin cd -q "$1"
-  local ZSH_THEME_GIT_PROMPT_PREFIX="$fg[white]%B on%b %242F:"
+  local ZSH_THEME_GIT_PROMPT_PREFIX='%F{white}%B on%b %242F:'
   local ZSH_THEME_GIT_PROMPT_SUFFIX='%f'
 
   zstyle ':vcs_info:*' enable git
