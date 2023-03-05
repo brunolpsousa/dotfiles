@@ -12,6 +12,7 @@ img_formats=(jpg jpeg jxl png apng bmp svg tif tiff webp avif heic)
 
 while true; do
   # Set images array
+  wallpapers=()
   for f in "${!img_formats[@]}"; do
     wallpapers+=("$wallpaper_path/"*".${img_formats[$f]}")
   done
