@@ -460,7 +460,7 @@ ssh() {
   # If there is no zsh on the remote machine, install this.
   local zsh_url='https://raw.githubusercontent.com/romkatv/zsh-bin/master/install'
   # If there is no ~/.zshrc on the remote machine, install this.
-  local zshrc_url='https://raw.githubusercontent.com/N1vBruno/dotfiles/master/.zshrc'
+  local zshrc_url='https://raw.githubusercontent.com/brunolpsousa/dotfiles/master/.zshrc'
 
   # Copy all these files and directories (relative to $HOME) from local machine
   # to remote. Silently skip files that don't exist locally and override existing
@@ -672,7 +672,7 @@ alias reset-gnome-appgrid='gsettings reset org.gnome.shell app-picker-layout'
 alias paclog='grep -nC 2 --color=auto warning: /var/log/pacman.log'
 
 # Update .zshrc
-alias zupd="fetch https://gitlab.com/N1vBruno/dotfiles/-/raw/master/.zshrc > $ZDOTDIR/.zshrc && source $ZDOTDIR/.zshrc"
+alias zupd="fetch https://gitlab.com/brunolpsousa/dotfiles/-/raw/master/.zshrc > $ZDOTDIR/.zshrc && source $ZDOTDIR/.zshrc"
 
 # Weather by wttr.in
 alias weather="fetch https://wttr.in"
@@ -849,11 +849,10 @@ games() {
 
 gnome-extensions() {
   echo "\n ### GNOME Extensions ###\n
-    - Caffeine:\nhttps://extensions.gnome.org/extension/517/caffeine
-    - Appindicator Support\nhttps://extensions.gnome.org/extension/615/appindicator-support
-    - Clipboard History\nhttps://extensions.gnome.org/extension/4839/clipboard-history
-    - Sound Output Device Chooser\nhttps://extensions.gnome.org/extension/906/sound-output-device-chooser
-    - Night Theme Switcher\nhttps://extensions.gnome.org/extension/2236/night-theme-switcher"
+    - Appindicator Support\n https://extensions.gnome.org/extension/615/appindicator-support
+    - Caffeine:\n https://extensions.gnome.org/extension/517/caffeine
+    - Night Theme Switcher\n https://extensions.gnome.org/extension/2236/night-theme-switcher
+    - Pano\n https://extensions.gnome.org/extension/5278/pano/"
 }
 
 # Vim Cheatsheet
@@ -1124,7 +1123,7 @@ arch-base() {
           # Neovim config
           if command -v nvim >/dev/null; then
             command mkdir -p "$XDG_CONFIG_HOME/nvim/spell"
-            [[ -f "$XDG_CONFIG_HOME/nvim/init.lua" ]] || fetch 'https://gitlab.com/N1vBruno/dotfiles/-/raw/master/init.lua' > "$XDG_CONFIG_HOME/nvim/init.lua"
+            [[ -f "$XDG_CONFIG_HOME/nvim/init.lua" ]] || fetch 'https://gitlab.com/brunolpsousa/dotfiles/-/raw/master/init.lua' > "$XDG_CONFIG_HOME/nvim/init.lua"
             if [[ ! -x "$HOME/.local/bin/shellcheck" ]]; then
               local pkgver="v0.9.0"
               echo 'Downloading shellcheck...'
@@ -1176,7 +1175,7 @@ arch-base() {
           # Wezterm config
           if command -v wezterm >/dev/null; then
             command mkdir -p "$XDG_CONFIG_HOME/wezterm"
-            fetch 'https://gitlab.com/N1vBruno/dotfiles/-/raw/master/wezterm.lua' > "$XDG_CONFIG_HOME/wezterm/wezterm.lua"
+            fetch 'https://gitlab.com/brunolpsousa/dotfiles/-/raw/master/wezterm.lua' > "$XDG_CONFIG_HOME/wezterm/wezterm.lua"
             case $(lscpu | awk '/Model name:/{print $3}') in Intel\(R\)) sed -i 's/\(initial_cols = \)148/\1112/g; s/\(initial_rows = \)40/\130/g' "$XDG_CONFIG_HOME/wezterm/wezterm.lua";; esac
             if [[ -f '/usr/local/bin/xterm' ]]; then
               echo && ls -lh '/usr/local/bin/xterm' && echo && cat '/usr/local/bin/xterm' && echo
@@ -1196,7 +1195,7 @@ arch-base() {
             command mkdir -p "$XDG_CONFIG_HOME/mpv/scripts"
             echo 'Ctrl+q quit\nF11 cycle fullscreen\nENTER cycle fullscreen\nKP_ENTER cycle fullscreen\nWHEEL_UP osd-msg-bar seek 3\nWHEEL_DOWN osd-msg-bar seek -3\nLEFT osd-msg-bar seek -5\nRIGHT osd-msg-bar seek  5\nUP osd-msg-bar seek 15\nDOWN osd-msg-bar seek -15\nkp9 add volume -2\nkp0 add volume 2' > "$XDG_CONFIG_HOME/mpv/input.conf"
             echo 'idle=yes\nvolume=25\nautofit-smaller=50%x50%\nautofit-larger=90%x90%' > "$XDG_CONFIG_HOME/mpv/mpv.conf"
-            fetch 'https://raw.githubusercontent.com/N1vBruno/mpv-nextfile/master/nextfile.lua' > "$XDG_CONFIG_HOME/mpv/scripts/nextfile.lua"
+            fetch 'https://raw.githubusercontent.com/brunolpsousa/mpv-nextfile/master/nextfile.lua' > "$XDG_CONFIG_HOME/mpv/scripts/nextfile.lua"
             fetch 'https://raw.githubusercontent.com/jonniek/mpv-playlistmanager/master/playlistmanager.lua' > "$XDG_CONFIG_HOME/mpv/scripts/playlistmanager.lua"
             sed -i 's/\(key_loadfiles = "\)"/\1CTRL+l"/g' "$XDG_CONFIG_HOME/mpv/scripts/playlistmanager.lua"
           fi
@@ -1250,7 +1249,7 @@ arch-base() {
 
         if [[ "$EUID" != 0 ]]; then
           command mkdir -p "$XDG_DATA_HOME/backgrounds"
-          [[ -f "$XDG_CONFIG_HOME/backgrounds/chwp.sh" ]] || fetch 'https://gitlab.com/N1vBruno/dotfiles/-/raw/master/chwp.sh' > "$XDG_DATA_HOME/backgrounds/chwp.sh"
+          [[ -f "$XDG_CONFIG_HOME/backgrounds/chwp.sh" ]] || fetch 'https://gitlab.com/brunolpsousa/dotfiles/-/raw/master/chwp.sh' > "$XDG_DATA_HOME/backgrounds/chwp.sh"
           chmod +x "$XDG_DATA_HOME/backgrounds/chwp.sh"
           echo '#!/usr/bin/env bash\nexport TERMX_NAUTILUS=1 && xterm' > "$XDG_DATA_HOME/nautilus/scripts/Terminal"
           chmod +x "$XDG_DATA_HOME/nautilus/scripts/Terminal"
