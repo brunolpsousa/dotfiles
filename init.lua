@@ -24,7 +24,7 @@ keymap("n", "<leader>s", "<cmd>wa<CR>")
 keymap("n", "<Tab>", ":bnext<CR>")
 keymap("n", "<S-Tab>", ":bprevious<CR>")
 keymap("n", "<Esc><Esc>", "<cmd>nohlsearch<CR>")
-keymap("t", "<Esc>", "<C-\\><C-N>")
+keymap("t", "<Esc>", "<C-Bslash><C-N>")
 keymap("v", "<", "<gv")
 keymap("v", ">", ">gv")
 keymap("n", "<A-j>", ":m.+1<CR>==")
@@ -34,7 +34,7 @@ keymap("i", "<A-k>", "<Esc>:m .-2<CR>==gi")
 keymap("v", "<A-j>", ":m'>+1<CR>gv=gv")
 keymap("v", "<A-k>", ":m'<-2<CR>gv=gv")
 keymap("v", "p", '"_dP')
-keymap("n", "<C-\\>", "<cmd>sp term://zsh<CR><cmd>resize -8<CR>i")
+keymap("n", "<C-Bslash>", "<cmd>sp term://zsh<CR><cmd>resize -8<CR>i")
 keymap("v", "<leader>y", '"+y')
 keymap("n", "<leader>y", '"+y')
 keymap("v", "<leader>d", '"+ygvd')
@@ -192,7 +192,7 @@ local function load_autopairs()
 		if not cmp_status_ok then
 			return
 		end
-		cmp.event:on("confirm_done", cmp_autopairs.on_confirm_done({}))
+		cmp.event:on("confirm_done", cmp_autopairs.on_confirm_done())
 	end
 end
 
@@ -345,37 +345,44 @@ local function load_cmp()
 			Operator = "",
 			TypeParameter = "",
 		}
-		require("cmp").setup({
+		local has_words_before = function()
+			unpack = unpack or table.unpack
+			local line, col = unpack(vim.api.nvim_win_get_cursor(0))
+			return col ~= 0 and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match("%s") == nil
+		end
+		local cmp = require("cmp")
+		cmp.setup({
 			snippet = {
 				expand = function(args)
 					require("luasnip").lsp_expand(args.body)
 				end,
 			},
-			mapping = require("cmp").mapping.preset.insert({
-				["<C-k>"] = require("cmp").mapping.select_prev_item(),
-				["<C-j>"] = require("cmp").mapping.select_next_item(),
-				["<C-u>"] = require("cmp").mapping(require("cmp").mapping.scroll_docs(-1), { "i", "c" }),
-				["<C-d>"] = require("cmp").mapping(require("cmp").mapping.scroll_docs(1), { "i", "c" }),
-				["<C-Space>"] = require("cmp").mapping(require("cmp").mapping.complete(), { "i", "c" }),
-				["<C-c>"] = require("cmp").mapping({
-					i = require("cmp").mapping.abort(),
-					c = require("cmp").mapping.close(),
-				}),
-				["<CR>"] = require("cmp").mapping.confirm({ select = true }),
-				["<Tab>"] = require("cmp").mapping(function(fallback)
-					if require("cmp").visible() then
-						require("cmp").select_next_item()
-					elseif require("luasnip").expandable() then
-						require("luasnip").expand()
+			window = {
+				completion = cmp.config.window.bordered(),
+				documentation = cmp.config.window.bordered(),
+			},
+			mapping = cmp.mapping.preset.insert({
+				["<C-k>"] = cmp.mapping.select_prev_item(),
+				["<C-j>"] = cmp.mapping.select_next_item(),
+				["<C-u>"] = cmp.mapping.scroll_docs(-1),
+				["<C-d>"] = cmp.mapping.scroll_docs(1),
+				["<C-Space>"] = cmp.mapping.complete(),
+				["<C-c>"] = cmp.mapping.abort(),
+				["<CR>"] = cmp.mapping.confirm({ select = true }),
+				["<Tab>"] = cmp.mapping(function(fallback)
+					if cmp.visible() then
+						cmp.select_next_item()
 					elseif require("luasnip").expand_or_jumpable() then
 						require("luasnip").expand_or_jump()
+					elseif has_words_before() then
+						cmp.complete()
 					else
 						fallback()
 					end
 				end, { "i", "s" }),
-				["<S-Tab>"] = require("cmp").mapping(function(fallback)
-					if require("cmp").visible() then
-						require("cmp").select_prev_item()
+				["<S-Tab>"] = cmp.mapping(function(fallback)
+					if cmp.visible() then
+						cmp.select_prev_item()
 					elseif require("luasnip").jumpable(-1) then
 						require("luasnip").jump(-1)
 					else
@@ -400,15 +407,12 @@ local function load_cmp()
 			},
 			sources = {
 				{ name = "nvim_lsp" },
+				{ name = "nvim_lsp_signature_help" },
 				{ name = "luasnip" },
 				{ name = "buffer" },
 				{ name = "path" },
 			},
-			confirm_opts = { behavior = require("cmp").ConfirmBehavior.Replace, select = true },
-			window = {
-				completion = require("cmp").config.window.bordered(),
-				documentation = require("cmp").config.window.bordered(),
-			},
+			confirm_opts = { behavior = cmp.ConfirmBehavior.Replace, select = true },
 			experimental = { ghost_text = true },
 		})
 	end
@@ -599,6 +603,7 @@ if pcall(require, "lazy") then
 				"hrsh7th/cmp-buffer",
 				"hrsh7th/cmp-path",
 				"hrsh7th/cmp-nvim-lsp",
+				"hrsh7th/cmp-nvim-lsp-signature-help",
 				"saadparwaiz1/cmp_luasnip",
 				"L3MON4D3/LuaSnip",
 				"rafamadriz/friendly-snippets",
