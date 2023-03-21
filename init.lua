@@ -401,7 +401,7 @@ local function load_cmp()
 						path = "Path",
 						emoji = "Emoji",
 					})[entry.source.name]
-					return vim_item
+					return require("tailwindcss-colorizer-cmp").formatter(entry, vim_item)
 				end,
 			},
 			sources = {
@@ -577,7 +577,11 @@ if pcall(require, "lazy") then
 			event = "BufReadPost",
 			config = function()
 				if pcall(require, "colorizer") then
-					require("colorizer").setup({})
+					require("colorizer").setup({
+						user_default_options = {
+							tailwind = true,
+						},
+					})
 				end
 			end,
 		},
@@ -606,6 +610,7 @@ if pcall(require, "lazy") then
 				"saadparwaiz1/cmp_luasnip",
 				"L3MON4D3/LuaSnip",
 				"rafamadriz/friendly-snippets",
+				"roobert/tailwindcss-colorizer-cmp.nvim",
 			},
 			config = function()
 				load_cmp()
