@@ -605,9 +605,8 @@ vscp() {
 myip() {
   local api
   case "$1" in
-    '-4') api='http://v4.ipv6-test.com/api/myip.php' ;;
-    '-6') api='http://v6.ipv6-test.com/api/myip.php' ;;
-    *) api='https://ipv6-test.com/api/myip.php' ;;
+    '-4') api='https://api.ipify.org' ;;
+    *) api='https://api64.ipify.org' ;;
   esac
   fetch "$api" && echo
 }
