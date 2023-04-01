@@ -1,6 +1,7 @@
 local wezterm = require("wezterm")
-local function is_dark()
-	local success, stdout = wezterm.run_child_process({
+local act = wezterm.action
+local function getDark()
+	local _, stdout = wezterm.run_child_process({
 		"gsettings",
 		"get",
 		"org.gnome.desktop.interface",
@@ -23,6 +24,7 @@ local function is_dark()
 	end
 	return false
 end
+local is_dark = getDark()
 
 local colors = {
 	-- Catppuccin
@@ -174,7 +176,7 @@ wezterm.on("update-right-status", function(window)
 end)
 
 local ssh_domains = {}
-for host, config in pairs(wezterm.enumerate_ssh_hosts()) do
+for host, _ in pairs(wezterm.enumerate_ssh_hosts()) do
 	table.insert(ssh_domains, {
 		name = host,
 		remote_address = host,
@@ -182,45 +184,67 @@ for host, config in pairs(wezterm.enumerate_ssh_hosts()) do
 end
 
 return {
-	ssh_domains = ssh_domains,
-	font = wezterm.font_with_fallback({
-		family = "JetBrainsMono Nerd Font Mono",
-		weight = "Medium",
-	}),
-	font_size = 10,
-	max_fps = 120,
-	pane_focus_follows_mouse = false,
-	warn_about_missing_glyphs = false,
+	front_end = "OpenGL",
+	webgpu_power_preference = "HighPerformance",
 	show_update_window = false,
 	check_for_updates = false,
 	exit_behavior = "Close",
-	line_height = 1.1,
-	window_decorations = "TITLE",
 	window_close_confirmation = "NeverPrompt",
+	initial_cols = 148,
+	initial_rows = 40,
+	enable_scroll_bar = false,
 	audible_bell = "Disabled",
+	ssh_domains = ssh_domains,
+	font = wezterm.font_with_fallback({ {
+		family = "JetBrainsMono Nerd Font Mono",
+		weight = "Medium",
+	} }),
+	freetype_load_flags = "NO_AUTOHINT",
+	freetype_load_target = "Light",
+	freetype_render_target = "HorizontalLcd",
+	foreground_text_hsb = {
+		hue = 1.0,
+		saturation = 1.0,
+		brightness = 1.1,
+	},
+	font_size = 10,
+	line_height = 1.1,
+	pane_focus_follows_mouse = false,
+	warn_about_missing_glyphs = false,
+	tab_max_width = 50,
+	tab_bar_at_bottom = true,
+	use_fancy_tab_bar = false,
+	show_new_tab_button_in_tab_bar = false,
+	hide_tab_bar_if_only_one_tab = true,
+	window_background_opacity = 0.9,
+	window_decorations = "TITLE|RESIZE",
+	window_frame = {
+		active_titlebar_bg = "#1A1B26",
+		inactive_titlebar_bg = "#2b2042",
+		inactive_titlebar_fg = "#cccccc",
+		active_titlebar_fg = "#ffffff",
+		inactive_titlebar_border_bottom = "#2b2042",
+		active_titlebar_border_bottom = "#2b2042",
+		button_fg = "#cccccc",
+		button_bg = "#1A1B26",
+		button_hover_fg = "#ffffff",
+		button_hover_bg = "#3b3052",
+		font = require("wezterm").font("Noto Sans", { weight = "Medium" }),
+		font_size = 10,
+	},
 	window_padding = {
 		left = 0,
 		right = 0,
 		top = 0,
 		bottom = 0,
 	},
-	initial_cols = 148,
-	initial_rows = 40,
 	inactive_pane_hsb = {
 		saturation = 0.8,
-		brightness = is_dark() and 0.75 or 0.85,
+		brightness = is_dark and 0.75 or 0.85,
 	},
-	enable_scroll_bar = false,
-	tab_bar_at_bottom = true,
-	use_fancy_tab_bar = false,
-	show_new_tab_button_in_tab_bar = false,
-	window_background_opacity = 0.9,
-	tab_max_width = 50,
-	hide_tab_bar_if_only_one_tab = true,
-	disable_default_key_bindings = true,
-	color_scheme = is_dark() and "Dracula" or "Dracula",
+	color_scheme = is_dark and "Dracula" or "Dracula",
 	colors = {
-		cursor_fg = is_dark() and colors.base or colors.crust,
+		cursor_fg = is_dark and colors.base or colors.crust,
 		tab_bar = {
 			background = "#282a36",
 			active_tab = {
@@ -251,44 +275,45 @@ return {
 			},
 		},
 	},
+	disable_default_key_bindings = true,
 	keys = {
-		{ key = "v", mods = "SHIFT|CTRL", action = "Paste" },
-		{ key = "c", mods = "SHIFT|CTRL", action = "Copy" },
-		{ key = "x", mods = "ALT", action = wezterm.action.ActivateCopyMode },
+		{ key = "v", mods = "SHIFT|CTRL", action = act.PasteFrom("Clipboard") },
+		{ key = "c", mods = "SHIFT|CTRL", action = act.CopyTo("Clipboard") },
+		{ key = "PageDown", mods = "ALT", action = act.ActivateCopyMode },
 
-		{ key = "n", mods = "ALT", action = wezterm.action({ SpawnTab = "CurrentPaneDomain" }) },
-		{ key = "c", mods = "ALT", action = wezterm.action({ CloseCurrentPane = { confirm = false } }) },
-		{ key = "Tab", mods = "CTRL|SHIFT", action = wezterm.action({ ActivateTabRelative = -1 }) },
-		{ key = "Tab", mods = "CTRL", action = wezterm.action({ ActivateTabRelative = 1 }) },
-		{ key = "PageUp", mods = "CTRL|SHIFT", action = wezterm.action.MoveTabRelative(-1) },
-		{ key = "PageDown", mods = "CTRL|SHIFT", action = wezterm.action.MoveTabRelative(1) },
+		{ key = "c", mods = "ALT", action = act({ SpawnTab = "CurrentPaneDomain" }) },
+		{ key = "x", mods = "ALT", action = act({ CloseCurrentPane = { confirm = false } }) },
+		{ key = "Tab", mods = "CTRL|SHIFT", action = act({ ActivateTabRelative = -1 }) },
+		{ key = "Tab", mods = "CTRL", action = act({ ActivateTabRelative = 1 }) },
+		{ key = "PageUp", mods = "CTRL|SHIFT", action = act.MoveTabRelative(-1) },
+		{ key = "PageDown", mods = "CTRL|SHIFT", action = act.MoveTabRelative(1) },
 
-		{ key = "F11", mods = "", action = wezterm.action.ToggleFullScreen },
-		{ key = "=", mods = "ALT", action = wezterm.action.IncreaseFontSize },
-		{ key = "-", mods = "ALT", action = wezterm.action.DecreaseFontSize },
-		{ key = "L", mods = "CTRL", action = wezterm.action.ShowDebugOverlay },
+		{ key = "F11", mods = "", action = act.ToggleFullScreen },
+		{ key = "=", mods = "ALT", action = act.IncreaseFontSize },
+		{ key = "-", mods = "ALT", action = act.DecreaseFontSize },
+		{ key = "L", mods = "CTRL", action = act.ShowDebugOverlay },
 
-		{ key = "LeftArrow", mods = "ALT|SHIFT", action = wezterm.action.AdjustPaneSize({ "Left", 1 }) },
-		{ key = "DownArrow", mods = "ALT|SHIFT", action = wezterm.action.AdjustPaneSize({ "Down", 1 }) },
-		{ key = "UpArrow", mods = "ALT|SHIFT", action = wezterm.action.AdjustPaneSize({ "Up", 1 }) },
-		{ key = "RightArrow", mods = "ALT|SHIFT", action = wezterm.action.AdjustPaneSize({ "Right", 1 }) },
+		{ key = "LeftArrow", mods = "ALT|SHIFT", action = act.AdjustPaneSize({ "Left", 1 }) },
+		{ key = "DownArrow", mods = "ALT|SHIFT", action = act.AdjustPaneSize({ "Down", 1 }) },
+		{ key = "UpArrow", mods = "ALT|SHIFT", action = act.AdjustPaneSize({ "Up", 1 }) },
+		{ key = "RightArrow", mods = "ALT|SHIFT", action = act.AdjustPaneSize({ "Right", 1 }) },
 
-		{ key = "LeftArrow", mods = "ALT", action = wezterm.action.ActivatePaneDirection("Left") },
-		{ key = "DownArrow", mods = "ALT", action = wezterm.action.ActivatePaneDirection("Down") },
-		{ key = "UpArrow", mods = "ALT", action = wezterm.action.ActivatePaneDirection("Up") },
-		{ key = "RightArrow", mods = "ALT", action = wezterm.action.ActivatePaneDirection("Right") },
+		{ key = "LeftArrow", mods = "ALT", action = act.ActivatePaneDirection("Left") },
+		{ key = "DownArrow", mods = "ALT", action = act.ActivatePaneDirection("Down") },
+		{ key = "UpArrow", mods = "ALT", action = act.ActivatePaneDirection("Up") },
+		{ key = "RightArrow", mods = "ALT", action = act.ActivatePaneDirection("Right") },
 
-		{ key = "v", mods = "ALT", action = wezterm.action({ SplitHorizontal = { domain = "CurrentPaneDomain" } }) },
-		{ key = "s", mods = "ALT", action = wezterm.action({ SplitVertical = { domain = "CurrentPaneDomain" } }) },
+		{ key = "v", mods = "ALT", action = act({ SplitHorizontal = { domain = "CurrentPaneDomain" } }) },
+		{ key = "s", mods = "ALT", action = act({ SplitVertical = { domain = "CurrentPaneDomain" } }) },
 
-		{ key = "1", mods = "ALT", action = wezterm.action({ ActivateTab = 0 }) },
-		{ key = "2", mods = "ALT", action = wezterm.action({ ActivateTab = 1 }) },
-		{ key = "3", mods = "ALT", action = wezterm.action({ ActivateTab = 2 }) },
-		{ key = "4", mods = "ALT", action = wezterm.action({ ActivateTab = 3 }) },
-		{ key = "5", mods = "ALT", action = wezterm.action({ ActivateTab = 4 }) },
-		{ key = "6", mods = "ALT", action = wezterm.action({ ActivateTab = 5 }) },
-		{ key = "7", mods = "ALT", action = wezterm.action({ ActivateTab = 6 }) },
-		{ key = "8", mods = "ALT", action = wezterm.action({ ActivateTab = 7 }) },
-		{ key = "9", mods = "ALT", action = wezterm.action({ ActivateTab = 8 }) },
+		{ key = "1", mods = "ALT", action = act({ ActivateTab = 0 }) },
+		{ key = "2", mods = "ALT", action = act({ ActivateTab = 1 }) },
+		{ key = "3", mods = "ALT", action = act({ ActivateTab = 2 }) },
+		{ key = "4", mods = "ALT", action = act({ ActivateTab = 3 }) },
+		{ key = "5", mods = "ALT", action = act({ ActivateTab = 4 }) },
+		{ key = "6", mods = "ALT", action = act({ ActivateTab = 5 }) },
+		{ key = "7", mods = "ALT", action = act({ ActivateTab = 6 }) },
+		{ key = "8", mods = "ALT", action = act({ ActivateTab = 7 }) },
+		{ key = "9", mods = "ALT", action = act({ ActivateTab = 8 }) },
 	},
 }
