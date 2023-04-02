@@ -1183,7 +1183,7 @@ arch-base() {
               unset xtermVar
             fi
             if [[ ! -f '/usr/local/bin/xterm' ]]; then
-              echo '#!/usr/bin/env bash\nwezterm start --cwd "$PWD" -- "$@"' | sudo tee '/usr/local/bin/xterm' >/dev/null
+              echo '#!/usr/bin/env bash\nwezterm "$@"' | sudo tee '/usr/local/bin/xterm' >/dev/null
               sudo chmod +x '/usr/local/bin/xterm'
               [[ ! -f '/bin/xterm' ]] || echo "$(date '+%Y-%m-%d %H:%M:%S') - Warning: /bin/xterm exists and overlaps with /usr/local/bin/xterm" >> "$HOME/.alert"
             fi
