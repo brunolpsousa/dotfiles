@@ -524,13 +524,24 @@ dot() {
 tomp3() {
   if [[ -n "$@" ]]; then
     mkdir -p ./mp3_files
-    for a in "$@"; do
-      for f in "*.$a"; do
-        ffmpeg -i "$f" -vn -ar 44100 -ac 2 -b:a 192k "./mp3_files/${f%.*}.mp3"
-      done
+    for f in "$@"; do
+      ffmpeg -i "$f" -vn -ar 44100 -ac 2 -b:a 192k "./mp3_files/${f%.*}.mp3"
     done
   else
-    echo 'Usage: tomp3 <extension-1> <extension-2> ...'
+    echo 'Usage: tomp3 <file 1> <file 2> <file.extension> <*.extension> <*>'
+    return 1
+  fi
+}
+
+# Convert media files to mp4
+tomp4() {
+  if [[ -n "$@" ]]; then
+    mkdir -p ./mp4_files
+    for f in "$@"; do
+      ffmpeg -i "$f" -vf "pad=ceil(iw/2)*2:ceil(ih/2)*2" "./mp4_files/${f%.*}.mp4"
+    done
+  else
+    echo 'Usage: tomp4 <file 1> <file 2> <file.extension> <*.extension> <*>'
     return 1
   fi
 }
@@ -1183,7 +1194,7 @@ arch-base() {
               unset xtermVar
             fi
             if [[ ! -f '/usr/local/bin/xterm' ]]; then
-              echo '#!/usr/bin/env bash\nwezterm "$@"' | sudo tee '/usr/local/bin/xterm' >/dev/null
+              echo '#!/usr/bin/env bash\nwezterm start --cwd "$PWD" "$@"' | sudo tee '/usr/local/bin/xterm' >/dev/null
               sudo chmod +x '/usr/local/bin/xterm'
               [[ ! -f '/bin/xterm' ]] || echo "$(date '+%Y-%m-%d %H:%M:%S') - Warning: /bin/xterm exists and overlaps with /usr/local/bin/xterm" >> "$HOME/.alert"
             fi
