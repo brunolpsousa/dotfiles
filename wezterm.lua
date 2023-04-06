@@ -27,7 +27,6 @@ end
 local is_dark = getDark()
 
 local colors = {
-	-- Catppuccin
 	rosewater = "#f5e0dc",
 	flamingo = "#f2cdcd",
 	pink = "#f5c2e7",
@@ -56,8 +55,49 @@ local colors = {
 	base = "#1e1e2e",
 	mantle = "#181825",
 	crust = "#11111b",
-}
 
+	dark = {
+		cursor_fg = "#11111b",
+		ac_title_bg = "#1A1B26",
+		ac_title_fg = "#ffffff",
+		inac_title_bg = "#2b2042",
+		inac_title_fg = "#cccccc",
+		ac_title_border = "#2b2042",
+		inac_title_border = "#2b2042",
+		button_bg = "#1A1B26",
+		button_fg = "#cccccc",
+		button_hover_bg = "#3b3052",
+		button_hover_fg = "#ffffff",
+		in_brightness = 0.75,
+		theme = "Dracula",
+		tab_bg = "#282a36",
+		tab_ac_bg = "#414868",
+		tab_ac_fg = "#c0caf5",
+		tab_inac_bg = "#282a36",
+		tab_inac_fg = "#a9b1d6",
+	},
+	light = {
+		cursor_fg = "#f5e0dc",
+		ac_title_bg = "#d5c4a1",
+		ac_title_fg = "#000000",
+		inac_title_bg = "#ebdbb2",
+		inac_title_fg = "#665c54",
+		ac_title_border = "#ebdbb2",
+		inac_title_border = "#ebdbb2",
+		button_bg = "#d5c4a1",
+		button_fg = "#665c54",
+		button_hover_bg = "#3b3052",
+		button_hover_fg = "#ffffff",
+		in_brightness = 0.85,
+		theme = "Gruvbox light, hard (base16)",
+		tab_bg = "#ebdbb2",
+		tab_ac_bg = "#a89984",
+		tab_ac_fg = "#3c3836",
+		tab_inac_bg = "#d5c5a1",
+		tab_inac_fg = "#665c54",
+	},
+}
+local color = is_dark and colors.dark or colors.light
 local function get_process(tab)
 	local process_icons = {
 		["docker"] = {
@@ -219,16 +259,16 @@ return {
 	window_background_opacity = 0.9,
 	window_decorations = "TITLE|RESIZE",
 	window_frame = {
-		active_titlebar_bg = "#1A1B26",
-		inactive_titlebar_bg = "#2b2042",
-		inactive_titlebar_fg = "#cccccc",
-		active_titlebar_fg = "#ffffff",
-		inactive_titlebar_border_bottom = "#2b2042",
-		active_titlebar_border_bottom = "#2b2042",
-		button_fg = "#cccccc",
-		button_bg = "#1A1B26",
-		button_hover_fg = "#ffffff",
-		button_hover_bg = "#3b3052",
+		active_titlebar_bg = color.ac_title_bg,
+		active_titlebar_fg = color.ac_title_fg,
+		inactive_titlebar_bg = color.inac_title_bg,
+		inactive_titlebar_fg = color.inac_title_fg,
+		active_titlebar_border_bottom = color.ac_title_border,
+		inactive_titlebar_border_bottom = color.inac_title_border,
+		button_bg = color.button_bg,
+		button_fg = color.button_fg,
+		button_hover_bg = color.button_hover_bg,
+		button_hover_fg = color.button_hover_fg,
 		font = require("wezterm").font("Noto Sans", { weight = "Medium" }),
 		font_size = 10,
 	},
@@ -240,24 +280,24 @@ return {
 	},
 	inactive_pane_hsb = {
 		saturation = 0.8,
-		brightness = is_dark and 0.75 or 0.85,
+		brightness = color.in_brightness,
 	},
-	color_scheme = is_dark and "Dracula" or "Dracula",
+	color_scheme = color.theme,
 	colors = {
-		cursor_fg = is_dark and colors.base or colors.crust,
+		cursor_fg = color.cursor_fg,
 		tab_bar = {
-			background = "#282a36",
+			background = color.tab_bg,
 			active_tab = {
-				bg_color = "#414868",
-				fg_color = "#c0caf5",
+				bg_color = color.tab_ac_bg,
+				fg_color = color.tab_ac_fg,
 				intensity = "Normal",
 				underline = "None",
 				italic = false,
 				strikethrough = false,
 			},
 			inactive_tab = {
-				bg_color = "#282a36",
-				fg_color = "#a9b1d6",
+				bg_color = color.tab_inac_bg,
+				fg_color = color.tab_inac_fg,
 			},
 			inactive_tab_hover = {
 				bg_color = "#6272a4",
@@ -265,7 +305,7 @@ return {
 				italic = true,
 			},
 			new_tab = {
-				bg_color = "#282a36",
+				bg_color = color.tab_bg,
 				fg_color = "#f8f8f2",
 			},
 			new_tab_hover = {
