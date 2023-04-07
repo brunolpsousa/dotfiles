@@ -543,8 +543,10 @@ if pcall(require, "lazy") then
 			priority = 1000,
 			config = function()
 				if getBG:match("default") then
+					vim.opt.background = "light"
 					vim.cmd.colorscheme("solarized")
 				elseif getBG:gmatch("prefer-dark") then
+					vim.opt.background = "dark"
 					vim.cmd.colorscheme("tokyonight-night")
 				end
 			end,
@@ -555,8 +557,10 @@ if pcall(require, "lazy") then
 			priority = 1000,
 			config = function()
 				if getBG:find("default") then
+					vim.opt.background = "light"
 					vim.cmd.colorscheme("solarized")
 				elseif getBG:gmatch("prefer-dark") then
+					vim.opt.background = "dark"
 					vim.cmd.colorscheme("tokyonight-night")
 				end
 			end,
