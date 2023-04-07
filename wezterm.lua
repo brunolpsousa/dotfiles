@@ -1,30 +1,6 @@
-local wezterm = require("wezterm")
-local act = wezterm.action
-local function getDark()
-	local _, stdout = wezterm.run_child_process({
-		"gsettings",
-		"get",
-		"org.gnome.desktop.interface",
-		"gtk-theme",
-	})
-	-- lowercase and remove whitespace
-	stdout = stdout:lower():gsub("%s+", "")
-	local mapping = {
-		highcontrast = "LightHighContrast",
-		highcontrastinverse = "DarkHighContrast",
-		adwaita = "Light",
-		["adwaita-dark"] = "Dark",
-	}
-	local appearance = mapping[stdout]
-	if appearance then
-		return appearance
-	end
-	if stdout:find("dark") or wezterm.gui.get_appearance():find("Dark") then
-		return true
-	end
-	return false
-end
-local is_dark = getDark()
+local wez = require("wezterm")
+local act = wez.action
+local isDark = wez.gui.get_appearance():find("Dark")
 
 local colors = {
 	rosewater = "#f5e0dc",
@@ -37,7 +13,6 @@ local colors = {
 	yellow = "#f9e2af",
 	green = "#a6e3a1",
 	teal = "#94e2d5",
-	sky = "#89dceb",
 	sapphire = "#74c7ec",
 	blue = "#89b4fa",
 	lavender = "#b4befe",
@@ -57,9 +32,13 @@ local colors = {
 	crust = "#11111b",
 
 	dark = {
+		theme = "Dracula",
+		in_brightness = 0.75,
+
+		sky = "#89dceb",
 		cursor_fg = "#11111b",
 		ac_title_bg = "#1A1B26",
-		ac_title_fg = "#ffffff",
+		ac_title_fg = "#f8f8f2",
 		inac_title_bg = "#2b2042",
 		inac_title_fg = "#cccccc",
 		ac_title_border = "#2b2042",
@@ -67,16 +46,21 @@ local colors = {
 		button_bg = "#1A1B26",
 		button_fg = "#cccccc",
 		button_hover_bg = "#3b3052",
-		button_hover_fg = "#ffffff",
-		in_brightness = 0.75,
-		theme = "Dracula",
+		button_hover_fg = "#f8f8f2",
 		tab_bg = "#282a36",
 		tab_ac_bg = "#414868",
 		tab_ac_fg = "#c0caf5",
 		tab_inac_bg = "#282a36",
 		tab_inac_fg = "#a9b1d6",
+		tab_btn_bg = "#282a36",
+		tab_btn_fg = "#f8f8f2",
 	},
+
 	light = {
+		theme = "Gruvbox light, hard (base16)",
+		in_brightness = 0.85,
+
+		sky = "#041A40",
 		cursor_fg = "#f5e0dc",
 		ac_title_bg = "#d5c4a1",
 		ac_title_fg = "#000000",
@@ -87,116 +71,116 @@ local colors = {
 		button_bg = "#d5c4a1",
 		button_fg = "#665c54",
 		button_hover_bg = "#3b3052",
-		button_hover_fg = "#ffffff",
-		in_brightness = 0.85,
-		theme = "Gruvbox light, hard (base16)",
+		button_hover_fg = "#f8f8f2",
 		tab_bg = "#ebdbb2",
-		tab_ac_bg = "#a89984",
+		tab_ac_bg = "#d5c5a1",
 		tab_ac_fg = "#3c3836",
-		tab_inac_bg = "#d5c5a1",
+		tab_inac_bg = "#ebdbb2",
 		tab_inac_fg = "#665c54",
+		tab_btn_bg = "#ebdbb2",
+		tab_btn_fg = "#3b3052",
 	},
 }
-local color = is_dark and colors.dark or colors.light
+
+local color = isDark and colors.dark or colors.light
+
 local function get_process(tab)
 	local process_icons = {
 		["docker"] = {
 			{ Foreground = { Color = colors.blue } },
-			{ Text = wezterm.nerdfonts.linux_docker },
+			{ Text = wez.nerdfonts.linux_docker },
 		},
 		["docker-compose"] = {
 			{ Foreground = { Color = colors.blue } },
-			{ Text = wezterm.nerdfonts.linux_docker },
+			{ Text = wez.nerdfonts.linux_docker },
 		},
 		["nvim"] = {
 			{ Foreground = { Color = colors.green } },
-			{ Text = wezterm.nerdfonts.custom_vim },
+			{ Text = wez.nerdfonts.custom_vim },
 		},
 		["vim"] = {
 			{ Foreground = { Color = colors.green } },
-			{ Text = wezterm.nerdfonts.dev_vim },
+			{ Text = wez.nerdfonts.dev_vim },
 		},
 		["node"] = {
 			{ Foreground = { Color = colors.green } },
-			{ Text = wezterm.nerdfonts.mdi_hexagon },
+			{ Text = wez.nerdfonts.mdi_hexagon },
 		},
 		["zsh"] = {
 			{ Foreground = { Color = colors.peach } },
-			{ Text = wezterm.nerdfonts.dev_terminal },
+			{ Text = wez.nerdfonts.dev_terminal },
 		},
 		["bash"] = {
 			{ Foreground = { Color = colors.subtext0 } },
-			{ Text = wezterm.nerdfonts.cod_terminal_bash },
+			{ Text = wez.nerdfonts.cod_terminal_bash },
 		},
 		["paru"] = {
 			{ Foreground = { Color = colors.lavender } },
-			{ Text = wezterm.nerdfonts.linux_archlinux },
+			{ Text = wez.nerdfonts.linux_archlinux },
 		},
 		["htop"] = {
 			{ Foreground = { Color = colors.yellow } },
-			{ Text = wezterm.nerdfonts.mdi_chart_donut_variant },
+			{ Text = wez.nerdfonts.mdi_chart_donut_variant },
 		},
 		["cargo"] = {
 			{ Foreground = { Color = colors.peach } },
-			{ Text = wezterm.nerdfonts.dev_rust },
+			{ Text = wez.nerdfonts.dev_rust },
 		},
 		["go"] = {
 			{ Foreground = { Color = colors.sapphire } },
-			{ Text = wezterm.nerdfonts.mdi_language_go },
+			{ Text = wez.nerdfonts.mdi_language_go },
 		},
 		["lazydocker"] = {
 			{ Foreground = { Color = colors.blue } },
-			{ Text = wezterm.nerdfonts.linux_docker },
+			{ Text = wez.nerdfonts.linux_docker },
 		},
 		["git"] = {
 			{ Foreground = { Color = colors.peach } },
-			{ Text = wezterm.nerdfonts.dev_git },
+			{ Text = wez.nerdfonts.dev_git },
 		},
 		["lazygit"] = {
 			{ Foreground = { Color = colors.peach } },
-			{ Text = wezterm.nerdfonts.dev_git },
+			{ Text = wez.nerdfonts.dev_git },
 		},
 		["lua"] = {
 			{ Foreground = { Color = colors.blue } },
-			{ Text = wezterm.nerdfonts.seti_lua },
+			{ Text = wez.nerdfonts.seti_lua },
 		},
 		["wget"] = {
 			{ Foreground = { Color = colors.yellow } },
-			{ Text = wezterm.nerdfonts.mdi_arrow_down_box },
+			{ Text = wez.nerdfonts.mdi_arrow_down_box },
 		},
 		["curl"] = {
 			{ Foreground = { Color = colors.yellow } },
-			{ Text = wezterm.nerdfonts.mdi_flattr },
+			{ Text = wez.nerdfonts.mdi_flattr },
 		},
 		["gh"] = {
 			{ Foreground = { Color = colors.mauve } },
-			{ Text = wezterm.nerdfonts.dev_github_badge },
+			{ Text = wez.nerdfonts.dev_github_badge },
 		},
 	}
 
 	local process_name = string.gsub(tab.active_pane.foreground_process_name, "(.*[/\\])(.*)", "%2")
 	local function process_func()
-		local process_string = { { Foreground = { Color = colors.sky } }, { Text = string.format("%s", process_name) } }
+		local process_string = { { Foreground = { Color = color.sky } }, { Text = string.format("%s", process_name) } }
 		if string.format("%s", process_name) == "" then
 			return process_icons["zsh"]
 		else
 			return process_string
 		end
 	end
-
-	return wezterm.format(process_icons[process_name] or process_func())
+	return wez.format(process_icons[process_name] or process_func())
 end
 
 local function get_current_working_dir(tab)
 	local current_dir = tab.active_pane.current_working_dir
 	local HOME_DIR = string.format("file://%s", os.getenv("HOME"))
-
 	return current_dir == HOME_DIR and "  ~"
 		or string.format("  %s", string.gsub(current_dir, "(.*[/\\])(.*)", "%2"))
 end
 
-wezterm.on("format-tab-title", function(tab)
-	return wezterm.format({
+wez.on("format-tab-title", function(tab)
+	return wez.format({
 		{ Attribute = { Intensity = "Half" } },
 		{ Text = string.format(" %s  ", tab.tab_index + 1) },
 		"ResetAttributes",
@@ -208,15 +192,15 @@ wezterm.on("format-tab-title", function(tab)
 	})
 end)
 
-wezterm.on("update-right-status", function(window)
-	window:set_right_status(wezterm.format({
+wez.on("update-right-status", function(window)
+	window:set_right_status(wez.format({
 		{ Attribute = { Intensity = "Bold" } },
-		{ Text = wezterm.strftime(" %A, %d %B %Y %H:%M ") },
+		{ Text = wez.strftime(" %A, %d %B %Y %H:%M ") },
 	}))
 end)
 
 local ssh_domains = {}
-for host, _ in pairs(wezterm.enumerate_ssh_hosts()) do
+for host, _ in pairs(wez.enumerate_ssh_hosts()) do
 	table.insert(ssh_domains, {
 		name = host,
 		remote_address = host,
@@ -235,7 +219,7 @@ return {
 	enable_scroll_bar = false,
 	audible_bell = "Disabled",
 	ssh_domains = ssh_domains,
-	font = wezterm.font_with_fallback({ {
+	font = wez.font_with_fallback({ {
 		family = "JetBrainsMono Nerd Font Mono",
 		weight = "Medium",
 	} }),
@@ -300,16 +284,16 @@ return {
 				fg_color = color.tab_inac_fg,
 			},
 			inactive_tab_hover = {
-				bg_color = "#6272a4",
-				fg_color = "#f8f8f2",
+				bg_color = color.tab_inac_bg,
+				fg_color = color.tab_inac_fg,
 				italic = true,
 			},
 			new_tab = {
-				bg_color = color.tab_bg,
-				fg_color = "#f8f8f2",
+				bg_color = color.tab_btn_bg,
+				fg_color = color.tab_btn_fg,
 			},
 			new_tab_hover = {
-				bg_color = "#ff79c6",
+				bg_color = "#6272a4",
 				fg_color = "#f8f8f2",
 				italic = true,
 			},
@@ -317,8 +301,8 @@ return {
 	},
 	disable_default_key_bindings = true,
 	keys = {
-		{ key = "v", mods = "SHIFT|CTRL", action = act.PasteFrom("Clipboard") },
 		{ key = "c", mods = "SHIFT|CTRL", action = act.CopyTo("Clipboard") },
+		{ key = "v", mods = "SHIFT|CTRL", action = act.PasteFrom("Clipboard") },
 		{ key = "PageUp", mods = "CTRL", action = act.ActivateCopyMode },
 		{ key = "f", mods = "SHIFT|CTRL", action = act.Search({ CaseSensitiveString = "" }) },
 
