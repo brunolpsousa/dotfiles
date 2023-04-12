@@ -520,6 +520,23 @@ dot() {
   echo
 }
 
+# Convert image files to jxl
+cimg() {
+  setopt nullglob
+  current_dir="$PWD"
+  mkdir -p ./cimg "$XDG_CACHE_HOME/cimg"
+  img_formats=(jpg jpeg png apng bmp svg tif tiff webp avif heic)
+  for f in "${img_formats[@]}"; do
+    for i in *."$f"; do
+      [[ ! "$i" ]] || command mv "$i" ./cimg
+    done
+    mogrify -format jxl ./cimg/*."$f"
+    ! test ./cimg/*."$f" || command mv ./cimg/*."$f" "$XDG_CACHE_HOME/cimg"
+  done
+  ! test ./cimg/*.jxl || command mv ./cimg/*.jxl "$current_dir"
+  command rmdir -v ./cimg
+}
+
 # Convert media files to mp3
 tomp3() {
   if [[ -n "$@" ]]; then
