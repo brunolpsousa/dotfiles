@@ -44,8 +44,8 @@ keymap("v", "<leader>p", '"+p')
 keymap("n", "<leader>p", '"+p')
 keymap("v", "<leader>P", '"+P')
 keymap("n", "<leader>P", '"+P')
-keymap("n", "<leader>/", '<cmd>lua require("Comment.api").toggle.linewise.current()<CR>')
-keymap("x", "<leader>/", '<Esc><cmd>lua require("Comment.api").toggle.linewise(vim.fn.visualmode())<CR>')
+keymap("n", "<leader>/", "<cmd>set operatorfunc=v:lua.Comment_contextual<CR>g@$")
+keymap("x", "<leader>/", "<cmd>set operatorfunc=v:lua.Comment_contextual<CR>g@")
 keymap("n", "<leader>e", "<cmd>Ex<CR>")
 keymap("n", "<leader>fe", "<cmd>e %:h/<C-d>")
 keymap("n", "<leader>ff", "<cmd>Telescope find_files<CR>")
@@ -117,7 +117,7 @@ vim.api.nvim_create_autocmd({ "BufWritePost" }, {
 	end,
 })
 
--- Plugins Config
+-- Plugins
 local function load_telescope()
 	if pcall(require, "telescope") and pcall(require, "project_nvim") then
 		require("telescope").setup({
@@ -197,6 +197,39 @@ local function load_autopairs()
 	end
 end
 
+function Comment_contextual(vmode)
+	local cfg = require("Comment.config"):get()
+	local U = require("Comment.utils")
+	local Op = require("Comment.opfunc")
+	local range = U.get_region(vmode)
+	local same_line = range.srow == range.erow
+
+	local ctx = {
+		cmode = U.cmode.toggle,
+		range = range,
+		cmotion = U.cmotion[vmode] or U.cmotion.line,
+		ctype = same_line and U.ctype.linewise or U.ctype.blockwise,
+	}
+
+	local lcs, rcs = U.parse_cstr(cfg, ctx)
+	local lines = U.get_lines(range)
+
+	local params = {
+		range = range,
+		lines = lines,
+		cfg = cfg,
+		cmode = ctx.cmode,
+		lcs = lcs,
+		rcs = rcs,
+	}
+
+	if same_line then
+		Op.linewise(params)
+	else
+		Op.blockwise(params)
+	end
+end
+
 local function load_treesitter()
 	if pcall(require, "nvim-treesitter") then
 		require("nvim-treesitter.configs").setup({
@@ -204,6 +237,7 @@ local function load_treesitter()
 			highlight = { enable = true },
 			autopairs = { enable = true },
 			indent = { enable = true },
+			context_commentstring = { enable = true, enable_autocmd = false },
 		})
 		require("nvim-treesitter.install").update({ with_sync = true })
 	end
@@ -606,7 +640,22 @@ if pcall(require, "lazy") then
 				load_autopairs()
 			end,
 		},
-		{ "numToStr/Comment.nvim", lazy = true },
+		{
+			"numToStr/Comment.nvim",
+			lazy = true,
+			config = function()
+				require("Comment").setup({
+					ignore = "^$",
+					pre_hook = require("ts_context_commentstring.integrations.comment_nvim").create_pre_hook(),
+				})
+			end,
+			dependencies = {
+				{
+					"JoosepAlviste/nvim-ts-context-commentstring",
+					event = "VeryLazy",
+				},
+			},
+		},
 		{
 			"jinh0/eyeliner.nvim",
 			event = "VeryLazy",
