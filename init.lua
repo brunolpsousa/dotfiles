@@ -104,17 +104,21 @@ vim.api.nvim_create_autocmd({ "FileType" }, {
 	end,
 })
 
-vim.api.nvim_create_autocmd({ "OptionSet background" }, {
+vim.api.nvim_create_autocmd({ "BufEnter", "BufWritePost" }, {
 	callback = function()
 		local getBG = vim.fn.system("gsettings get org.gnome.desktop.interface color-scheme")
 		if getBG:match("default") then
 			vim.opt.background = "light"
-			vim.cmd.colorscheme("solarized")
-			require("lualine").setup({ options = { theme = "gruvbox" } })
-		elseif getBG:gmatch("prefer-dark") then
+			pcall(vim.cmd.colorscheme, "solarized")
+			if pcall(require, "lualine") then
+				require("lualine").setup({ options = { theme = "gruvbox" } })
+			end
+		else
 			vim.opt.background = "dark"
-			vim.cmd.colorscheme("tokyonight-night")
-			require("lualine").setup({ options = { theme = "tokyonight" } })
+			pcall(vim.cmd.colorscheme, "tokyonight-night")
+			if pcall(require, "lualine") then
+				require("lualine").setup({ options = { theme = "tokyonight" } })
+			end
 		end
 	end,
 })
