@@ -256,6 +256,10 @@ local function load_lsp()
 		local on_attach = function(client, bufnr)
 			vim.api.nvim_buf_set_option(bufnr, "omnifunc", "v:lua.vim.lsp.omnifunc")
 
+			if client.name == "tsserver" or client.name == "lua_ls" then
+				client.server_capabilities.documentFormattingProvider = false
+			end
+
 			-- Mappings.
 			local bufopts = { noremap = true, silent = true, buffer = bufnr }
 			keymap("n", "gD", vim.lsp.buf.declaration, bufopts)
@@ -289,9 +293,7 @@ local function load_lsp()
 			keymap("n", "<leader>du", '<cmd>lua require("dapui").toggle()<CR>', bufopts)
 			keymap("n", "<leader>dt", '<cmd>lua require("dap").terminate()<CR>', bufopts)
 
-			if client.name == "tsserver" or client.name == "lua_ls" then
-				client.server_capabilities.documentFormattingProvider = false
-			end
+			-- Context menu
 			vim.cmd([[:amenu PopUp.Go\ to\ Definition <cmd>:lua vim.lsp.buf.definition()<CR>]])
 			vim.cmd([[:amenu PopUp.Go\ to\ Type\ Definition <cmd>:lua vim.lsp.buf.type_definition()<CR>]])
 			vim.cmd([[:amenu PopUp.Go\ to\ Implementations <cmd>:lua vim.lsp.buf.implementation()<CR>]])
@@ -400,7 +402,23 @@ local function load_cmp()
 			formatting = {
 				fields = { "kind", "abbr", "menu" },
 				format = function(entry, vim_item)
-					vim_item.kind = kind_icons[vim_item.kind]
+					if vim_item.kind == "Color" and entry.completion_item.documentation then
+						local _, _, r, g, b =
+							string.find(entry.completion_item.documentation, "^rgb%((%d+), (%d+), (%d+)")
+						if r then
+							local color = string.format("%02x", r)
+								.. string.format("%02x", g)
+								.. string.format("%02x", b)
+							local group = "Tw_" .. color
+							if vim.fn.hlID(group) < 1 then
+								vim.api.nvim_set_hl(0, group, { fg = "#" .. color })
+							end
+							vim_item.kind = "●"
+							vim_item.kind_hl_group = group
+						end
+					else
+						vim_item.kind = kind_icons[vim_item.kind]
+					end
 					vim_item.menu = ({
 						nvim_lsp = "LSP",
 						nvim_lua = "Lua",
@@ -409,7 +427,7 @@ local function load_cmp()
 						path = "Path",
 						emoji = "Emoji",
 					})[entry.source.name]
-					return require("tailwindcss-colorizer-cmp").formatter(entry, vim_item)
+					return vim_item
 				end,
 			},
 			sources = {
@@ -607,7 +625,11 @@ if pcall(require, "lazy") then
 				if pcall(require, "colorizer") then
 					require("colorizer").setup({
 						user_default_options = {
+							RRGGBBAA = true,
+							AARRGGBB = true,
+							css_fn = true,
 							tailwind = true,
+							sass = { enable = true, parsers = { "css" } },
 						},
 					})
 				end
