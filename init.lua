@@ -104,6 +104,21 @@ vim.api.nvim_create_autocmd({ "FileType" }, {
 	end,
 })
 
+vim.api.nvim_create_autocmd({ "OptionSet background" }, {
+	callback = function()
+		local getBG = vim.fn.system("gsettings get org.gnome.desktop.interface color-scheme")
+		if getBG:match("default") then
+			vim.opt.background = "light"
+			vim.cmd.colorscheme("solarized")
+			require("lualine").setup({ options = { theme = "gruvbox" } })
+		elseif getBG:gmatch("prefer-dark") then
+			vim.opt.background = "dark"
+			vim.cmd.colorscheme("tokyonight-night")
+			require("lualine").setup({ options = { theme = "tokyonight" } })
+		end
+	end,
+})
+
 vim.api.nvim_create_autocmd({ "TextYankPost" }, {
 	callback = function()
 		vim.highlight.on_yank({ higroup = "Visual", timeout = 200 })
@@ -163,16 +178,8 @@ local function load_lualine()
 		local spaces = function()
 			return "spaces: " .. vim.api.nvim_buf_get_option(0, "shiftwidth")
 		end
-		local function setTheme()
-			local currentTheme = vim.api.nvim_command_output("colorscheme")
-			if currentTheme:match("tokyonight") then
-				return "tokyonight"
-			elseif currentTheme:match("solarized") then
-				return "gruvbox"
-			end
-		end
 		require("lualine").setup({
-			options = { theme = setTheme(), globalstatus = true, section_separators = "", component_separators = "" },
+			options = { globalstatus = true, section_separators = "", component_separators = "" },
 			sections = {
 				lualine_a = { "mode" },
 				lualine_b = { "branch" },
@@ -593,35 +600,16 @@ if not vim.loop.fs_stat(lazypath) then
 end
 vim.opt.rtp:prepend(lazypath)
 if pcall(require, "lazy") then
-	local getBG = vim.api.nvim_command_output("!gsettings get org.gnome.desktop.interface color-scheme")
 	require("lazy").setup({
 		{
 			"folke/tokyonight.nvim",
 			lazy = false,
 			priority = 1000,
-			config = function()
-				if getBG:match("default") then
-					vim.opt.background = "light"
-					vim.cmd.colorscheme("solarized")
-				elseif getBG:gmatch("prefer-dark") then
-					vim.opt.background = "dark"
-					vim.cmd.colorscheme("tokyonight-night")
-				end
-			end,
 		},
 		{
 			"shaunsingh/solarized.nvim",
 			lazy = false,
 			priority = 1000,
-			config = function()
-				if getBG:find("default") then
-					vim.opt.background = "light"
-					vim.cmd.colorscheme("solarized")
-				elseif getBG:gmatch("prefer-dark") then
-					vim.opt.background = "dark"
-					vim.cmd.colorscheme("tokyonight-night")
-				end
-			end,
 		},
 		{
 			"nvim-lualine/lualine.nvim",
