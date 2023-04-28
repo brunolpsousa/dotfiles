@@ -531,9 +531,11 @@ cimg() {
       [[ ! "$i" ]] || command mv "$i" ./cimg
     done
     mogrify -format jxl ./cimg/*."$f"
-    ! test ./cimg/*."$f" || command mv ./cimg/*."$f" "$XDG_CACHE_HOME/cimg"
+    find -path "./cimg/*.$f" | xargs -I '{}' mv '{}' "$XDG_CACHE_HOME/cimg"
   done
-  ! test ./cimg/*.jxl || command mv ./cimg/*.jxl "$current_dir"
+    for i in ./cimg/*.jxl; do
+      [[ ! "$i" ]] || command mv "$i" "$current_dir"
+    done
   command rmdir -v ./cimg
 }
 
