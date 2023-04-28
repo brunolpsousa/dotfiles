@@ -1069,7 +1069,7 @@ arch-base() {
   echo 'Do you wish to configure general system defaults?'
   select yne in 'Yes' 'No' 'Exit'; do
     case $yne in
-      Yes ) $use_sudo sh -c "ufw enable; systemctl enable fstrim.timer systemd-oomd bluetooth ufw"; break;;
+      Yes ) $use_sudo sh -c "ufw enable; systemctl enable fstrim.timer systemd-oomd bluetooth ufw; echo -e 'vm.swappiness=10\nvm.vfs_cache_pressure=50\nvm.max_map_count=2147483642' > /etc/sysctl.d/99-sysctl.conf"; break;;
       No ) break;;
       Exit ) return;;
     esac
