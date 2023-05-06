@@ -379,6 +379,7 @@ local function load_cmp()
 		require("luasnip.loaders.from_vscode").lazy_load()
 		vim.opt.completeopt = { "menuone", "noselect" }
 		local kind_icons = {
+			Codeium = "",
 			Text = "",
 			Method = "",
 			Function = "",
@@ -410,6 +411,7 @@ local function load_cmp()
 			local line, col = unpack(vim.api.nvim_win_get_cursor(0))
 			return col ~= 0 and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match("%s") == nil
 		end
+		require("codeium").setup({})
 		local cmp = require("cmp")
 		cmp.setup({
 			snippet = {
@@ -471,6 +473,7 @@ local function load_cmp()
 						vim_item.kind = kind_icons[vim_item.kind]
 					end
 					vim_item.menu = ({
+						codeium = "Codeium",
 						nvim_lsp = "LSP",
 						nvim_lua = "Lua",
 						luasnip = "Snip",
@@ -482,6 +485,7 @@ local function load_cmp()
 				end,
 			},
 			sources = {
+				{ name = "codeium" },
 				{ name = "nvim_lsp" },
 				{ name = "nvim_lsp_signature_help" },
 				{ name = "luasnip" },
@@ -708,6 +712,7 @@ if pcall(require, "lazy") then
 				"L3MON4D3/LuaSnip",
 				"rafamadriz/friendly-snippets",
 				"roobert/tailwindcss-colorizer-cmp.nvim",
+				"jcdickinson/codeium.nvim",
 			},
 			config = function()
 				load_cmp()
