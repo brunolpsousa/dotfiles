@@ -1027,7 +1027,7 @@ arch-base() {
     echo 'Do you wish to configure /etc/pacman.conf?'
     select yne in 'Yes' 'No' 'Exit'; do
       case $yne in
-        Yes ) $use_sudo sh -c "sed -i 's/#\(Color\)/\1/g; s/#\(VerbosePkgLists\)/\1/g; /ParallelDownloads/ s/^#//; /ParallelDownloads/ s/5$/9\nIloveCandy/; /\[multilib\]/,/Include/ s/^#//' /etc/pacman.conf"; break;;
+        Yes ) $use_sudo sh -c "sed -i 's/#\(Color\)/\1/g; s/#\(VerbosePkgLists\)/\1/g; /ParallelDownloads/ s/^#//; /ParallelDownloads/ s/5$/9\nILoveCandy/; /\[multilib\]/,/Include/ s/^#//' /etc/pacman.conf"; break;;
         No ) break;;
         Exit ) return;;
       esac
