@@ -1561,7 +1561,7 @@ prompt_git_status_precmd() {
 [[ -n ${SSH_CONNECTION-}${SSH_CLIENT-}${SSH_TTY-} ]] && PROMPT_SSH="%F{yellow}${(%):-%m}%}ː%b%f" || unset PROMPT_SSH
 #------------------------------------------------------------------------------#
 # Some stuff borrowed from Spaceship
-# Updated in 2023.02.09
+# Updated in 2023.06.09
 
 spaceship_noasync() {
   local SPACESHIP_PROMPT_DEFAULT_PREFIX=' '
