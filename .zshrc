@@ -522,6 +522,10 @@ dot() {
 
 # Convert image files to jxl
 cimg() {
+  if ! command -v mogrify >/dev/null; then
+    echo 'Error: mogrify not found. Please, install imagemagick'
+    return 1
+  fi
   setopt nullglob
   current_dir="$PWD"
   mkdir -p ./cimg "$XDG_CACHE_HOME/cimg"
