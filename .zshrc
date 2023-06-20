@@ -48,6 +48,7 @@ systemctl $s_local import-environment EDITOR VISUAL XDG_CACHE_HOME XDG_CONFIG_HO
 alias .='cd $HOME'
 alias chmod='chmod -c'
 alias chown='chown -c'
+alias curl='curl --connect-timeout 5 --max-time 10 --retry 10 --retry-delay 0 --retry-max-time 40'
 alias cp='cp -riv'
 alias mv='mv -iv'
 alias rm='rm -iv'
@@ -65,6 +66,8 @@ alias g='grep -n -C 3 --color=auto'
 alias grep='grep --color=auto'
 alias egrep='grep -E --color=auto'
 alias fgrep='grep -F --color=auto'
+alias py='python'
+alias python='python3'
 alias clear='unset NEW_LINE_BEFORE_PROMPT && clear'
 alias nano='nano -EaiT4'
 alias v="$EDITOR"
@@ -314,7 +317,15 @@ bindkey '^Z' ctrl-z-toggle
 #------------------------------------------------------------------------------#
 #################################### Plugins ###################################
 #------------------------------------------------------------------------------#
-fetch() { [[ $(command -v curl) ]] && curl -fsSL -- "$1" || wget -qO- -- "$1" }
+fetch() {
+  if command -v curl >/dev/null; then
+    curl -fsSL -- "$1"
+  elif command -v wget >/dev/null; then
+    wget -qO- -- "$1"
+  else
+    echo 'error: "curl" or "wget" not found'
+  fi
+}
 #------------------------------------------------------------------------------#
 # asdf
 source /opt/asdf-vm/asdf.sh 2>/dev/null
@@ -561,7 +572,7 @@ tomp4() {
   if [[ -n "$@" ]]; then
     mkdir -p ./mp4_files
     for f in "$@"; do
-      ffmpeg -i "$f" -vf "pad=ceil(iw/2)*2:ceil(ih/2)*2" "./mp4_files/${f%.*}.mp4"
+      ffmpeg -i "$f" -vf "pad=ceil(iw/2)*2:ceil(ih/2)*2" -vcodec libx265 -crf 28 "./mp4_files/${f%.*}.mp4"
     done
   else
     echo 'Usage: tomp4 <file 1> <file 2> <file.extension> <*.extension> <*>'
@@ -647,10 +658,8 @@ myip() {
 
 # Speedtest
 speedtest() {
-  local st_size
-  [[ -z $1 ]] && st_ize=100 || st_size="$1"
-  local sURL="http://speedtest-blr1.digitalocean.com/${sSize}mb.test"
-  [[ $(command -v curl) ]] && curl -o /dev/null "$sURL" || wget -O /dev/null "$sURL"
+  local sURL="https://raw.githubusercontent.com/sivel/speedtest-cli/master/speedtest.py"
+  fetch "$sURL" | python -
  }
 
 # by default show 3 months of calendar with week number
@@ -3200,7 +3209,7 @@ spaceship_python() {
   local py_version
 
   if  [[ -n "$VIRTUAL_ENV" ]] || [[ $SPACESHIP_PYTHON_SHOW == always ]]; then
-    py_version=${(@)$(python -V 2>&1)[2]} || py_version=${(@)$(python3 -V 2>&1)[2]}
+    py_version=${(@)$(python -V 2>&1)[2]}
   fi
 
   [[ -z $py_version ]] && return
@@ -3345,7 +3354,7 @@ spaceship_terraform() {
 }
 
 # Virtualenv is a tool to create isolated Python environments
-# Show current virtual environment (Python).
+# Show current virtual environment (Python)
 spaceship_venv() {
   local SPACESHIP_VENV_SHOW="${SPACESHIP_VENV_SHOW=true}"
   local SPACESHIP_VENV_PREFIX="${SPACESHIP_VENV_PREFIX=" v:"}"
