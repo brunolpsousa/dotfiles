@@ -4,6 +4,7 @@ window:
     columns: 146
     lines: 45
   opacity: 0.9
+  decorations_theme_variant: Dark
 
 font:
   normal:

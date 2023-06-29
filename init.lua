@@ -109,16 +109,13 @@ vim.api.nvim_create_autocmd({ "BufEnter", "BufWritePost" }, {
 		local getBG = vim.fn.system("gsettings get org.gnome.desktop.interface color-scheme")
 		if getBG:match("default") then
 			vim.opt.background = "light"
-			pcall(vim.cmd.colorscheme, "solarized")
-			if pcall(require, "lualine") then
-				require("lualine").setup({ options = { theme = "gruvbox" } })
-			end
+			pcall(vim.cmd.colorscheme, "catppuccin-latte")
 		else
 			vim.opt.background = "dark"
-			pcall(vim.cmd.colorscheme, "tokyonight-night")
-			if pcall(require, "lualine") then
-				require("lualine").setup({ options = { theme = "tokyonight" } })
-			end
+			pcall(vim.cmd.colorscheme, "catppuccin-mocha")
+		end
+		if pcall(require, "lualine") then
+			require("lualine").setup({ options = { theme = "catppuccin" } })
 		end
 	end,
 })
@@ -620,14 +617,12 @@ vim.opt.rtp:prepend(lazypath)
 if pcall(require, "lazy") then
 	require("lazy").setup({
 		{
-			"folke/tokyonight.nvim",
+			"catppuccin/nvim",
 			lazy = false,
 			priority = 1000,
-		},
-		{
-			"shaunsingh/solarized.nvim",
-			lazy = false,
-			priority = 1000,
+			config = function()
+				pcall(vim.cmd.colorscheme, "catppuccin")
+			end,
 		},
 		{
 			"nvim-lualine/lualine.nvim",
