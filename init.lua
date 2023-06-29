@@ -131,7 +131,8 @@ vim.api.nvim_create_autocmd({ "TextYankPost" }, {
 
 vim.api.nvim_create_autocmd({ "BufWritePre" }, {
 	callback = function()
-		if vim.bo.filetype ~= "git|gitcommit|diff" then
+		local path = vim.bo.filetype
+		if path:find("diff") then
 			return
 		end
 		vim.cmd([[:%s/\s\+$//e]])
