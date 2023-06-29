@@ -415,7 +415,13 @@ local function load_cmp()
 			local line, col = unpack(vim.api.nvim_win_get_cursor(0))
 			return col ~= 0 and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match("%s") == nil
 		end
-		require("codeium").setup({})
+
+		-- https://github.com/jcdickinson/codeium.nvim/issues/20
+		local line_count = vim.api.nvim_buf_line_count(0)
+		if line_count <= 3000 then
+			require("codeium").setup({})
+		end
+
 		local cmp = require("cmp")
 		cmp.setup({
 			snippet = {
