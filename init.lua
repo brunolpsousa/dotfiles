@@ -480,10 +480,9 @@ local function load_cmp()
 						vim_item.kind = kind_icons[vim_item.kind]
 					end
 					vim_item.menu = ({
-						codeium = "Codeium",
 						nvim_lsp = "LSP",
-						nvim_lua = "Lua",
 						luasnip = "Snip",
+						codeium = "Codeium",
 						buffer = "Buffer",
 						path = "Path",
 						emoji = "Emoji",
@@ -492,10 +491,10 @@ local function load_cmp()
 				end,
 			},
 			sources = {
-				{ name = "codeium" },
 				{ name = "nvim_lsp" },
 				{ name = "nvim_lsp_signature_help" },
 				{ name = "luasnip" },
+				{ name = "codeium" },
 				{ name = "buffer" },
 				{ name = "path" },
 			},
@@ -683,7 +682,7 @@ if pcall(require, "lazy") then
 						user_default_options = {
 							RRGGBBAA = true,
 							AARRGGBB = true,
-							css_fn = true,
+							css = true,
 							tailwind = true,
 							sass = { enable = true, parsers = { "css" } },
 						},
