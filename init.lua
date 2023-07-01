@@ -36,7 +36,7 @@ keymap("i", "<A-k>", "<Esc><cmd>m.-2<CR>==gi")
 keymap("v", "<A-j>", ":m'>+1<CR>gv=gv", { silent = true })
 keymap("v", "<A-k>", ":m'<-2<CR>gv=gv", { silent = true })
 keymap("v", "p", '"_dP')
-keymap("n", "<C-Bslash>", "<cmd>sp term://zsh<CR><cmd>resize -8<CR>i")
+keymap("n", "<C-Bslash>", "<cmd>sp term://$SHELL<CR><cmd>resize -8<CR>i")
 keymap("v", "<leader>y", '"+y')
 keymap("n", "<leader>y", '"+y')
 keymap("v", "<leader>d", '"+ygvd')
@@ -106,8 +106,8 @@ vim.api.nvim_create_autocmd({ "FileType" }, {
 
 vim.api.nvim_create_autocmd({ "BufEnter", "BufWritePost" }, {
 	callback = function()
-		local getBG = vim.fn.system("gsettings get org.gnome.desktop.interface color-scheme")
-		if getBG:match("default") then
+		local getBG = vim.fn.system("gtk-query-settings | awk '/gtk-theme-name:/{print $2}'")
+		if not getBG:find("dark") then
 			vim.opt.background = "light"
 			pcall(vim.cmd.colorscheme, "catppuccin-latte")
 		else

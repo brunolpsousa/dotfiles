@@ -3,12 +3,13 @@ theme="$HOME/.config/alacritty/theme.yml"
 dark="$HOME/.config/alacritty/dark.yml"
 light="$HOME/.config/alacritty/light.yml"
 tconf="$HOME/.config/tmux/tmux.conf"
-isDark=$(gsettings get org.gnome.desktop.interface color-scheme)
 
 [[ -f "$theme" || -f "$HOME/.config/tmux/tmux.conf" ]] || exit
 
+isDark=$(sleep 0.05 && gsettings get org.gnome.desktop.interface color-scheme)
+
 chAlacritty() {
-  if [[ "$isDark" =~ "prefer-dark" ]]; then
+  if [[ "$isDark" =~ "dark" ]]; then
     grep -q "[lL]ight" "$theme" || return
     mv "$theme" "$light"
     mv "$dark" "$theme"
@@ -18,7 +19,6 @@ chAlacritty() {
     mv "$light" "$theme"
   fi
 }
-chAlacritty
 
 chTmux() {
   if [[ "$isDark" =~ "default" ]] || grep -q "[lL]ight" "$theme"; then
@@ -28,4 +28,6 @@ chTmux() {
   fi
   tmux source-file "$tconf"
 }
+
+chAlacritty
 chTmux

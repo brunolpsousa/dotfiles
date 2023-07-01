@@ -3,7 +3,13 @@
 #------------------------------------------------------------------------------#
 # Environment
 cdpath=(.. ~)
-export EDITOR=nvim
+editors=(io.neovim.nvim nvim vim nano)
+for ed in ${editors[@]}; do
+  if command -v $ed >/dev/null; then
+    export EDITOR=$ed
+    break
+  fi
+done
 export VISUAL="$EDITOR"
 export XDG_CACHE_HOME="$HOME/.cache"
 export XDG_CONFIG_HOME="$HOME/.config"
@@ -767,13 +773,28 @@ urlarray() {
 
 # Display a list of supported colors
 lscolors() {
-  ((cols = $COLUMNS - 4))
-  local s=$(printf %${cols}s)
-  for i in {000..$(tput colors)}; do
-    echo $i $(tput setaf $i; tput setab $i)${s// /=}$(tput op);
-  done
-  echo
-  for i in {0..255}; do print -Pn "%K{$i}  %k%F{$i}${(l:3::0:)i}%f " ${${(M)$((i%6)):#3}:+$'\n'}; done
+  if [[ -z $@ ]]; then
+    echo -e '\r'
+    echo -e '\033[0K\033[1mBold\033[0m \033[7mInvert\033[0m \033[4mUnderline\033[0m'
+    echo -e '\033[0K\033[1m\033[7m\033[4mBold & Invert & Underline\033[0m'
+    echo
+    echo -e '\033[0K\033[31m Red \033[32m Green \033[33m Yellow \033[34m Blue \033[35m Magenta \033[36m Cyan \033[0m'
+    echo -e '\033[0K\033[1m\033[4m\033[31m Red \033[32m Green \033[33m Yellow \033[34m Blue \033[35m Magenta \033[36m Cyan \033[0m'
+    echo
+    echo -e '\033[0K\033[41m Red \033[42m Green \033[43m Yellow \033[44m Blue \033[45m Magenta \033[46m Cyan \033[0m'
+    echo -e '\033[0K\033[1m\033[4m\033[41m Red \033[42m Green \033[43m Yellow \033[44m Blue \033[45m Magenta \033[46m Cyan \033[0m'
+    echo
+    echo -e '\033[0K\033[30m\033[41m Red \033[42m Green \033[43m Yellow \033[44m Blue \033[45m Magenta \033[46m Cyan \033[0m'
+    echo -e '\033[0K\033[30m\033[1m\033[4m\033[41m Red \033[42m Green \033[43m Yellow \033[44m Blue \033[45m Magenta \033[46m Cyan \033[0m'
+  elif [[ $1 == 1 ]]; then
+    for i in {0..255}; do print -Pn "%K{$i}  %k%F{$i}${(l:3::0:)i}%f " ${${(M)$((i%6)):#3}:+$'\n'}; done
+  else
+    ((cols = $COLUMNS - 4))
+    local s=$(printf %${cols}s)
+    for i in {000..$(tput colors)}; do
+      echo $i $(tput setaf $i; tput setab $i)${s// /=}$(tput op);
+    done
+  fi
 }
 #------------------------------------------------------------------------------#
 ################################## Arch Config #################################
@@ -1061,16 +1082,21 @@ arch-base() {
   select yne in 'Yes' 'No' 'Exit'; do
     case $yne in
       Yes )
-        $use_sudo sh -c "pacman -Syu --needed sbctl neovim wl-clipboard alacritty tmux xdg-desktop-portal xdg-desktop-portal-gtk yt-dlp firefox mpv ufw neofetch man-db tldr ntfs-3g exfat-utils unrar zip p7zip imagemagick zsh zsh-autosuggestions zsh-completions zsh-history-substring-search zsh-syntax-highlighting steam qbittorrent libreoffice-fresh libreoffice-fresh-pt-br fzf hunspell-en_US noto-fonts noto-fonts-cjk noto-fonts-emoji ttf-liberation gsfonts lib32-gst-plugins-good gnuchess java-runtime-common base-devel networkmanager reflector android-udev android-tools pkgstats pipewire pipewire-alsa pipewire-pulse wireplumber $(case $(lscpu | awk '/Model name:/{print $3}') in AMD) echo -n 'amd-ucode';; Intel\(R\)) echo -n 'intel-ucode';; esac)"
-        if [[ "$EUID" != 0 && ! -x /usr/bin/paru ]]; then
-          command mkdir -p $HOME/{.cache/paru/clone,.config/paru}
-          git clone https://aur.archlinux.org/paru-bin $XDG_CACHE_HOME/paru/clone/paru-bin
-          local current_dir="$PWD"
-          builtin cd -q "$XDG_CACHE_HOME/paru/clone/paru-bin"
-          makepkg -sir
-          builtin cd -q "$current_dir"
-          unset current_dir
-          echo "# \$PARU_CONF\n# /etc/paru.conf\n# ~/.config/paru/paru.conf\n# GENERAL OPTIONS\n[options]\nRemoveMake\nSudoLoop\nCombinedUpgrade\nUpgradeMenu" | tee $XDG_CONFIG_HOME/paru/paru.conf >/dev/null
+        $use_sudo sh -c "pacman -Syu --needed sbctl alacritty tmux xdg-desktop-portal xdg-desktop-portal-gtk yt-dlp ufw neofetch man-db tldr ntfs-3g exfat-utils unrar zip p7zip imagemagick zsh zsh-autosuggestions zsh-completions zsh-history-substring-search zsh-syntax-highlighting fzf hunspell-en_US noto-fonts noto-fonts-cjk noto-fonts-emoji ttf-liberation gsfonts lib32-gst-plugins-good java-runtime-common base-devel networkmanager reflector android-udev android-tools pkgstats pipewire pipewire-alsa pipewire-pulse wireplumber $(case $(lscpu | awk '/Model name:/{print $3}') in AMD) echo -n 'amd-ucode';; Intel\(R\)) echo -n 'intel-ucode';; esac)"
+
+        if [[ "$EUID" != 0 ]]; then
+          flatpak install io.neovim.nvim org.freedesktop.Sdk.Extension.node18 org.mozilla.firefox io.mpv.Mpv com.valvesoftware.Steam org.qbittorrent.qBittorrent org.geeqie.Geeqie; flatpak override -u --env=FLATPAK_ENABLE_SDK_EXT=node18 io.neovim.nvim
+
+          if [[ ! -x /usr/bin/paru ]]; then
+            command mkdir -p $HOME/{.cache/paru/clone,.config/paru}
+            git clone https://aur.archlinux.org/paru-bin $XDG_CACHE_HOME/paru/clone/paru-bin
+            local current_dir="$PWD"
+            builtin cd -q "$XDG_CACHE_HOME/paru/clone/paru-bin"
+            makepkg -sir
+            builtin cd -q "$current_dir"
+            unset current_dir
+            echo "# \$PARU_CONF\n# /etc/paru.conf\n# ~/.config/paru/paru.conf\n# GENERAL OPTIONS\n[options]\nRemoveMake\nSudoLoop\nCombinedUpgrade\nUpgradeMenu" | tee $XDG_CONFIG_HOME/paru/paru.conf >/dev/null
+          fi
         fi
         break;;
       No ) break;;
@@ -1082,7 +1108,11 @@ arch-base() {
   echo 'Do you wish to configure general system defaults?'
   select yne in 'Yes' 'No' 'Exit'; do
     case $yne in
-      Yes ) $use_sudo sh -c "ufw enable; systemctl enable fstrim.timer systemd-oomd bluetooth ufw; echo -e 'vm.swappiness=10\nvm.vfs_cache_pressure=50\nvm.max_map_count=2147483642' > /etc/sysctl.d/99-sysctl.conf"; break;;
+      Yes ) $use_sudo sh -c "ufw enable; systemctl enable fstrim.timer systemd-oomd bluetooth ufw; echo -e 'vm.swappiness=10\nvm.vfs_cache_pressure=50\nvm.max_map_count=2147483642' > /etc/sysctl.d/99-sysctl.conf"
+        if [[ "$EUID" != 0 ]] && ! grep -q "$USER" /etc/subuid; then
+          usermod --add-subuids 100000-165535 --add-subgids 100000-165535 "$USER"
+        fi
+        break;;
       No ) break;;
       Exit ) return;;
     esac
@@ -1155,7 +1185,7 @@ arch-base() {
             if [[ $nerdcfg =~ '^[yY]' ]]; then
               command mkdir -p "$XDG_DATA_HOME/fonts"
               echo 'Downloading Nerd Fonts...'
-              [[ -f "$XDG_CACHE_HOME/JetBrainsMono.zip" ]] || fetch 'https://github.com/ryanoasis/nerd-fonts/releases/download/v2.3.3/JetBrainsMono.zip' > "$XDG_CACHE_HOME/JetBrainsMono.zip"
+              [[ -f "$XDG_CACHE_HOME/JetBrainsMono.zip" ]] || fetch 'https://github.com/ryanoasis/nerd-fonts/releases/download/v3.0.2/JetBrainsMono.zip' > "$XDG_CACHE_HOME/JetBrainsMono.zip"
               unzip -q "$XDG_CACHE_HOME/JetBrainsMono.zip" -d "$XDG_DATA_HOME/fonts" 2>/dev/null
               echo 'Done. Set JetBrainsMono as default font\n'
             fi
@@ -1163,9 +1193,11 @@ arch-base() {
           unset nerdcfg
 
           # Neovim config
-          if command -v nvim >/dev/null; then
-            command mkdir -p "$XDG_CONFIG_HOME/nvim/spell"
-            [[ -f "$XDG_CONFIG_HOME/nvim/init.lua" ]] || fetch 'https://gitlab.com/brunolpsousa/dotfiles/-/raw/master/init.lua' > "$XDG_CONFIG_HOME/nvim/init.lua"
+          if [[ "$EDITOR" =~ 'nvim' ]]; then
+            [[ "$EDITOR" == 'io.neovim.nvim' ]] && local baseNvim="$HOME/.var/app/io.neovim.nvim/config" || local baseNvim="$XDG_CONFIG_HOME"
+            command mkdir -p "$baseNvim/nvim/spell"
+            [[ -f "$baseNvim/config/nvim/init.lua" ]] || fetch 'https://gitlab.com/brunolpsousa/dotfiles/-/raw/master/init.lua' > "$baseNvim/nvim/init.lua"
+
             if [[ ! -x "$HOME/.local/bin/shellcheck" ]]; then
               local pkgver="v0.9.0"
               echo 'Downloading shellcheck...'
@@ -1179,11 +1211,11 @@ arch-base() {
                 tar -Jxf "$XDG_CACHE_HOME/shellcheck.tar.xz" shellcheck-${pkgver}/shellcheck
                 command mv shellcheck-${pkgver}/shellcheck "$HOME/.local/bin"
                 builtin cd -q "$current_dir"
-                unset current_dir cheksum cheksum2
               else
                 echo '\nerror: unmatched cheksum for shellcheck\n'
               fi
             fi
+            unset baseNvim current_dir cheksum cheksum2
           fi
 
           # Alacritty config
@@ -1241,13 +1273,14 @@ arch-base() {
           fi
 
           # mpv config
-          if command -v mpv >/dev/null; then
-            command mkdir -p "$XDG_CONFIG_HOME/mpv/scripts"
-            echo 'Ctrl+q quit\nF11 cycle fullscreen\nENTER cycle fullscreen\nKP_ENTER cycle fullscreen\nWHEEL_UP osd-msg-bar seek 3\nWHEEL_DOWN osd-msg-bar seek -3\nLEFT osd-msg-bar seek -5\nRIGHT osd-msg-bar seek  5\nUP osd-msg-bar seek 15\nDOWN osd-msg-bar seek -15\nkp9 add volume -2\nkp0 add volume 2' > "$XDG_CONFIG_HOME/mpv/input.conf"
-            echo 'idle=yes\nvolume=25\nautofit-smaller=50%x50%\nautofit-larger=90%x90%' > "$XDG_CONFIG_HOME/mpv/mpv.conf"
-            fetch 'https://raw.githubusercontent.com/brunolpsousa/mpv-nextfile/master/nextfile.lua' > "$XDG_CONFIG_HOME/mpv/scripts/nextfile.lua"
-            fetch 'https://raw.githubusercontent.com/jonniek/mpv-playlistmanager/master/playlistmanager.lua' > "$XDG_CONFIG_HOME/mpv/scripts/playlistmanager.lua"
-            sed -i 's/\(key_loadfiles = "\)"/\1CTRL+l"/g' "$XDG_CONFIG_HOME/mpv/scripts/playlistmanager.lua"
+          if command -v mpv >/dev/null || command -v io.mpv.Mpv >/dev/null; then
+            command -v mpv >/dev/null && local baseMpv="$XDG_CONFIG_HOME" || local baseMpv="$HOME/.var/app/io.mpv.Mpv/config"
+            command mkdir -p "$baseMpv/mpv/scripts"
+            echo 'Ctrl+q quit\nF11 cycle fullscreen\nENTER cycle fullscreen\nKP_ENTER cycle fullscreen\nWHEEL_UP osd-msg-bar seek 3\nWHEEL_DOWN osd-msg-bar seek -3\nLEFT osd-msg-bar seek -5\nRIGHT osd-msg-bar seek  5\nUP osd-msg-bar seek 15\nDOWN osd-msg-bar seek -15\nkp9 add volume -2\nkp0 add volume 2' > "$baseMpv/mpv/input.conf"
+            echo 'idle=yes\nvolume=25\nautofit-smaller=50%x50%\nautofit-larger=90%x90%' > "$baseMpv/mpv/mpv.conf"
+            fetch 'https://raw.githubusercontent.com/brunolpsousa/mpv-nextfile/master/nextfile.lua' > "$baseMpv/mpv/scripts/nextfile.lua"
+            fetch 'https://raw.githubusercontent.com/jonniek/mpv-playlistmanager/master/playlistmanager.lua' > "$baseMpv/mpv/scripts/playlistmanager.lua"
+            sed -i 's/\(key_loadfiles = "\)"/\1CTRL+l"/g' "$baseMpv/mpv/scripts/playlistmanager.lua"
           fi
           break;;
 
@@ -1291,7 +1324,8 @@ arch-base() {
     case $gke in
 
       GNOME )
-        sh -c "${use_sudo} pacman -S --needed xdg-desktop-portal-gnome gst-plugin-pipewire gnome-shell gnome-session gdm nautilus gnome-control-center evince file-roller baobab gnome-calculator gnome-characters gnome-disk-utility gnome-keyring gnome-system-monitor gvfs-mtp gnome-tweaks gnome-themes-extra qgnomeplatform-qt6 webp-pixbuf-loader ffmpegthumbnailer gnome-nibbles aisleriot quadrapassel gnome-taquin gnome-chess gnome-mines"
+        sh -c "${use_sudo} pacman -S --needed xdg-desktop-portal-gnome gst-plugin-pipewire gnome-shell gnome-session gdm nautilus gnome-control-center gnome-disk-utility gnome-keyring gnome-system-monitor gvfs-mtp gnome-tweaks gnome-themes-extra webp-pixbuf-loader ffmpegthumbnailer"
+        flatpak install org.kde.KStyle.Adwaita org.gnome.Evince org.gnome.FileRoller org.gnome.Calculator org.gnome.Chess org.gnome.Mines
         sh -c "${use_sudo} sed -i 's/#HandleLidSwitch=suspend/HandleLidSwitch=lock/' /etc/systemd/logind.conf"
         sh -c "echo -e '[Unit]\nDescription=Change Wallpapers\nStartLimitIntervalSec=3\nStartLimitBurst=5\n\n[Service]\nExecStart=/home/bruno/.local/share/backgrounds/chwp.sh\nRestart=always\nRestartSec=3\n\n[Install]\nWantedBy=default.target' | ${use_sudo} tee /etc/systemd/user/chwp.service >/dev/null"
         sh -c "${use_sudo} chmod u+x /etc/systemd/user/chwp.service"
@@ -2083,7 +2117,7 @@ spaceship_deno() {
 # Docker automates the repetitive tasks of setting up development environments
 spaceship_docker() {
   local SPACESHIP_DOCKER_SHOW="${SPACESHIP_DOCKER_SHOW=true}"
-  local SPACESHIP_DOCKER_PREFIX="${SPACESHIP_DOCKER_PREFIX="on "}"
+  local SPACESHIP_DOCKER_PREFIX="${SPACESHIP_DOCKER_PREFIX="$SPACESHIP_PROMPT_DEFAULT_PREFIX"}"
   local SPACESHIP_DOCKER_SUFFIX="${SPACESHIP_DOCKER_SUFFIX="$SPACESHIP_PROMPT_DEFAULT_SUFFIX"}"
   local SPACESHIP_DOCKER_COLOR="${SPACESHIP_DOCKER_COLOR="%F{cyan}"}"
   local SPACESHIP_DOCKER_SYMBOL="${SPACESHIP_DOCKER_SYMBOL=" "}"
@@ -2540,7 +2574,7 @@ spaceship_haskell() {
 # Mercurial (hg)
 spaceship_hg() {
   local SPACESHIP_HG_SHOW="${SPACESHIP_HG_SHOW=true}"
-  local SPACESHIP_HG_PREFIX="${SPACESHIP_HG_PREFIX="on "}"
+  local SPACESHIP_HG_PREFIX="${SPACESHIP_HG_PREFIX="$SPACESHIP_PROMPT_DEFAULT_PREFIX"}"
   local SPACESHIP_HG_SUFFIX="${SPACESHIP_HG_SUFFIX="$SPACESHIP_PROMPT_DEFAULT_SUFFIX"}"
 
   [[ $SPACESHIP_HG_SHOW == false ]] && return
