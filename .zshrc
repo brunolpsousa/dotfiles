@@ -1085,7 +1085,7 @@ arch-base() {
         $use_sudo sh -c "pacman -Syu --needed sbctl alacritty tmux xdg-desktop-portal xdg-desktop-portal-gtk yt-dlp ufw neofetch man-db tldr ntfs-3g exfat-utils unrar zip p7zip imagemagick zsh zsh-autosuggestions zsh-completions zsh-history-substring-search zsh-syntax-highlighting fzf hunspell-en_US noto-fonts noto-fonts-cjk noto-fonts-emoji ttf-liberation gsfonts lib32-gst-plugins-good java-runtime-common base-devel networkmanager reflector android-udev android-tools pkgstats pipewire pipewire-alsa pipewire-pulse wireplumber $(case $(lscpu | awk '/Model name:/{print $3}') in AMD) echo -n 'amd-ucode';; Intel\(R\)) echo -n 'intel-ucode';; esac)"
 
         if [[ "$EUID" != 0 ]]; then
-          flatpak install io.neovim.nvim org.freedesktop.Sdk.Extension.node18 org.mozilla.firefox io.mpv.Mpv com.valvesoftware.Steam org.qbittorrent.qBittorrent org.geeqie.Geeqie; flatpak override -u --env=FLATPAK_ENABLE_SDK_EXT=node18 io.neovim.nvim
+          flatpak install io.neovim.nvim org.freedesktop.Sdk.Extension.node18 org.mozilla.firefox io.mpv.Mpv com.valvesoftware.Steam org.qbittorrent.qBittorrent org.geeqie.Geeqie; flatpak override -u --env=FLATPAK_ENABLE_SDK_EXT=node18 io.neovim.nvim; flatpak -u override --nofilesystem=xdg-music --nofilesystem=xdg-pictures com.valvesoftware.Steam
 
           if [[ ! -x /usr/bin/paru ]]; then
             command mkdir -p $HOME/{.cache/paru/clone,.config/paru}
@@ -1197,25 +1197,7 @@ arch-base() {
             [[ "$EDITOR" == 'io.neovim.nvim' ]] && local baseNvim="$HOME/.var/app/io.neovim.nvim/config" || local baseNvim="$XDG_CONFIG_HOME"
             command mkdir -p "$baseNvim/nvim/spell"
             [[ -f "$baseNvim/config/nvim/init.lua" ]] || fetch 'https://gitlab.com/brunolpsousa/dotfiles/-/raw/master/init.lua' > "$baseNvim/nvim/init.lua"
-
-            if [[ ! -x "$HOME/.local/bin/shellcheck" ]]; then
-              local pkgver="v0.9.0"
-              echo 'Downloading shellcheck...'
-              [[ -f "$XDG_CACHE_HOME/shellcheck.tar.xz" ]] || fetch "https://github.com/koalaman/shellcheck/releases/download/${pkgver}/shellcheck-${pkgver}.linux.x86_64.tar.xz" > "$XDG_CACHE_HOME/shellcheck.tar.xz"
-              local cheksum='157fd8b2c18a257f3876e23015580ea63d27b12c4f13f87d625a180e8ca042e7501271d15edeb36e7b5780da73815b45386a33e063ab1c891d838f35c778a8ac'
-              local cheksum2="$(sha512sum $XDG_CACHE_HOME/shellcheck.tar.xz | cut -d ' ' -f1)" 2>/dev/null
-              if [[ $cheksum == $cheksum2 ]]; then
-                command mkdir -p "$HOME/.local/bin"
-                local current_dir="$PWD"
-                builtin cd -q "$XDG_CACHE_HOME"
-                tar -Jxf "$XDG_CACHE_HOME/shellcheck.tar.xz" shellcheck-${pkgver}/shellcheck
-                command mv shellcheck-${pkgver}/shellcheck "$HOME/.local/bin"
-                builtin cd -q "$current_dir"
-              else
-                echo '\nerror: unmatched cheksum for shellcheck\n'
-              fi
-            fi
-            unset baseNvim current_dir cheksum cheksum2
+            unset baseNvim
           fi
 
           # Alacritty config
