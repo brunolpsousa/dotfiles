@@ -251,7 +251,20 @@ end
 local function load_treesitter()
 	if pcall(require, "nvim-treesitter") then
 		require("nvim-treesitter.configs").setup({
-			ensure_installed = { "bash", "lua", "markdown", "markdown_inline" },
+			ensure_installed = {
+				"bash",
+				"css",
+				"dockerfile",
+				"html",
+				"javascript",
+				"json",
+				"lua",
+				"markdown",
+				"markdown_inline",
+				"python",
+				"typescript",
+				"yaml",
+			},
 			highlight = { enable = true },
 			autopairs = { enable = true },
 			indent = { enable = true },
@@ -265,8 +278,26 @@ local function load_lsp()
 	if pcall(require, "mason") and pcall(require, "mason-lspconfig") then
 		local servers = {
 			"bashls",
+			"cssls",
+			"html",
+			"jsonls",
 			"lua_ls",
+			"pyright",
+			"tailwindcss",
+			"tsserver",
+			"yamlls",
 		}
+
+		local packages = {
+			"black",
+			"flake8",
+			"prettier",
+			"shellcheck",
+			"stylua",
+		}
+		vim.api.nvim_create_user_command("MasonInstallAll", function()
+			vim.cmd("MasonInstall " .. table.concat(packages, " "))
+		end, {})
 
 		require("mason").setup()
 		require("mason-lspconfig").setup({ ensure_installed = servers, automatic_installation = true })
