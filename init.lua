@@ -83,7 +83,7 @@ vim.opt.list = true
 vim.opt.spelllang = "en_us,pt_br"
 vim.opt.virtualedit = "none"
 vim.opt.listchars:append("tab:>>,extends:▷,precedes:◁,trail:·,nbsp:~")
-vim.api.nvim_command("aunmenu PopUp")
+vim.cmd("aunmenu PopUp")
 
 -- Autocommands
 vim.api.nvim_create_autocmd({ "FileType" }, {
@@ -411,9 +411,10 @@ local function load_cmp()
 			return col ~= 0 and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match("%s") == nil
 		end
 
-		-- https://github.com/jcdickinson/codeium.nvim/issues/20
-		local line_count = vim.api.nvim_buf_line_count(0)
-		if line_count <= 3000 then
+		-- https://github.com/jcdickinson/codeium.nvim/issues/20 || https://github.com/jcdickinson/codeium.nvim/issues/38
+		local file_size = vim.api.nvim_exec2("echo getfsize(expand(@%))", { output = true })
+		file_size = tonumber(file_size.output)
+		if file_size > -2 and file_size <= 127830 then
 			require("codeium").setup({})
 		end
 
