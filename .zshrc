@@ -1089,7 +1089,7 @@ arch-base() {
   select yne in 'Yes' 'No' 'Exit'; do
     case $yne in
       Yes )
-        $use_sudo sh -c "pacman -Syu --needed sbctl alacritty tmux xdg-desktop-portal xdg-desktop-portal-gtk yt-dlp ufw neofetch man-db tldr ntfs-3g exfat-utils unrar zip p7zip imagemagick zsh zsh-autosuggestions zsh-completions zsh-history-substring-search zsh-syntax-highlighting fzf hunspell-en_US noto-fonts noto-fonts-cjk noto-fonts-emoji ttf-liberation gsfonts lib32-gst-plugins-good java-runtime-common base-devel networkmanager reflector android-udev android-tools pkgstats pipewire pipewire-alsa pipewire-pulse wireplumber $(case $(lscpu | awk '/Model name:/{print $3}') in AMD) echo -n 'amd-ucode';; Intel\(R\)) echo -n 'intel-ucode';; esac)"
+        $use_sudo sh -c "pacman -Syu --needed sbctl alacritty tmux xdg-desktop-portal xdg-desktop-portal-gtk yt-dlp ufw iptables-nft neofetch man-db tldr ntfs-3g exfat-utils unrar zip p7zip imagemagick zsh zsh-autosuggestions zsh-completions zsh-history-substring-search zsh-syntax-highlighting fzf hunspell-en_US noto-fonts noto-fonts-cjk noto-fonts-emoji ttf-liberation gsfonts lib32-gst-plugins-good java-runtime-common base-devel networkmanager reflector android-udev android-tools pkgstats pipewire pipewire-alsa pipewire-pulse wireplumber $(case $(lscpu | awk '/Model name:/{print $3}') in AMD) echo -n 'amd-ucode';; Intel\(R\)) echo -n 'intel-ucode';; esac)"
 
         echo 'Do you wish to use Flatpak [y/N]?'
         read flatpk
@@ -1296,13 +1296,21 @@ arch-base() {
     done
   fi
 
-  # Virt manager
-  echo 'Do you wish to install Virt Manager?'
+  # Virtual machines
+  echo 'Do you wish to use Virtual Machines?'
   select yne in 'Yes' 'No' 'Exit'; do
     case $yne in
 
       Yes )
-        sh -c "${use_sudo} pacman -S --needed virt-manager qemu-desktop libvirt edk2-ovmf dnsmasq iptables-nft"
+        echo 'Do you wish to use GNOME Boxes or Virt-Manager?'
+        select gve in 'GNOME Boxes' 'Virt-Manager' 'None'; do
+          case $gve in
+            GNOME\ Boxes ) sh -c "${use_sudo} pacman -S --needed gnome-boxes"; break;;
+            Virt-Manager ) sh -c "${use_sudo} pacman -S --needed virt-manager qemu-desktop libvirt edk2-ovmf dnsmasq"; break;;
+            None ) break;;
+          esac
+        done
+
         sh -c "${use_sudo} systemctl enable --now libvirtd; ${use_sudo} virsh net-autostart default"
         if [[ "$EUID" != 0 ]]; then
           [[ -z $(groups | grep libvirt) ]] && gpasswd -a $USER libvirt
@@ -1317,8 +1325,8 @@ arch-base() {
             echo "\nuser = \"bruno\"\ngroup = \"bruno\"" | tee -a /etc/libvirt/qemu.conf >/dev/null
           fi
         fi
-        break;;
 
+        break;;
       No ) break;;
       Exit ) return;;
     esac
