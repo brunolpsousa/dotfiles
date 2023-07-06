@@ -44,8 +44,8 @@ keymap("v", "<leader>p", '"+p')
 keymap("n", "<leader>p", '"+p')
 keymap("v", "<leader>P", '"+P')
 keymap("n", "<leader>P", '"+P')
-keymap("n", "<leader>/", "<cmd>set operatorfunc=v:lua.Comment_contextual<CR>g@$")
-keymap("x", "<leader>/", "<cmd>set operatorfunc=v:lua.Comment_contextual<CR>g@")
+keymap("n", "<leader>/", "<cmd>lua require('Comment.api').toggle.linewise.current()<CR>")
+keymap("x", "<leader>/", "<esc><cmd>lua require('Comment.api').toggle.linewise(vim.fn.visualmode())<CR>")
 keymap("n", "<leader>e", "<cmd>Ex<CR>")
 keymap("n", "<leader>fe", "<cmd>e %:h/<C-d>")
 keymap("n", "<leader>ff", "<cmd>Telescope find_files<CR>")
@@ -215,39 +215,6 @@ local function load_autopairs()
 	end
 end
 
-function Comment_contextual(vmode)
-	local cfg = require("Comment.config"):get()
-	local U = require("Comment.utils")
-	local Op = require("Comment.opfunc")
-	local range = U.get_region(vmode)
-	local same_line = range.srow == range.erow
-
-	local ctx = {
-		cmode = U.cmode.toggle,
-		range = range,
-		cmotion = U.cmotion[vmode] or U.cmotion.line,
-		ctype = same_line and U.ctype.linewise or U.ctype.blockwise,
-	}
-
-	local lcs, rcs = U.parse_cstr(cfg, ctx)
-	local lines = U.get_lines(range)
-
-	local params = {
-		range = range,
-		lines = lines,
-		cfg = cfg,
-		cmode = ctx.cmode,
-		lcs = lcs,
-		rcs = rcs,
-	}
-
-	if same_line then
-		Op.linewise(params)
-	else
-		Op.blockwise(params)
-	end
-end
-
 local function load_treesitter()
 	if pcall(require, "nvim-treesitter") then
 		require("nvim-treesitter.configs").setup({
@@ -407,7 +374,7 @@ local function load_lsp()
 end
 
 local function load_cmp()
-	if pcall(require, "cmp") and pcall(require, "luasnip") then
+	if pcall(require, "cmp") then
 		require("luasnip.loaders.from_vscode").lazy_load()
 		vim.opt.completeopt = { "menuone", "noselect" }
 		local kind_icons = {
@@ -683,7 +650,28 @@ if pcall(require, "lazy") then
 			config = function()
 				require("Comment").setup({
 					ignore = "^$",
-					pre_hook = require("ts_context_commentstring.integrations.comment_nvim").create_pre_hook(),
+					pre_hook = function(ctx)
+						-- Only calculate commentstring for tsx filetypes
+						if vim.bo.filetype == "typescriptreact" then
+							local U = require("Comment.utils")
+
+							-- Determine whether to use linewise or blockwise commentstring
+							local type = ctx.ctype == U.ctype.linewise and "__default" or "__multiline"
+
+							-- Determine the location where to calculate commentstring from
+							local location = nil
+							if ctx.ctype == U.ctype.blockwise then
+								location = require("ts_context_commentstring.utils").get_cursor_location()
+							elseif ctx.cmotion == U.cmotion.v or ctx.cmotion == U.cmotion.V then
+								location = require("ts_context_commentstring.utils").get_visual_start_location()
+							end
+
+							return require("ts_context_commentstring.internal").calculate_commentstring({
+								key = type,
+								location = location,
+							})
+						end
+					end,
 				})
 			end,
 			dependencies = {
