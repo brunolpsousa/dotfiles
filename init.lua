@@ -1,57 +1,62 @@
 -- Bindings
 local keymap = vim.keymap.set
 vim.g.mapleader = " "
-keymap("n", "<S-g>", "<S-g>zz")
-keymap("n", "<C-u>", "<C-u>zz")
-keymap("n", "<C-d>", "<C-d>zz")
-keymap("n", "n", "nzzzv")
-keymap("n", "N", "Nzzzv")
-keymap("n", "J", "mzJ`z")
-keymap("i", "<C-h>", "<C-w>")
-keymap("i", "<C-Del>", "<C-o>dw")
-keymap("n", "<C-h>", "<C-w>h")
-keymap("n", "<C-j>", "<C-w>j")
-keymap("n", "<C-k>", "<C-w>k")
-keymap("n", "<C-l>", "<C-w>l")
-keymap("n", "<C-Up>", "<cmd>resize -2<CR>")
-keymap("n", "<C-Down>", "<cmd>resize +2<CR>")
-keymap("n", "<C-Left>", "<cmd>vertical resize -2<CR>")
-keymap("n", "<C-Right>", "<cmd>vertical resize +2<CR>")
-keymap("n", "<C-q>", "<cmd>q<CR>")
-keymap("n", "<C-s>", "<cmd>w<CR>")
-keymap("n", "<S-q>", "<cmd>bd<CR>")
-keymap("n", "<leader>Q", "<cmd>bd!<CR>")
-keymap("n", "<leader>q", "<cmd>qa<CR>")
-keymap("n", "<leader>s", "<cmd>wa<CR>")
-keymap("n", "<Tab>", "<cmd>bnext<CR>")
-keymap("n", "<S-Tab>", "<cmd>bprevious<CR>")
-keymap("n", "<Esc><Esc>", "<cmd>nohlsearch<CR>")
-keymap("t", "<Esc>", "<C-Bslash><C-N>")
-keymap("v", "<", "<gv")
-keymap("v", ">", ">gv")
-keymap("n", "<A-j>", "<cmd>m.+1<CR>==")
-keymap("n", "<A-k>", "<cmd>m.-2<CR>==")
-keymap("i", "<A-j>", "<Esc><cmd>m.+1<CR>==gi")
-keymap("i", "<A-k>", "<Esc><cmd>m.-2<CR>==gi")
-keymap("v", "<A-j>", ":m'>+1<CR>gv=gv", { silent = true })
-keymap("v", "<A-k>", ":m'<-2<CR>gv=gv", { silent = true })
-keymap("v", "p", '"_dP')
-keymap("n", "<C-Bslash>", "<cmd>sp term://$SHELL<CR><cmd>resize -8<CR>i")
-keymap("v", "<leader>y", '"+y')
-keymap("n", "<leader>y", '"+y')
-keymap("v", "<leader>d", '"+ygvd')
-keymap("v", "<leader>p", '"+p')
-keymap("n", "<leader>p", '"+p')
-keymap("v", "<leader>P", '"+P')
-keymap("n", "<leader>P", '"+P')
-keymap("n", "<leader>/", "<cmd>lua require('Comment.api').toggle.linewise.current()<CR>")
-keymap("x", "<leader>/", "<esc><cmd>lua require('Comment.api').toggle.linewise(vim.fn.visualmode())<CR>")
-keymap("n", "<leader>e", "<cmd>Ex<CR>")
-keymap("n", "<leader>fe", "<cmd>e %:h/<C-d>")
-keymap("n", "<leader>ff", "<cmd>Telescope find_files<CR>")
-keymap("n", "<leader>ft", "<cmd>Telescope live_grep<CR>")
-keymap("n", "<leader>fp", "<cmd>Telescope projects<CR>")
-keymap("n", "<leader>fb", "<cmd>Telescope buffers<CR>")
+keymap("n", "<S-g>", "<S-g>zz", { desc = "Goto last line" })
+keymap("n", "<C-u>", "<C-u>zz", { desc = "Half page up" })
+keymap("n", "<C-d>", "<C-d>zz", { desc = "Half page down" })
+keymap("n", "<C-b>", "<C-b>zz", { desc = "Page up" })
+keymap("n", "<C-f>", "<C-f>zz", { desc = "Page down" })
+keymap("n", "n", "nzzzv", { desc = "Next matching search pattern" })
+keymap("n", "N", "Nzzzv", { desc = "Previous matching search pattern" })
+keymap("n", "J", "mzJ`z", { desc = "Join lines" })
+keymap("i", "<C-h>", "<C-w>", { desc = "Delete previous word" })
+keymap("i", "<C-Del>", "<C-o>dw", { desc = "Detele next word" })
+keymap("n", "<C-h>", "<C-w>h", { desc = "Goto left window" })
+keymap("n", "<C-j>", "<C-w>j", { desc = "Goto lower window" })
+keymap("n", "<C-k>", "<C-w>k", { desc = "Goto upper window" })
+keymap("n", "<C-l>", "<C-w>l", { desc = "Goto right window" })
+keymap("n", "<C-Up>", "<cmd>resize +2<CR>", { desc = "Increase window height" })
+keymap("n", "<C-Down>", "<cmd>resize -2<CR>", { desc = "Decrease window height" })
+keymap("n", "<C-Left>", "<cmd>vertical resize -2<CR>", { desc = "Decrease window width" })
+keymap("n", "<C-Right>", "<cmd>vertical resize +2<CR>", { desc = "Increase window width" })
+keymap("n", "<C-q>", "<cmd>q<CR>", { desc = "Close window" })
+keymap({ "n", "v", "i" }, "<C-s>", "<cmd>w<CR>", { desc = "Save" })
+-- keymap({ "n", "v", "i" }, "<C-s>", "<cmd>noautocmd w<CR>", { desc = "Save without formatting" })
+keymap("n", "<S-q>", "<cmd>bd<CR>", { desc = "Close buffer" })
+keymap("n", "<leader>Q", "<cmd>bd!<CR>", { desc = "Force close buffer" })
+keymap("n", "<leader>q", "<cmd>qa<CR>", { desc = "Close all windows" })
+keymap("n", "<leader>s", "<cmd>wa<CR>", { desc = "Save all" })
+keymap("n", "<Tab>", "<cmd>bnext<CR>", { desc = "Next buffer" })
+keymap("n", "<S-Tab>", "<cmd>bprevious<CR>", { desc = "Previous buffer" })
+keymap("n", "<Esc><Esc>", "<cmd>nohlsearch<CR>", { desc = "Clear highlight" })
+keymap("t", "<Esc>", "<C-Bslash><C-N>", { desc = "Return to normal mode" })
+keymap("v", "<", "<gv", { desc = "Indent left" })
+keymap("v", ">", ">gv", { desc = "Indent right" })
+keymap("n", "<A-j>", "<cmd>m.+1<CR>==", { desc = "Move line down" })
+keymap("n", "<A-k>", "<cmd>m.-2<CR>==", { desc = "Move line up" })
+keymap("i", "<A-j>", "<Esc><cmd>m.+1<CR>==gi", { desc = "Move line down" })
+keymap("i", "<A-k>", "<Esc><cmd>m.-2<CR>==gi", { desc = "Move line up" })
+keymap("v", "<A-j>", ":m'>+1<CR>gv=gv", { silent = true, desc = "Move line down" })
+keymap("v", "<A-k>", ":m'<-2<CR>gv=gv", { silent = true, desc = "Move line up" })
+keymap("n", "<C-Bslash>", "<cmd>sp term://$SHELL<CR><cmd>resize -8<CR>i", { desc = "Open terminal" })
+keymap("n", "<leader>e", "<cmd>Ex<CR>", { desc = "Switch to Ex mode" })
+keymap("n", "<leader>fe", ":e %:h/<C-d>", { desc = "Find files" })
+keymap("n", "<leader>ff", "<cmd>Telescope find_files<CR>", { desc = "Telescope find files" })
+keymap("n", "<leader>ft", "<cmd>Telescope live_grep<CR>", { desc = "Telescope live grep" })
+keymap("n", "<leader>fp", "<cmd>Telescope projects<CR>", { desc = "Telescope projects" })
+keymap("n", "<leader>fb", "<cmd>Telescope buffers<CR>", { desc = "Telescope buffers" })
+keymap("v", "p", '"_dP', { desc = "Paste" })
+keymap("v", "<leader>d", '"+ygvd', { desc = "Delete to clipboard" })
+keymap({ "n", "v" }, "<leader>y", '"+y', { desc = "Yank to clipboard" })
+keymap({ "n", "v" }, "<leader>p", '"+p', { desc = "Paste from clipboard" })
+keymap({ "n", "v" }, "<leader>P", '"+P', { desc = "Paste from clipboard" })
+keymap("n", "<leader>/", "<cmd>lua require('Comment.api').toggle.linewise.current()<CR>", { desc = "Comment line" })
+keymap(
+	"x",
+	"<leader>/",
+	"<esc><cmd>lua require('Comment.api').toggle.linewise(vim.fn.visualmode())<CR>",
+	{ desc = "Comment block" }
+)
 
 -- Options
 vim.opt.termguicolors = true
@@ -128,10 +133,11 @@ vim.api.nvim_create_autocmd({ "TextYankPost" }, {
 
 vim.api.nvim_create_autocmd({ "BufWritePre" }, {
 	callback = function()
-		local path = vim.bo.filetype
-		if path:find("diff") then
-			return
-		end
+    local exclude = { "diff" }
+    local buf = vim.api.nvim_get_current_buf()
+    if vim.tbl_contains(exclude, vim.bo[buf].filetype) then
+      return
+    end
 		vim.cmd([[:%s/\s\+$//e]])
 	end,
 })
@@ -310,38 +316,103 @@ local function load_lsp()
 				client.server_capabilities.documentFormattingProvider = false
 			end
 
-			-- Mappings.
+			-- Mappings
 			local bufopts = { noremap = true, silent = true, buffer = bufnr }
-			keymap("n", "gD", vim.lsp.buf.declaration, bufopts)
-			keymap("n", "gd", vim.lsp.buf.definition, bufopts)
-			keymap("n", "K", vim.lsp.buf.hover, bufopts)
-			keymap("n", "gi", vim.lsp.buf.implementation, bufopts)
-			keymap("n", "gr", vim.lsp.buf.references, bufopts)
-			keymap("n", "gl", vim.diagnostic.open_float, bufopts)
-			keymap("n", "<space>lf", function()
+			keymap("n", "gD", vim.lsp.buf.declaration, { bufopts.opts, desc = "Goto Declaration" })
+			keymap("n", "gd", vim.lsp.buf.definition, { bufopts.opts, desc = "Goto Definition" })
+			keymap("n", "K", vim.lsp.buf.hover, { bufopts.opts, desc = "Hover" })
+			keymap("n", "gi", vim.lsp.buf.implementation, { bufopts.opts, desc = "Goto Implementation" })
+			keymap("n", "gr", vim.lsp.buf.references, { bufopts.opts, desc = "References" })
+			keymap("n", "gl", vim.diagnostic.open_float, { bufopts.opts, desc = "Open float" })
+			keymap("n", "<leader>lf", function()
 				vim.lsp.buf.format({ async = true })
-			end, bufopts)
-			keymap("n", "<space>la", vim.lsp.buf.code_action, bufopts)
-			keymap("n", "<space>lj", vim.diagnostic.goto_next, bufopts)
-			keymap("n", "<space>lk", vim.diagnostic.goto_prev, bufopts)
-			keymap("n", "<leader>ls", vim.lsp.buf.signature_help, bufopts)
-			keymap("n", "<space>lr", vim.lsp.buf.rename, bufopts)
-			keymap("n", "<space>lq", vim.diagnostic.setloclist, bufopts)
-			keymap("n", "<space>D", vim.lsp.buf.type_definition, bufopts)
-			keymap("n", "<space>wa", vim.lsp.buf.add_workspace_folder, bufopts)
-			keymap("n", "<space>wr", vim.lsp.buf.remove_workspace_folder, bufopts)
-			keymap("n", "<space>wl", function()
+			end, { bufopts.opts, desc = "Format" })
+			keymap("n", "<leader>la", vim.lsp.buf.code_action, { bufopts.opts, desc = "Code Action" })
+			keymap("n", "<leader>lw", vim.lsp.codelens.run, { bufopts.opts, desc = "CodeLens Action" })
+			keymap(
+				"n",
+				"<leader>ls",
+				"<cmd>Telescope lsp_document_symbols<cr>",
+				{ bufopts.opts, desc = "Document Symbols" }
+			)
+			keymap(
+				"n",
+				"<leader>lS",
+				"<cmd>Telescope lsp_dynamic_workspace_symbols<cr>",
+				{ bufopts.opts, desc = "Workspace Symbols" }
+			)
+			keymap("n", "<leader>lj", vim.diagnostic.goto_next, { bufopts.opts, desc = "Next Diagnostic" })
+			keymap("n", "<leader>lk", vim.diagnostic.goto_prev, { bufopts.opts, desc = "Previous Diagnostic" })
+			keymap("n", "<leader>ls", vim.lsp.buf.signature_help, { bufopts.opts, desc = "Signature Help" })
+			keymap("n", "<leader>lr", vim.lsp.buf.rename, { bufopts.opts, desc = "Rename" })
+			keymap("n", "<leader>lq", vim.diagnostic.setloclist, { bufopts.opts, desc = "Quickfix" })
+			keymap("n", "<leader>D", vim.lsp.buf.type_definition, { bufopts.opts, desc = "Goto Type Definition" })
+			keymap(
+				"n",
+				"<leader>wa",
+				"<cmd>Telescope lsp_workspace_diagnostics<cr>",
+				{ bufopts.opts, desc = "Workspace Diagnostics" }
+			)
+			keymap("n", "<leader>wp", vim.lsp.buf.add_workspace_folder, { bufopts.opts, desc = "Add Workspace Folder" })
+			keymap(
+				"n",
+				"<leader>wr",
+				vim.lsp.buf.remove_workspace_folder,
+				{ bufopts.opts, desc = "Remove Workspace Folder" }
+			)
+			keymap("n", "<leader>wl", function()
 				print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
-			end, bufopts)
-			keymap("n", "<leader>db", '<cmd>lua require("dap").toggle_breakpoint()<CR>', bufopts)
-			keymap("n", "<leader>dc", '<cmd>lua require("dap").continue()<CR>', bufopts)
-			keymap("n", "<leader>di", '<cmd>lua require("dap").step_into()<CR>', bufopts)
-			keymap("n", "<leader>do", '<cmd>lua require("dap").step_over()<CR>', bufopts)
-			keymap("n", "<leader>dO", '<cmd>lua require("dap").step_out()<CR>', bufopts)
-			keymap("n", "<leader>dr", '<cmd>lua require("dap").repl.toggle()<CR>', bufopts)
-			keymap("n", "<leader>dl", '<cmd>lua require("dap").run_last()<CR>', bufopts)
-			keymap("n", "<leader>du", '<cmd>lua require("dapui").toggle()<CR>', bufopts)
-			keymap("n", "<leader>dt", '<cmd>lua require("dap").terminate()<CR>', bufopts)
+			end, { bufopts.opts, desc = "List Workspace Folders" })
+
+			keymap(
+				"n",
+				"<leader>db",
+				'<cmd>lua require("dap").toggle_breakpoint()<CR>',
+				{ bufopts.opts, desc = "Toggle Breakpoint" }
+			)
+			keymap(
+				"n",
+				"<leader>dB",
+				"<cmd>lua require(\"dap\").set_breakpoint(vim.fn.input('Breakpoint condition: '))<CR>",
+				{ bufopts.opts, desc = "Breakpoint Condition" }
+			)
+			keymap(
+				"n",
+				"<leader>dC",
+				'<cmd>lua require("dap").run_to_cursor()<CR>',
+				{ bufopts.opts, desc = "Run to Cursor" }
+			)
+			keymap(
+				"n",
+				"<leader>dg",
+				'<cmd>lua require("dap").goto_()<CR>',
+				{ bufopts.opts, desc = "Go to line (no execute)" }
+			)
+			keymap("n", "<leader>du", '<cmd>lua require("dapui").toggle()<CR>', { bufopts.opts, desc = "Dap UI" })
+			keymap("n", "<leader>de", '<cmd>lua require("dapui").eval()<CR>', { bufopts.opts, desc = "Eval" })
+			keymap(
+				"n",
+				"<leader>dw",
+				'<cmd>lua require("dap.ui.widgets").hover()<CR>',
+				{ bufopts.opts, desc = "Widgets" }
+			)
+			keymap("n", "<leader>dc", '<cmd>lua require("dap").continue()<CR>', { bufopts.opts, desc = "Continue" })
+			keymap("n", "<leader>dd", '<cmd>lua require("dap").disconnect()<CR>', { bufopts.opts, desc = "Disconnect" })
+			keymap("n", "<leader>di", '<cmd>lua require("dap").step_into()<CR>', { bufopts.opts, desc = "Step Into" })
+			keymap("n", "<leader>do", '<cmd>lua require("dap").step_over()<CR>', { bufopts.opts, desc = "Step Over" })
+			keymap("n", "<leader>dO", '<cmd>lua require("dap").step_out()<CR>', { bufopts.opts, desc = "Step Out" })
+			keymap(
+				"n",
+				"<leader>dr",
+				'<cmd>lua require("dap").repl.toggle()<CR>',
+				{ bufopts.opts, desc = "Toggle REPL" }
+			)
+			keymap("n", "<leader>dl", '<cmd>lua require("dap").run_last()<CR>', { bufopts.opts, desc = "Run Last" })
+			keymap("n", "<leader>dt", '<cmd>lua require("dap").terminate()<CR>', { bufopts.opts, desc = "Terminate" })
+			keymap("n", "<leader>dj", '<cmd>lua require("dap").down()<CR>', { bufopts.opts, desc = "Down" })
+			keymap("n", "<leader>dk", '<cmd>lua require("dap").up()<CR>', { bufopts.opts, desc = "Up" })
+			keymap("n", "<leader>dp", '<cmd>lua require("dap").pause()<CR>', { bufopts.opts, desc = "Pause" })
+			keymap("n", "<leader>ds", '<cmd>lua require("dap").session()<CR>', { bufopts.opts, desc = "Get Session" })
 
 			-- Context menu
 			vim.cmd([[:amenu PopUp.Go\ to\ Definition <cmd>:lua vim.lsp.buf.definition()<CR>]])
@@ -595,6 +666,66 @@ local function load_gitsigns()
 					linehl = "GitSignsChangeLn",
 				},
 			},
+			on_attach = function(bufnr)
+				local gs = package.loaded.gitsigns
+
+				local function map(mode, l, r, opts)
+					opts = opts or {}
+					opts.buffer = bufnr
+					vim.keymap.set(mode, l, r, opts)
+				end
+
+				-- Navigation
+				map("n", "]c", function()
+					if vim.wo.diff then
+						return "]c"
+					end
+					vim.schedule(function()
+						gs.next_hunk()
+					end)
+					return "<Ignore>"
+				end, { expr = true })
+
+				map("n", "[c", function()
+					if vim.wo.diff then
+						return "[c"
+					end
+					vim.schedule(function()
+						gs.prev_hunk()
+					end)
+					return "<Ignore>"
+				end, { expr = true })
+
+				-- Actions
+				map("n", "<leader>gs", gs.stage_hunk, { buffer = bufnr, desc = "Stage Hunk" })
+				map("n", "<leader>gr", gs.reset_hunk, { buffer = bufnr, desc = "Reset Hunk" })
+				map("v", "<leader>gs", function()
+					gs.stage_hunk({ vim.fn.line("."), vim.fn.line("v") })
+				end, { buffer = bufnr, desc = "Stage Hunk" })
+				map("v", "<leader>gr", function()
+					gs.reset_hunk({ vim.fn.line("."), vim.fn.line("v") })
+				end, { buffer = bufnr, desc = "Reset Hunk" })
+				map("n", "<leader>gS", gs.stage_buffer, { buffer = bufnr, desc = "Stage Buffer" })
+				map("n", "<leader>gu", gs.undo_stage_hunk, { buffer = bufnr, desc = "Undo Stage Buffer" })
+				map("n", "<leader>gR", gs.reset_buffer, { buffer = bufnr, desc = "Reset Buffer" })
+				map("n", "<leader>gp", gs.preview_hunk, { buffer = bufnr, desc = "Preview Hunk" })
+				map("n", "<leader>gb", function()
+					gs.blame_line({ full = true })
+				end, { buffer = bufnr, desc = "Blame" })
+				map("n", "<leader>gb", gs.toggle_current_line_blame, { buffer = bufnr, desc = "Toggle Blame" })
+				map("n", "<leader>gd", gs.diffthis, { buffer = bufnr, desc = "Diff" })
+				map("n", "<leader>gD", function()
+					gs.diffthis("~")
+				end, { buffer = bufnr, desc = "Diff ~" })
+				map("n", "<leader>gd", gs.toggle_deleted, { buffer = bufnr, desc = "Toggle Deleted" })
+
+				map("n", "<leader>go", "<cmd>Telescope git_status<cr>", { buffer = bufnr, desc = "Open changed file" })
+				map("n", "<leader>gb", "<cmd>Telescope git_branches<cr>", { buffer = bufnr, desc = "Checkout branch" })
+				map("n", "<leader>gb", "<cmd>Telescope git_commits<cr>", { buffer = bufnr, desc = "Checkout commit" })
+
+				-- Text object
+				map({ "o", "x" }, "ih", ":<C-U>Gitsigns select_hunk<CR>", { buffer = bufnr, desc = "Select Hunk" })
+			end,
 		})
 	end
 end
@@ -694,6 +825,54 @@ if pcall(require, "lazy") then
 		},
 		{ "RRethy/vim-illuminate", event = "VeryLazy" },
 		{
+			"folke/which-key.nvim",
+			event = "VeryLazy",
+			init = function()
+				vim.o.timeout = true
+				vim.o.timeoutlen = 300
+			end,
+			config = function()
+				local wk = require("which-key")
+				wk.register({
+					d = { name = "Debug" },
+					f = { name = "Find" },
+					g = { name = "Git" },
+					l = { name = "LSP" },
+					w = { name = "Workspace" },
+					p = {
+						name = "Plugins",
+						i = { "<cmd>Lazy install<cr>", "Install" },
+						s = { "<cmd>Lazy sync<cr>", "Sync" },
+						S = { "<cmd>Lazy clear<cr>", "Status" },
+						c = { "<cmd>Lazy clean<cr>", "Clean" },
+						u = { "<cmd>Lazy update<cr>", "Update" },
+						p = { "<cmd>Lazy profile<cr>", "Profile" },
+						l = { "<cmd>Lazy log<cr>", "Log" },
+						d = { "<cmd>Lazy debug<cr>", "Debug" },
+					},
+					s = {
+						name = "Search",
+						b = { "<cmd>Telescope git_branches<cr>", "Checkout branch" },
+						c = { "<cmd>Telescope colorscheme<cr>", "Colorscheme" },
+						f = { "<cmd>Telescope find_files<cr>", "Find File" },
+						h = { "<cmd>Telescope help_tags<cr>", "Find Help" },
+						H = { "<cmd>Telescope highlights<cr>", "Find highlight groups" },
+						M = { "<cmd>Telescope man_pages<cr>", "Man Pages" },
+						r = { "<cmd>Telescope oldfiles<cr>", "Open Recent File" },
+						R = { "<cmd>Telescope registers<cr>", "Registers" },
+						t = { "<cmd>Telescope live_grep<cr>", "Text" },
+						k = { "<cmd>Telescope keymaps<cr>", "Keymaps" },
+						C = { "<cmd>Telescope commands<cr>", "Commands" },
+						l = { "<cmd>Telescope resume<cr>", "Resume last search" },
+						p = {
+							"<cmd>lua require('telescope.builtin').colorscheme({enable_preview = true})<cr>",
+							"Colorscheme with Preview",
+						},
+					},
+				}, { prefix = "<leader>" })
+			end,
+		},
+		{
 			"NvChad/nvim-colorizer.lua",
 			event = "BufReadPost",
 			config = function()
@@ -743,12 +922,8 @@ if pcall(require, "lazy") then
 			end,
 		},
 		{
-			"neovim/nvim-lspconfig",
-			lazy = true,
-		},
-		{
 			"williamboman/mason.nvim",
-			dependencies = { "williamboman/mason-lspconfig.nvim" },
+			dependencies = { "williamboman/mason-lspconfig.nvim", { "neovim/nvim-lspconfig", lazy = true } },
 			config = function()
 				load_lsp()
 			end,
