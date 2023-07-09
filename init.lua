@@ -133,11 +133,11 @@ vim.api.nvim_create_autocmd({ "TextYankPost" }, {
 
 vim.api.nvim_create_autocmd({ "BufWritePre" }, {
 	callback = function()
-    local exclude = { "diff" }
-    local buf = vim.api.nvim_get_current_buf()
-    if vim.tbl_contains(exclude, vim.bo[buf].filetype) then
-      return
-    end
+		local exclude = { "diff" }
+		local buf = vim.api.nvim_get_current_buf()
+		if vim.tbl_contains(exclude, vim.bo[buf].filetype) then
+			return
+		end
 		vim.cmd([[:%s/\s\+$//e]])
 	end,
 })
@@ -151,583 +151,623 @@ vim.api.nvim_create_autocmd({ "BufWritePost" }, {
 
 -- Plugins
 local function load_telescope()
-	if pcall(require, "telescope") and pcall(require, "project_nvim") then
-		require("telescope").setup({
-			defaults = { path_display = { "smart" }, file_ignore_patterns = { ".git/", "node_modules" } },
-		})
-		require("project_nvim").setup({
-			detection_methods = { "pattern" },
-			patterns = { ".git", "Makefile", "package.json" },
-		})
-		require("telescope").load_extension("projects")
-	end
+	require("telescope").setup({
+		defaults = { path_display = { "smart" }, file_ignore_patterns = { ".git/", "node_modules" } },
+	})
+	require("project_nvim").setup({
+		detection_methods = { "pattern" },
+		patterns = { ".git", "Makefile", "package.json" },
+	})
+	require("telescope").load_extension("projects")
 end
 
 local function load_lualine()
-	if pcall(require, "lualine") then
-		local hide_in_width = function()
-			return vim.fn.winwidth(0) > 80
-		end
-		local diagnostics = {
-			"diagnostics",
-			sources = { "nvim_diagnostic" },
-			sections = { "error", "warn" },
-			symbols = { error = " ", warn = " " },
-			always_visible = true,
-		}
-		local diff = {
-			"diff",
-			symbols = { added = " ", modified = " ", removed = " " },
-			cond = hide_in_width,
-		}
-		local buffers = {
-			"buffers",
-			icons_enabled = false,
-			icon = { align = "left" },
-			symbols = { alternate_file = "" },
-		}
-		local spaces = function()
-			return "spaces: " .. vim.api.nvim_buf_get_option(0, "shiftwidth")
-		end
-		require("lualine").setup({
-			options = { globalstatus = true, section_separators = "", component_separators = "" },
-			sections = {
-				lualine_a = { "mode" },
-				lualine_b = { "branch" },
-				lualine_c = { diagnostics, "%=", buffers },
-				lualine_x = { diff, spaces, "encoding", "filetype" },
-				lualine_y = { "location" },
-				lualine_z = { "progress" },
-			},
-		})
+	local hide_in_width = function()
+		return vim.fn.winwidth(0) > 80
 	end
+
+	local diagnostics = {
+		"diagnostics",
+		sources = { "nvim_diagnostic" },
+		sections = { "error", "warn" },
+		symbols = { error = " ", warn = " " },
+		always_visible = true,
+	}
+
+	local diff = {
+		"diff",
+		symbols = { added = " ", modified = " ", removed = " " },
+		cond = hide_in_width,
+	}
+
+	local buffers = {
+		"buffers",
+		icons_enabled = false,
+		icon = { align = "left" },
+		symbols = { alternate_file = "" },
+	}
+
+	local spaces = function()
+		return "spaces: " .. vim.api.nvim_buf_get_option(0, "shiftwidth")
+	end
+
+	require("lualine").setup({
+		options = { globalstatus = true, section_separators = "", component_separators = "" },
+		sections = {
+			lualine_a = { "mode" },
+			lualine_b = { "branch" },
+			lualine_c = { diagnostics, "%=", buffers },
+			lualine_x = { diff, spaces, "encoding", "filetype" },
+			lualine_y = { "location" },
+			lualine_z = { "progress" },
+		},
+	})
+end
+
+local function load_comment()
+	require("Comment").setup({
+		ignore = "^$",
+		pre_hook = function(ctx)
+			-- Only calculate commentstring for tsx filetypes
+			if vim.bo.filetype == "typescriptreact" then
+				local U = require("Comment.utils")
+
+				-- Determine whether to use linewise or blockwise commentstring
+				local type = ctx.ctype == U.ctype.linewise and "__default" or "__multiline"
+
+				-- Determine the location where to calculate commentstring from
+				local location = nil
+				if ctx.ctype == U.ctype.blockwise then
+					location = require("ts_context_commentstring.utils").get_cursor_location()
+				elseif ctx.cmotion == U.cmotion.v or ctx.cmotion == U.cmotion.V then
+					location = require("ts_context_commentstring.utils").get_visual_start_location()
+				end
+
+				return require("ts_context_commentstring.internal").calculate_commentstring({
+					key = type,
+					location = location,
+				})
+			end
+		end,
+	})
 end
 
 local function load_autopairs()
-	if pcall(require, "nvim-autopairs") then
-		require("nvim-autopairs").setup({
-			check_ts = true,
-			ts_config = {
-				lua = { "string", "source" },
-				javascript = { "string", "template_string" },
-			},
-		})
-		local cmp_autopairs = require("nvim-autopairs.completion.cmp")
-		local cmp_status_ok, cmp = pcall(require, "cmp")
-		if not cmp_status_ok then
-			return
-		end
-		cmp.event:on("confirm_done", cmp_autopairs.on_confirm_done())
+	require("nvim-autopairs").setup({
+		check_ts = true,
+		ts_config = {
+			lua = { "string", "source" },
+			javascript = { "string", "template_string" },
+		},
+	})
+
+	local cmp_autopairs = require("nvim-autopairs.completion.cmp")
+	local cmp_status_ok, cmp = pcall(require, "cmp")
+	if not cmp_status_ok then
+		return
 	end
+	cmp.event:on("confirm_done", cmp_autopairs.on_confirm_done())
 end
 
 local function load_treesitter()
-	if pcall(require, "nvim-treesitter") then
-		require("nvim-treesitter.configs").setup({
-			ensure_installed = {
-				"bash",
-				"css",
-				"dockerfile",
-				"html",
-				"javascript",
-				"json",
-				"lua",
-				"markdown",
-				"markdown_inline",
-				"python",
-				"typescript",
-				"yaml",
-			},
-			highlight = { enable = true },
-			autopairs = { enable = true },
-			indent = { enable = true },
-			context_commentstring = { enable = true, enable_autocmd = false },
-		})
-		require("nvim-treesitter.install").update({ with_sync = true })
-	end
+	require("nvim-treesitter.configs").setup({
+		ensure_installed = {
+			"bash",
+			"css",
+			"dockerfile",
+			"html",
+			"javascript",
+			"json",
+			"lua",
+			"markdown",
+			"markdown_inline",
+			"python",
+			"regex",
+			"typescript",
+			"yaml",
+		},
+		highlight = { enable = true },
+		autopairs = { enable = true },
+		indent = { enable = true },
+		context_commentstring = { enable = true, enable_autocmd = false },
+	})
+	require("nvim-treesitter.install").update({ with_sync = true })
 end
 
 local function load_lsp()
-	if pcall(require, "mason") and pcall(require, "mason-lspconfig") then
-		local servers = {
-			"bashls",
-			"cssls",
-			"html",
-			"jsonls",
-			"lua_ls",
-			"pyright",
-			"tailwindcss",
-			"tsserver",
-			"yamlls",
-		}
+	local servers = {
+		"bashls",
+		"cssls",
+		"html",
+		"jsonls",
+		"lua_ls",
+		"pyright",
+		"tailwindcss",
+		"tsserver",
+		"yamlls",
+	}
 
-		local packages = {
-			"black",
-			"flake8",
-			"prettier",
-			"shellcheck",
-			"stylua",
-		}
-		vim.api.nvim_create_user_command("MasonInstallAll", function()
-			vim.cmd("MasonInstall " .. table.concat(packages, " "))
-		end, {})
+	local packages = {
+		"black",
+		"flake8",
+		"prettier",
+		"shellcheck",
+		"stylua",
+	}
+	vim.api.nvim_create_user_command("MasonInstallAll", function()
+		vim.cmd("MasonInstall " .. table.concat(packages, " "))
+	end, {})
 
-		require("mason").setup()
-		require("mason-lspconfig").setup({ ensure_installed = servers, automatic_installation = true })
+	require("mason").setup()
+	require("mason-lspconfig").setup({ ensure_installed = servers, automatic_installation = true })
 
-		local capabilities = vim.lsp.protocol.make_client_capabilities()
-		capabilities.textDocument.completion.completionItem.snippetSupport = true
-		capabilities = require("cmp_nvim_lsp").default_capabilities(capabilities)
+	local capabilities = vim.lsp.protocol.make_client_capabilities()
+	capabilities.textDocument.completion.completionItem.snippetSupport = true
+	capabilities = require("cmp_nvim_lsp").default_capabilities(capabilities)
 
-		local signs = {
-			{ name = "DiagnosticSignError", text = "" },
-			{ name = "DiagnosticSignWarn", text = "" },
-			{ name = "DiagnosticSignHint", text = "" },
-			{ name = "DiagnosticSignInfo", text = "" },
-		}
-		for _, sign in ipairs(signs) do
-			vim.fn.sign_define(sign.name, { texthl = sign.name, text = sign.text, numhl = "" })
+	local signs = {
+		{ name = "DiagnosticSignError", text = "" },
+		{ name = "DiagnosticSignWarn", text = "" },
+		{ name = "DiagnosticSignHint", text = "" },
+		{ name = "DiagnosticSignInfo", text = "" },
+	}
+	for _, sign in ipairs(signs) do
+		vim.fn.sign_define(sign.name, { texthl = sign.name, text = sign.text, numhl = "" })
+	end
+
+	local config = {
+		virtual_text = false,
+		signs = { active = signs },
+		update_in_insert = true,
+		underline = true,
+		severity_sort = true,
+		float = {
+			focusable = true,
+			style = "minimal",
+			border = "rounded",
+			source = "always",
+			header = "",
+			prefix = "",
+		},
+	}
+	vim.diagnostic.config(config)
+	vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, { border = "rounded" })
+	vim.lsp.handlers["textDocument/signatureHelp"] =
+		vim.lsp.with(vim.lsp.handlers.signature_help, { border = "rounded" })
+
+	local on_attach = function(client, bufnr)
+		vim.api.nvim_buf_set_option(bufnr, "omnifunc", "v:lua.vim.lsp.omnifunc")
+
+		if client.name == "tsserver" or client.name == "lua_ls" then
+			client.server_capabilities.documentFormattingProvider = false
 		end
 
-		local config = {
-			virtual_text = false,
-			signs = { active = signs },
-			update_in_insert = true,
-			underline = true,
-			severity_sort = true,
-			float = {
-				focusable = true,
-				style = "minimal",
-				border = "rounded",
-				source = "always",
-				header = "",
-				prefix = "",
+		-- Mappings
+		if pcall(require, "which-key") then
+			require("which-key").register({
+				l = { name = "LSP" },
+				d = { name = "Debug" },
+				w = { name = "Workspace" },
+			}, { prefix = "<leader>" })
+		end
+
+		local bufopts = { noremap = true, silent = true, buffer = bufnr }
+		keymap("n", "gD", vim.lsp.buf.declaration, { bufopts.opts, desc = "Goto Declaration" })
+		keymap("n", "gd", vim.lsp.buf.definition, { bufopts.opts, desc = "Goto Definition" })
+		keymap("n", "K", vim.lsp.buf.hover, { bufopts.opts, desc = "Hover" })
+		keymap("n", "gi", vim.lsp.buf.implementation, { bufopts.opts, desc = "Goto Implementation" })
+		keymap("n", "gr", vim.lsp.buf.references, { bufopts.opts, desc = "References" })
+		keymap("n", "gl", vim.diagnostic.open_float, { bufopts.opts, desc = "Open float" })
+		keymap("n", "<leader>lf", function()
+			vim.lsp.buf.format({ async = true })
+		end, { bufopts.opts, desc = "Format" })
+		keymap("n", "<leader>la", vim.lsp.buf.code_action, { bufopts.opts, desc = "Code Action" })
+		keymap("n", "<leader>lw", vim.lsp.codelens.run, { bufopts.opts, desc = "CodeLens Action" })
+		keymap("n", "<leader>le", "<cmd>Telescope quickfix<cr>", { bufopts.opts, desc = "Telescope Quickfix" })
+		keymap(
+			"n",
+			"<leader>ls",
+			"<cmd>Telescope lsp_document_symbols<cr>",
+			{ bufopts.opts, desc = "Document Symbols" }
+		)
+		keymap(
+			"n",
+			"<leader>lS",
+			"<cmd>Telescope lsp_dynamic_workspace_symbols<cr>",
+			{ bufopts.opts, desc = "Workspace Symbols" }
+		)
+		keymap("n", "<leader>lj", vim.diagnostic.goto_next, { bufopts.opts, desc = "Next Diagnostic" })
+		keymap("n", "<leader>lk", vim.diagnostic.goto_prev, { bufopts.opts, desc = "Previous Diagnostic" })
+		keymap("n", "<leader>ls", vim.lsp.buf.signature_help, { bufopts.opts, desc = "Signature Help" })
+		keymap("n", "<leader>lr", vim.lsp.buf.rename, { bufopts.opts, desc = "Rename" })
+		keymap("n", "<leader>lq", vim.diagnostic.setloclist, { bufopts.opts, desc = "Quickfix" })
+		keymap("n", "<leader>D", vim.lsp.buf.type_definition, { bufopts.opts, desc = "Goto Type Definition" })
+		keymap(
+			"n",
+			"<leader>lb",
+			"<cmd>Telescope diagnostics bufnr=0 theme=get_ivy<cr>",
+			{ bufopts.opts, desc = "Buffer Diagnostics" }
+		)
+		keymap("n", "<leader>lw", "<cmd>Telescope diagnostics<cr>", { bufopts.opts, desc = "Diagnostics" })
+		keymap(
+			"n",
+			"<leader>wa",
+			"<cmd>Telescope lsp_workspace_diagnostics<cr>",
+			{ bufopts.opts, desc = "Workspace Diagnostics" }
+		)
+		keymap("n", "<leader>wp", vim.lsp.buf.add_workspace_folder, { bufopts.opts, desc = "Add Workspace Folder" })
+		keymap(
+			"n",
+			"<leader>wr",
+			vim.lsp.buf.remove_workspace_folder,
+			{ bufopts.opts, desc = "Remove Workspace Folder" }
+		)
+		keymap("n", "<leader>wl", function()
+			print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
+		end, { bufopts.opts, desc = "List Workspace Folders" })
+
+		keymap(
+			"n",
+			"<leader>db",
+			'<cmd>lua require("dap").toggle_breakpoint()<CR>',
+			{ bufopts.opts, desc = "Toggle Breakpoint" }
+		)
+		keymap(
+			"n",
+			"<leader>dB",
+			"<cmd>lua require(\"dap\").set_breakpoint(vim.fn.input('Breakpoint condition: '))<CR>",
+			{ bufopts.opts, desc = "Breakpoint Condition" }
+		)
+		keymap(
+			"n",
+			"<leader>dC",
+			'<cmd>lua require("dap").run_to_cursor()<CR>',
+			{ bufopts.opts, desc = "Run to Cursor" }
+		)
+		keymap(
+			"n",
+			"<leader>dg",
+			'<cmd>lua require("dap").goto_()<CR>',
+			{ bufopts.opts, desc = "Go to line (no execute)" }
+		)
+		keymap(
+			"n",
+			"<leader>du",
+			'<cmd>lua require("dapui").toggle({reset = true})<CR>',
+			{ bufopts.opts, desc = "Dap UI" }
+		)
+		keymap("n", "<leader>de", '<cmd>lua require("dapui").eval()<CR>', { bufopts.opts, desc = "Eval" })
+		keymap("n", "<leader>dw", '<cmd>lua require("dap.ui.widgets").hover()<CR>', { bufopts.opts, desc = "Widgets" })
+		keymap("n", "<leader>dc", '<cmd>lua require("dap").continue()<CR>', { bufopts.opts, desc = "Continue" })
+		keymap("n", "<leader>dd", '<cmd>lua require("dap").disconnect()<CR>', { bufopts.opts, desc = "Disconnect" })
+		keymap("n", "<leader>di", '<cmd>lua require("dap").step_into()<CR>', { bufopts.opts, desc = "Step Into" })
+		keymap("n", "<leader>db", '<cmd>lua require"dap".step_back()<CR>', { bufopts.opts, desc = "Step Back" })
+		keymap("n", "<leader>do", '<cmd>lua require("dap").step_over()<CR>', { bufopts.opts, desc = "Step Over" })
+		keymap("n", "<leader>dO", '<cmd>lua require("dap").step_out()<CR>', { bufopts.opts, desc = "Step Out" })
+		keymap("n", "<leader>dr", '<cmd>lua require("dap").repl.toggle()<CR>', { bufopts.opts, desc = "Toggle REPL" })
+		keymap("n", "<leader>dl", '<cmd>lua require("dap").run_last()<CR>', { bufopts.opts, desc = "Run Last" })
+		keymap("n", "<leader>dt", '<cmd>lua require("dap").terminate()<CR>', { bufopts.opts, desc = "Terminate" })
+		keymap("n", "<leader>dj", '<cmd>lua require("dap").down()<CR>', { bufopts.opts, desc = "Down" })
+		keymap("n", "<leader>dk", '<cmd>lua require("dap").up()<CR>', { bufopts.opts, desc = "Up" })
+		keymap("n", "<leader>dp", '<cmd>lua require("dap").pause()<CR>', { bufopts.opts, desc = "Pause" })
+		keymap("n", "<leader>ds", '<cmd>lua require("dap").session()<CR>', { bufopts.opts, desc = "Get Session" })
+
+		-- Context menu
+		vim.cmd([[:amenu PopUp.Go\ to\ Definition <cmd>:lua vim.lsp.buf.definition()<CR>]])
+		vim.cmd([[:amenu PopUp.Go\ to\ Type\ Definition <cmd>:lua vim.lsp.buf.type_definition()<CR>]])
+		vim.cmd([[:amenu PopUp.Go\ to\ Implementations <cmd>:lua vim.lsp.buf.implementation()<CR>]])
+		vim.cmd([[:amenu PopUp.Go\ to\ References <cmd>:lua vim.lsp.buf.references()<CR>]])
+		vim.cmd([[:amenu PopUp.-Sep- :]])
+		vim.cmd([[:amenu PopUp.Rename\ Definition <cmd>:lua vim.lsp.buf.rename()<CR>]])
+		vim.cmd([[:amenu PopUp.Code\ Actions <cmd>:lua vim.lsp.buf.code_action()<CR>]])
+		vim.cmd([[:amenu PopUp.Format\ Document <cmd>:lua vim.lsp.buf.format({ async = true })<CR>]])
+	end
+
+	local opts = {}
+	for _, server in pairs(require("mason-lspconfig").get_installed_servers()) do
+		opts = {
+			on_attach = on_attach,
+			capabilities = capabilities,
+			settings = {
+				Lua = {
+					diagnostics = { globals = { "vim" } },
+					workspace = { library = vim.api.nvim_get_runtime_file("", true), checkThirdParty = false },
+					telemetry = { enable = false },
+				},
 			},
 		}
-		vim.diagnostic.config(config)
-		vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, { border = "rounded" })
-		vim.lsp.handlers["textDocument/signatureHelp"] =
-			vim.lsp.with(vim.lsp.handlers.signature_help, { border = "rounded" })
-
-		local on_attach = function(client, bufnr)
-			vim.api.nvim_buf_set_option(bufnr, "omnifunc", "v:lua.vim.lsp.omnifunc")
-
-			if client.name == "tsserver" or client.name == "lua_ls" then
-				client.server_capabilities.documentFormattingProvider = false
-			end
-
-			-- Mappings
-			local bufopts = { noremap = true, silent = true, buffer = bufnr }
-			keymap("n", "gD", vim.lsp.buf.declaration, { bufopts.opts, desc = "Goto Declaration" })
-			keymap("n", "gd", vim.lsp.buf.definition, { bufopts.opts, desc = "Goto Definition" })
-			keymap("n", "K", vim.lsp.buf.hover, { bufopts.opts, desc = "Hover" })
-			keymap("n", "gi", vim.lsp.buf.implementation, { bufopts.opts, desc = "Goto Implementation" })
-			keymap("n", "gr", vim.lsp.buf.references, { bufopts.opts, desc = "References" })
-			keymap("n", "gl", vim.diagnostic.open_float, { bufopts.opts, desc = "Open float" })
-			keymap("n", "<leader>lf", function()
-				vim.lsp.buf.format({ async = true })
-			end, { bufopts.opts, desc = "Format" })
-			keymap("n", "<leader>la", vim.lsp.buf.code_action, { bufopts.opts, desc = "Code Action" })
-			keymap("n", "<leader>lw", vim.lsp.codelens.run, { bufopts.opts, desc = "CodeLens Action" })
-			keymap(
-				"n",
-				"<leader>ls",
-				"<cmd>Telescope lsp_document_symbols<cr>",
-				{ bufopts.opts, desc = "Document Symbols" }
-			)
-			keymap(
-				"n",
-				"<leader>lS",
-				"<cmd>Telescope lsp_dynamic_workspace_symbols<cr>",
-				{ bufopts.opts, desc = "Workspace Symbols" }
-			)
-			keymap("n", "<leader>lj", vim.diagnostic.goto_next, { bufopts.opts, desc = "Next Diagnostic" })
-			keymap("n", "<leader>lk", vim.diagnostic.goto_prev, { bufopts.opts, desc = "Previous Diagnostic" })
-			keymap("n", "<leader>ls", vim.lsp.buf.signature_help, { bufopts.opts, desc = "Signature Help" })
-			keymap("n", "<leader>lr", vim.lsp.buf.rename, { bufopts.opts, desc = "Rename" })
-			keymap("n", "<leader>lq", vim.diagnostic.setloclist, { bufopts.opts, desc = "Quickfix" })
-			keymap("n", "<leader>D", vim.lsp.buf.type_definition, { bufopts.opts, desc = "Goto Type Definition" })
-			keymap(
-				"n",
-				"<leader>wa",
-				"<cmd>Telescope lsp_workspace_diagnostics<cr>",
-				{ bufopts.opts, desc = "Workspace Diagnostics" }
-			)
-			keymap("n", "<leader>wp", vim.lsp.buf.add_workspace_folder, { bufopts.opts, desc = "Add Workspace Folder" })
-			keymap(
-				"n",
-				"<leader>wr",
-				vim.lsp.buf.remove_workspace_folder,
-				{ bufopts.opts, desc = "Remove Workspace Folder" }
-			)
-			keymap("n", "<leader>wl", function()
-				print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
-			end, { bufopts.opts, desc = "List Workspace Folders" })
-
-			keymap(
-				"n",
-				"<leader>db",
-				'<cmd>lua require("dap").toggle_breakpoint()<CR>',
-				{ bufopts.opts, desc = "Toggle Breakpoint" }
-			)
-			keymap(
-				"n",
-				"<leader>dB",
-				"<cmd>lua require(\"dap\").set_breakpoint(vim.fn.input('Breakpoint condition: '))<CR>",
-				{ bufopts.opts, desc = "Breakpoint Condition" }
-			)
-			keymap(
-				"n",
-				"<leader>dC",
-				'<cmd>lua require("dap").run_to_cursor()<CR>',
-				{ bufopts.opts, desc = "Run to Cursor" }
-			)
-			keymap(
-				"n",
-				"<leader>dg",
-				'<cmd>lua require("dap").goto_()<CR>',
-				{ bufopts.opts, desc = "Go to line (no execute)" }
-			)
-			keymap("n", "<leader>du", '<cmd>lua require("dapui").toggle()<CR>', { bufopts.opts, desc = "Dap UI" })
-			keymap("n", "<leader>de", '<cmd>lua require("dapui").eval()<CR>', { bufopts.opts, desc = "Eval" })
-			keymap(
-				"n",
-				"<leader>dw",
-				'<cmd>lua require("dap.ui.widgets").hover()<CR>',
-				{ bufopts.opts, desc = "Widgets" }
-			)
-			keymap("n", "<leader>dc", '<cmd>lua require("dap").continue()<CR>', { bufopts.opts, desc = "Continue" })
-			keymap("n", "<leader>dd", '<cmd>lua require("dap").disconnect()<CR>', { bufopts.opts, desc = "Disconnect" })
-			keymap("n", "<leader>di", '<cmd>lua require("dap").step_into()<CR>', { bufopts.opts, desc = "Step Into" })
-			keymap("n", "<leader>do", '<cmd>lua require("dap").step_over()<CR>', { bufopts.opts, desc = "Step Over" })
-			keymap("n", "<leader>dO", '<cmd>lua require("dap").step_out()<CR>', { bufopts.opts, desc = "Step Out" })
-			keymap(
-				"n",
-				"<leader>dr",
-				'<cmd>lua require("dap").repl.toggle()<CR>',
-				{ bufopts.opts, desc = "Toggle REPL" }
-			)
-			keymap("n", "<leader>dl", '<cmd>lua require("dap").run_last()<CR>', { bufopts.opts, desc = "Run Last" })
-			keymap("n", "<leader>dt", '<cmd>lua require("dap").terminate()<CR>', { bufopts.opts, desc = "Terminate" })
-			keymap("n", "<leader>dj", '<cmd>lua require("dap").down()<CR>', { bufopts.opts, desc = "Down" })
-			keymap("n", "<leader>dk", '<cmd>lua require("dap").up()<CR>', { bufopts.opts, desc = "Up" })
-			keymap("n", "<leader>dp", '<cmd>lua require("dap").pause()<CR>', { bufopts.opts, desc = "Pause" })
-			keymap("n", "<leader>ds", '<cmd>lua require("dap").session()<CR>', { bufopts.opts, desc = "Get Session" })
-
-			-- Context menu
-			vim.cmd([[:amenu PopUp.Go\ to\ Definition <cmd>:lua vim.lsp.buf.definition()<CR>]])
-			vim.cmd([[:amenu PopUp.Go\ to\ Type\ Definition <cmd>:lua vim.lsp.buf.type_definition()<CR>]])
-			vim.cmd([[:amenu PopUp.Go\ to\ Implementations <cmd>:lua vim.lsp.buf.implementation()<CR>]])
-			vim.cmd([[:amenu PopUp.Go\ to\ References <cmd>:lua vim.lsp.buf.references()<CR>]])
-			vim.cmd([[:amenu PopUp.-Sep- :]])
-			vim.cmd([[:amenu PopUp.Rename\ Definition <cmd>:lua vim.lsp.buf.rename()<CR>]])
-			vim.cmd([[:amenu PopUp.Code\ Actions <cmd>:lua vim.lsp.buf.code_action()<CR>]])
-			vim.cmd([[:amenu PopUp.Format\ Document <cmd>:lua vim.lsp.buf.format({ async = true })<CR>]])
-		end
-
-		local opts = {}
-		for _, server in pairs(require("mason-lspconfig").get_installed_servers()) do
-			opts = {
-				on_attach = on_attach,
-				capabilities = capabilities,
-				settings = {
-					Lua = {
-						diagnostics = { globals = { "vim" } },
-						workspace = { library = vim.api.nvim_get_runtime_file("", true), checkThirdParty = false },
-						telemetry = { enable = false },
-					},
-				},
-			}
-			server = vim.split(server, "@")[1]
-			require("lspconfig")[server].setup(opts)
-		end
+		server = vim.split(server, "@")[1]
+		require("lspconfig")[server].setup(opts)
 	end
 end
 
 local function load_cmp()
-	if pcall(require, "cmp") then
-		require("luasnip.loaders.from_vscode").lazy_load()
-		vim.opt.completeopt = { "menuone", "noselect" }
-		local kind_icons = {
-			Codeium = "",
-			Text = "",
-			Method = "",
-			Function = "",
-			Constructor = "",
-			Field = "",
-			Variable = "",
-			Class = "",
-			Interface = "",
-			Module = "",
-			Property = "",
-			Unit = "",
-			Value = "",
-			Enum = "",
-			Keyword = "",
-			Snippet = "",
-			Color = "",
-			File = "",
-			Reference = "",
-			Folder = "",
-			EnumMember = "",
-			Constant = "",
-			Struct = "",
-			Event = "",
-			Operator = "",
-			TypeParameter = "",
-		}
-		local has_words_before = function()
-			unpack = unpack or table.unpack
-			local line, col = unpack(vim.api.nvim_win_get_cursor(0))
-			return col ~= 0 and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match("%s") == nil
-		end
-
-		-- https://github.com/jcdickinson/codeium.nvim/issues/20 || https://github.com/jcdickinson/codeium.nvim/issues/38
-		local file_size = vim.api.nvim_exec2("echo getfsize(expand(@%))", { output = true })
-		file_size = tonumber(file_size.output)
-		if file_size > -2 and file_size <= 127830 then
-			require("codeium").setup({})
-		end
-
-		local cmp = require("cmp")
-		cmp.setup({
-			snippet = {
-				expand = function(args)
-					require("luasnip").lsp_expand(args.body)
-				end,
-			},
-			window = {
-				completion = cmp.config.window.bordered(),
-				documentation = cmp.config.window.bordered(),
-			},
-			mapping = cmp.mapping.preset.insert({
-				["<C-k>"] = cmp.mapping.select_prev_item(),
-				["<C-j>"] = cmp.mapping.select_next_item(),
-				["<C-u>"] = cmp.mapping.scroll_docs(-1),
-				["<C-d>"] = cmp.mapping.scroll_docs(1),
-				["<C-Space>"] = cmp.mapping.complete(),
-				["<C-c>"] = cmp.mapping.abort(),
-				["<CR>"] = cmp.mapping.confirm({ select = true }),
-				["<Tab>"] = cmp.mapping(function(fallback)
-					if cmp.visible() then
-						cmp.select_next_item()
-					elseif require("luasnip").expand_or_jumpable() then
-						require("luasnip").expand_or_jump()
-					elseif has_words_before() then
-						cmp.complete()
-					else
-						fallback()
-					end
-				end, { "i", "s" }),
-				["<S-Tab>"] = cmp.mapping(function(fallback)
-					if cmp.visible() then
-						cmp.select_prev_item()
-					elseif require("luasnip").jumpable(-1) then
-						require("luasnip").jump(-1)
-					else
-						fallback()
-					end
-				end, { "i", "s" }),
-			}),
-			formatting = {
-				fields = { "kind", "abbr", "menu" },
-				format = function(entry, vim_item)
-					if vim_item.kind == "Color" and entry.completion_item.documentation then
-						local _, _, r, g, b =
-							string.find(entry.completion_item.documentation, "^rgb%((%d+), (%d+), (%d+)")
-						if r then
-							local color = string.format("%02x", r)
-								.. string.format("%02x", g)
-								.. string.format("%02x", b)
-							local group = "Tw_" .. color
-							if vim.fn.hlID(group) < 1 then
-								vim.api.nvim_set_hl(0, group, { fg = "#" .. color })
-							end
-							vim_item.kind = "●"
-							vim_item.kind_hl_group = group
-						end
-					else
-						vim_item.kind = kind_icons[vim_item.kind]
-					end
-					vim_item.menu = ({
-						nvim_lsp = "LSP",
-						luasnip = "Snip",
-						codeium = "Codeium",
-						buffer = "Buffer",
-						path = "Path",
-						emoji = "Emoji",
-					})[entry.source.name]
-					return vim_item
-				end,
-			},
-			sources = {
-				{ name = "nvim_lsp" },
-				{ name = "nvim_lsp_signature_help" },
-				{ name = "luasnip" },
-				{ name = "codeium" },
-				{ name = "buffer" },
-				{ name = "path" },
-			},
-			confirm_opts = { behavior = cmp.ConfirmBehavior.Replace, select = true },
-			experimental = { ghost_text = true },
-		})
+	require("luasnip.loaders.from_vscode").lazy_load()
+	vim.opt.completeopt = { "menuone", "noselect" }
+	local kind_icons = {
+		Codeium = "",
+		Text = "",
+		Method = "",
+		Function = "",
+		Constructor = "",
+		Field = "",
+		Variable = "",
+		Class = "",
+		Interface = "",
+		Module = "",
+		Property = "",
+		Unit = "",
+		Value = "",
+		Enum = "",
+		Keyword = "",
+		Snippet = "",
+		Color = "",
+		File = "",
+		Reference = "",
+		Folder = "",
+		EnumMember = "",
+		Constant = "",
+		Struct = "",
+		Event = "",
+		Operator = "",
+		TypeParameter = "",
+	}
+	local has_words_before = function()
+		unpack = unpack or table.unpack
+		local line, col = unpack(vim.api.nvim_win_get_cursor(0))
+		return col ~= 0 and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match("%s") == nil
 	end
+
+	-- https://github.com/jcdickinson/codeium.nvim/issues/20 || https://github.com/jcdickinson/codeium.nvim/issues/38
+	local file_size = vim.api.nvim_exec2("echo getfsize(expand(@%))", { output = true })
+	file_size = tonumber(file_size.output)
+	if file_size > -2 and file_size <= 127830 then
+		require("codeium").setup({})
+	end
+
+	local cmp = require("cmp")
+	cmp.setup({
+		snippet = {
+			expand = function(args)
+				require("luasnip").lsp_expand(args.body)
+			end,
+		},
+
+		window = {
+			completion = cmp.config.window.bordered(),
+			documentation = cmp.config.window.bordered(),
+		},
+
+		mapping = cmp.mapping.preset.insert({
+			["<C-k>"] = cmp.mapping.select_prev_item(),
+			["<C-j>"] = cmp.mapping.select_next_item(),
+			["<C-u>"] = cmp.mapping.scroll_docs(-1),
+			["<C-d>"] = cmp.mapping.scroll_docs(1),
+			["<C-Space>"] = cmp.mapping.complete(),
+			["<C-c>"] = cmp.mapping.abort(),
+			["<CR>"] = cmp.mapping.confirm({ select = true }),
+			["<Tab>"] = cmp.mapping(function(fallback)
+				if cmp.visible() then
+					cmp.select_next_item()
+				elseif require("luasnip").expand_or_jumpable() then
+					require("luasnip").expand_or_jump()
+				elseif has_words_before() then
+					cmp.complete()
+				else
+					fallback()
+				end
+			end, { "i", "s" }),
+			["<S-Tab>"] = cmp.mapping(function(fallback)
+				if cmp.visible() then
+					cmp.select_prev_item()
+				elseif require("luasnip").jumpable(-1) then
+					require("luasnip").jump(-1)
+				else
+					fallback()
+				end
+			end, { "i", "s" }),
+		}),
+
+		formatting = {
+			fields = { "kind", "abbr", "menu" },
+
+			format = function(entry, vim_item)
+				if vim_item.kind == "Color" and entry.completion_item.documentation then
+					local _, _, r, g, b = string.find(entry.completion_item.documentation, "^rgb%((%d+), (%d+), (%d+)")
+					if r then
+						local color = string.format("%02x", r) .. string.format("%02x", g) .. string.format("%02x", b)
+						local group = "Tw_" .. color
+						if vim.fn.hlID(group) < 1 then
+							vim.api.nvim_set_hl(0, group, { fg = "#" .. color })
+						end
+						vim_item.kind = "●"
+						vim_item.kind_hl_group = group
+					end
+				else
+					vim_item.kind = kind_icons[vim_item.kind]
+				end
+				vim_item.menu = ({
+					nvim_lsp = "LSP",
+					luasnip = "Snip",
+					codeium = "Codeium",
+					buffer = "Buffer",
+					path = "Path",
+					emoji = "Emoji",
+				})[entry.source.name]
+				return vim_item
+			end,
+		},
+
+		sources = {
+			{ name = "nvim_lsp" },
+			{ name = "nvim_lsp_signature_help" },
+			{ name = "luasnip" },
+			{ name = "codeium" },
+			{ name = "buffer" },
+			{ name = "path" },
+		},
+
+		confirm_opts = { behavior = cmp.ConfirmBehavior.Replace, select = true },
+		experimental = { ghost_text = true },
+	})
 end
 
 local function load_null_ls()
-	if pcall(require, "null-ls") then
-		require("null-ls").setup({
-			debug = false,
-			sources = {
-				require("null-ls").builtins.formatting.prettier.with({
-					extra_filetypes = { "toml" },
-					extra_args = { "--no-semi", "--single-quote", "--jsx-single-quote" },
-				}),
-				require("null-ls").builtins.formatting.black.with({ extra_args = { "--fast" } }),
-				require("null-ls").builtins.formatting.stylua,
-				require("null-ls").builtins.formatting.google_java_format,
-				require("null-ls").builtins.diagnostics.flake8,
-			},
-		})
-	end
+	require("null-ls").setup({
+		debug = false,
+		sources = {
+			require("null-ls").builtins.formatting.prettier.with({
+				extra_filetypes = { "toml" },
+				extra_args = { "--no-semi", "--single-quote", "--jsx-single-quote" },
+			}),
+			require("null-ls").builtins.formatting.black.with({ extra_args = { "--fast" } }),
+			require("null-ls").builtins.formatting.stylua,
+			require("null-ls").builtins.formatting.google_java_format,
+			require("null-ls").builtins.diagnostics.flake8,
+		},
+	})
 end
 
 local function load_dap()
-	if pcall(require, "dapui") then
-		require("dapui").setup({
-			expand_lines = true,
-			icons = { expanded = "", collapsed = "", circular = "" },
-			layouts = {
-				{
-					elements = {
-						{ id = "scopes", size = 0.33 },
-						{ id = "breakpoints", size = 0.17 },
-						{ id = "stacks", size = 0.25 },
-						{ id = "watches", size = 0.25 },
-					},
-					size = 0.33,
-					position = "right",
+	require("dapui").setup({
+		expand_lines = true,
+		icons = { expanded = "", collapsed = "", circular = "" },
+		layouts = {
+			{
+				elements = {
+					{ id = "scopes", size = 0.33 },
+					{ id = "breakpoints", size = 0.17 },
+					{ id = "stacks", size = 0.25 },
+					{ id = "watches", size = 0.25 },
 				},
-				{
-					elements = {
-						{ id = "repl", size = 0.45 },
-						{ id = "console", size = 0.55 },
-					},
-					size = 0.27,
-					position = "bottom",
+				size = 0.33,
+				position = "right",
+			},
+			{
+				elements = {
+					{ id = "repl", size = 0.45 },
+					{ id = "console", size = 0.55 },
 				},
+				size = 0.27,
+				position = "bottom",
 			},
-			floating = {
-				max_height = 0.9,
-				max_width = 0.5,
-				border = vim.g.border_chars,
-			},
-		})
-		vim.fn.sign_define("DapBreakpoint", { text = "", texthl = "DiagnosticSignError", linehl = "", numhl = "" })
-		require("dap").listeners.after.event_initialized["dapui_config"] = function()
-			require("dapui").open()
-		end
-		require("dap").listeners.before.event_terminated["dapui_config"] = function()
-			require("dapui").close()
-		end
-		require("dap").listeners.before.event_exited["dapui_config"] = function()
-			require("dapui").close()
-		end
+		},
+		floating = {
+			max_height = 0.9,
+			max_width = 0.5,
+			border = vim.g.border_chars,
+		},
+	})
+
+	vim.fn.sign_define("DapBreakpoint", { text = "", texthl = "DiagnosticSignError", linehl = "", numhl = "" })
+	require("dap").listeners.after.event_initialized["dapui_config"] = function()
+		require("dapui").open()
+	end
+	require("dap").listeners.before.event_terminated["dapui_config"] = function()
+		require("dapui").close()
+	end
+	require("dap").listeners.before.event_exited["dapui_config"] = function()
+		require("dapui").close()
 	end
 end
 
 local function load_gitsigns()
-	if pcall(require, "gitsigns") then
-		require("gitsigns").setup({
-			signs = {
-				add = { hl = "GitSignsAdd", text = "▎", numhl = "GitSignsAddNr", linehl = "GitSignsAddLn" },
-				change = {
-					hl = "GitSignsChange",
-					text = "▎",
-					numhl = "GitSignsChangeNr",
-					linehl = "GitSignsChangeLn",
-				},
-				delete = {
-					hl = "GitSignsDelete",
-					text = "契",
-					numhl = "GitSignsDeleteNr",
-					linehl = "GitSignsDeleteLn",
-				},
-				topdelete = {
-					hl = "GitSignsDelete",
-					text = "契",
-					numhl = "GitSignsDeleteNr",
-					linehl = "GitSignsDeleteLn",
-				},
-				changedelete = {
-					hl = "GitSignsChange",
-					text = "▎",
-					numhl = "GitSignsChangeNr",
-					linehl = "GitSignsChangeLn",
-				},
+	require("gitsigns").setup({
+		signs = {
+			add = { hl = "GitSignsAdd", text = "▎", numhl = "GitSignsAddNr", linehl = "GitSignsAddLn" },
+			change = {
+				hl = "GitSignsChange",
+				text = "▎",
+				numhl = "GitSignsChangeNr",
+				linehl = "GitSignsChangeLn",
 			},
-			on_attach = function(bufnr)
-				local gs = package.loaded.gitsigns
+			delete = {
+				hl = "GitSignsDelete",
+				text = "契",
+				numhl = "GitSignsDeleteNr",
+				linehl = "GitSignsDeleteLn",
+			},
+			topdelete = {
+				hl = "GitSignsDelete",
+				text = "契",
+				numhl = "GitSignsDeleteNr",
+				linehl = "GitSignsDeleteLn",
+			},
+			changedelete = {
+				hl = "GitSignsChange",
+				text = "▎",
+				numhl = "GitSignsChangeNr",
+				linehl = "GitSignsChangeLn",
+			},
+		},
 
-				local function map(mode, l, r, opts)
-					opts = opts or {}
-					opts.buffer = bufnr
-					vim.keymap.set(mode, l, r, opts)
+		on_attach = function(bufnr)
+			if pcall(require, "which-key") then
+				require("which-key").register({
+					g = { name = "Git" },
+				}, { prefix = "<leader>" })
+			end
+
+			local gs = package.loaded.gitsigns
+
+			local function map(mode, l, r, opts)
+				opts = opts or {}
+				opts.buffer = bufnr
+				vim.keymap.set(mode, l, r, opts)
+			end
+
+			-- Navigation
+			map("n", "]c", function()
+				if vim.wo.diff then
+					return "]c"
 				end
+				vim.schedule(function()
+					gs.next_hunk()
+				end)
+				return "<Ignore>"
+			end, { expr = true })
 
-				-- Navigation
-				map("n", "]c", function()
-					if vim.wo.diff then
-						return "]c"
-					end
-					vim.schedule(function()
-						gs.next_hunk()
-					end)
-					return "<Ignore>"
-				end, { expr = true })
+			map("n", "[c", function()
+				if vim.wo.diff then
+					return "[c"
+				end
+				vim.schedule(function()
+					gs.prev_hunk()
+				end)
+				return "<Ignore>"
+			end, { expr = true })
 
-				map("n", "[c", function()
-					if vim.wo.diff then
-						return "[c"
-					end
-					vim.schedule(function()
-						gs.prev_hunk()
-					end)
-					return "<Ignore>"
-				end, { expr = true })
+			-- Actions
+			map("n", "<leader>gs", gs.stage_hunk, { buffer = bufnr, desc = "Stage Hunk" })
+			map("n", "<leader>gr", gs.reset_hunk, { buffer = bufnr, desc = "Reset Hunk" })
+			map("v", "<leader>gs", function()
+				gs.stage_hunk({ vim.fn.line("."), vim.fn.line("v") })
+			end, { buffer = bufnr, desc = "Stage Hunk" })
+			map("v", "<leader>gr", function()
+				gs.reset_hunk({ vim.fn.line("."), vim.fn.line("v") })
+			end, { buffer = bufnr, desc = "Reset Hunk" })
+			map("n", "<leader>gS", gs.stage_buffer, { buffer = bufnr, desc = "Stage Buffer" })
+			map("n", "<leader>gu", gs.undo_stage_hunk, { buffer = bufnr, desc = "Undo Stage Buffer" })
+			map("n", "<leader>gR", gs.reset_buffer, { buffer = bufnr, desc = "Reset Buffer" })
+			map("n", "<leader>gp", gs.preview_hunk, { buffer = bufnr, desc = "Preview Hunk" })
+			map("n", "<leader>gb", function()
+				gs.blame_line({ full = true })
+			end, { buffer = bufnr, desc = "Blame" })
+			map("n", "<leader>gb", gs.toggle_current_line_blame, { buffer = bufnr, desc = "Toggle Blame" })
+			map("n", "<leader>gd", gs.diffthis, { buffer = bufnr, desc = "Diff" })
+			map("n", "<leader>gD", function()
+				gs.diffthis("~")
+			end, { buffer = bufnr, desc = "Diff ~" })
+			map("n", "<leader>gd", gs.toggle_deleted, { buffer = bufnr, desc = "Toggle Deleted" })
 
-				-- Actions
-				map("n", "<leader>gs", gs.stage_hunk, { buffer = bufnr, desc = "Stage Hunk" })
-				map("n", "<leader>gr", gs.reset_hunk, { buffer = bufnr, desc = "Reset Hunk" })
-				map("v", "<leader>gs", function()
-					gs.stage_hunk({ vim.fn.line("."), vim.fn.line("v") })
-				end, { buffer = bufnr, desc = "Stage Hunk" })
-				map("v", "<leader>gr", function()
-					gs.reset_hunk({ vim.fn.line("."), vim.fn.line("v") })
-				end, { buffer = bufnr, desc = "Reset Hunk" })
-				map("n", "<leader>gS", gs.stage_buffer, { buffer = bufnr, desc = "Stage Buffer" })
-				map("n", "<leader>gu", gs.undo_stage_hunk, { buffer = bufnr, desc = "Undo Stage Buffer" })
-				map("n", "<leader>gR", gs.reset_buffer, { buffer = bufnr, desc = "Reset Buffer" })
-				map("n", "<leader>gp", gs.preview_hunk, { buffer = bufnr, desc = "Preview Hunk" })
-				map("n", "<leader>gb", function()
-					gs.blame_line({ full = true })
-				end, { buffer = bufnr, desc = "Blame" })
-				map("n", "<leader>gb", gs.toggle_current_line_blame, { buffer = bufnr, desc = "Toggle Blame" })
-				map("n", "<leader>gd", gs.diffthis, { buffer = bufnr, desc = "Diff" })
-				map("n", "<leader>gD", function()
-					gs.diffthis("~")
-				end, { buffer = bufnr, desc = "Diff ~" })
-				map("n", "<leader>gd", gs.toggle_deleted, { buffer = bufnr, desc = "Toggle Deleted" })
+			map("n", "<leader>go", "<cmd>Telescope git_status<cr>", { buffer = bufnr, desc = "Open changed file" })
+			map("n", "<leader>gb", "<cmd>Telescope git_branches<cr>", { buffer = bufnr, desc = "Checkout branch" })
+			map("n", "<leader>gb", "<cmd>Telescope git_commits<cr>", { buffer = bufnr, desc = "Checkout commit" })
 
-				map("n", "<leader>go", "<cmd>Telescope git_status<cr>", { buffer = bufnr, desc = "Open changed file" })
-				map("n", "<leader>gb", "<cmd>Telescope git_branches<cr>", { buffer = bufnr, desc = "Checkout branch" })
-				map("n", "<leader>gb", "<cmd>Telescope git_commits<cr>", { buffer = bufnr, desc = "Checkout commit" })
-
-				-- Text object
-				map({ "o", "x" }, "ih", ":<C-U>Gitsigns select_hunk<CR>", { buffer = bufnr, desc = "Select Hunk" })
-			end,
-		})
-	end
+			-- Text object
+			map({ "o", "x" }, "ih", ":<C-U>Gitsigns select_hunk<CR>", { buffer = bufnr, desc = "Select Hunk" })
+		end,
+	})
 end
 
 -- Plugins
@@ -742,6 +782,7 @@ if not vim.loop.fs_stat(lazypath) then
 		lazypath,
 	})
 end
+
 vim.opt.rtp:prepend(lazypath)
 if pcall(require, "lazy") then
 	require("lazy").setup({
@@ -780,31 +821,7 @@ if pcall(require, "lazy") then
 			"numToStr/Comment.nvim",
 			lazy = true,
 			config = function()
-				require("Comment").setup({
-					ignore = "^$",
-					pre_hook = function(ctx)
-						-- Only calculate commentstring for tsx filetypes
-						if vim.bo.filetype == "typescriptreact" then
-							local U = require("Comment.utils")
-
-							-- Determine whether to use linewise or blockwise commentstring
-							local type = ctx.ctype == U.ctype.linewise and "__default" or "__multiline"
-
-							-- Determine the location where to calculate commentstring from
-							local location = nil
-							if ctx.ctype == U.ctype.blockwise then
-								location = require("ts_context_commentstring.utils").get_cursor_location()
-							elseif ctx.cmotion == U.cmotion.v or ctx.cmotion == U.cmotion.V then
-								location = require("ts_context_commentstring.utils").get_visual_start_location()
-							end
-
-							return require("ts_context_commentstring.internal").calculate_commentstring({
-								key = type,
-								location = location,
-							})
-						end
-					end,
-				})
+				load_comment()
 			end,
 			dependencies = {
 				{
@@ -834,11 +851,7 @@ if pcall(require, "lazy") then
 			config = function()
 				local wk = require("which-key")
 				wk.register({
-					d = { name = "Debug" },
 					f = { name = "Find" },
-					g = { name = "Git" },
-					l = { name = "LSP" },
-					w = { name = "Workspace" },
 					p = {
 						name = "Plugins",
 						i = { "<cmd>Lazy install<cr>", "Install" },
@@ -876,22 +889,20 @@ if pcall(require, "lazy") then
 			"NvChad/nvim-colorizer.lua",
 			event = "BufReadPost",
 			config = function()
-				if pcall(require, "colorizer") then
-					require("colorizer").setup({
-						user_default_options = {
-							RRGGBBAA = true,
-							AARRGGBB = true,
-							css = true,
-							tailwind = true,
-							sass = { enable = true, parsers = { "css" } },
-						},
-					})
-				end
+				require("colorizer").setup({
+					user_default_options = {
+						RRGGBBAA = true,
+						AARRGGBB = true,
+						css = true,
+						tailwind = true,
+						sass = { enable = true, parsers = { "css" } },
+					},
+				})
 			end,
 		},
 		{
 			"lewis6991/gitsigns.nvim",
-			event = "BufReadPre",
+			event = "VeryLazy",
 			config = function()
 				load_gitsigns()
 			end,
