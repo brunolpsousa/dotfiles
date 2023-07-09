@@ -116,8 +116,8 @@ vim.api.nvim_create_autocmd({ "FileType" }, {
 
 vim.api.nvim_create_autocmd({ "BufEnter", "BufWritePost" }, {
 	callback = function()
-		local getBG = vim.fn.system("gtk-query-settings | awk '/gtk-theme-name:/{print $2}'")
-		if not getBG:find("dark") then
+		local getBG = vim.fn.system("gtk-query-settings | awk -F '\"' '/gtk-theme-name:/{printf $2}'")
+		if getBG:match("^Adwaita$") then
 			vim.opt.background = "light"
 			pcall(vim.cmd.colorscheme, "catppuccin-latte")
 		else
