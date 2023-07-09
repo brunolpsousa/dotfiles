@@ -402,6 +402,18 @@ local function load_lsp()
 		-- Mappings
 		if pcall(require, "which-key") then
 			require("which-key").register({
+				K = { vim.lsp.buf.hover, "Hover" },
+				g = {
+					name = "Goto",
+					d = { vim.lsp.buf.definition, "Definition" },
+					D = { vim.lsp.buf.declaration, "Declaration" },
+					i = { vim.lsp.buf.implementation, "Implementation" },
+					r = { vim.lsp.buf.references, "References" },
+					l = { vim.diagnostic.open_float, "Float" },
+				},
+			}, { buffer = bufnr })
+
+			require("which-key").register({
 				l = {
 					name = "LSP",
 					f = {
@@ -418,7 +430,7 @@ local function load_lsp()
 					Q = { "<cmd>Telescope quickfix<cr>", "Telescope Quickfix" },
 					s = { "<cmd>Telescope lsp_document_symbols<cr>", "Document Symbols" },
 					S = { "<cmd>Telescope lsp_dynamic_workspace_symbols<cr>", "Workspace Symbols" },
-					D = { vim.lsp.buf.type_definition, "Type Definition" },
+					d = { vim.lsp.buf.type_definition, "Type Definition" },
 					j = { vim.diagnostic.goto_next, "Next Diagnostic" },
 					k = { vim.diagnostic.goto_prev, "Previous Diagnostic" },
 					w = { "<cmd>Telescope diagnostics<CR>", "Diagnostics" },
@@ -462,18 +474,6 @@ local function load_lsp()
 					k = { '<cmd>lua require("dap").up()<CR>', "Up" },
 				},
 			}, { prefix = "<leader>", buffer = bufnr })
-
-			require("which-key").register({
-				K = { vim.lsp.buf.hover, "Hover" },
-				g = {
-					name = "Goto",
-					d = { vim.lsp.buf.definition, "Definition" },
-					D = { vim.lsp.buf.declaration, "Declaration" },
-					i = { vim.lsp.buf.implementation, "Implementation" },
-					r = { vim.lsp.buf.references, "References" },
-					l = { vim.diagnostic.open_float, "Float" },
-				},
-			}, { buffer = bufnr })
 		end
 
 		-- Context menu
@@ -747,9 +747,9 @@ local function load_wk()
 			c = { "<cmd>Telescope colorscheme<cr>", "Colorscheme" },
 			C = { "<cmd>Telescope commands<cr>", "Commands" },
 			e = { ":e %:h/<C-d>", "Edit file" },
-			f = { "<cmd>Telescope find_files<CR>", "Find files" },
-			h = { "<cmd>Telescope help_tags<cr>", "Find help" },
-			H = { "<cmd>Telescope highlights<cr>", "Find highlight groups" },
+			f = { "<cmd>Telescope find_files<CR>", "Find file" },
+			h = { "<cmd>Telescope help_tags<cr>", "Help" },
+			H = { "<cmd>Telescope highlights<cr>", "Highlight groups" },
 			k = { "<cmd>Telescope keymaps<cr>", "Keymaps" },
 			m = { "<cmd>Telescope man_pages<cr>", "Man pages" },
 			p = { "<cmd>Telescope projects<CR>", "Projects" },

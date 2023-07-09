@@ -949,9 +949,9 @@ ns() {
   ${IBlack}[${BIBlue}N$IBlack]$Color_Off g-|g+   - Undo|Redo branches
   ${IBlack}[${BIBlue}N$IBlack]$Color_Off S|s     - Delete line|char and insert
   ${IBlack}[${BIBlue}N$IBlack]$Color_Off C       - Delete until EOL and insert
-  ${IBlack}[${BIBlue}N$IBlack]$Color_Off <cmd>iw - Cmd inner word
-  ${IBlack}[${BIBlue}N$IBlack]$Color_Off <cmd>ip - Cmd inner paragraph
-  ${IBlack}[${BIBlue}N$IBlack]$Color_Off <cmd>a\" - Cmd around quotes
+  ${IBlack}[${BIBlue}N$IBlack]$Color_Off <o>iw   - Opr inner word
+  ${IBlack}[${BIBlue}N$IBlack]$Color_Off <o>ip   - Opr inner paragraph
+  ${IBlack}[${BIBlue}N$IBlack]$Color_Off <o>a\"   - Opr around quotes
   ${IBlack}[${BIBlue}N$IBlack]$Color_Off ]p      - Paste and adjust indent
   ${IBlack}[${BIBlue}N$IBlack]$Color_Off d/hello - Delete until hello
   ${IBlack}[${BIBlue}N$IBlack]$Color_Off J       - Join line
@@ -959,7 +959,7 @@ ns() {
   ${IBlack}[${BIBlue}N$IBlack]$Color_Off ~       - Switch case
   ${IBlack}[${BIBlue}N$IBlack]$Color_Off C-a     - Increase number
   ${IBlack}[${BIBlue}N$IBlack]$Color_Off C-x     - Decrease number
-  ${IBlack}[${BIBlue}N$IBlack]$Color_Off <|>|=    - Indent right|left|auto
+  ${IBlack}[${BIBlue}N$IBlack]$Color_Off <|>|=   - Indent right|left|auto
   ${IBlack}[${BIBlue}N$IBlack]$Color_Off gg=G    - Re-indent entire buffer
   ${IBlack}[${BIBlue}N$IBlack]$Color_Off SPC-/   - Comment
   \n\t$IWhite### Insert ###
@@ -974,30 +974,27 @@ ns() {
   ${IBlack}[${BIGreen}I$IBlack]$Color_Off C-rx - Insert the contents of register x
   ${IBlack}[${BIGreen}I$IBlack]$Color_Off C-ox - Temporarily enter normal mode to issue cmd x
   \n\t$IWhite### Telescope ###
-  ${IBlack}[${BIBlue}N$IBlack]$Color_Off SPC-e -  Netrw
+  ${IBlack}[${BIBlue}N$IBlack]$Color_Off SPC-e  - Netrw
   ${IBlack}[${BIBlue}N$IBlack]$Color_Off SPC-fe - Edit file
-  ${IBlack}[${BIBlue}N$IBlack]$Color_Off SPC-ff - Find files
-  ${IBlack}[${BIBlue}N$IBlack]$Color_Off SPC-ft - Live grep
+  ${IBlack}[${BIBlue}N$IBlack]$Color_Off SPC-ff - Find file
+  ${IBlack}[${BIBlue}N$IBlack]$Color_Off SPC-ft - Find text
   ${IBlack}[${BIBlue}N$IBlack]$Color_Off SPC-fp - Find project
   ${IBlack}[${BIBlue}N$IBlack]$Color_Off SPC-fb - Find buffer
   \n\t$IWhite### LSP ###
-  ${IBlack}[${BIBlue}N$IBlack]$Color_Off gD     - Declaration
-  ${IBlack}[${BIBlue}N$IBlack]$Color_Off gd     - Definition
-  ${IBlack}[${BIBlue}N$IBlack]$Color_Off SPC-D  - Type Definition
-  ${IBlack}[${BIBlue}N$IBlack]$Color_Off K      - Hover
   ${IBlack}[${BIBlue}N$IBlack]$Color_Off gi     - Implementation
   ${IBlack}[${BIBlue}N$IBlack]$Color_Off gr     - References
-  ${IBlack}[${BIBlue}N$IBlack]$Color_Off gl     - Open float
+  ${IBlack}[${BIBlue}N$IBlack]$Color_Off gl     - Float
+  ${IBlack}[${BIBlue}N$IBlack]$Color_Off K      - Hover
+  ${IBlack}[${BIBlue}N$IBlack]$Color_Off gD     - Declaration
+  ${IBlack}[${BIBlue}N$IBlack]$Color_Off gd     - Definition
+  ${IBlack}[${BIBlue}N$IBlack]$Color_Off SPC-ld - Type Definition
   ${IBlack}[${BIBlue}N$IBlack]$Color_Off SPC-lf - Format
   ${IBlack}[${BIBlue}N$IBlack]$Color_Off SPC-la - Code action
   ${IBlack}[${BIBlue}N$IBlack]$Color_Off SPC-lj - Diagnostic - next
   ${IBlack}[${BIBlue}N$IBlack]$Color_Off SPC-lk - Diagnostic - prev
   ${IBlack}[${BIBlue}N$IBlack]$Color_Off SPC-lr - Rename
-  ${IBlack}[${BIBlue}N$IBlack]$Color_Off SPC-ls - Signature help
-  ${IBlack}[${BIBlue}N$IBlack]$Color_Off SPC-lq - Set loc list
-  ${IBlack}[${BIBlue}N$IBlack]$Color_Off SPC-wa - Add workspace folder
-  ${IBlack}[${BIBlue}N$IBlack]$Color_Off SPC-wr - Remove workspace folder
-  ${IBlack}[${BIBlue}N$IBlack]$Color_Off SPC-wl - List workspace folders
+  ${IBlack}[${BIBlue}N$IBlack]$Color_Off SPC-lh - Signature help
+  ${IBlack}[${BIBlue}N$IBlack]$Color_Off SPC-lq - Quickfix
   \n\t$IWhite### CMP ###
   ${IBlack}[${BIGreen}I$IBlack]$Color_Off C-c   - Close CMP
   ${IBlack}[${BIGreen}I$IBlack]$Color_Off C-SPC - Complete CMP
@@ -1005,21 +1002,23 @@ ns() {
   ${IBlack}[${BIGreen}I$IBlack]$Color_Off TAB   - Next snip
   ${IBlack}[${BIGreen}I$IBlack]$Color_Off S-TAB - Prev snip
   \n\t$IWhite### DAP ###
-  ${IBlack}[${BIBlue}N$IBlack]$Color_Off SPC-db - Toggle breakpoint
+  ${IBlack}[${BIBlue}N$IBlack]$Color_Off SPC-dt - Toggle breakpoint
   ${IBlack}[${BIBlue}N$IBlack]$Color_Off SPC-dc - Continue
   ${IBlack}[${BIBlue}N$IBlack]$Color_Off SPC-di - Step into
   ${IBlack}[${BIBlue}N$IBlack]$Color_Off SPC-do - Step over
-  ${IBlack}[${BIBlue}N$IBlack]$Color_Off SPC-dO - Step out
-  ${IBlack}[${BIBlue}N$IBlack]$Color_Off SPC-dr - Repl toggle
+  ${IBlack}[${BIBlue}N$IBlack]$Color_Off SPC-du - Step out
+  ${IBlack}[${BIBlue}N$IBlack]$Color_Off SPC-dr - REPL
   ${IBlack}[${BIBlue}N$IBlack]$Color_Off SPC-dl - Run last
-  ${IBlack}[${BIBlue}N$IBlack]$Color_Off SPC-du - Toggle DapUI
-  ${IBlack}[${BIBlue}N$IBlack]$Color_Off SPC-dt - Terminate
+  ${IBlack}[${BIBlue}N$IBlack]$Color_Off SPC-dU - Toggle DapUI
+  ${IBlack}[${BIBlue}N$IBlack]$Color_Off SPC-dT - Terminate
   \n\t$IWhite### General ###
   ${IBlack}[${BIBlue}N$IBlack]$Color_Off C-q         - Quit
-  ${IBlack}[${BIBlue}N$IBlack]$Color_Off C-s         - Save buffer
+  ${IBlack}[${BIBlue}N$IBlack]$Color_Off C-s         - Save
   ${IBlack}[${BIBlue}N$IBlack]$Color_Off S-q         - Close buffer
+  ${IBlack}[${BIBlue}N$IBlack]$Color_Off SPC-q       - Close all
   ${IBlack}[${BIBlue}N$IBlack]$Color_Off SPC-Q       - Force close buffer
-  ${IBlack}[${BIBlue}N$IBlack]$Color_Off SPC-s       - Save all
+  ${IBlack}[${BIBlue}N$IBlack]$Color_Off SPC-s       - Save without formatting
+  ${IBlack}[${BIBlue}N$IBlack]$Color_Off SPC-S       - Save all
   ${IBlack}[${BIBlue}N$IBlack]$Color_Off :e          - Edit file
   ${IBlack}[${BIBlue}N$IBlack]$Color_Off :saveas     - Save file as
   ${IBlack}[${BIBlue}N$IBlack]$Color_Off :earlier 1m - Time travel
