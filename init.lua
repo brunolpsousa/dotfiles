@@ -393,12 +393,8 @@ local function load_lsp()
 	vim.lsp.handlers["textDocument/signatureHelp"] =
 		vim.lsp.with(vim.lsp.handlers.signature_help, { border = "rounded" })
 
-	local on_attach = function(client, bufnr)
+	local on_attach = function(_, bufnr)
 		vim.api.nvim_buf_set_option(bufnr, "omnifunc", "v:lua.vim.lsp.omnifunc")
-
-		if client.name == "tsserver" or client.name == "lua_ls" then
-			client.server_capabilities.documentFormattingProvider = false
-		end
 
 		-- Mappings
 		if pcall(require, "which-key") then
@@ -495,6 +491,10 @@ local function load_lsp()
 			capabilities = capabilities,
 			settings = {
 				Lua = {
+					format = {
+						enable = false,
+						defaultConfig = { quote_style = "double" },
+					},
 					diagnostics = { globals = { "vim" } },
 					workspace = { library = vim.api.nvim_get_runtime_file("", true), checkThirdParty = false },
 					telemetry = { enable = false },
