@@ -176,22 +176,21 @@ local function load_cmp()
 	require("luasnip.loaders.from_vscode").lazy_load()
 	vim.opt.completeopt = { "menuone", "noselect" }
 	local kind_icons = {
-		Codeium = "",
 		Text = "",
-		Method = "",
-		Function = "",
-		Constructor = "",
+		Method = "m",
+		Function = "󰊕",
+		Constructor = "",
 		Field = "",
-		Variable = "",
+		Variable = "",
 		Class = "",
 		Interface = "",
-		Module = "",
+		Module = "",
 		Property = "",
 		Unit = "",
 		Value = "",
 		Enum = "",
-		Keyword = "",
-		Snippet = "",
+		Keyword = "󰌋",
+		Snippet = "",
 		Color = "",
 		File = "",
 		Reference = "",
@@ -202,6 +201,8 @@ local function load_cmp()
 		Event = "",
 		Operator = "",
 		TypeParameter = "",
+		Codeium = "󰚩",
+		Copilot = "",
 	}
 	local has_words_before = function()
 		unpack = unpack or table.unpack
