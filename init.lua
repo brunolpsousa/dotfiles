@@ -881,14 +881,13 @@ if pcall(require, "lazy") then
 
 		{
 			"nvim-lualine/lualine.nvim",
-			dependencies = { "kyazdani42/nvim-web-devicons" },
+			dependencies = { "nvim-tree/nvim-web-devicons" },
 			config = function()
 				load_lualine()
 			end,
 		},
 
 		{ "RRethy/vim-illuminate", event = "VeryLazy" },
-
 		{ "lukas-reineke/indent-blankline.nvim", event = "BufReadPre" },
 
 		{
