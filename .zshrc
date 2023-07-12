@@ -2221,7 +2221,7 @@ spaceship_docker_context() {
 # Docker Compose - a tool for defining and running multi-container Docker applications.
 spaceship_docker_compose() {
   local SPACESHIP_DOCKER_COMPOSE_SHOW="${SPACESHIP_DOCKER_COMPOSE_SHOW=true}"
-  local SPACESHIP_DOCKER_COMPOSE_PREFIX="${SPACESHIP_DOCKER_COMPOSE_PREFIX="runs "}"
+  local SPACESHIP_DOCKER_COMPOSE_PREFIX="${SPACESHIP_DOCKER_COMPOSE_PREFIX="$SPACESHIP_PROMPT_DEFAULT_PREFIX"}"
   local SPACESHIP_DOCKER_COMPOSE_SUFFIX="${SPACESHIP_DOCKER_COMPOSE_SUFFIX="$SPACESHIP_PROMPT_DEFAULT_SUFFIX"}"
   local SPACESHIP_DOCKER_COMPOSE_SYMBOL="${SPACESHIP_DOCKER_COMPOSE_SYMBOL=" "}"
   local SPACESHIP_DOCKER_COMPOSE_COLOR="${SPACESHIP_DOCKER_COMPOSE_COLOR="%F{cyan}"}"
@@ -2238,7 +2238,7 @@ spaceship_docker_compose() {
 
   spaceship_docker_compose::paint() {
     local color="$1" text="$2"
-    echo -n "%{%F{$color}%}$text%{%f%}"
+    echo -n "$color$text"
   }
 
   local statuses=""
