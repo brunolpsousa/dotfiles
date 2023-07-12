@@ -8,12 +8,18 @@ keymap("n", "<C-d>", "<C-d>zz", { desc = "Half page down" })
 keymap("n", "<C-b>", "<C-b>zz", { desc = "Page up" })
 keymap("n", "<C-f>", "<C-f>zz", { desc = "Page down" })
 
-keymap("n", "n", "nzzzv", { desc = "Next matching search pattern" })
-keymap("n", "N", "Nzzzv", { desc = "Previous matching search pattern" })
+-- https://github.com/mhinz/vim-galore#saner-behavior-of-n-and-n
+keymap("n", "n", "(v:searchforward ? 'nzzzv' : 'Nzzzv')", { expr = true, desc = "Next search result" })
+keymap("n", "N", "(v:searchforward ? 'Nzzzv' : 'nzzzv')", { expr = true, desc = "Prev search result" })
 
 keymap("n", "J", "mzJ`z", { desc = "Join lines" })
 keymap("i", "<C-h>", "<C-w>", { desc = "Delete previous word" })
 keymap("i", "<C-Del>", "<C-o>dw", { desc = "Detele next word" })
+
+-- Add undo break-points
+keymap("i", ",", ",<C-g>u")
+keymap("i", ".", ".<C-g>u")
+keymap("i", ";", ";<C-g>u")
 
 keymap("n", "<C-h>", "<C-w>h", { desc = "Goto left window" })
 keymap("n", "<C-j>", "<C-w>j", { desc = "Goto lower window" })
@@ -28,10 +34,9 @@ keymap("n", "<C-Right>", "<cmd>vertical resize +2<CR>", { desc = "Increase windo
 keymap({ "n", "v", "i" }, "<C-s>", "<cmd>w<CR>", { desc = "Save" })
 keymap({ "n", "v" }, "<leader>s", "<cmd>noautocmd w<CR>", { desc = "Save without formatting" })
 keymap("n", "<leader>S", "<cmd>wa<CR>", { desc = "Save all" })
-keymap("n", "<C-q>", "<cmd>confirm q<CR>", { desc = "Close window" })
-keymap("n", "<leader>q", "<cmd>confirm qa<CR>", { desc = "Close all windows" })
-keymap("n", "<S-q>", "<cmd>confirm bd<CR>", { desc = "Close buffer" })
-keymap("n", "<leader>Q", "<cmd>bd!<CR>", { desc = "Force close buffer" })
+keymap("n", "<S-q>", "<cmd>bd<CR>", { desc = "Close buffer" })
+keymap("n", "<C-q>", "<cmd>q<CR>", { desc = "Close window" })
+keymap("n", "<leader>q", "<cmd>qa<CR>", { desc = "Close all windows" })
 
 keymap("n", "<Tab>", "<cmd>bnext<CR>", { desc = "Next buffer" })
 keymap("n", "<S-Tab>", "<cmd>bprevious<CR>", { desc = "Previous buffer" })
@@ -78,31 +83,39 @@ vim.opt.cmdheight = 1
 vim.opt.showcmd = false
 vim.opt.smartcase = true
 vim.opt.smartindent = true
+vim.opt.shiftround = true
 vim.opt.splitbelow = true
 vim.opt.splitright = true
 vim.opt.undofile = true
 vim.opt.backup = false
 vim.opt.writebackup = false
-vim.opt.updatetime = 250
+vim.opt.updatetime = 200
+vim.opt.timeoutlen = 300
 vim.opt.scrolloff = 8
 vim.opt.sidescrolloff = 20
 vim.opt.wrap = false
 vim.opt.breakindent = true
 vim.opt.linebreak = true
 vim.opt.list = true
-vim.opt.spelllang = "en_us,pt_br"
+vim.opt.pumblend = 7
+vim.opt.pumheight = 15
+vim.opt.confirm = true
+vim.opt.signcolumn = "yes"
 vim.opt.virtualedit = "none"
+vim.opt.splitkeep = "screen"
+vim.opt.spelllang = { "en_us", "pt_br" }
+vim.opt.wildmode = "longest:full,full"
 vim.opt.listchars:append("tab:>>,extends:▷,precedes:◁,trail:·,nbsp:~")
 vim.cmd("aunmenu PopUp")
 
 -- Autocommands
-vim.api.nvim_create_autocmd({ "FileType" }, {
-	pattern = { "qf", "help", "man", "lspinfo", "spectre_panel" },
+vim.api.nvim_create_autocmd({ "FocusGained", "TermClose", "TermLeave" }, {
+	command = "checktime",
+})
+
+vim.api.nvim_create_autocmd({ "TextYankPost" }, {
 	callback = function()
-		vim.cmd([[
-      nnoremap <silent> <buffer> q :close<CR>
-      set nobuflisted
-    ]])
+		vim.highlight.on_yank({ higroup = "Visual", timeout = 200 })
 	end,
 })
 
@@ -111,6 +124,79 @@ vim.api.nvim_create_autocmd({ "FileType" }, {
 	callback = function()
 		vim.opt_local.wrap = true
 		vim.opt_local.spell = true
+	end,
+})
+
+vim.api.nvim_create_autocmd({ "VimResized" }, {
+	callback = function()
+		vim.cmd("tabdo wincmd =")
+	end,
+})
+
+vim.api.nvim_create_autocmd({ "BufWritePost" }, {
+	pattern = { "*.java" },
+	callback = function()
+		vim.lsp.codelens.refresh()
+	end,
+})
+
+vim.api.nvim_create_autocmd({ "FileType" }, {
+	pattern = {
+		"PlenaryTestPopup",
+		"help",
+		"lspinfo",
+		"man",
+		"notify",
+		"qf",
+		"spectre_panel",
+		"startuptime",
+		"tsplayground",
+		"neotest-output",
+		"checkhealth",
+		"neotest-summary",
+		"neotest-output-panel",
+	},
+	callback = function(event)
+		vim.bo[event.buf].buflisted = false
+		vim.keymap.set("n", "q", "<cmd>close<cr>", { buffer = event.buf, silent = true })
+	end,
+})
+
+vim.api.nvim_create_autocmd({ "BufWritePre" }, {
+	callback = function()
+		local exclude = { "diff" }
+		local buf = vim.api.nvim_get_current_buf()
+		if vim.tbl_contains(exclude, vim.bo[buf].filetype) then
+			return
+		end
+		vim.cmd([[:%s/\s\+$//e]])
+	end,
+})
+
+-- Auto create dir when saving a file, in case some intermediate directory does not exist
+vim.api.nvim_create_autocmd({ "BufWritePre" }, {
+	callback = function(event)
+		if event.match:match("^%w%w+://") then
+			return
+		end
+		local file = vim.loop.fs_realpath(event.match) or event.match
+		vim.fn.mkdir(vim.fn.fnamemodify(file, ":p:h"), "p")
+	end,
+})
+
+-- go to last loc when opening a buffer
+vim.api.nvim_create_autocmd("BufReadPost", {
+	callback = function()
+		local exclude = { "gitcommit" }
+		local buf = vim.api.nvim_get_current_buf()
+		if vim.tbl_contains(exclude, vim.bo[buf].filetype) then
+			return
+		end
+		local mark = vim.api.nvim_buf_get_mark(buf, '"')
+		local lcount = vim.api.nvim_buf_line_count(buf)
+		if mark[1] > 0 and mark[1] <= lcount then
+			pcall(vim.api.nvim_win_set_cursor, 0, mark)
+		end
 	end,
 })
 
@@ -127,30 +213,6 @@ vim.api.nvim_create_autocmd({ "BufEnter", "BufWritePost" }, {
 		if pcall(require, "lualine") then
 			require("lualine").setup({ options = { theme = "catppuccin" } })
 		end
-	end,
-})
-
-vim.api.nvim_create_autocmd({ "TextYankPost" }, {
-	callback = function()
-		vim.highlight.on_yank({ higroup = "Visual", timeout = 200 })
-	end,
-})
-
-vim.api.nvim_create_autocmd({ "BufWritePre" }, {
-	callback = function()
-		local exclude = { "diff" }
-		local buf = vim.api.nvim_get_current_buf()
-		if vim.tbl_contains(exclude, vim.bo[buf].filetype) then
-			return
-		end
-		vim.cmd([[:%s/\s\+$//e]])
-	end,
-})
-
-vim.api.nvim_create_autocmd({ "BufWritePost" }, {
-	pattern = { "*.java" },
-	callback = function()
-		vim.lsp.codelens.refresh()
 	end,
 })
 
@@ -901,7 +963,7 @@ if pcall(require, "lazy") then
 
 		{
 			"lewis6991/gitsigns.nvim",
-			event = "VeryLazy",
+			event = { "BufReadPre", "BufNewFile" },
 			config = function()
 				load_gitsigns()
 			end,
