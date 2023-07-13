@@ -97,7 +97,7 @@ vim.opt.wrap = false
 vim.opt.breakindent = true
 vim.opt.linebreak = true
 vim.opt.list = true
-vim.opt.pumblend = 7
+vim.opt.pumblend = 10
 vim.opt.pumheight = 15
 vim.opt.confirm = true
 vim.opt.signcolumn = "yes"
@@ -776,6 +776,7 @@ local function load_treesitter()
 			"markdown_inline",
 			"python",
 			"regex",
+			"tsx",
 			"typescript",
 			"yaml",
 		},
