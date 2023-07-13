@@ -909,7 +909,7 @@ if pcall(require, "lazy") then
 
 		{
 			"NvChad/nvim-colorizer.lua",
-			event = "VeryLazy",
+			event = {"BufReadPost", "BufNewFile"},
 			opts = {
 				filetypes = { "*", "!mason" },
 				user_default_options = {
