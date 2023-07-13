@@ -10,20 +10,20 @@ isDark=$(sleep 0.05 && gsettings get org.gnome.desktop.interface color-scheme)
 
 chAlacritty() {
   if [[ "$isDark" =~ "dark" ]]; then
-    grep -q "[lL]ight" "$theme" || return
+    grep -q -m1 "[lL]ight" "$theme" || return
     mv "$theme" "$light"
     mv "$dark" "$theme"
   elif [[ "$isDark" =~ "default" ]]; then
-    grep -q "[dD]ark" "$theme" || return
+    grep -q -m1 "[dD]ark" "$theme" || return
     mv "$theme" "$dark"
     mv "$light" "$theme"
   fi
 }
 
 chTmux() {
-  if [[ "$isDark" =~ "default" ]] || grep -q "[lL]ight" "$theme"; then
+  if grep -q -m1 "[lL]ight" "$theme"; then
     sed -i "s/\(status-style fg=colour\)254/\1235/g" "$tconf"
-  elif [[ "$isDark" =~ "prefer-dark" ]] || grep -q "[dD]ark" "$theme"; then
+  elif grep -q -m1 "[dD]ark" "$theme"; then
     sed -i "s/\(status-style fg=colour\)235/\1254/g" "$tconf"
   fi
   tmux source-file "$tconf"
