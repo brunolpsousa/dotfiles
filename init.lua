@@ -200,22 +200,6 @@ vim.api.nvim_create_autocmd("BufReadPost", {
 	end,
 })
 
-vim.api.nvim_create_autocmd({ "BufEnter", "BufWritePost" }, {
-	callback = function()
-		local getBG = vim.fn.system("gtk-query-settings | awk -F '\"' '/gtk-theme-name:/{printf $2}'")
-		if getBG:match("^Adwaita$") then
-			vim.opt.background = "light"
-			pcall(vim.cmd.colorscheme, "catppuccin-latte")
-		else
-			vim.opt.background = "dark"
-			pcall(vim.cmd.colorscheme, "catppuccin-mocha")
-		end
-		if pcall(require, "lualine") then
-			require("lualine").setup({ options = { theme = "catppuccin" } })
-		end
-	end,
-})
-
 -- Plugins
 local function load_autopairs()
 	require("nvim-autopairs").setup({
