@@ -849,13 +849,21 @@ end
 vim.opt.rtp:prepend(lazypath)
 if pcall(require, "lazy") then
 	require("lazy").setup({
+
 		{
 			"catppuccin/nvim",
 			lazy = false,
 			priority = 1000,
-			config = function()
-				pcall(vim.cmd.colorscheme, "catppuccin")
+			init = function()
+				pcall(vim.cmd.colorscheme, "catppuccin-mocha")
 			end,
+			opts = {
+				integrations = {
+					illuminate = true,
+					mason = true,
+					which_key = true,
+				},
+			},
 		},
 
 		{
@@ -868,7 +876,7 @@ if pcall(require, "lazy") then
 
 		{
 			"hrsh7th/nvim-cmp",
-			event = "InsertEnter",
+			event = { "BufReadPre", "BufNewFile" },
 			dependencies = {
 				"hrsh7th/cmp-buffer",
 				"hrsh7th/cmp-path",
@@ -888,31 +896,30 @@ if pcall(require, "lazy") then
 		{
 			"numToStr/Comment.nvim",
 			lazy = true,
-			config = function()
-				load_comment()
-			end,
 			dependencies = {
 				{
 					"JoosepAlviste/nvim-ts-context-commentstring",
 					event = "VeryLazy",
 				},
 			},
+			config = function()
+				load_comment()
+			end,
 		},
 
 		{
 			"NvChad/nvim-colorizer.lua",
-			event = "BufReadPost",
-			config = function()
-				require("colorizer").setup({
-					user_default_options = {
-						RRGGBBAA = true,
-						AARRGGBB = true,
-						css = true,
-						tailwind = true,
-						sass = { enable = true, parsers = { "css" } },
-					},
-				})
-			end,
+			event = "VeryLazy",
+			opts = {
+				filetypes = { "*", "!mason" },
+				user_default_options = {
+					RRGGBBAA = true,
+					AARRGGBB = true,
+					css = true,
+					tailwind = true,
+					sass = { enable = true, parsers = { "css" } },
+				},
+			},
 		},
 
 		{
@@ -927,16 +934,15 @@ if pcall(require, "lazy") then
 		{
 			"jinh0/eyeliner.nvim",
 			event = "VeryLazy",
-			config = function()
-				require("eyeliner").setup({
-					highlight_on_key = true,
-					dim = true,
-				})
-			end,
+			opts = {
+				highlight_on_key = true,
+				dim = true,
+			},
 		},
 
 		{
 			"nvim-lualine/lualine.nvim",
+			event = "VeryLazy",
 			dependencies = { "nvim-tree/nvim-web-devicons" },
 			config = function()
 				load_lualine()
@@ -944,7 +950,7 @@ if pcall(require, "lazy") then
 		},
 
 		{ "RRethy/vim-illuminate", event = "VeryLazy" },
-		{ "lukas-reineke/indent-blankline.nvim", event = "BufReadPre" },
+		{ "lukas-reineke/indent-blankline.nvim", event = "BufReadPre", opts = {} },
 
 		{
 			"lewis6991/gitsigns.nvim",
@@ -955,8 +961,12 @@ if pcall(require, "lazy") then
 		},
 
 		{
-			"williamboman/mason.nvim",
-			dependencies = { "williamboman/mason-lspconfig.nvim", { "neovim/nvim-lspconfig", lazy = true } },
+			"neovim/nvim-lspconfig",
+			event = { "BufReadPre", "BufNewFile" },
+			dependencies = {
+				{ "williamboman/mason.nvim", lazy = true, build = ":MasonUpdate" },
+				{ "williamboman/mason-lspconfig.nvim", lazy = true, build = ":MasonUpdate" },
+			},
 			config = function()
 				load_lsp()
 			end,
@@ -964,7 +974,7 @@ if pcall(require, "lazy") then
 
 		{
 			"jose-elias-alvarez/null-ls.nvim",
-			event = "BufReadPre",
+			event = { "BufReadPre", "BufNewFile" },
 			config = function()
 				load_null_ls()
 			end,
@@ -981,7 +991,8 @@ if pcall(require, "lazy") then
 
 		{
 			"nvim-treesitter/nvim-treesitter",
-			event = "BufReadPost",
+			event = { "BufReadPost", "BufNewFile" },
+			build = ":TSUpdateSync",
 			config = function()
 				load_treesitter()
 			end,
