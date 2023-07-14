@@ -17,6 +17,7 @@ export DOCKER_CONFIG="$XDG_CONFIG_HOME/docker"
 export NPM_CONFIG_CACHE="$XDG_CACHE_HOME/npm"
 export NPM_CONFIG_PREFIX="$XDG_DATA_HOME/npm"
 export NPM_CONFIG_USERCONFIG="$XDG_CONFIG_HOME/npm/config"
+export NODE_REPL_HISTORY="$XDG_CACHE_HOME/node_repl_history"
 export MACHINE_STORAGE_PATH="$XDG_DATA_HOME/docker-machine"
 export LESS='-R --mouse --wheel-lines=3'
 export LESS_TERMCAP_mb=$'\e[1;32m'
@@ -1217,9 +1218,16 @@ arch-base() {
 
           # Neovim config
           if [[ "$EDITOR" =~ 'nvim' ]]; then
-            [[ "$EDITOR" == 'io.neovim.nvim' ]] && local baseNvim="$HOME/.var/app/io.neovim.nvim/config" || local baseNvim="$XDG_CONFIG_HOME"
-            command mkdir -p "$baseNvim/nvim/spell"
+            if [[ "$EDITOR" == 'io.neovim.nvim' ]]; then
+              local baseNvim="$HOME/.var/app/io.neovim.nvim/config"
+              command mkdir "$XDG_DATA_HOME/flatpak/exports/share/applications"
+              command cp '/var/lib/flatpak/app/io.neovim.nvim/current/active/export/share/applications/io.neovim.nvim.desktop' "$XDG_DATA_HOME/flatpak/exports/share/applications/"
+              sed -i 's/\(nvim-wrapper \)io.neovim.nvim/\1--file-forwarding io.neovim.nvim @@ %F @@/' "$XDG_DATA_HOME/flatpak/exports/share/applications/io.neovim.nvim.desktop"
+            else
+              local baseNvim="$XDG_CONFIG_HOME"
+            fi
             [[ -f "$baseNvim/config/nvim/init.lua" ]] || fetch 'https://gitlab.com/brunolpsousa/dotfiles/-/raw/master/init.lua' > "$baseNvim/nvim/init.lua"
+            command mkdir -p "$baseNvim/nvim/spell"
             unset baseNvim
           fi
 
