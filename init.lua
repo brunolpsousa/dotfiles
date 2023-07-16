@@ -812,7 +812,7 @@ local function load_wk()
 			t = { "<cmd>Telescope live_grep<cr>", "Text" },
 			s = { "<cmd>Telescope resume<cr>", "Resume last search" },
 		},
-		p = {
+		x = {
 			name = "Plugins",
 			l = {
 				name = "Lazy",
