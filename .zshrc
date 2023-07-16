@@ -1173,17 +1173,19 @@ arch-base() {
                 Yes )
                   command mkdir -p "$XDG_CONFIG_HOME/git"
                   touch "$XDG_CONFIG_HOME/git/config"
-                  echo 'Enter your name:'
-                  read gitname
-                  [[ -z $gitname ]] || git config --global user.name "$gitname"
-                  echo 'Enter your e-mail:'
-                  read gitemail
-                  [[ -z $gitemail ]] || git config --global user.email "$gitemail"
+                  git config --global init.defaultBranch main
+
+                  echo 'Enter your name:'; read gitName
+                  [[ -z $gitName ]] || git config --global user.name "$gitName"
+
+                  echo 'Enter your e-mail:'; read gitEmail
+                  [[ -z $gitEmail ]] || git config --global user.email "$gitEmail"
+
                   gpg --list-keys --with-keygrip
-                  echo 'Enter your signingkey if you wish to define it'
-                  read gitsigningkey
-                  [[ -n "$gitsigningkey" ]] && git config --global user.signingkey "$gitsigningkey" && git config --global commit.gpgsign true
-                  unset gitname gitemail gitsigningkey
+                  echo 'Enter your signing key if you wish to define it'; read gitSigningKey
+                  [[ -n "$gitSigningKey" ]] && git config --global user.signingKey "$gitSigningKey" && git config --global commit.gpgsign true
+
+                  unset gitName gitEmail gitSigningKey
                   break;;
 
                 No ) break;;
