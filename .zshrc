@@ -673,7 +673,7 @@ myip() {
 # Speedtest
 speedtest() {
   local sURL="https://raw.githubusercontent.com/sivel/speedtest-cli/master/speedtest.py"
-  fetch "$sURL" | python -
+  fetch "$sURL" | python - "$@"
  }
 
 # by default show 3 months of calendar with week number
