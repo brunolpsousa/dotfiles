@@ -169,7 +169,13 @@ vim.api.nvim_create_autocmd({ "BufWritePre" }, {
 		if vim.tbl_contains(exclude, vim.bo[buf].filetype) then
 			return
 		end
-		vim.cmd([[:%s/\s\+$//e]])
+		local pos = vim.api.nvim_win_get_cursor(0)
+		-- Trim whitespaces
+		vim.cmd([[:silent %s/\s\+$//e]])
+		-- Remove comments with no subsequent content (#, %, --, //)
+		-- Match comments at the beginning of the line or preceded by spaces/tabs
+		vim.cmd([[:silent %s/\(^\|^\s\{}\)\(#\|%\|--\|\/\/\)$//e]])
+		pcall(vim.api.nvim_win_set_cursor, 0, pos)
 	end,
 })
 
