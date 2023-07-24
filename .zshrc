@@ -1360,7 +1360,7 @@ arch-base() {
 
         if [[ $flatpk =~ '^[yY]' ]]; then
           command -v flatpak >/dev/null || sh -c "${use_sudo} pacman -S flatpak"
-          flatpak install org.kde.KStyle.Adwaita org.gnome.Evince org.gnome.FileRoller org.gnome.Calculator org.gnome.Chess org.gnome.Mines
+          flatpak install org.gnome.Evince org.gnome.FileRoller org.gnome.Calculator org.gnome.Chess org.gnome.Mines; flatpak -u override --filesystem=host org.gnome.FileRoller
         else
           sh -c "${use_sudo} pacman -S --needed evince file-roller gnome-calculator gnome-chess gnome-mines"
         fi
