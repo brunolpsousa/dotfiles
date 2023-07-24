@@ -751,7 +751,12 @@ local function load_null_ls()
 			require("null-ls").builtins.formatting.black.with({ extra_args = { "--fast" } }),
 			require("null-ls").builtins.formatting.prettier.with({
 				extra_filetypes = { "toml" },
-				extra_args = { "--no-semi", "--single-quote", "--jsx-single-quote" },
+				extra_args = {
+					"--config-precedence=file-override",
+					"--no-semi",
+					"--single-quote",
+					"--jsx-single-quote",
+				},
 			}),
 		},
 	})
