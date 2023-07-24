@@ -1106,6 +1106,8 @@ arch-base() {
         if [[ "$EUID" != 0 ]]; then
           if [[ $flatpk =~ '^[yY]' ]] && command -v flatpak >/dev/null; then
             flatpak install io.neovim.nvim org.freedesktop.Sdk.Extension.node18 org.mozilla.firefox io.mpv.Mpv com.valvesoftware.Steam org.qbittorrent.qBittorrent org.geeqie.Geeqie; flatpak override -u --env=FLATPAK_ENABLE_SDK_EXT=node18 io.neovim.nvim; flatpak -u override --nofilesystem=xdg-music --nofilesystem=xdg-pictures com.valvesoftware.Steam
+            command mkdir -p "$XDG_DATA_HOME/icons"
+            fetch 'https://raw.githubusercontent.com/qbittorrent/qBittorrent/master/src/icons/qbittorrent-tray.svg' > "$XDG_DATA_HOME/icons/qbittorrent-tray.png"
           else
             sudo pacman -S --needed neovim nodejs firefox mpv steam qbittorrent geeqie gnuchess
           fi
