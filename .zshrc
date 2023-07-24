@@ -1224,7 +1224,7 @@ arch-base() {
           if [[ "$EDITOR" =~ 'nvim' ]]; then
             if [[ "$EDITOR" == 'io.neovim.nvim' ]]; then
               local baseNvim="$HOME/.var/app/io.neovim.nvim/config"
-              command mkdir "$XDG_DATA_HOME/flatpak/exports/share/applications"
+              command mkdir -p "$XDG_DATA_HOME/flatpak/exports/share/applications"
               command cp '/var/lib/flatpak/app/io.neovim.nvim/current/active/export/share/applications/io.neovim.nvim.desktop' "$XDG_DATA_HOME/flatpak/exports/share/applications/"
               sed -i 's/\(nvim-wrapper \)io.neovim.nvim/\1--file-forwarding io.neovim.nvim @@ %F @@/' "$XDG_DATA_HOME/flatpak/exports/share/applications/io.neovim.nvim.desktop"
             else
