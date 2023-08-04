@@ -188,9 +188,9 @@ vim.api.nvim_create_autocmd({ "BufWritePre" }, {
 
 		-- Trim whitespaces
 		vim.cmd([[:silent %s/\s\+$//e]])
-		-- Remove comments with no subsequent content (#, %, --, //)
+		-- Remove comments with no subsequent content (#, %, ;;, --, //)
 		-- Match comments at the beginning of the line or preceded by spaces/tabs
-		vim.cmd([[:silent %s/\(^\|^\s\{}\)\(#\|%\|--\|\/\/\)$//e]])
+		vim.cmd([[:silent %s/\(^\|^\s\{}\)\(#\|%\|;;\|--\|\/\/\)$//e]])
 
 		pcall(vim.api.nvim_win_set_cursor, 0, pos)
 	end,
