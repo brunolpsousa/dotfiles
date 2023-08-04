@@ -162,6 +162,20 @@ vim.api.nvim_create_autocmd({ "FileType" }, {
 	end,
 })
 
+local function lsp_format(async, bufnr)
+	async = async or false
+	vim.lsp.buf.format({
+		filter = function(client)
+			if client.name == "tsserver" then
+				return false
+			end
+			return true
+		end,
+		async = async,
+		bufnr = bufnr,
+	})
+end
+
 vim.api.nvim_create_autocmd({ "BufWritePre" }, {
 	callback = function()
 		local exclude = { "diff" }
@@ -169,15 +183,22 @@ vim.api.nvim_create_autocmd({ "BufWritePre" }, {
 		if vim.tbl_contains(exclude, vim.bo[buf].filetype) then
 			return
 		end
+
 		local pos = vim.api.nvim_win_get_cursor(0)
+
 		-- Trim whitespaces
 		vim.cmd([[:silent %s/\s\+$//e]])
 		-- Remove comments with no subsequent content (#, %, --, //)
 		-- Match comments at the beginning of the line or preceded by spaces/tabs
 		vim.cmd([[:silent %s/\(^\|^\s\{}\)\(#\|%\|--\|\/\/\)$//e]])
+
 		pcall(vim.api.nvim_win_set_cursor, 0, pos)
 	end,
 })
+
+vim.api.nvim_create_user_command("LspFormat", function()
+	lsp_format(true)
+end, {})
 
 -- Auto create dir when saving a file, in case some intermediate directory does not exist
 vim.api.nvim_create_autocmd({ "BufWritePre" }, {
@@ -465,12 +486,7 @@ local function load_lsp()
 			require("which-key").register({
 				l = {
 					name = "LSP",
-					f = {
-						function()
-							vim.lsp.buf.format({ async = true })
-						end,
-						"Format",
-					},
+					f = { "<cmd>LspFormat<CR>", "Format" },
 					r = { vim.lsp.buf.rename, "Rename" },
 					h = { vim.lsp.buf.signature_help, "Signature Help" },
 					a = { vim.lsp.buf.code_action, "Code Action" },
@@ -533,7 +549,7 @@ local function load_lsp()
 		vim.cmd([[:amenu PopUp.-Sep- :]])
 		vim.cmd([[:amenu PopUp.Rename\ Definition <cmd>:lua vim.lsp.buf.rename()<CR>]])
 		vim.cmd([[:amenu PopUp.Code\ Actions <cmd>:lua vim.lsp.buf.code_action()<CR>]])
-		vim.cmd([[:amenu PopUp.Format\ Document <cmd>:lua vim.lsp.buf.format({ async = true })<CR>]])
+		vim.cmd([[:amenu PopUp.Format\ Document <cmd>:LspFormat<CR>]])
 	end
 
 	local opts = {}
@@ -822,6 +838,10 @@ local function load_wk()
 			R = { "<cmd>Telescope registers<cr>", "Registers" },
 			t = { "<cmd>Telescope live_grep<cr>", "Text" },
 			s = { "<cmd>Telescope resume<cr>", "Resume last search" },
+		},
+		l = {
+			name = "LSP",
+			f = { "<cmd>LspFormat<CR>", "Format" },
 		},
 		x = {
 			name = "Plugins",
