@@ -574,7 +574,11 @@ local function load_lsp()
 			},
 		}
 		server = vim.split(server, "@")[1]
+		if server == "tailwindcss" then
+			goto continue
+		end
 		require("lspconfig")[server].setup(opts)
+		::continue::
 	end
 end
 
