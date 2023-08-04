@@ -435,6 +435,10 @@ local function load_lsp()
 	local capabilities = vim.lsp.protocol.make_client_capabilities()
 	capabilities.textDocument.completion.completionItem.snippetSupport = true
 	capabilities = require("cmp_nvim_lsp").default_capabilities(capabilities)
+	capabilities.textDocument.foldingRange = {
+		dynamicRegistration = false,
+		lineFoldingOnly = true,
+	}
 
 	local signs = {
 		{ name = "DiagnosticSignError", text = "" },
@@ -1028,6 +1032,23 @@ if pcall(require, "lazy") then
 			config = function()
 				load_treesitter()
 			end,
+		},
+
+		{
+			"kevinhwang91/nvim-ufo",
+			event = { "BufReadPre", "BufNewFile" },
+			dependencies = {
+				"kevinhwang91/promise-async",
+			},
+			init = function()
+				vim.o.foldcolumn = "1"
+				vim.o.foldlevel = 99
+				vim.o.foldlevelstart = 99
+				vim.o.foldenable = true
+				vim.keymap.set("n", "zR", require("ufo").openAllFolds)
+				vim.keymap.set("n", "zM", require("ufo").closeAllFolds)
+			end,
+			opts = {},
 		},
 
 		{
