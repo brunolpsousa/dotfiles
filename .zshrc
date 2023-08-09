@@ -1107,7 +1107,8 @@ arch-base() {
           if [[ $flatpk =~ '^[yY]' ]] && command -v flatpak >/dev/null; then
             command mkdir -p "$XDG_DATA_HOME/icons"
             fetch 'https://raw.githubusercontent.com/qbittorrent/qBittorrent/master/src/icons/qbittorrent-tray.svg' > "$XDG_DATA_HOME/icons/qbittorrent-tray.png"
-            flatpak install io.neovim.nvim org.freedesktop.Sdk.Extension.node18 com.github.tchx84.Flatseal org.mozilla.firefox com.brave.Browser io.mpv.Mpv com.valvesoftware.Steam org.qbittorrent.qBittorrent org.geeqie.Geeqie; flatpak override -u --env=FLATPAK_ENABLE_SDK_EXT=node18 io.neovim.nvim
+            flatpak install io.neovim.nvim org.freedesktop.Sdk.Extension.node18 org.mozilla.firefox org.freedesktop.Platform.ffmpeg-full com.brave.Browser io.mpv.Mpv com.valvesoftware.Steam org.qbittorrent.qBittorrent org.geeqie.Geeqie
+            flatpak override -u --env=FLATPAK_ENABLE_SDK_EXT=node18 io.neovim.nvim
           else
             sudo pacman -S --needed neovim nodejs firefox mpv steam qbittorrent geeqie gnuchess
           fi
@@ -1360,9 +1361,10 @@ arch-base() {
 
         if [[ $flatpk =~ '^[yY]' ]]; then
           command -v flatpak >/dev/null || sh -c "${use_sudo} pacman -S flatpak"
-          flatpak install org.gnome.Evince org.gnome.FileRoller org.gnome.Calculator org.gnome.Chess org.gnome.Mines; flatpak -u override --filesystem=host org.gnome.FileRoller
+          flatpak install org.gnome.FileRoller org.gnome.Calculator org.gnome.Chess org.gnome.Mines
+          flatpak override -u --filesystem=host org.gnome.FileRoller
         else
-          sh -c "${use_sudo} pacman -S --needed evince file-roller gnome-calculator gnome-chess gnome-mines"
+          sh -c "${use_sudo} pacman -S --needed file-roller gnome-calculator gnome-chess gnome-mines"
         fi
 
         sh -c "${use_sudo} sed -i 's/#HandleLidSwitch=suspend/HandleLidSwitch=lock/' /etc/systemd/logind.conf"
