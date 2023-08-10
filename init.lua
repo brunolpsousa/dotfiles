@@ -291,6 +291,8 @@ local function load_cmp()
 	end
 
 	local cmp = require("cmp")
+	local luasnip = require("luasnip")
+
 	cmp.setup({
 		snippet = {
 			expand = function(args)
@@ -304,32 +306,30 @@ local function load_cmp()
 		},
 
 		mapping = cmp.mapping.preset.insert({
-			["<C-k>"] = cmp.mapping.select_prev_item(),
-			["<C-j>"] = cmp.mapping.select_next_item(),
-			["<C-u>"] = cmp.mapping.scroll_docs(-1),
-			["<C-d>"] = cmp.mapping.scroll_docs(1),
+			["<C-k>"] = cmp.mapping.select_prev_item({ behavior = cmp.SelectBehavior.Insert }),
+			["<C-j>"] = cmp.mapping.select_next_item({ behavior = cmp.SelectBehavior.Insert }),
+			["<C-u>"] = cmp.mapping.scroll_docs(-3),
+			["<C-d>"] = cmp.mapping.scroll_docs(3),
 			["<C-Space>"] = cmp.mapping.complete(),
 			["<C-c>"] = cmp.mapping.abort(),
-			["<CR>"] = cmp.mapping.confirm({ select = true }),
+			["<CR>"] = cmp.mapping.confirm({ behavior = cmp.ConfirmBehavior.Replace, select = true }),
 			["<Tab>"] = cmp.mapping(function(fallback)
 				if cmp.visible() then
 					cmp.select_next_item()
-				elseif require("luasnip").expand_or_jumpable() then
-					require("luasnip").expand_or_jump()
+				elseif luasnip.expand_or_jumpable() then
+					luasnip.expand_or_jump()
 				elseif has_words_before() then
 					cmp.complete()
-				else
-					fallback()
 				end
+				fallback()
 			end, { "i", "s" }),
 			["<S-Tab>"] = cmp.mapping(function(fallback)
 				if cmp.visible() then
 					cmp.select_prev_item()
-				elseif require("luasnip").jumpable(-1) then
-					require("luasnip").jump(-1)
-				else
-					fallback()
+				elseif luasnip.jumpable(-1) then
+					luasnip.jump(-1)
 				end
+				fallback()
 			end, { "i", "s" }),
 		}),
 
