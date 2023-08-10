@@ -558,6 +558,8 @@ local function load_lsp()
 
 	local opts = {}
 	for _, server in pairs(require("mason-lspconfig").get_installed_servers()) do
+		server = vim.split(server, "@")[1]
+
 		opts = {
 			on_attach = on_attach,
 			capabilities = capabilities,
@@ -573,12 +575,24 @@ local function load_lsp()
 				},
 			},
 		}
-		server = vim.split(server, "@")[1]
+
 		if server == "tailwindcss" then
-			goto continue
+			opts.root_dir = function(fname)
+				local util = require("lspconfig/util")
+				return util.root_pattern(
+					"tailwind.config.js",
+					"tailwind.config.ts",
+					"tailwind.config.cjs",
+					"tailwind.config.mjs",
+					"tailwind.js",
+					"tailwind.ts",
+					"tailwind.cjs",
+					"tailwind.mjs"
+				)(fname)
+			end
 		end
+
 		require("lspconfig")[server].setup(opts)
-		::continue::
 	end
 end
 
