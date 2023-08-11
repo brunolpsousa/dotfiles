@@ -571,7 +571,7 @@ local function load_lsp()
 						enable = false,
 						defaultConfig = { quote_style = "double" },
 					},
-					diagnostics = { globals = { "vim" } },
+					diagnostics = { globals = { "vim", "mp" } },
 					workspace = { library = vim.api.nvim_get_runtime_file("", true), checkThirdParty = false },
 					telemetry = { enable = false },
 				},
