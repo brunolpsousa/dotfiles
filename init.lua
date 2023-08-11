@@ -783,12 +783,14 @@ local function load_null_ls()
 	require("null-ls").setup({
 		debug = false,
 		sources = {
-			require("null-ls").builtins.diagnostics.flake8,
+			require("null-ls").builtins.diagnostics.flake8.with({
+				extra_args = { "--max-line-length=88", "--extend-ignore=E203" },
+			}),
 			require("null-ls").builtins.code_actions.shellcheck,
 			require("null-ls").builtins.diagnostics.shellcheck,
 			require("null-ls").builtins.formatting.stylua,
 			require("null-ls").builtins.formatting.google_java_format,
-			require("null-ls").builtins.formatting.black.with({ extra_args = { "--fast" } }),
+			require("null-ls").builtins.formatting.black.with({ extra_args = { "--fast", "--preview" } }),
 			require("null-ls").builtins.formatting.prettier.with({
 				extra_filetypes = { "toml" },
 				extra_args = {
