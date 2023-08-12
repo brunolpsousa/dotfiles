@@ -35,7 +35,7 @@ keymap({ "n", "v", "i" }, "<C-s>", "<cmd>w<CR>", { desc = "Save" })
 keymap({ "n", "v" }, "<leader>s", "<cmd>noautocmd w<CR>", { desc = "Save without formatting" })
 keymap("n", "<leader>S", "<cmd>wa<CR>", { desc = "Save all" })
 keymap("n", "<S-q>", "<cmd>bd<CR>", { desc = "Close buffer" })
-keymap("n", "<C-q>", "<cmd>q<CR>", { desc = "Close window" })
+keymap({ "n", "i" }, "<C-q>", "<cmd>q<CR>", { desc = "Close window" })
 keymap("n", "<leader>q", "<cmd>qa<CR>", { desc = "Close all windows" })
 
 keymap("n", "<Tab>", "<cmd>bnext<CR>", { desc = "Next buffer" })
