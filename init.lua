@@ -493,6 +493,24 @@ if pcall(require, "lazy") then
 		{
 			"rcarriga/nvim-dap-ui",
 			lazy = true,
+			dependencies = {
+				"mfussenegger/nvim-dap",
+				init = function()
+					vim.fn.sign_define(
+						"DapBreakpoint",
+						{ text = "", texthl = "DiagnosticSignError", linehl = "", numhl = "" }
+					)
+					require("dap").listeners.after.event_initialized["dapui_config"] = function()
+						require("dapui").open()
+					end
+					require("dap").listeners.before.event_terminated["dapui_config"] = function()
+						require("dapui").close()
+					end
+					require("dap").listeners.before.event_exited["dapui_config"] = function()
+						require("dapui").close()
+					end
+				end,
+			},
 			opts = {
 				expand_lines = true,
 				icons = { expanded = "", collapsed = "", circular = "" },
@@ -521,24 +539,6 @@ if pcall(require, "lazy") then
 					max_width = 0.5,
 					border = vim.g.border_chars,
 				},
-			},
-			dependencies = {
-				"mfussenegger/nvim-dap",
-				init = function()
-					vim.fn.sign_define(
-						"DapBreakpoint",
-						{ text = "", texthl = "DiagnosticSignError", linehl = "", numhl = "" }
-					)
-					require("dap").listeners.after.event_initialized["dapui_config"] = function()
-						require("dapui").open()
-					end
-					require("dap").listeners.before.event_terminated["dapui_config"] = function()
-						require("dapui").close()
-					end
-					require("dap").listeners.before.event_exited["dapui_config"] = function()
-						require("dapui").close()
-					end
-				end,
 			},
 		},
 
@@ -708,6 +708,45 @@ if pcall(require, "lazy") then
 		{
 			"neovim/nvim-lspconfig",
 			event = { "BufReadPre", "BufNewFile" },
+			dependencies = {
+				{
+					"williamboman/mason.nvim",
+					lazy = true,
+					build = ":MasonUpdate",
+					init = function()
+						local packages = {
+							"black",
+							"flake8",
+							"prettier",
+							"shellcheck",
+							"stylua",
+						}
+						vim.api.nvim_create_user_command("MasonInstallAll", function()
+							vim.cmd("MasonInstall " .. table.concat(packages, " "))
+						end, {})
+					end,
+					opts = {},
+				},
+				{
+					"williamboman/mason-lspconfig.nvim",
+					lazy = true,
+					build = ":MasonUpdate",
+					opts = {
+						ensure_installed = {
+							"bashls",
+							"cssls",
+							"html",
+							"jsonls",
+							"lua_ls",
+							"pyright",
+							"tailwindcss",
+							"tsserver",
+							"yamlls",
+						},
+						automatic_installation = true,
+					},
+				},
+			},
 			init = function()
 				local signs = {
 					{ name = "DiagnosticSignError", text = "" },
@@ -882,45 +921,6 @@ if pcall(require, "lazy") then
 					require("lspconfig")[server].setup(opts)
 				end
 			end,
-			dependencies = {
-				{
-					"williamboman/mason.nvim",
-					lazy = true,
-					build = ":MasonUpdate",
-					init = function()
-						local packages = {
-							"black",
-							"flake8",
-							"prettier",
-							"shellcheck",
-							"stylua",
-						}
-						vim.api.nvim_create_user_command("MasonInstallAll", function()
-							vim.cmd("MasonInstall " .. table.concat(packages, " "))
-						end, {})
-					end,
-					opts = {},
-				},
-				{
-					"williamboman/mason-lspconfig.nvim",
-					lazy = true,
-					build = ":MasonUpdate",
-					opts = {
-						ensure_installed = {
-							"bashls",
-							"cssls",
-							"html",
-							"jsonls",
-							"lua_ls",
-							"pyright",
-							"tailwindcss",
-							"tsserver",
-							"yamlls",
-						},
-						automatic_installation = true,
-					},
-				},
-			},
 		},
 
 		{
@@ -955,13 +955,8 @@ if pcall(require, "lazy") then
 		{
 			"nvim-telescope/telescope.nvim",
 			event = "VeryLazy",
-			init = function()
-				require("telescope").load_extension("projects")
-			end,
-			opts = {
-				defaults = { path_display = { "smart" }, file_ignore_patterns = { ".git/", "node_modules" } },
-			},
 			dependencies = {
+				"nvim-lua/plenary.nvim",
 				{
 					"ahmedkhalf/project.nvim",
 					name = "project_nvim",
@@ -970,7 +965,12 @@ if pcall(require, "lazy") then
 						patterns = { ".git", "Makefile", "package.json" },
 					},
 				},
-				"nvim-lua/plenary.nvim",
+			},
+			init = function()
+				require("telescope").load_extension("projects")
+			end,
+			opts = {
+				defaults = { path_display = { "smart" }, file_ignore_patterns = { ".git/", "node_modules" } },
 			},
 		},
 
@@ -1008,6 +1008,9 @@ if pcall(require, "lazy") then
 		{
 			"kevinhwang91/nvim-ufo",
 			event = { "BufReadPre", "BufNewFile" },
+			dependencies = {
+				"kevinhwang91/promise-async",
+			},
 			init = function()
 				-- vim.o.foldcolumn = "1"
 				vim.o.foldlevel = 99
@@ -1017,9 +1020,6 @@ if pcall(require, "lazy") then
 				keymap("n", "zM", require("ufo").closeAllFolds)
 			end,
 			opts = {},
-			dependencies = {
-				"kevinhwang91/promise-async",
-			},
 		},
 
 		{
