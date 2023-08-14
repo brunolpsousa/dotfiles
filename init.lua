@@ -296,7 +296,7 @@ if pcall(require, "lazy") then
 				{
 					"L3MON4D3/LuaSnip",
 					build = "make install_jsregexp",
-					init = function()
+					config = function()
 						require("luasnip.loaders.from_vscode").lazy_load()
 						local ls = require("luasnip")
 
@@ -320,7 +320,7 @@ if pcall(require, "lazy") then
 				},
 				{
 					"jcdickinson/codeium.nvim",
-					opts = function()
+					config = function()
 						-- https://github.com/jcdickinson/codeium.nvim/issues/20 || https://github.com/jcdickinson/codeium.nvim/issues/38
 						local file_size = vim.api.nvim_exec2("echo getfsize(expand(@%))", { output = true })
 						file_size = tonumber(file_size.output)
