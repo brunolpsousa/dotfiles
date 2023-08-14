@@ -2,40 +2,40 @@
 local keymap = vim.keymap.set
 vim.g.mapleader = " "
 
-keymap("n", "<S-g>", "<S-g>zz", { desc = "Goto last line" })
-keymap("n", "<C-u>", "<C-u>zz", { desc = "Half page up" })
-keymap("n", "<C-d>", "<C-d>zz", { desc = "Half page down" })
-keymap("n", "<C-b>", "<C-b>zz", { desc = "Page up" })
-keymap("n", "<C-f>", "<C-f>zz", { desc = "Page down" })
+keymap("n", "<S-G>", "<S-G>zz", { desc = "Goto last line" })
+keymap("n", "<C-U>", "<C-U>zz", { desc = "Half page up" })
+keymap("n", "<C-D>", "<C-D>zz", { desc = "Half page down" })
+keymap("n", "<C-B>", "<C-B>zz", { desc = "Page up" })
+keymap("n", "<C-F>", "<C-F>zz", { desc = "Page down" })
 
 -- https://github.com/mhinz/vim-galore#saner-behavior-of-n-and-n
 keymap("n", "n", "(v:searchforward ? 'nzzzv' : 'Nzzzv')", { expr = true, desc = "Next search result" })
 keymap("n", "N", "(v:searchforward ? 'Nzzzv' : 'nzzzv')", { expr = true, desc = "Prev search result" })
 
 keymap("n", "J", "mzJ`z", { desc = "Join lines" })
-keymap("i", "<C-h>", "<C-w>", { desc = "Delete previous word" })
-keymap("i", "<C-Del>", "<C-o>dw", { desc = "Detele next word" })
+keymap("i", "<C-H>", "<C-W>", { desc = "Delete previous word" })
+keymap("i", "<C-Del>", "<C-O>dw", { desc = "Detele next word" })
 
 -- Add undo break-points
-keymap("i", ",", ",<C-g>u")
-keymap("i", ".", ".<C-g>u")
-keymap("i", ";", ";<C-g>u")
+keymap("i", ",", ",<C-G>u")
+keymap("i", ".", ".<C-G>u")
+keymap("i", ";", ";<C-G>u")
 
-keymap("n", "<C-h>", "<C-w>h", { desc = "Goto left window" })
-keymap("n", "<C-j>", "<C-w>j", { desc = "Goto lower window" })
-keymap("n", "<C-k>", "<C-w>k", { desc = "Goto upper window" })
-keymap("n", "<C-l>", "<C-w>l", { desc = "Goto right window" })
+keymap("n", "<C-H>", "<C-W>h", { desc = "Goto left window" })
+keymap("n", "<C-J>", "<C-W>j", { desc = "Goto lower window" })
+keymap("n", "<C-K>", "<C-W>k", { desc = "Goto upper window" })
+keymap("n", "<C-L>", "<C-W>l", { desc = "Goto right window" })
 
 keymap("n", "<C-Up>", "<cmd>resize +2<CR>", { desc = "Increase window height" })
 keymap("n", "<C-Down>", "<cmd>resize -2<CR>", { desc = "Decrease window height" })
 keymap("n", "<C-Left>", "<cmd>vertical resize -2<CR>", { desc = "Decrease window width" })
 keymap("n", "<C-Right>", "<cmd>vertical resize +2<CR>", { desc = "Increase window width" })
 
-keymap({ "n", "v", "i" }, "<C-s>", "<cmd>w<CR>", { desc = "Save" })
+keymap({ "n", "v", "i" }, "<C-S>", "<cmd>w<CR>", { desc = "Save" })
 keymap({ "n", "v" }, "<leader>s", "<cmd>noautocmd w<CR>", { desc = "Save without formatting" })
 keymap("n", "<leader>S", "<cmd>wa<CR>", { desc = "Save all" })
-keymap("n", "<S-q>", "<cmd>bd<CR>", { desc = "Close buffer" })
-keymap({ "n", "i" }, "<C-q>", "<cmd>q<CR>", { desc = "Close window" })
+keymap("n", "<S-Q>", "<cmd>bd<CR>", { desc = "Close buffer" })
+keymap({ "n", "i" }, "<C-Q>", "<cmd>q<CR>", { desc = "Close window" })
 keymap("n", "<leader>q", "<cmd>qa<CR>", { desc = "Close all windows" })
 
 keymap("n", "<Tab>", "<cmd>bnext<CR>", { desc = "Next buffer" })
@@ -47,12 +47,12 @@ keymap("n", "<C-Bslash>", "<cmd>sp term://$SHELL<CR><cmd>resize -8<CR>i", { desc
 
 keymap("v", "<", "<gv", { desc = "Indent left" })
 keymap("v", ">", ">gv", { desc = "Indent right" })
-keymap("n", "<A-j>", "<cmd>m.+1<CR>==", { desc = "Move line down" })
-keymap("n", "<A-k>", "<cmd>m.-2<CR>==", { desc = "Move line up" })
-keymap("i", "<A-j>", "<Esc><cmd>m.+1<CR>==gi", { desc = "Move line down" })
-keymap("i", "<A-k>", "<Esc><cmd>m.-2<CR>==gi", { desc = "Move line up" })
-keymap("v", "<A-j>", ":m'>+1<CR>gv=gv", { silent = true, desc = "Move line down" })
-keymap("v", "<A-k>", ":m'<-2<CR>gv=gv", { silent = true, desc = "Move line up" })
+keymap("n", "<A-J>", "<cmd>m.+1<CR>==", { desc = "Move line down" })
+keymap("n", "<A-K>", "<cmd>m.-2<CR>==", { desc = "Move line up" })
+keymap("i", "<A-J>", "<Esc><cmd>m.+1<CR>==gi", { desc = "Move line down" })
+keymap("i", "<A-K>", "<Esc><cmd>m.-2<CR>==gi", { desc = "Move line up" })
+keymap("v", "<A-J>", ":m'>+1<CR>gv=gv", { silent = true, desc = "Move line down" })
+keymap("v", "<A-K>", ":m'<-2<CR>gv=gv", { silent = true, desc = "Move line up" })
 
 keymap("v", "p", "P", { desc = "Paste" })
 keymap("v", "<leader>d", '"+ygvd', { desc = "Delete to clipboard" })
@@ -158,7 +158,7 @@ vim.api.nvim_create_autocmd({ "FileType" }, {
 	},
 	callback = function(event)
 		vim.bo[event.buf].buflisted = false
-		vim.keymap.set("n", "q", "<cmd>close<cr>", { buffer = event.buf, silent = true })
+		keymap("n", "q", "<cmd>close<CR>", { buffer = event.buf, silent = true })
 	end,
 })
 
@@ -642,11 +642,11 @@ if pcall(require, "lazy") then
 							g = {
 								name = "Git",
 								j = {
-									"<cmd>lua require 'gitsigns'.next_hunk({navigation_message = false})<cr>",
+									"<cmd>lua require 'gitsigns'.next_hunk({navigation_message = false})<CR>",
 									"Next hunk",
 								},
 								k = {
-									"<cmd>lua require 'gitsigns'.prev_hunk({navigation_message = false})<cr>",
+									"<cmd>lua require 'gitsigns'.prev_hunk({navigation_message = false})<CR>",
 									"Prev hunk",
 								},
 								l = {
@@ -672,11 +672,11 @@ if pcall(require, "lazy") then
 								},
 								t = { gs.toggle_deleted, "Toggle Deleted" },
 
-								o = { "<cmd>Telescope git_status<cr>", "Open changed file" },
-								b = { "<cmd>Telescope git_branches<cr>", "Checkout branch" },
-								c = { "<cmd>Telescope git_commits<cr>", "Checkout commit" },
+								o = { "<cmd>Telescope git_status<CR>", "Open changed file" },
+								b = { "<cmd>Telescope git_branches<CR>", "Checkout branch" },
+								c = { "<cmd>Telescope git_commits<CR>", "Checkout commit" },
 								C = {
-									"<cmd>Telescope git_bcommits<cr>",
+									"<cmd>Telescope git_bcommits<CR>",
 									"Checkout commit(for current file)",
 								},
 							},
@@ -775,14 +775,14 @@ if pcall(require, "lazy") then
 								a = { vim.lsp.buf.code_action, "Code Action" },
 								A = { vim.lsp.codelens.run, "CodeLens Action" },
 								q = { vim.diagnostic.setloclist, "Quickfix" },
-								Q = { "<cmd>Telescope quickfix<cr>", "Telescope Quickfix" },
-								s = { "<cmd>Telescope lsp_document_symbols<cr>", "Document Symbols" },
-								S = { "<cmd>Telescope lsp_dynamic_workspace_symbols<cr>", "Workspace Symbols" },
+								Q = { "<cmd>Telescope quickfix<CR>", "Telescope Quickfix" },
+								s = { "<cmd>Telescope lsp_document_symbols<CR>", "Document Symbols" },
+								S = { "<cmd>Telescope lsp_dynamic_workspace_symbols<CR>", "Workspace Symbols" },
 								d = { vim.lsp.buf.type_definition, "Type Definition" },
 								j = { vim.diagnostic.goto_next, "Next Diagnostic" },
 								k = { vim.diagnostic.goto_prev, "Previous Diagnostic" },
 								w = { "<cmd>Telescope diagnostics<CR>", "Diagnostics" },
-								b = { "<cmd>Telescope diagnostics bufnr=0 theme=get_ivy<cr>", "Buffer Diagnostics" },
+								b = { "<cmd>Telescope diagnostics bufnr=0 theme=get_ivy<CR>", "Buffer Diagnostics" },
 								W = { "<cmd>Telescope lsp_workspace_diagnostics<CR>", "Workspace Diagnostics" },
 								F = { vim.lsp.buf.add_workspace_folder, "Add Workspace Folder" },
 								R = { vim.lsp.buf.remove_workspace_folder, "Remove Workspace Folder" },
@@ -797,7 +797,7 @@ if pcall(require, "lazy") then
 							d = {
 								name = "Debug",
 								t = { '<cmd>lua require("dap").toggle_breakpoint()<CR>', "Toggle Breakpoint" },
-								b = { '<cmd>lua require"dap".step_back()<CR>', "Step Back" },
+								b = { '<cmd>lua require("dap").step_back()<CR>', "Step Back" },
 								c = { '<cmd>lua require("dap").continue()<CR>', "Continue" },
 								C = { '<cmd>lua require("dap").run_to_cursor()<CR>', "Run to Cursor" },
 								d = { '<cmd>lua require("dap").disconnect()<CR>', "Disconnect" },
@@ -810,7 +810,7 @@ if pcall(require, "lazy") then
 								q = { '<cmd>lua require("dap").close()<CR>', "Quit" },
 								U = { '<cmd>lua require("dapui").toggle({reset = true})<CR>', "Dap UI" },
 								B = {
-									"<cmd>lua require(\"dap\").set_breakpoint(vim.fn.input('Breakpoint condition: '))<CR>",
+									"<cmd>lua require('dap').set_breakpoint(vim.fn.input('Breakpoint condition: '))<CR>",
 									"Breakpoint Condition",
 								},
 								e = { '<cmd>lua require("dap").goto_()<CR>', "Go to line (no execute)" },
@@ -1013,8 +1013,8 @@ if pcall(require, "lazy") then
 				vim.o.foldlevel = 99
 				vim.o.foldlevelstart = 99
 				vim.o.foldenable = true
-				vim.keymap.set("n", "zR", require("ufo").openAllFolds)
-				vim.keymap.set("n", "zM", require("ufo").closeAllFolds)
+				keymap("n", "zR", require("ufo").openAllFolds)
+				keymap("n", "zM", require("ufo").closeAllFolds)
 			end,
 			opts = {},
 			dependencies = {
@@ -1035,23 +1035,23 @@ if pcall(require, "lazy") then
 					f = {
 						name = "Find",
 						b = { "<cmd>Telescope buffers<CR>", "Buffers" },
-						c = { "<cmd>Telescope colorscheme<cr>", "Colorscheme" },
-						C = { "<cmd>Telescope commands<cr>", "Commands" },
-						e = { ":e %:h/<C-d>", "Edit file" },
+						c = { "<cmd>Telescope colorscheme<CR>", "Colorscheme" },
+						C = { "<cmd>Telescope commands<CR>", "Commands" },
+						e = { ":e %:h/<C-D>", "Edit file" },
 						f = { "<cmd>Telescope find_files<CR>", "Find file" },
-						h = { "<cmd>Telescope help_tags<cr>", "Help" },
-						H = { "<cmd>Telescope highlights<cr>", "Highlight groups" },
-						k = { "<cmd>Telescope keymaps<cr>", "Keymaps" },
-						m = { "<cmd>Telescope man_pages<cr>", "Man pages" },
+						h = { "<cmd>Telescope help_tags<CR>", "Help" },
+						H = { "<cmd>Telescope highlights<CR>", "Highlight groups" },
+						k = { "<cmd>Telescope keymaps<CR>", "Keymaps" },
+						m = { "<cmd>Telescope man_pages<CR>", "Man pages" },
 						p = { "<cmd>Telescope projects<CR>", "Projects" },
 						P = {
-							"<cmd>lua require('telescope.builtin').colorscheme({enable_preview = true})<cr>",
+							"<cmd>lua require('telescope.builtin').colorscheme({enable_preview = true})<CR>",
 							"Colorscheme with Preview",
 						},
-						r = { "<cmd>Telescope oldfiles<cr>", "Open recent file" },
-						R = { "<cmd>Telescope registers<cr>", "Registers" },
-						t = { "<cmd>Telescope live_grep<cr>", "Text" },
-						s = { "<cmd>Telescope resume<cr>", "Resume last search" },
+						r = { "<cmd>Telescope oldfiles<CR>", "Open recent file" },
+						R = { "<cmd>Telescope registers<CR>", "Registers" },
+						t = { "<cmd>Telescope live_grep<CR>", "Text" },
+						s = { "<cmd>Telescope resume<CR>", "Resume last search" },
 					},
 					l = {
 						name = "LSP",
@@ -1061,22 +1061,22 @@ if pcall(require, "lazy") then
 						name = "Plugins",
 						l = {
 							name = "Lazy",
-							S = { "<cmd>Lazy<cr>", "Status" },
-							i = { "<cmd>Lazy install<cr>", "Install" },
-							u = { "<cmd>Lazy update<cr>", "Update" },
-							s = { "<cmd>Lazy sync<cr>", "Sync" },
-							x = { "<cmd>Lazy clean<cr>", "Clean" },
-							c = { "<cmd>Lazy check<cr>", "Check" },
-							l = { "<cmd>Lazy log<cr>", "Log" },
-							r = { "<cmd>Lazy restore<cr>", "Restore" },
-							p = { "<cmd>Lazy profile<cr>", "Profile" },
-							d = { "<cmd>Lazy debug<cr>", "Debug" },
-							h = { "<cmd>Lazy help<cr>", "Help" },
+							S = { "<cmd>Lazy<CR>", "Status" },
+							i = { "<cmd>Lazy install<CR>", "Install" },
+							u = { "<cmd>Lazy update<CR>", "Update" },
+							s = { "<cmd>Lazy sync<CR>", "Sync" },
+							x = { "<cmd>Lazy clean<CR>", "Clean" },
+							c = { "<cmd>Lazy check<CR>", "Check" },
+							l = { "<cmd>Lazy log<CR>", "Log" },
+							r = { "<cmd>Lazy restore<CR>", "Restore" },
+							p = { "<cmd>Lazy profile<CR>", "Profile" },
+							d = { "<cmd>Lazy debug<CR>", "Debug" },
+							h = { "<cmd>Lazy help<CR>", "Help" },
 						},
-						i = { "<cmd>LspInfo<cr>", "LSP Info" },
-						m = { "<cmd>Mason<cr>", "Mason" },
-						n = { "<cmd>NullLsInfo<cr>", "null-ls Info" },
-						t = { "<cmd>TSUpdateSync<cr>", "Treesitter Update" },
+						i = { "<cmd>LspInfo<CR>", "LSP Info" },
+						m = { "<cmd>Mason<CR>", "Mason" },
+						n = { "<cmd>NullLsInfo<CR>", "null-ls Info" },
+						t = { "<cmd>TSUpdateSync<CR>", "Treesitter Update" },
 					},
 				}, { prefix = "<leader>" })
 			end,
