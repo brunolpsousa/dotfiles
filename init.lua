@@ -315,8 +315,9 @@ if pcall(require, "lazy") then
 								ls.change_choice(1)
 							end
 						end, { desc = "Snip choice" })
+
+						ls.setup({ history = true, update_events = { "TextChanged", "TextChangedI" } })
 					end,
-					opts = { history = true, update_events = { "TextChanged", "TextChangedI" } },
 				},
 				{
 					"jcdickinson/codeium.nvim",
@@ -330,10 +331,9 @@ if pcall(require, "lazy") then
 					end,
 				},
 			},
-			init = function()
-				vim.opt.completeopt = { "menuone", "noselect" }
-			end,
 			config = function()
+				vim.opt.completeopt = { "menuone", "noselect" }
+
 				local kind_icons = {
 					Text = "",
 					Method = "m",
@@ -1033,7 +1033,6 @@ if pcall(require, "lazy") then
 				"kevinhwang91/promise-async",
 			},
 			init = function()
-				-- vim.o.foldcolumn = "1"
 				vim.o.foldlevel = 99
 				vim.o.foldlevelstart = 99
 				vim.o.foldenable = true
