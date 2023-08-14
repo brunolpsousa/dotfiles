@@ -47,12 +47,12 @@ keymap("n", "<C-Bslash>", "<cmd>sp term://$SHELL<CR><cmd>resize -8<CR>i", { desc
 
 keymap("v", "<", "<gv", { desc = "Indent left" })
 keymap("v", ">", ">gv", { desc = "Indent right" })
-keymap("n", "<A-J>", "<cmd>m.+1<CR>==", { desc = "Move line down" })
-keymap("n", "<A-K>", "<cmd>m.-2<CR>==", { desc = "Move line up" })
-keymap("i", "<A-J>", "<Esc><cmd>m.+1<CR>==gi", { desc = "Move line down" })
-keymap("i", "<A-K>", "<Esc><cmd>m.-2<CR>==gi", { desc = "Move line up" })
-keymap("v", "<A-J>", ":m'>+1<CR>gv=gv", { silent = true, desc = "Move line down" })
-keymap("v", "<A-K>", ":m'<-2<CR>gv=gv", { silent = true, desc = "Move line up" })
+keymap("n", "<A-j>", "<cmd>m.+1<CR>==", { desc = "Move line down" })
+keymap("n", "<A-k>", "<cmd>m.-2<CR>==", { desc = "Move line up" })
+keymap("i", "<A-j>", "<Esc><cmd>m.+1<CR>==gi", { desc = "Move line down" })
+keymap("i", "<A-k>", "<Esc><cmd>m.-2<CR>==gi", { desc = "Move line up" })
+keymap("v", "<A-j>", ":m'>+1<CR>gv=gv", { silent = true, desc = "Move line down" })
+keymap("v", "<A-k>", ":m'<-2<CR>gv=gv", { silent = true, desc = "Move line up" })
 
 keymap("v", "p", "P", { desc = "Paste" })
 keymap("v", "<leader>d", '"+ygvd', { desc = "Delete to clipboard" })
