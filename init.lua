@@ -284,15 +284,40 @@ if pcall(require, "lazy") then
 		{
 			"hrsh7th/nvim-cmp",
 			event = { "BufReadPre", "BufNewFile" },
+			commit = "6c84bc75c64f778e9f1dcb798ed41c7fcb93b639",
 			dependencies = {
 				"hrsh7th/cmp-buffer",
 				"hrsh7th/cmp-path",
 				"hrsh7th/cmp-nvim-lsp",
 				"hrsh7th/cmp-nvim-lsp-signature-help",
-				"saadparwaiz1/cmp_luasnip",
-				"L3MON4D3/LuaSnip",
-				"rafamadriz/friendly-snippets",
 				"roobert/tailwindcss-colorizer-cmp.nvim",
+				"rafamadriz/friendly-snippets",
+				"saadparwaiz1/cmp_luasnip",
+				{
+					"L3MON4D3/LuaSnip",
+					build = "make install_jsregexp",
+					init = function()
+						require("luasnip.loaders.from_vscode").lazy_load()
+						local ls = require("luasnip")
+
+						keymap({ "i", "s" }, "<C-J>", function()
+							if ls.expand_or_jumpable() then
+								ls.expand_or_jump()
+							end
+						end, { desc = "Snip expand or jump" })
+						keymap({ "i", "s" }, "<C-K>", function()
+							if ls.jumpable(-1) then
+								ls.jump(-1)
+							end
+						end, { desc = "Snip jump backwards" })
+						keymap({ "i", "s" }, "<C-L>", function()
+							if ls.choice_active() then
+								ls.change_choice(1)
+							end
+						end, { desc = "Snip choice" })
+					end,
+					opts = { history = true, update_events = { "TextChanged", "TextChangedI" } },
+				},
 				{
 					"jcdickinson/codeium.nvim",
 					opts = function()
@@ -307,9 +332,8 @@ if pcall(require, "lazy") then
 			},
 			init = function()
 				vim.opt.completeopt = { "menuone", "noselect" }
-				require("luasnip.loaders.from_vscode").lazy_load()
 			end,
-			opts = function()
+			config = function()
 				local kind_icons = {
 					Text = "",
 					Method = "m",
@@ -339,6 +363,7 @@ if pcall(require, "lazy") then
 					Codeium = "󰚩",
 					Copilot = "",
 				}
+
 				local has_words_before = function()
 					unpack = unpack or table.unpack
 					local line, col = unpack(vim.api.nvim_win_get_cursor(0))
@@ -347,12 +372,12 @@ if pcall(require, "lazy") then
 				end
 
 				local cmp = require("cmp")
-				local luasnip = require("luasnip")
+				local ls = require("luasnip")
 
 				cmp.setup({
 					snippet = {
 						expand = function(args)
-							luasnip.lsp_expand(args.body)
+							ls.lsp_expand(args.body)
 						end,
 					},
 
@@ -362,18 +387,16 @@ if pcall(require, "lazy") then
 					},
 
 					mapping = cmp.mapping.preset.insert({
-						["<C-k>"] = cmp.mapping.select_prev_item({ behavior = cmp.SelectBehavior.Insert }),
-						["<C-j>"] = cmp.mapping.select_next_item({ behavior = cmp.SelectBehavior.Insert }),
-						["<C-u>"] = cmp.mapping.scroll_docs(-3),
-						["<C-d>"] = cmp.mapping.scroll_docs(3),
+						["<C-U>"] = cmp.mapping.scroll_docs(-3),
+						["<C-D>"] = cmp.mapping.scroll_docs(3),
 						["<C-Space>"] = cmp.mapping.complete(),
-						["<C-c>"] = cmp.mapping.abort(),
+						["<C-C>"] = cmp.mapping.abort(),
 						["<CR>"] = cmp.mapping.confirm({ behavior = cmp.ConfirmBehavior.Replace, select = true }),
 						["<Tab>"] = cmp.mapping(function(fallback)
 							if cmp.visible() then
-								cmp.select_next_item()
-							elseif luasnip.expand_or_jumpable() then
-								luasnip.expand_or_jump()
+								cmp.select_next_item({ behavior = cmp.SelectBehavior.Insert })
+							elseif ls.expandable() then
+								ls.expand()
 							elseif has_words_before() then
 								cmp.complete()
 							else
@@ -382,9 +405,7 @@ if pcall(require, "lazy") then
 						end, { "i", "s" }),
 						["<S-Tab>"] = cmp.mapping(function(fallback)
 							if cmp.visible() then
-								cmp.select_prev_item()
-							elseif luasnip.jumpable(-1) then
-								luasnip.jump(-1)
+								cmp.select_prev_item({ behavior = cmp.SelectBehavior.Insert })
 							else
 								fallback()
 							end
