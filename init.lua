@@ -316,6 +316,20 @@ if pcall(require, "lazy") then
 							end
 						end, { desc = "Snip choice" })
 
+						vim.api.nvim_create_autocmd("ModeChanged", {
+							group = vim.api.nvim_create_augroup("UnlinkSnippetOnModeChange", { clear = true }),
+							pattern = { "s:n", "i:*" },
+							callback = function(event)
+								if
+									ls.session
+									and ls.session.current_nodes[event.buf]
+									and not ls.session.jump_active
+								then
+									ls.unlink_current()
+								end
+							end,
+						})
+
 						ls.setup({ history = true, update_events = { "TextChanged", "TextChangedI" } })
 					end,
 				},
