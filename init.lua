@@ -800,19 +800,20 @@ if pcall(require, "lazy") then
 				vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, { border = "rounded" })
 				vim.lsp.handlers["textDocument/signatureHelp"] =
 					vim.lsp.with(vim.lsp.handlers.signature_help, { border = "rounded" })
-
-				-- Context menu
-				vim.cmd([[:amenu PopUp.Go\ to\ Definition <cmd>:lua vim.lsp.buf.definition()<CR>]])
-				vim.cmd([[:amenu PopUp.Go\ to\ Type\ Definition <cmd>:lua vim.lsp.buf.type_definition()<CR>]])
-				vim.cmd([[:amenu PopUp.Go\ to\ Implementations <cmd>:lua vim.lsp.buf.implementation()<CR>]])
-				vim.cmd([[:amenu PopUp.Go\ to\ References <cmd>:lua vim.lsp.buf.references()<CR>]])
-				vim.cmd([[:amenu PopUp.-Sep- :]])
-				vim.cmd([[:amenu PopUp.Rename\ Definition <cmd>:lua vim.lsp.buf.rename()<CR>]])
-				vim.cmd([[:amenu PopUp.Code\ Actions <cmd>:lua vim.lsp.buf.code_action()<CR>]])
-				vim.cmd([[:amenu PopUp.Format\ Document <cmd>:LspFormat<CR>]])
 			end,
 			config = function()
-				local keymaps = function(bufnr)
+				local context_menu = function()
+					vim.cmd([[:amenu PopUp.Go\ to\ Definition <cmd>:lua vim.lsp.buf.definition()<CR>]])
+					vim.cmd([[:amenu PopUp.Go\ to\ Type\ Definition <cmd>:lua vim.lsp.buf.type_definition()<CR>]])
+					vim.cmd([[:amenu PopUp.Go\ to\ Implementations <cmd>:lua vim.lsp.buf.implementation()<CR>]])
+					vim.cmd([[:amenu PopUp.Go\ to\ References <cmd>:lua vim.lsp.buf.references()<CR>]])
+					vim.cmd([[:amenu PopUp.-Sep- :]])
+					vim.cmd([[:amenu PopUp.Rename\ Definition <cmd>:lua vim.lsp.buf.rename()<CR>]])
+					vim.cmd([[:amenu PopUp.Code\ Actions <cmd>:lua vim.lsp.buf.code_action()<CR>]])
+					vim.cmd([[:amenu PopUp.Format\ Document <cmd>:LspFormat<CR>]])
+				end
+
+				local lsp_keymaps = function(bufnr)
 					if pcall(require, "which-key") then
 						require("which-key").register({
 							K = { vim.lsp.buf.hover, "Hover" },
@@ -895,7 +896,8 @@ if pcall(require, "lazy") then
 
 				local on_attach = function(_, bufnr)
 					vim.api.nvim_buf_set_option(bufnr, "omnifunc", "v:lua.vim.lsp.omnifunc")
-					keymaps()
+					lsp_keymaps()
+					context_menu()
 				end
 
 				for _, server in pairs(require("mason-lspconfig").get_installed_servers()) do
