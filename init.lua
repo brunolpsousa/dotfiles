@@ -1014,32 +1014,39 @@ if pcall(require, "lazy") then
 		{
 			"nvim-treesitter/nvim-treesitter",
 			event = { "BufReadPost", "BufNewFile" },
-			build = ":TSUpdateSync",
+			build = ":TSUpdate",
 			init = function()
 				require("nvim-treesitter.install").update({ with_sync = true })
 			end,
-			opts = {
-				ensure_installed = {
-					"bash",
-					"css",
-					"dockerfile",
-					"html",
-					"javascript",
-					"json",
-					"lua",
-					"markdown",
-					"markdown_inline",
-					"python",
-					"regex",
-					"tsx",
-					"typescript",
-					"yaml",
-				},
-				highlight = { enable = true },
-				autopairs = { enable = true },
-				indent = { enable = true },
-				context_commentstring = { enable = true, enable_autocmd = false },
-			},
+			cmd = { "TSUpdateSync" },
+			opts = function()
+				require("nvim-treesitter.configs").setup({
+					ensure_installed = {
+						"bash",
+						"css",
+						"dockerfile",
+						"html",
+						"javascript",
+						"json",
+						"lua",
+						"markdown",
+						"markdown_inline",
+						"python",
+						"regex",
+						"tsx",
+						"typescript",
+						"yaml",
+					},
+					sync_install = false,
+					auto_install = false,
+					modules = {},
+					ignore_install = {},
+					highlight = { enable = true, additional_vim_regex_highlighting = false },
+					autopairs = { enable = true },
+					indent = { enable = true },
+					context_commentstring = { enable = true, enable_autocmd = false },
+				})
+			end,
 		},
 
 		{
