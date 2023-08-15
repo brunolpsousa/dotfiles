@@ -285,7 +285,6 @@ if pcall(require, "lazy") then
 		{
 			"hrsh7th/nvim-cmp",
 			event = { "BufReadPre", "BufNewFile" },
-			commit = "6c84bc75c64f778e9f1dcb798ed41c7fcb93b639",
 			dependencies = {
 				"hrsh7th/cmp-buffer",
 				"hrsh7th/cmp-path",
@@ -336,14 +335,8 @@ if pcall(require, "lazy") then
 				},
 				{
 					"jcdickinson/codeium.nvim",
-					config = function()
-						-- https://github.com/jcdickinson/codeium.nvim/issues/20 || https://github.com/jcdickinson/codeium.nvim/issues/38
-						local file_size = vim.api.nvim_exec2("echo getfsize(expand(@%))", { output = true })
-						file_size = tonumber(file_size.output)
-						if file_size > -2 and file_size <= 127830 then
-							require("codeium").setup({})
-						end
-					end,
+					dependencies = { "jcdickinson/http.nvim", build = "cargo build --workspace --release" },
+					opts = {},
 				},
 			},
 			config = function()
