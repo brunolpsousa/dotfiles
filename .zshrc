@@ -1,6 +1,6 @@
-#------------------------------------------------------------------------------#
-################################ BEGIN OF ZSHRC ################################
-#------------------------------------------------------------------------------#
+#----------------------------------------------------------------------------------------------------------------------#
+#################################################### BEGIN OF ZSHRC ####################################################
+#----------------------------------------------------------------------------------------------------------------------#
 # Environment
 cdpath=(.. ~)
 export XDG_CACHE_HOME="$HOME/.cache"
@@ -28,7 +28,7 @@ export LESS_TERMCAP_so=$'\e[01;33m'
 export LESS_TERMCAP_ue=$'\e[0m'
 export LESS_TERMCAP_us=$'\e[1;4;31m'
 
-editors=(io.neovim.nvim nvim vim nano)
+editors=(nvim io.neovim.nvim vim nano)
 for ed in ${editors[@]}; do
   if command -v $ed >/dev/null; then
     export EDITOR=$ed
@@ -50,15 +50,17 @@ SSH_AUTH_SOCK="${XDG_RUNTIME_DIR}/gnupg/S.gpg-agent.ssh"
 [[ -d "$HOME/.local/bin" ]] && export PATH="$HOME/.local/bin:$PATH"
 [[ -d "$XDG_DATA_HOME/npm/bin" ]] && export PATH="$XDG_DATA_HOME/npm/bin:$PATH"
 [[ -d "$XDG_DATA_HOME/cargo/bin" ]] && export PATH="$XDG_DATA_HOME/cargo/bin:$PATH"
-[[ "$LANG" == 'C'  || "$LANG" == '' ]] && echo "$(date '+%Y-%m-%d %H:%M:%S') - The \$LANG ($LANG) variable is not set. This can cause a lot of problems" >> "$HOME/.alert"
 [[ "$EUID" != 0 ]] && umask 022 && s_local='--user' || umask 002
+[[ "$LANG" == 'C'  || "$LANG" == '' ]] && \
+  echo "$(date '+%Y-%m-%d %H:%M:%S') - The \$LANG ($LANG) variable is not set." >> "$HOME/.alert"
 
-systemctl $s_local import-environment EDITOR VISUAL XDG_CACHE_HOME XDG_CONFIG_HOME XDG_DATA_HOME XDG_STATE_HOME LS_COLORS MOZ_ENABLE_WAYLAND QT_QPA_PLATFORM QT_QPA_PLATFORMTHEME GTK_USE_PORTAL 2>/dev/null; unset s_local
+systemctl $s_local import-environment EDITOR VISUAL XDG_CACHE_HOME XDG_CONFIG_HOME XDG_DATA_HOME XDG_STATE_HOME \
+  LS_COLORS MOZ_ENABLE_WAYLAND QT_QPA_PLATFORM QT_QPA_PLATFORMTHEME GTK_USE_PORTAL 2>/dev/null; unset s_local
 
 [[ $- == *i* ]] || return
-#------------------------------------------------------------------------------#
-#################################### Aliases ###################################
-#------------------------------------------------------------------------------#
+#----------------------------------------------------------------------------------------------------------------------#
+######################################################## Aliases #######################################################
+#----------------------------------------------------------------------------------------------------------------------#
 alias .='cd $HOME'
 alias chmod='chmod -c'
 alias chown='chown -c'
@@ -73,9 +75,11 @@ alias df='df -h'
 alias ip='ip -c'
 alias diff='diff -Nuar --color=auto'
 alias ls='ls -v --color=auto --hyperlink=auto --human-readable --literal --group-directories-first --classify'
-alias la='ls -v --color=auto --hyperlink=auto --human-readable --literal --group-directories-first --classify --almost-all'
+alias la='\
+  ls -v --color=auto --hyperlink=auto --human-readable --literal --group-directories-first --classify --almost-all'
 alias ll='ls -lv --color=auto --hyperlink=auto --human-readable --literal --group-directories-first --classify'
-alias lla='ls -lv --color=auto --hyperlink=auto --human-readable --literal --group-directories-first --classify --almost-all'
+alias lla='\
+  ls -lv --color=auto --hyperlink=auto --human-readable --literal --group-directories-first --classify --almost-all'
 alias g='grep -n -C 3 --color=auto'
 alias grep='grep --color=auto'
 alias egrep='grep -E --color=auto'
@@ -89,16 +93,25 @@ alias yt='yt-dlp'
 alias ytm='yt-dlp -x --audio-format mp3'
 alias sd='sudo '
 alias sv='sudoedit'
-alias fins="paru -Slq | fzf --multi --preview 'paru -Si {1}' --bind ctrl-j:preview-down,ctrl-k:preview-up | xargs -ro paru -S"
-alias fiins="paru -Slq | fzf --multi --preview 'cat <(paru -Si {1}) <(paru -Fl {1} 2>/dev/null | awk \"{print \$2}\")' --bind ctrl-j:preview-down,ctrl-k:preview-up | xargs -ro paru -S"
-alias frem="pacman -Qq | fzf --multi --preview 'pacman -Qi {1}' --bind ctrl-j:preview-down,ctrl-k:preview-up | xargs -ro sudo pacman -Rns"
-alias firem="pacman -Qq | fzf --multi --preview 'cat <(pacman -Qi {1}) <(pacman -Fl {1} | awk \"{print \$2}\")' --bind ctrl-j:preview-down,ctrl-k:preview-up | xargs -ro sudo pacman -Rns"
-alias bundle='sudo sbctl bundle -s -i /boot/*-ucode.img -l /usr/share/systemd/bootctl/splash-arch.bmp -k /boot/vmlinuz-linux -f /boot/initramfs-linux.img /boot/EFI/Linux/linux.efi && sudo sbctl sign -s /boot/vmlinuz-linux && sudo sbctl sign -s /boot/EFI/Linux/linux.efi'
-alias bundle-lts='sudo sbctl bundle -s -i /boot/*-ucode.img -l /usr/share/systemd/bootctl/splash-arch.bmp -k /boot/vmlinuz-linux-lts -f /boot/initramfs-linux-lts.img /boot/EFI/Linux/linux-lts.efi && sudo sbctl sign -s /boot/vmlinuz-linux-lts && sudo sbctl sign -s /boot/EFI/Linux/linux-lts.efi'
+alias fins="paru -Slq | \
+  fzf --multi --preview 'paru -Si {1}' --bind ctrl-j:preview-down,ctrl-k:preview-up | xargs -ro paru -S"
+alias fiins="paru -Slq | \
+  fzf --multi --preview 'cat <(paru -Si {1}) <(paru -Fl {1} 2>/dev/null | \
+  awk \"{print \$2}\")' --bind ctrl-j:preview-down,ctrl-k:preview-up | xargs -ro paru -S"
+alias frem="pacman -Qq | fzf --multi --preview 'pacman -Qi {1}' --bind ctrl-j:preview-down,ctrl-k:preview-up | \
+  xargs -ro sudo pacman -Rns"
+alias firem="pacman -Qq | fzf --multi --preview 'cat <(pacman -Qi {1}) <(pacman -Fl {1} | \
+  awk \"{print \$2}\")' --bind ctrl-j:preview-down,ctrl-k:preview-up | xargs -ro sudo pacman -Rns"
+alias bundle='sudo sbctl bundle -s -i /boot/*-ucode.img -l /usr/share/systemd/bootctl/splash-arch.bmp \
+  -k /boot/vmlinuz-linux -f /boot/initramfs-linux.img /boot/EFI/Linux/linux.efi && \
+  sudo sbctl sign -s /boot/vmlinuz-linux && sudo sbctl sign -s /boot/EFI/Linux/linux.efi'
+alias bundle-lts='sudo sbctl bundle -s -i /boot/*-ucode.img -l /usr/share/systemd/bootctl/splash-arch.bmp \
+  -k /boot/vmlinuz-linux-lts -f /boot/initramfs-linux-lts.img /boot/EFI/Linux/linux-lts.efi && \
+  sudo sbctl sign -s /boot/vmlinuz-linux-lts && sudo sbctl sign -s /boot/EFI/Linux/linux-lts.efi'
 alias sign-ms='sudo sbctl sign -s /boot/EFI/Microsoft/Boot/bootmgfw.efi'
-#------------------------------------------------------------------------------#
-#################################### General ###################################
-#------------------------------------------------------------------------------#
+#----------------------------------------------------------------------------------------------------------------------#
+######################################################## General #######################################################
+#----------------------------------------------------------------------------------------------------------------------#
 # If a command is issued that can’t be executed as a normal command, and the
 # command is the name of a directory, perform the cd command to that directory.
 setopt auto_cd
@@ -125,7 +138,7 @@ setopt hist_save_no_dups
 # If a new command line being added to the history list duplicates an older one,
 # the older command is removed from the list (even if it is not the previous event).
 setopt hist_ignore_all_dups
-#------------------------------------------------------------------------------#
+#----------------------------------------------------------------------------------------------------------------------#
 # ZSH stuff
 HISTFILE="$XDG_STATE_HOME/zsh/zshist"
 HISTSIZE=10000
@@ -133,14 +146,14 @@ SAVEHIST=$HISTSIZE
 [[ ! -d "$ZDOTDIR" || ! -d "$XDG_CACHE_HOME" || ! -d "$XDG_DATA_HOME/zsh" \
 || ! -d "$XDG_STATE_HOME/zsh" ]] && mkdir -p "$ZDOTDIR" "$XDG_CACHE_HOME" \
 "$XDG_DATA_HOME/zsh" "$XDG_STATE_HOME/zsh" >/dev/null 2>&1
-#------------------------------------------------------------------------------#
+#----------------------------------------------------------------------------------------------------------------------#
 # Completion
 autoload -Uz compinit && compinit -d "$XDG_CACHE_HOME/zcompdump"
 zmodload zsh/complist
 
 # automatically load bash completion functions
 autoload -U +X bashcompinit && bashcompinit
-#------------------------------------------------------------------------------#
+#----------------------------------------------------------------------------------------------------------------------#
 # Include hidden files
 _comp_options+=(globdots)
 zstyle ':completion:*' menu select
@@ -169,7 +182,7 @@ function _pip_completion {
             PIP_AUTO_COMPLETE=1 $words[1] ))
 }
 compctl -K _pip_completion pip
-#------------------------------------------------------------------------------#
+#----------------------------------------------------------------------------------------------------------------------#
 # Define word separators (for stuff like backward-word, forward-word,
 # backward-kill-word,..)
 # WORDCHARS='*?_-.[]~=/&;!#$%^(){}<>' # default
@@ -177,7 +190,7 @@ compctl -K _pip_completion pip
 # WORDCHARS='*?_[]~=&;!#$%^(){}'
 # WORDCHARS='${WORDCHARS:s@/@}'
 WORDCHARS='*~&%^'
-#------------------------------------------------------------------------------#
+#----------------------------------------------------------------------------------------------------------------------#
 # ArchWiki Bindings
 # (e)macs or (v)im mapping
 bindkey -v
@@ -251,7 +264,7 @@ bindkey '^[[8~' end-of-line                               # End key
 bindkey '^[[F' end-of-line                                # End key
 bindkey -M vicmd '^[[8~' end-of-line                      # End key
 bindkey -M vicmd '^[[F' end-of-line                       # End key
-#------------------------------------------------------------------------------#
+#----------------------------------------------------------------------------------------------------------------------#
 # Vim Mapping For Completion
 # https://thevaluable.dev/zsh-install-configure-mouseless/
 zmodload zsh/complist
@@ -259,7 +272,7 @@ bindkey -M menuselect 'h' vi-backward-char
 bindkey -M menuselect 'k' vi-up-line-or-history
 bindkey -M menuselect 'l' vi-forward-char
 bindkey -M menuselect 'j' vi-down-line-or-history
-#------------------------------------------------------------------------------#
+#----------------------------------------------------------------------------------------------------------------------#
 # ci", ci', ci`, di", etc
 autoload -U select-quoted
 zle -N select-quoted
@@ -277,7 +290,7 @@ for m in visual viopp; do
     bindkey -M $m $c select-bracketed
   done
 done
-#------------------------------------------------------------------------------#
+#----------------------------------------------------------------------------------------------------------------------#
 # Vim cursor indicator
 # See https://ttssh2.osdn.jp/manual/4/en/usage/tips/vim.html for cursor shapes
 # 2 and 6 = blink; 1 and 5 = no blink
@@ -299,7 +312,7 @@ function zle-line-init {
 }
 zle -N zle-line-init
 zle -N zle-keymap-select
-#------------------------------------------------------------------------------#
+#----------------------------------------------------------------------------------------------------------------------#
 # Editing Command Lines
 # This specific function let you edit a command line in your visual editor,
 # defined by the environment variable $VISUAL (or $EDITOR).
@@ -313,7 +326,7 @@ function edit-cmd-line {
 zle -N edit-cmd-line
 bindkey '^V' edit-cmd-line
 bindkey -M vicmd '^v' edit-cmd-line
-#------------------------------------------------------------------------------#
+#----------------------------------------------------------------------------------------------------------------------#
 # Vim job suspension
 # Use Ctrl-z swap in and out of vim (or any other process)
 # https://sheerun.net/2014/03/21/how-to-boost-your-vim-productivity/
@@ -328,38 +341,39 @@ function ctrl-z-toggle {
 }
 zle -N ctrl-z-toggle
 bindkey '^Z' ctrl-z-toggle
-#------------------------------------------------------------------------------#
-#################################### Plugins ###################################
-#------------------------------------------------------------------------------#
+#----------------------------------------------------------------------------------------------------------------------#
+######################################################## Plugins #######################################################
+#----------------------------------------------------------------------------------------------------------------------#
 fetch() {
   if command -v curl >/dev/null; then
     curl -fsSL -- "$1"
   elif command -v wget >/dev/null; then
     wget -qO- -- "$1"
   else
-    echo 'error: "curl" or "wget" not found'
+    echo 'error: "curl" nor "wget" found'
   fi
 }
-#------------------------------------------------------------------------------#
+#----------------------------------------------------------------------------------------------------------------------#
 # asdf
 source /opt/asdf-vm/asdf.sh 2>/dev/null
-#------------------------------------------------------------------------------#
+#----------------------------------------------------------------------------------------------------------------------#
 # Search repos for programs that can't be found
 source /usr/share/doc/pkgfile/command-not-found.zsh 2>/dev/null
-#------------------------------------------------------------------------------#
+#----------------------------------------------------------------------------------------------------------------------#
 # fzf
 source /usr/share/fzf/key-bindings.zsh 2>/dev/null
 source /usr/share/fzf/completion.zsh 2>/dev/null
-#------------------------------------------------------------------------------#
+#----------------------------------------------------------------------------------------------------------------------#
 # zsh-async
 if [[ -f "$XDG_DATA_HOME/zsh/async.zsh" ]]; then
   source "$XDG_DATA_HOME/zsh/async.zsh"
 else
   echo 'Downloading zsh-async...'
   fetch 'https://raw.githubusercontent.com/mafredri/zsh-async/master/async.zsh' > "$XDG_DATA_HOME/zsh/async.zsh"
-  source "$XDG_DATA_HOME/zsh/async.zsh" || echo "$(date '+%Y-%m-%d %H:%M:%S') - Failed to load zsh-async" >> "$HOME/.alert"
+  source "$XDG_DATA_HOME/zsh/async.zsh" || \
+    echo "$(date '+%Y-%m-%d %H:%M:%S') - Failed to load zsh-async" >> "$HOME/.alert"
 fi
-#------------------------------------------------------------------------------#
+#----------------------------------------------------------------------------------------------------------------------#
 # Auto Suggestions
 load_autoSuggestions() {
   if [[ -f '/usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh' ]]; then
@@ -368,7 +382,8 @@ load_autoSuggestions() {
     source "$XDG_DATA_HOME/zsh/zsh-autosuggestions.zsh"
   else
     echo 'Downloading zsh-autosuggestions...'
-    fetch 'https://raw.githubusercontent.com/zsh-users/zsh-autosuggestions/master/zsh-autosuggestions.zsh' > "$XDG_DATA_HOME/zsh/zsh-autosuggestions.zsh"
+    fetch 'https://raw.githubusercontent.com/zsh-users/zsh-autosuggestions/master/zsh-autosuggestions.zsh' \
+      > "$XDG_DATA_HOME/zsh/zsh-autosuggestions.zsh"
     source "$XDG_DATA_HOME/zsh/zsh-autosuggestions.zsh"
   fi
 }
@@ -380,20 +395,28 @@ if load_autoSuggestions; then
 else
   echo "$(date '+%Y-%m-%d %H:%M:%S') - Failed to load zsh-autosuggestions.zsh" >> "$HOME/.alert"
 fi
-#------------------------------------------------------------------------------#
+#----------------------------------------------------------------------------------------------------------------------#
 # Completions
 if [[ ! -d '/usr/share/licenses/zsh-completions' ]]; then
   if  [[ -d "$XDG_DATA_HOME/zsh/zsh-completions" ]]; then
     source "$XDG_DATA_HOME/zsh/zsh-completions/zsh-completions.plugin.zsh"
   else
     echo 'Downloading zsh-completions...'
-    [[ -f "$XDG_CACHE_HOME/zsh-completions-master.zip" ]] || fetch 'https://github.com/zsh-users/zsh-completions/archive/refs/heads/master.zip' > "$XDG_CACHE_HOME/zsh-completions-master.zip"
-    unzip -uq "$XDG_CACHE_HOME/zsh-completions-master.zip" zsh-completions-master/{zsh-completions.plugin.zsh,"src/*"} -d "$XDG_DATA_HOME/zsh" 2>/dev/null
+
+    [[ -f "$XDG_CACHE_HOME/zsh-completions-master.zip" ]] || \
+      fetch 'https://github.com/zsh-users/zsh-completions/archive/refs/heads/master.zip' \
+      > "$XDG_CACHE_HOME/zsh-completions-master.zip"
+
+    unzip -uq "$XDG_CACHE_HOME/zsh-completions-master.zip" \
+      zsh-completions-master/{zsh-completions.plugin.zsh,"src/*"} -d "$XDG_DATA_HOME/zsh" 2>/dev/null
+
     command mv "$XDG_DATA_HOME/zsh/zsh-completions-master" "$XDG_DATA_HOME/zsh/zsh-completions" 2>/dev/null
-    source "$XDG_DATA_HOME/zsh/zsh-completions/zsh-completions.plugin.zsh" || echo "$(date '+%Y-%m-%d %H:%M:%S') - Failed to load zsh-completions.zsh" >> "$HOME/.alert"
+
+    source "$XDG_DATA_HOME/zsh/zsh-completions/zsh-completions.plugin.zsh" ||
+      echo "$(date '+%Y-%m-%d %H:%M:%S') - Failed to load zsh-completions.zsh" >> "$HOME/.alert"
   fi
 fi
-#------------------------------------------------------------------------------#
+#----------------------------------------------------------------------------------------------------------------------#
 # History substring search
 load_historySubstringSearch() {
   if [[ -f '/usr/share/zsh/plugins/zsh-history-substring-search/zsh-history-substring-search.zsh' ]]; then
@@ -401,9 +424,13 @@ load_historySubstringSearch() {
   elif [[ -f "$XDG_DATA_HOME/zsh/zsh-history-substring-search.zsh" ]]; then
     source "$XDG_DATA_HOME/zsh/zsh-history-substring-search.zsh"
   else
+    pluginName='zsh-history-substring-search.zsh'
     echo 'Downloading zsh-history-substring-search...'
-    fetch 'https://raw.githubusercontent.com/zsh-users/zsh-history-substring-search/master/zsh-history-substring-search.zsh' > "$XDG_DATA_HOME/zsh/zsh-history-substring-search.zsh"
-    source "$XDG_DATA_HOME/zsh/zsh-history-substring-search.zsh"
+    fetch \
+      "https://raw.githubusercontent.com/zsh-users/zsh-history-substring-search/master/${pluginName}" \
+      > "$XDG_DATA_HOME/zsh/${pluginName}"
+    source "$XDG_DATA_HOME/zsh/${pluginName}"
+    unset pluginName
   fi
 }
 if load_historySubstringSearch; then
@@ -420,7 +447,7 @@ else
   [[ -n "${key[Up]}"   ]] && bindkey -- "${key[Up]}"   up-line-or-beginning-search
   [[ -n "${key[Down]}" ]] && bindkey -- "${key[Down]}" down-line-or-beginning-search
 fi
-#------------------------------------------------------------------------------#
+#----------------------------------------------------------------------------------------------------------------------#
 # Syntax highlighting
 if [[ -f '/usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh' ]]; then
   source '/usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh'
@@ -428,12 +455,22 @@ elif [[ -f "$XDG_DATA_HOME/zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.z
   source "$XDG_DATA_HOME/zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
 else
   echo 'Downloading zsh-syntax-highlighting...'
-  [[ -f "$XDG_CACHE_HOME/zsh-syntax-highlighting-master.zip" ]] || fetch 'https://github.com/zsh-users/zsh-syntax-highlighting/archive/refs/heads/master.zip' > "$XDG_CACHE_HOME/zsh-syntax-highlighting-master.zip"
-  unzip -uq "$XDG_CACHE_HOME/zsh-syntax-highlighting-master.zip" zsh-syntax-highlighting-master/{zsh-syntax-highlighting.zsh,"highlighters/*",.revision-hash,.version} -d "$XDG_DATA_HOME/zsh" 2>/dev/null
-  command mv "$XDG_DATA_HOME/zsh/zsh-syntax-highlighting-master" "$XDG_DATA_HOME/zsh/zsh-syntax-highlighting/" 2>/dev/null
-  source "$XDG_DATA_HOME/zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh" || echo "$(date '+%Y-%m-%d %H:%M:%S') - Failed to load zsh-syntax-highlighting.zsh" >> "$HOME/.alert"
+
+  [[ -f "$XDG_CACHE_HOME/zsh-syntax-highlighting-master.zip" ]] || \
+    fetch 'https://github.com/zsh-users/zsh-syntax-highlighting/archive/refs/heads/master.zip' \
+    > "$XDG_CACHE_HOME/zsh-syntax-highlighting-master.zip"
+
+  unzip -uq "$XDG_CACHE_HOME/zsh-syntax-highlighting-master.zip" \
+    zsh-syntax-highlighting-master/{zsh-syntax-highlighting.zsh,"highlighters/*",.revision-hash,.version} \
+    -d "$XDG_DATA_HOME/zsh" 2>/dev/null
+
+  command mv "$XDG_DATA_HOME/zsh/zsh-syntax-highlighting-master" \
+    "$XDG_DATA_HOME/zsh/zsh-syntax-highlighting/" 2>/dev/null
+
+  source "$XDG_DATA_HOME/zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh" || \
+    echo "$(date '+%Y-%m-%d %H:%M:%S') - Failed to load zsh-syntax-highlighting.zsh" >> "$HOME/.alert"
 fi
-#------------------------------------------------------------------------------#
+#----------------------------------------------------------------------------------------------------------------------#
 # If tmux is executable and not already inside a session:
 if command -v tmux >/dev/null && [[ -z $TMUX && -z $ZSH_TMUX_STARTED ]]; then
   tvar="$(tmux list-sessions &>/dev/null | grep main)"
@@ -447,9 +484,9 @@ if command -v tmux >/dev/null && [[ -z $TMUX && -z $ZSH_TMUX_STARTED ]]; then
   fi
   unset tvar && NEW_LINE_BEFORE_PROMPT=1
 fi
-#------------------------------------------------------------------------------#
-#################################### Extras ####################################
-#------------------------------------------------------------------------------#
+#----------------------------------------------------------------------------------------------------------------------#
+######################################################## Extras ########################################################
+#----------------------------------------------------------------------------------------------------------------------#
 # Archive Extraction
 # usage: ex <file>
 ex() {
@@ -485,7 +522,7 @@ ssh() {
   # If there is no zsh on the remote machine, install this.
   local zsh_url='https://raw.githubusercontent.com/romkatv/zsh-bin/master/install'
   # If there is no ~/.zshrc on the remote machine, install this.
-  local zshrc_url='https://raw.githubusercontent.com/brunolpsousa/dotfiles/master/.zshrc'
+  local zshrc_url='https://raw.githubusercontent.com/brunolpsousa/dotfiles/main/.zshrc'
 
   # Copy all these files and directories (relative to $HOME) from local machine
   # to remote. Silently skip files that don't exist locally and override existing
@@ -627,11 +664,12 @@ dec() {
 
 bd() {
   while true; do
-    selection="$(command ls -aNv --group-directories-first 2>/dev/null | fzf --height 95% --reverse --info hidden --prompt "$(pwd)/" --preview ' cd_pre="$(echo $(pwd)/$(echo {}))";
-            echo $cd_pre 2>/dev/null;
-            echo;
-            command ls -ANv --group-directories-first --color=always "${cd_pre}" 2>/dev/null;
-            command less -F {} 2>/dev/null' --bind ctrl-j:preview-down,ctrl-k:preview-up --preview-window=right:65%)"
+    selection="$(command ls -aNv --group-directories-first 2>/dev/null | fzf --height 95% --reverse --info hidden \
+      --prompt "$(pwd)/" --preview ' cd_pre="$(echo $(pwd)/$(echo {}))";
+      echo $cd_pre 2>/dev/null;
+      echo;
+      command ls -ANv --group-directories-first --color=always "${cd_pre}" 2>/dev/null;
+      command less -F {} 2>/dev/null' --bind ctrl-j:preview-down,ctrl-k:preview-up --preview-window=right:65%)"
     if [[ -d "$selection" ]]; then
       >/dev/null builtin cd -q "$selection"
     elif [[ -f "$selection" ]]; then
@@ -704,20 +742,35 @@ jvc() {
 }
 
 # Unlock user after failed login attempt
-unlock() { [[ -n $1 ]] && faillock --user $1 --reset || echo 'Usage: unlock <user>' }
+unlock() { [[ -n "$1" ]] && faillock --user "$1" --reset || echo 'Usage: unlock <user>' }
 
 # Display system install date
 arch-date() { echo -n 'System was installed on '; ls -lct /etc | tail -1 | awk '{print $7, $6, $8}' }
 
+alias yay='paru'
+paru() {
+  [[ -z "$1" ]] && local args=('-Syu') || local args=("$@")
+  if command -v paru >/dev/null; then
+    command paru "$args[@]" --topdown --removemake=yes --sudoloop --combinedupgrade --upgrademenu --newsonupgrade
+  elif command -v yay >/dev/null; then
+    command yay "$args[@]" --topdown --removemake --sudoloop --combinedupgrade --news
+  else
+    echo 'Error: "paru" nor "yay" found'
+  fi
+}
+
 # Refresh Arch mirrors
-refresh() { sudo reflector --protocol https --age 12 --latest 20 --connection-timeout 2 --download-timeout 2 --fastest 5 --sort rate --save /etc/pacman.d/mirrorlist --verbose }
+refresh() {
+  sudo reflector --protocol https --age 12 --latest 20 --connection-timeout 2 --download-timeout 2 --fastest 5 \
+    --sort rate --save /etc/pacman.d/mirrorlist --verbose
+}
 
 # Reset GNOME to default settings
 reset-gnome() {
   if [[ -z $1 ]]; then
     gsettings list-schemas | xargs -n 1 gsettings reset-recursively
   else
-    gsettings list-schemas | command grep $1 | xargs -n 1 gsettings reset-recursively
+    gsettings list-schemas | command grep "$1" | xargs -n 1 gsettings reset-recursively
   fi
 }
 
@@ -728,7 +781,8 @@ alias reset-gnome-appgrid='gsettings reset org.gnome.shell app-picker-layout'
 alias paclog='grep -nC 2 --color=auto warning: /var/log/pacman.log'
 
 # Update .zshrc
-alias zupd="fetch https://gitlab.com/brunolpsousa/dotfiles/-/raw/master/.zshrc > $ZDOTDIR/.zshrc && source $ZDOTDIR/.zshrc"
+alias zupd="fetch https://gitlab.com/brunolpsousa/dotfiles/-/raw/main/.zshrc \
+  > $ZDOTDIR/.zshrc && source $ZDOTDIR/.zshrc"
 
 # Weather by wttr.in
 alias weather="fetch https://wttr.in"
@@ -740,13 +794,17 @@ alias top10='print -l ${(o)history%% *} | uniq -c | sort -nr | head -n 10'
 alias wifi='nmcli device wifi'
 
 # White neofetch
-alias nfetch='neofetch --colors 15 15 15 15 15 15 --ascii_colors 15 15 --ascii_bold on --os_arch off --speed_shorthand on --gtk_shorthand on --refresh_rate on --cpu_temp C --disk_percent on --memory_percent on --disable cols'
+alias nfetch='neofetch --colors 15 15 15 15 15 15 --ascii_colors 15 15 --ascii_bold on --os_arch off \
+  --speed_shorthand on --gtk_shorthand on --refresh_rate on --cpu_temp C --disk_percent on --memory_percent on \
+  --disable cols'
 
 # Neofetch with old Arch logo
-alias ofetch='neofetch --colors 7 7 --ascii_distro Arch_old --ascii_colors 8 7 --os_arch off --speed_shorthand on --gtk_shorthand on --refresh_rate on --cpu_temp C --disk_percent on --memory_percent on --disable font disk term cols'
+alias ofetch='neofetch --colors 7 7 --ascii_distro Arch_old --ascii_colors 8 7 --os_arch off --speed_shorthand on \
+  --gtk_shorthand on --refresh_rate on --cpu_temp C --disk_percent on --memory_percent on --disable font disk term cols'
 
 # Neofetch with Windows logo (WSL)
-alias wfetch='neofetch --ascii_distro Windows7 --os_arch off --speed_shorthand on --gtk_shorthand on --refresh_rate on --cpu_temp C --disk_percent on --memory_percent on --disable cols'
+alias wfetch='neofetch --ascii_distro Windows7 --os_arch off --speed_shorthand on --gtk_shorthand on \
+  --refresh_rate on --cpu_temp C --disk_percent on --memory_percent on --disable cols'
 
 # Set a reasonable terminal size
 alias ssterm="printf '\e[8;32;112t'"
@@ -776,7 +834,8 @@ urldecode() {
 
 # Convert a querystring into pretty JSON
 urlarray() {
-  python -c "import sys, json; from urllib.parse import parse_qs; print(json.dumps({k: q[0] if #len(q) == 1 else q for k, q in parse_qs(sys.stdin.read()).items()}), end='')" | json
+  python -c "import sys, json; from urllib.parse import parse_qs; \
+    print(json.dumps({k: q[0] if #len(q) == 1 else q for k, q in parse_qs(sys.stdin.read()).items()}), end='')" | json
 }
 
 # Display a list of supported colors
@@ -787,13 +846,17 @@ lscolors() {
     echo -e '\033[0K\033[1m\033[7m\033[4mBold & Invert & Underline\033[0m'
     echo
     echo -e '\033[0K\033[31m Red \033[32m Green \033[33m Yellow \033[34m Blue \033[35m Magenta \033[36m Cyan \033[0m'
-    echo -e '\033[0K\033[1m\033[4m\033[31m Red \033[32m Green \033[33m Yellow \033[34m Blue \033[35m Magenta \033[36m Cyan \033[0m'
+    echo -e '\033[0K\033[1m\033[4m\033[31m Red \033[32m Green \033[33m Yellow \033[34m' \
+      'Blue \033[35m Magenta \033[36m Cyan \033[0m'
     echo
     echo -e '\033[0K\033[41m Red \033[42m Green \033[43m Yellow \033[44m Blue \033[45m Magenta \033[46m Cyan \033[0m'
-    echo -e '\033[0K\033[1m\033[4m\033[41m Red \033[42m Green \033[43m Yellow \033[44m Blue \033[45m Magenta \033[46m Cyan \033[0m'
+    echo -e '\033[0K\033[1m\033[4m\033[41m Red \033[42m Green \033[43m Yellow \033[44m' \
+      'Blue \033[45m Magenta \033[46m Cyan \033[0m'
     echo
-    echo -e '\033[0K\033[30m\033[41m Red \033[42m Green \033[43m Yellow \033[44m Blue \033[45m Magenta \033[46m Cyan \033[0m'
-    echo -e '\033[0K\033[30m\033[1m\033[4m\033[41m Red \033[42m Green \033[43m Yellow \033[44m Blue \033[45m Magenta \033[46m Cyan \033[0m'
+    echo -e '\033[0K\033[30m\033[41m Red \033[42m Green \033[43m Yellow \033[44m' \
+      'Blue \033[45m Magenta \033[46m Cyan \033[0m'
+    echo -e '\033[0K\033[30m\033[1m\033[4m\033[41m Red \033[42m Green \033[43m' \
+      'Yellow \033[44m Blue \033[45m Magenta \033[46m Cyan \033[0m'
   elif [[ $1 == 1 ]]; then
     for i in {0..255}; do print -Pn "%K{$i}  %k%F{$i}${(l:3::0:)i}%f " ${${(M)$((i%6)):#3}:+$'\n'}; done
   else
@@ -804,9 +867,9 @@ lscolors() {
     done
   fi
 }
-#------------------------------------------------------------------------------#
-################################## Arch Config #################################
-#------------------------------------------------------------------------------#
+#----------------------------------------------------------------------------------------------------------------------#
+###################################################### Arch Config #####################################################
+#----------------------------------------------------------------------------------------------------------------------#
 # Colors
 # https://stackoverflow.com/questions/5947742/how-to-change-the-output-color-of-echo-in-linux
 
@@ -914,7 +977,7 @@ games() {
     $Yellow ZSNES:$Color_Off Super Nintendo emulator
     $Yellow RetroArch:$Color_Off Reference frontend for the libretro API
     $Yellow Antimicro:$Color_Off Graphical program used to map keyboard buttons and mouse controls to a gamepad
-    $Yellow sc-controller:$Color_Off User-mode driver, mapper and GTK3 based GUI for Steam Controller, DS4 and similar controllers
+    $Yellow sc-controller:$Color_Off User-mode driver, mapper and GTK3 based GUI for Steam Controller, DS4 and others
     $Yellow 0ad:$Color_Off Cross-platform, 3D and historically-based real-time strategy game"
 }
 
@@ -1032,7 +1095,7 @@ ns() {
   ${IBlack}[${BIYellow}C$BIBlack]$Color_Off :r !<shell>       - Read in output of shell
   ${IBlack}[${BIYellow}C$BIBlack]$Color_Off :sort | %!uniq -u - Remove duplicate lines
   ${IBlack}[${BIYellow}C$BIBlack]$Color_Off :%!cat -n         - Number the lines in the file
-  ${IBlack}[${BIYellow}C$BIBlack]$Color_Off :%s/old/new/gc    - Replace all old with new throughout file with confirmations
+  ${IBlack}[${BIYellow}C$BIBlack]$Color_Off :%s/old/new/gc    - Replace all throughout file with confirmations
   ${IBlack}[${BIYellow}C$BIBlack]$Color_Off :g/foo/d          - Delete lines containing foo
   ${IBlack}[${BIYellow}C$BIBlack]$Color_Off :g!/foo/d         - Delete lines not containing foo
   ${IBlack}[${BIYellow}C$BIBlack]$Color_Off :g/^\s*$/d        - Delete all blank lines
@@ -1056,8 +1119,10 @@ arch-base() {
     echo 'Do you wish to configure zshenv and zprofile?'
     select yne in 'Yes' 'No' 'Exit'; do
       case $yne in
-        Yes ) [[ -n $zenv ]] || echo '[[ -f "$HOME/.config/zsh/.zshrc" ]] && ZDOTDIR="$HOME/.config/zsh" || ZDOTDIR="$HOME"' | $use_sudo tee -a /etc/zsh/zshenv >/dev/null
-              [[ -n $zprof ]] || echo 'source "$ZDOTDIR/.zshrc"' | $use_sudo tee -a /etc/zsh/zprofile >/dev/null; break;;
+        Yes ) [[ -n $zenv ]] || echo '[[ -f "$HOME/.config/zsh/.zshrc" ]] && \
+          ZDOTDIR="$HOME/.config/zsh" || ZDOTDIR="$HOME"' | $use_sudo tee -a /etc/zsh/zshenv >/dev/null
+              [[ -n $zprof ]] || echo 'source "$ZDOTDIR/.zshrc"' | $use_sudo tee -a /etc/zsh/zprofile >/dev/null;
+              break;;
         No ) break;;
         Exit ) return;;
       esac
@@ -1068,7 +1133,10 @@ arch-base() {
     echo 'Do you wish to configure /etc/pacman.conf?'
     select yne in 'Yes' 'No' 'Exit'; do
       case $yne in
-        Yes ) $use_sudo sh -c "sed -i 's/#\(Color\)/\1/g; s/#\(VerbosePkgLists\)/\1/g; /ParallelDownloads/ s/^#//; /ParallelDownloads/ s/5$/9\nILoveCandy/; /\[multilib\]/,/Include/ s/^#//' /etc/pacman.conf"; break;;
+        Yes )
+          $use_sudo sh -c "sed -i 's/#\(Color\)/\1/g; s/#\(VerbosePkgLists\)/\1/g; /ParallelDownloads/ s/^#//; \
+            /ParallelDownloads/ s/5$/9\nILoveCandy/; /\[multilib\]/,/Include/ s/^#//' /etc/pacman.conf"
+          break;;
         No ) break;;
         Exit ) return;;
       esac
@@ -1078,7 +1146,10 @@ arch-base() {
   echo 'Do you want to update mirrors with reflector?'
   select yne in 'Yes' 'No' 'Exit'; do
     case $yne in
-      Yes ) $use_sudo sh -c "pacman -S --needed reflector; reflector --protocol https --age 12 --latest 20 --connection-timeout 2 --download-timeout 2 --fastest 5 --sort rate --save /etc/pacman.d/mirrorlist --verbose"; break;;
+      Yes )
+        $use_sudo sh -c "pacman -S --needed reflector; reflector --protocol https --age 12 --latest 20 \
+          --connection-timeout 2 --download-timeout 2 --fastest 5 --sort rate --save /etc/pacman.d/mirrorlist --verbose"
+        break;;
       No ) break;;
       Exit ) return;;
     esac
@@ -1089,12 +1160,22 @@ arch-base() {
   select yne in 'Yes' 'No' 'Exit'; do
     case $yne in
       Yes )
-        $use_sudo sh -c "pacman -Syu --needed sbctl alacritty tmux xdg-desktop-portal xdg-desktop-portal-gtk yt-dlp ufw iptables-nft neofetch man-db tldr ntfs-3g exfat-utils unrar zip p7zip imagemagick zsh zsh-autosuggestions zsh-completions zsh-history-substring-search zsh-syntax-highlighting fzf hunspell-en_US noto-fonts noto-fonts-cjk noto-fonts-emoji ttf-liberation gsfonts lib32-gst-plugins-good java-runtime-common base-devel networkmanager reflector android-udev android-tools pkgstats pipewire pipewire-alsa pipewire-pulse wireplumber $(case $(lscpu | awk '/Model name:/{print $3}') in AMD) echo -n 'amd-ucode';; Intel\(R\)) echo -n 'intel-ucode';; esac)"
+        $use_sudo sh -c "pacman -Syu --needed \
+          pipewire pipewire-alsa pipewire-pulse wireplumber \
+          alacritty tmux fzf ripgrep neofetch yt-dlp man-db tldr \
+          base-devel pkgstats java-runtime-common reflector networkmanager \
+          sbctl ufw iptables-nft ntfs-3g exfat-utils unrar zip p7zip imagemagick \
+          hunspell-en_US noto-fonts noto-fonts-cjk noto-fonts-emoji ttf-liberation gsfonts \
+          android-udev android-tools xdg-desktop-portal xdg-desktop-portal-gtk lib32-gst-plugins-good \
+          zsh zsh-autosuggestions zsh-completions zsh-history-substring-search zsh-syntax-highlighting \
+          $(case $(lscpu | awk '/Model name:/{print $3}') in
+          AMD) echo -n 'amd-ucode';;
+          Intel\(R\)) echo -n 'intel-ucode';;
+          esac)"
 
-        echo 'Do you wish to use Flatpak [y/N]?'
-        read flatpk
+        echo 'Do you wish to use Flatpak [y/N]?' && read flatpk
 
-        if [[ $flatpk =~ '^[yY]' ]]; then
+        if [[ "$flatpk" =~ '^[yY]' ]]; then
           $use_sudo pacman -S --needed flatpak
         else
           flatpk='N'
@@ -1104,25 +1185,35 @@ arch-base() {
         fi
 
         if [[ "$EUID" != 0 ]]; then
-          if [[ $flatpk =~ '^[yY]' ]] && command -v flatpak >/dev/null; then
+          if [[ "$flatpk" =~ '^[yY]' ]] && command -v flatpak >/dev/null; then
             command mkdir -p "$XDG_DATA_HOME/icons"
-            fetch 'https://raw.githubusercontent.com/qbittorrent/qBittorrent/master/src/icons/qbittorrent-tray.svg' > "$XDG_DATA_HOME/icons/qbittorrent-tray.png"
-            flatpak install io.neovim.nvim org.freedesktop.Sdk.Extension.node18 org.mozilla.firefox org.freedesktop.Platform.ffmpeg-full com.brave.Browser io.mpv.Mpv com.valvesoftware.Steam org.qbittorrent.qBittorrent org.geeqie.Geeqie
-            flatpak override -u --env=FLATPAK_ENABLE_SDK_EXT=node18 io.neovim.nvim
-            [[ ! -x /usr/bin/rg ]] || $use_sudo sh -c "command cp /usr/bin/rg /var/lib/flatpak/app/io.neovim.nvim/current/active/files/bin"
+
+            fetch 'https://raw.githubusercontent.com/qbittorrent/qBittorrent/master/src/icons/qbittorrent-tray.svg' \
+              > "$XDG_DATA_HOME/icons/qbittorrent-tray.png"
+
+            flatpak install \
+              io.neovim.nvim org.freedesktop.Sdk.Extension.node18 org.freedesktop.Sdk.Extension.rust-stable \
+              org.mozilla.firefox org.freedesktop.Platform.ffmpeg-full com.brave.Browser \
+              io.mpv.Mpv org.geeqie.Geeqie org.qbittorrent.qBittorrent com.valvesoftware.Steam
+            flatpak override -u --env=FLATPAK_ENABLE_SDK_EXT=node18,rust-stable io.neovim.nvim
+
+            [[ ! -x /usr/bin/rg ]] || \
+              $use_sudo sh -c "command cp /usr/bin/rg /var/lib/flatpak/app/io.neovim.nvim/current/active/files/bin"
           else
-            sudo pacman -S --needed neovim nodejs firefox mpv steam qbittorrent geeqie gnuchess
+            sudo pacman -S --needed neovim nodejs rust firefox mpv steam qbittorrent qt6-wayland geeqie gnuchess
           fi
 
           if [[ ! -x /usr/bin/paru ]]; then
             command mkdir -p $HOME/{.cache/paru/clone,.config/paru}
-            git clone https://aur.archlinux.org/paru-bin $XDG_CACHE_HOME/paru/clone/paru-bin
-            local current_dir="$PWD"
+            git clone 'https://aur.archlinux.org/paru-bin' "$XDG_CACHE_HOME/paru/clone/paru-bin"
+            current_dir="$PWD"
             builtin cd -q "$XDG_CACHE_HOME/paru/clone/paru-bin"
             makepkg -sir
             builtin cd -q "$current_dir"
             unset current_dir
-            echo "# \$PARU_CONF\n# /etc/paru.conf\n# ~/.config/paru/paru.conf\n# GENERAL OPTIONS\n[options]\nRemoveMake\nSudoLoop\nCombinedUpgrade\nUpgradeMenu" | tee $XDG_CONFIG_HOME/paru/paru.conf >/dev/null
+
+            echo "[options]\nRemoveMake\nSudoLoop\nCombinedUpgrade\nUpgradeMenu\nNewsOnUpgrade" | \
+              tee "$XDG_CONFIG_HOME/paru/paru.conf" >/dev/null
           fi
         fi
 
@@ -1136,7 +1227,11 @@ arch-base() {
   echo 'Do you wish to configure general system defaults?'
   select yne in 'Yes' 'No' 'Exit'; do
     case $yne in
-      Yes ) $use_sudo sh -c "ufw enable; systemctl enable fstrim.timer systemd-oomd bluetooth ufw; echo -e 'vm.swappiness=10\nvm.vfs_cache_pressure=50\nvm.max_map_count=2147483642' > /etc/sysctl.d/99-sysctl.conf"
+      Yes )
+        $use_sudo sh -c "ufw enable; systemctl enable fstrim.timer systemd-oomd bluetooth ufw; \
+          echo -e 'vm.swappiness=10\nvm.vfs_cache_pressure=50\nvm.max_map_count=2147483642' \
+          > /etc/sysctl.d/99-sysctl.conf"
+
         if [[ "$EUID" != 0 ]] && ! grep -q "$USER" /etc/subuid; then
           usermod --add-subuids 100000-165535 --add-subgids 100000-165535 "$USER"
         fi
@@ -1148,9 +1243,23 @@ arch-base() {
 
   # Keyboard
   echo 'Do you wish to select a keyboard layout?'
-  local PT='localectl --no-convert set-x11-keymap br pc105; setxkbmap -model pc105 -layout br;echo -e "LANG=en_US.UTF-8\nLANGUAGE=\"en_US\"\nLC_TYPE=pt_BR.UTF-8\nLC_NUMERIC=pt_BR.UTF-8\nLC_TIME=pt_BR.UTF-8\nLC_MONETARY=pt_BR.UTF-8\nLC_PAPER=pt_BR.UTF-8\nLC_MEASUREMENT=pt_BR.UTF-8" | tee /etc/locale.conf;echo -e "KEYMAP=br-abnt2\nFONT=eurlatgr\nFONT_MAP=8859-1" | tee /etc/vconsole.conf'
-  local US='localectl --no-convert set-x11-keymap us pc105 intl;setxkbmap -model pc105 -layout us -variant intl;echo -e "LANG=en_US.UTF-8\nLANGUAGE=\"en_US\"\nLC_TYPE=pt_BR.UTF-8\nLC_NUMERIC=pt_BR.UTF-8\nLC_TIME=pt_BR.UTF-8\nLC_MONETARY=pt_BR.UTF-8\nLC_PAPER=pt_BR.UTF-8\nLC_MEASUREMENT=pt_BR.UTF-8" | tee /etc/locale.conf;echo -e "KEYMAP=us-acentos\nFONT=eurlatgr\nFONT_MAP=8859-1" | tee /etc/vconsole.conf'
-  local both='localectl --no-convert set-x11-keymap us,br pc105 intl,;setxkbmap -model pc105 -layout us,br -variant intl,;echo -e "LANG=en_US.UTF-8\nLANGUAGE=\"en_US\"\nLC_TYPE=pt_BR.UTF-8\nLC_NUMERIC=pt_BR.UTF-8\nLC_TIME=pt_BR.UTF-8\nLC_MONETARY=pt_BR.UTF-8\nLC_PAPER=pt_BR.UTF-8\nLC_MEASUREMENT=pt_BR.UTF-8" | tee /etc/locale.conf;echo -e "KEYMAP=us-acentos\nKEYMAP_TOGGLE=br-abnt2\nFONT=eurlatgr\nFONT_MAP=8859-1" | tee /etc/vconsole.conf'
+
+  local PT='localectl --no-convert set-x11-keymap br pc105; setxkbmap -model pc105 -layout br;
+    echo -e "LANG=en_US.UTF-8\nLANGUAGE=\"en_US\"\nLC_TYPE=pt_BR.UTF-8\nLC_NUMERIC=pt_BR.UTF-8\nLC_TIME=pt_BR.UTF-8\n"\
+    "LC_MONETARY=pt_BR.UTF-8\nLC_PAPER=pt_BR.UTF-8\nLC_MEASUREMENT=pt_BR.UTF-8" | tee /etc/locale.conf;
+    echo -e "KEYMAP=br-abnt2\nFONT=eurlatgr\nFONT_MAP=8859-1" | tee /etc/vconsole.conf'
+
+  local US='localectl --no-convert set-x11-keymap us pc105 intl;setxkbmap -model pc105 -layout us -variant intl;
+    echo -e "LANG=en_US.UTF-8\nLANGUAGE=\"en_US\"\nLC_TYPE=pt_BR.UTF-8\nLC_NUMERIC=pt_BR.UTF-8\nLC_TIME=pt_BR.UTF-8\n"\
+    "LC_MONETARY=pt_BR.UTF-8\nLC_PAPER=pt_BR.UTF-8\nLC_MEASUREMENT=pt_BR.UTF-8" | tee /etc/locale.conf;
+    echo -e "KEYMAP=us-acentos\nFONT=eurlatgr\nFONT_MAP=8859-1" | tee /etc/vconsole.conf'
+
+  local both='localectl --no-convert set-x11-keymap us,br pc105 intl,;setxkbmap -model pc105 -layout us,br \
+    -variant intl,; echo -e "LANG=en_US.UTF-8\nLANGUAGE=\"en_US\"\nLC_TYPE=pt_BR.UTF-8\nLC_NUMERIC=pt_BR.UTF-8\n"\
+    "LC_TIME=pt_BR.UTF-8\nLC_MONETARY=pt_BR.UTF-8\nLC_PAPER=pt_BR.UTF-8\nLC_MEASUREMENT=pt_BR.UTF-8" | \
+    tee /etc/locale.conf;
+    echo -e "KEYMAP=us-acentos\nKEYMAP_TOGGLE=br-abnt2\nFONT=eurlatgr\nFONT_MAP=8859-1" | tee /etc/vconsole.conf'
+
   select pubne in 'PT_BR' 'EN_US' 'Both' 'No' 'Exit'; do
     case $pubne in
       PT_BR ) $use_sudo sh -c "$PT"; break;;
@@ -1187,7 +1296,8 @@ arch-base() {
 
                   gpg --list-keys --with-keygrip
                   echo 'Enter your signing key if you wish to define it'; read gitSigningKey
-                  [[ -n "$gitSigningKey" ]] && git config --global user.signingKey "$gitSigningKey" && git config --global commit.gpgsign true
+                  [[ -n "$gitSigningKey" ]] && git config --global user.signingKey "$gitSigningKey" && \
+                    git config --global commit.gpgsign true
 
                   unset gitName gitEmail gitSigningKey
                   break;;
@@ -1203,8 +1313,18 @@ arch-base() {
           read firefoxcfg
           if [[ $firefoxcfg =~ '^[yY]' ]]; then
             command mkdir -p "$HOME/chrome"
-            echo '@-moz-document url(about:home), url(about:newtab), url(about:privatebrowsing) {\n  .click-target-container *,\n  .top-sites-list * {\n    color: #fff !important ;\n    text-shadow: 2px 2px 2px #222 !important ;\n  }\n\n  body::before {\n    content: '';\n    z-index: -1;\n    position: fixed;\n    top: 0;\n    left: 0;\n    background: #f9a no-repeat url(img) center;\n    background-size: cover;\n    width: 100vw;\n    height: 100vh;\n  }\n}' > "$HOME/chrome/userContent.css"
-            echo '/* #PlacesToolbarItems { filter: grayscale(1); } */\n#unified-extensions-button {\n  width: 0.1px;\n  padding-inline: 0 !important;\n}\n#unified-extensions-button > .toolbarbutton-icon {\n  width: 0 !important;\n}' > "$HOME/chrome/userChrome.css"
+
+            echo '@-moz-document url(about:home), url(about:newtab), url(about:privatebrowsing) {' \
+              '\n  .click-target-container *,\n  .top-sites-list * {\n    color: #fff !important ;' \
+              '\n    text-shadow: 2px 2px 2px #222 !important ;\n  }\n\n  body::before {\n    content: '';' \
+              '\n    z-index: -1;\n    position: fixed;\n    top: 0;\n    left: 0;' \
+              '\n    background: #f9a no-repeat url(img) center;\n    background-size: cover;\n    width: 100vw;' \
+              '\n    height: 100vh;\n  }\n}' > "$HOME/chrome/userContent.css"
+
+            echo '/* #PlacesToolbarItems { filter: grayscale(1); } */\n#unified-extensions-button {\n  width: 0.1px;' \
+              '\n  padding-inline: 0 !important;\n}\n#unified-extensions-button > .toolbarbutton-icon {' \
+              '\n  width: 0 !important;\n}' > "$HOME/chrome/userChrome.css"
+
             ln -sf "$HOME/Pictures/Wallpapers/Module Abyss Lapis."* "$HOME/chrome/img" &>/dev/null
           fi
           unset firefoxcfg
@@ -1215,7 +1335,11 @@ arch-base() {
             if [[ $nerdcfg =~ '^[yY]' ]]; then
               command mkdir -p "$XDG_DATA_HOME/fonts"
               echo 'Downloading Nerd Fonts...'
-              [[ -f "$XDG_CACHE_HOME/JetBrainsMono.zip" ]] || fetch 'https://github.com/ryanoasis/nerd-fonts/releases/download/v3.0.2/JetBrainsMono.zip' > "$XDG_CACHE_HOME/JetBrainsMono.zip"
+
+              [[ -f "$XDG_CACHE_HOME/JetBrainsMono.zip" ]] || fetch \
+                'https://github.com/ryanoasis/nerd-fonts/releases/download/v3.0.2/JetBrainsMono.zip' \
+                > "$XDG_CACHE_HOME/JetBrainsMono.zip"
+
               unzip -q "$XDG_CACHE_HOME/JetBrainsMono.zip" -d "$XDG_DATA_HOME/fonts" 2>/dev/null
               echo 'Done. Set JetBrainsMono as default font\n'
             fi
@@ -1224,29 +1348,46 @@ arch-base() {
 
           # Neovim config
           if [[ "$EDITOR" =~ 'nvim' ]]; then
-            if [[ "$EDITOR" == 'io.neovim.nvim' ]]; then
+
+            if [[ "$EDITOR" == 'io.neovim.nvim' ]] || [[ "$flatpk" =~ '^[yY]' ]] || \
+              echo 'Configure Flatpak Neovim? [y/N]' && read useFNvim && [[ "$useFNvim" =~ '^[yY]' ]]; then
+
               local baseNvim="$HOME/.var/app/io.neovim.nvim/config"
               command mkdir -p "$XDG_DATA_HOME/flatpak/exports/share/applications"
-              command cp '/var/lib/flatpak/app/io.neovim.nvim/current/active/export/share/applications/io.neovim.nvim.desktop' "$XDG_DATA_HOME/flatpak/exports/share/applications/"
-              sed -i 's/\(nvim-wrapper \)io.neovim.nvim/\1--file-forwarding io.neovim.nvim @@ %F @@/' "$XDG_DATA_HOME/flatpak/exports/share/applications/io.neovim.nvim.desktop"
+
+              command cp \
+                '/var/lib/flatpak/app/io.neovim.nvim/current/active/export/share/applications/io.neovim.nvim.desktop' \
+                "$XDG_DATA_HOME/flatpak/exports/share/applications/"
+
+              sed -i 's/\(nvim-wrapper \)io.neovim.nvim/\1--file-forwarding io.neovim.nvim @@ %F @@/' \
+                "$XDG_DATA_HOME/flatpak/exports/share/applications/io.neovim.nvim.desktop"
+
             else
               local baseNvim="$XDG_CONFIG_HOME"
             fi
-            [[ -f "$baseNvim/config/nvim/init.lua" ]] || fetch 'https://gitlab.com/brunolpsousa/dotfiles/-/raw/master/init.lua' > "$baseNvim/nvim/init.lua"
+
+            [[ -f "$baseNvim/config/nvim/init.lua" ]] || fetch \
+              'https://gitlab.com/brunolpsousa/dotfiles/-/raw/main/init.lua' > "$baseNvim/nvim/init.lua"
+
             command mkdir -p "$baseNvim/nvim/spell"
-            unset baseNvim
+            unset useFNvim
           fi
 
           # Alacritty config
           if command -v alacritty >/dev/null; then
             command mkdir -p "$XDG_CONFIG_HOME/alacritty"
 
-            fetch 'https://gitlab.com/brunolpsousa/dotfiles/-/raw/master/alacritty/alacritty.yml' > "$XDG_CONFIG_HOME/alacritty/alacritty.yml"
-            fetch 'https://gitlab.com/brunolpsousa/dotfiles/-/raw/master/alacritty/dark.yml' > "$XDG_CONFIG_HOME/alacritty/dark.yml"
-            fetch 'https://gitlab.com/brunolpsousa/dotfiles/-/raw/master/alacritty/light.yml' > "$XDG_CONFIG_HOME/alacritty/light.yml"
-            fetch 'https://gitlab.com/brunolpsousa/dotfiles/-/raw/master/theme.sh' > "$XDG_CONFIG_HOME/alacritty/theme.sh"
+            fetch 'https://gitlab.com/brunolpsousa/dotfiles/-/raw/main/alacritty/alacritty.yml' \
+              > "$XDG_CONFIG_HOME/alacritty/alacritty.yml"
+            fetch 'https://gitlab.com/brunolpsousa/dotfiles/-/raw/main/alacritty/dark.yml' \
+              > "$XDG_CONFIG_HOME/alacritty/dark.yml"
+            fetch 'https://gitlab.com/brunolpsousa/dotfiles/-/raw/main/alacritty/light.yml' \
+              > "$XDG_CONFIG_HOME/alacritty/light.yml"
+            fetch 'https://gitlab.com/brunolpsousa/dotfiles/-/raw/main/theme.sh' \
+              > "$XDG_CONFIG_HOME/alacritty/theme.sh"
 
-            case $(lscpu | awk '/Model name:/{print $3}') in Intel\(R\)) sed -i 's/\(columns: \)146/\1115/g; s/\(lines: \)45/\132/g' "$XDG_CONFIG_HOME/alacritty/alacritty.yml";; esac
+            case $(lscpu | awk '/Model name:/{print $3}') in Intel\(R\)) sed -i \
+              's/\(columns: \)146/\1115/g; s/\(lines: \)45/\132/g' "$XDG_CONFIG_HOME/alacritty/alacritty.yml";; esac
 
             chmod +x "$XDG_CONFIG_HOME/alacritty/theme.sh"
             sh -c "$XDG_CONFIG_HOME/alacritty/theme.sh"
@@ -1258,9 +1399,18 @@ arch-base() {
               unset xtermVar
             fi
             if [[ ! -f '/usr/local/bin/xterm' ]] && command -v tmux >/dev/null; then
-              echo '#!/usr/bin/env bash\nTERMX="alacritty"\n[[ -n "$ZSH_TMUX_STARTED" ]] || tmux new-session -d -s main -c "$HOME"\ntvar="$(tmux list-sessions | grep main)"\nsh -c "$HOME/.config/alacritty/theme.sh"\nif grep -q attached <<< "$tvar" && pgrep "$TERMX"; then\n  tmux neww -t=main -c "$@"\nelif [[ -n "$tvar" && -z "$*" && -z "$TERMX_NAUTILUS" ]] && ! pgrep "$TERMX"; then\n  "$TERMX"\nelse\n  tmux neww -t=main -c "$@"\n  "$TERMX"\nfi' | sudo tee '/usr/local/bin/xterm' >/dev/null
+              echo '#!/usr/bin/env bash\nTERMX="alacritty"' \
+                '\n[[ -n "$ZSH_TMUX_STARTED" ]] || tmux new-session -d -s main -c "$HOME"' \
+                '\ntvar="$(tmux list-sessions | grep main)"\nsh -c "$HOME/.config/alacritty/theme.sh"' \
+                '\nif grep -q attached <<< "$tvar" && pgrep "$TERMX"; then\n  tmux neww -t=main -c "$@"' \
+                '\nelif [[ -n "$tvar" && -z "$*" && -z "$TERMX_NAUTILUS" ]] && ! pgrep "$TERMX"; then\n  "$TERMX"' \
+                '\nelse\n  tmux neww -t=main -c "$@"\n  "$TERMX"\nfi' | sudo tee '/usr/local/bin/xterm' >/dev/null
+
               sudo chmod +x '/usr/local/bin/xterm'
-              [[ ! -f '/bin/xterm' ]] || echo "$(date '+%Y-%m-%d %H:%M:%S') - Warning: /bin/xterm exists and overlaps with /usr/local/bin/xterm" >> "$HOME/.alert"
+
+              [[ ! -f '/bin/xterm' ]] || echo \
+                "$(date '+%Y-%m-%d %H:%M:%S') - Warning: /bin/xterm exists and overlaps with /usr/local/bin/xterm" \
+                >> "$HOME/.alert"
             fi
           fi
 
@@ -1268,18 +1418,28 @@ arch-base() {
           # Vim color fix: https://gist.github.com/andersevenrud/015e61af2fd264371032763d4ed965b6
           if command -v tmux >/dev/null; then
             command mkdir -p "$XDG_CONFIG_HOME/tmux"
-            fetch 'https://gitlab.com/brunolpsousa/dotfiles/-/raw/master/tmux.conf' > "$XDG_CONFIG_HOME/tmux/tmux.conf"
+            fetch 'https://gitlab.com/brunolpsousa/dotfiles/-/raw/main/tmux.conf' > "$XDG_CONFIG_HOME/tmux/tmux.conf"
             echo "Do you wish to remap tmux's prefix to C-['CHAR']? [y/N]" && read tmuxprefix
             [[ $tmuxprefix =~ '^[yY]' ]] && echo 'Enter a char:' && read tmuxbind
-            [[ -n $tmuxbind ]] && echo "# remap prefix from C-b to C-$tmuxbind\nunbind C-b\nset-option -g prefix C-$tmuxbind\nbind-key C-$tmuxbind send-prefix" >> "$XDG_CONFIG_HOME/tmux/tmux.conf"
+
+            [[ -n $tmuxbind ]] && \
+              echo "# remap prefix from C-b to C-$tmuxbind\nunbind C-b\nset-option -g prefix C-$tmuxbind\n" \
+              "bind-key C-$tmuxbind send-prefix" >> "$XDG_CONFIG_HOME/tmux/tmux.conf"
+
             unset tmuxprefix tmuxbind
           fi
 
           # Wezterm config
           if command -v wezterm >/dev/null; then
             command mkdir -p "$XDG_CONFIG_HOME/wezterm"
-            fetch 'https://gitlab.com/brunolpsousa/dotfiles/-/raw/master/wezterm.lua' > "$XDG_CONFIG_HOME/wezterm/wezterm.lua"
-            case $(lscpu | awk '/Model name:/{print $3}') in Intel\(R\)) sed -i 's/\(initial_cols = \)148/\1112/g; s/\(initial_rows = \)40/\130/g' "$XDG_CONFIG_HOME/wezterm/wezterm.lua";; esac
+
+            fetch 'https://gitlab.com/brunolpsousa/dotfiles/-/raw/main/wezterm.lua' \
+              > "$XDG_CONFIG_HOME/wezterm/wezterm.lua"
+
+            case $(lscpu | awk '/Model name:/{print $3}') in
+              Intel\(R\)) sed -i 's/\(initial_cols = \)148/\1112/g; s/\(initial_rows = \)40/\130/g' \
+                "$XDG_CONFIG_HOME/wezterm/wezterm.lua";; esac
+
             if [[ -f '/usr/local/bin/xterm' ]]; then
               echo && ls -lh '/usr/local/bin/xterm' && echo && cat '/usr/local/bin/xterm' && echo
               echo "Do you wish to delete xterm to install Wezterm tweak? [y/N]" && read xtermVar
@@ -1289,19 +1449,34 @@ arch-base() {
             if [[ ! -f '/usr/local/bin/xterm' ]]; then
               echo '#!/usr/bin/env bash\nwezterm start --cwd "$PWD" "$@"' | sudo tee '/usr/local/bin/xterm' >/dev/null
               sudo chmod +x '/usr/local/bin/xterm'
-              [[ ! -f '/bin/xterm' ]] || echo "$(date '+%Y-%m-%d %H:%M:%S') - Warning: /bin/xterm exists and overlaps with /usr/local/bin/xterm" >> "$HOME/.alert"
+
+              [[ ! -f '/bin/xterm' ]] || echo \
+                "$(date '+%Y-%m-%d %H:%M:%S') - Warning: /bin/xterm exists and overlaps with /usr/local/bin/xterm" \
+                >> "$HOME/.alert"
             fi
           fi
 
           # mpv config
           if command -v mpv >/dev/null || command -v io.mpv.Mpv >/dev/null; then
-            command -v mpv >/dev/null && local baseMpv="$XDG_CONFIG_HOME" || local baseMpv="$HOME/.var/app/io.mpv.Mpv/config"
+
+            command -v mpv >/dev/null && local baseMpv="$XDG_CONFIG_HOME" || \
+              local baseMpv="$HOME/.var/app/io.mpv.Mpv/config"
+
             command mkdir -p "$baseMpv/mpv/scripts"
-            echo 'Ctrl+q quit\nF11 cycle fullscreen\nENTER cycle fullscreen\nKP_ENTER cycle fullscreen\nWHEEL_UP osd-msg-bar seek 3\nWHEEL_DOWN osd-msg-bar seek -3\nLEFT osd-msg-bar seek -5\nRIGHT osd-msg-bar seek  5\nUP osd-msg-bar seek 15\nDOWN osd-msg-bar seek -15\nkp9 add volume -2\nkp0 add volume 2' > "$baseMpv/mpv/input.conf"
             echo 'idle=yes\nvolume=25\nautofit-smaller=50%x50%\nautofit-larger=90%x90%' > "$baseMpv/mpv/mpv.conf"
-            fetch 'https://raw.githubusercontent.com/brunolpsousa/mpv-nextfile/master/nextfile.lua' > "$baseMpv/mpv/scripts/nextfile.lua"
-            fetch 'https://raw.githubusercontent.com/jonniek/mpv-playlistmanager/master/playlistmanager.lua' > "$baseMpv/mpv/scripts/playlistmanager.lua"
+
+            echo 'Ctrl+q quit\nF11 cycle fullscreen\nENTER cycle fullscreen\nKP_ENTER cycle fullscreen
+              \nWHEEL_UP osd-msg-bar seek 3\nWHEEL_DOWN osd-msg-bar seek -3\nLEFT osd-msg-bar seek -5
+              \nRIGHT osd-msg-bar seek  5\nUP osd-msg-bar seek 15\nDOWN osd-msg-bar seek -15\nkp9 add volume -2
+              \nkp0 add volume 2' > "$baseMpv/mpv/input.conf"
+
+            fetch 'https://raw.githubusercontent.com/brunolpsousa/mpv-nextfile/master/nextfile.lua' \
+              > "$baseMpv/mpv/scripts/nextfile.lua"
+            fetch 'https://raw.githubusercontent.com/jonniek/mpv-playlistmanager/master/playlistmanager.lua' \
+              > "$baseMpv/mpv/scripts/playlistmanager.lua"
+
             sed -i 's/\(key_loadfiles = "\)"/\1CTRL+l"/g' "$baseMpv/mpv/scripts/playlistmanager.lua"
+            unset baseMpv
           fi
           break;;
 
@@ -1321,7 +1496,8 @@ arch-base() {
         select gve in 'GNOME Boxes' 'Virt-Manager' 'None'; do
           case $gve in
             GNOME\ Boxes ) sh -c "${use_sudo} pacman -S --needed gnome-boxes"; break;;
-            Virt-Manager ) sh -c "${use_sudo} pacman -S --needed virt-manager qemu-desktop libvirt edk2-ovmf dnsmasq"; break;;
+            Virt-Manager )
+              sh -c "${use_sudo} pacman -S --needed virt-manager qemu-desktop libvirt edk2-ovmf dnsmasq"; break;;
             None ) break;;
           esac
         done
@@ -1330,14 +1506,16 @@ arch-base() {
         if [[ "$EUID" != 0 ]]; then
           [[ -z $(groups | grep libvirt) ]] && gpasswd -a $USER libvirt
           if ! grep -q "user = \"$USER\"" /etc/libvirt/qemu.conf; then
-            echo "\nunix_sock_group = 'libvirt'\nunix_sock_rw_perms = '0770'" | sudo tee -a /etc/libvirt/libvirtd.conf >/dev/null
             echo "\nuser = \"$USER\"\ngroup = \"$USER\"" | sudo tee -a /etc/libvirt/qemu.conf >/dev/null
+            echo "\nunix_sock_group = 'libvirt'\nunix_sock_rw_perms = '0770'" | \
+              sudo tee -a /etc/libvirt/libvirtd.conf >/dev/null
           fi
         else
           [[ -z $(groups bruno | grep libvirt) ]] && gpasswd -a bruno libvirt
           if ! grep -q bruno /etc/libvirt/qemu.conf; then
-            echo "\nunix_sock_group = 'libvirt'\nunix_sock_rw_perms = '0770'" | tee -a /etc/libvirt/libvirtd.conf >/dev/null
             echo "\nuser = \"bruno\"\ngroup = \"bruno\"" | tee -a /etc/libvirt/qemu.conf >/dev/null
+            echo "\nunix_sock_group = 'libvirt'\nunix_sock_rw_perms = '0770'" | \
+              tee -a /etc/libvirt/libvirtd.conf >/dev/null
           fi
         fi
 
@@ -1352,15 +1530,18 @@ arch-base() {
   select gke in 'GNOME' 'KDE' 'Exit'; do
     case $gke in
 
-      GNOME )
-        sh -c "${use_sudo} pacman -S --needed xdg-desktop-portal-gnome gst-plugin-pipewire gnome-shell gnome-session gdm nautilus gnome-control-center gnome-disk-utility gnome-keyring gnome-system-monitor gvfs-mtp gnome-tweaks gnome-themes-extra webp-pixbuf-loader ffmpegthumbnailer"
+      GNOME ) sh -c "${use_sudo} pacman -S --needed \
+          xdg-desktop-portal-gnome gst-plugin-pipewire gvfs-mtp \
+          gnome-shell gnome-session gdm gnome-keyring gnome-control-center nautilus \
+          gnome-disk-utility gnome-system-monitor gnome-tweaks gnome-themes-extra \
+          webp-pixbuf-loader ffmpegthumbnailer"
 
-        if [[ -z $flatpk ]]; then
+        if [[ -z "$flatpk" ]]; then
           echo 'Do you wish to use Flatpak [y/N]?'
           read flatpk
         fi
 
-        if [[ $flatpk =~ '^[yY]' ]]; then
+        if [[ "$flatpk" =~ '^[yY]' ]]; then
           command -v flatpak >/dev/null || sh -c "${use_sudo} pacman -S flatpak"
           flatpak install org.gnome.FileRoller org.gnome.Calculator org.gnome.Chess org.gnome.Mines
           flatpak override -u --filesystem=host org.gnome.FileRoller
@@ -1368,14 +1549,20 @@ arch-base() {
           sh -c "${use_sudo} pacman -S --needed file-roller gnome-calculator gnome-chess gnome-mines"
         fi
 
+        sh -c "echo -e '[Unit]\nDescription=Change Wallpapers\nStartLimitIntervalSec=3\nStartLimitBurst=5\n' \
+          '\n[Service]\nExecStart=/home/bruno/.local/share/backgrounds/chwp.sh\nRestart=always\nRestartSec=3\n' \
+          '\n[Install]\nWantedBy=default.target' | ${use_sudo} tee /etc/systemd/user/chwp.service >/dev/null"
+
         sh -c "${use_sudo} sed -i 's/#HandleLidSwitch=suspend/HandleLidSwitch=lock/' /etc/systemd/logind.conf"
-        sh -c "echo -e '[Unit]\nDescription=Change Wallpapers\nStartLimitIntervalSec=3\nStartLimitBurst=5\n\n[Service]\nExecStart=/home/bruno/.local/share/backgrounds/chwp.sh\nRestart=always\nRestartSec=3\n\n[Install]\nWantedBy=default.target' | ${use_sudo} tee /etc/systemd/user/chwp.service >/dev/null"
         sh -c "${use_sudo} chmod u+x /etc/systemd/user/chwp.service"
         sudo -u gdm dbus-launch gsettings set org.gnome.desktop.peripherals.touchpad tap-to-click true
 
         if [[ "$EUID" != 0 ]]; then
           command mkdir -p "$XDG_DATA_HOME/backgrounds"
-          [[ -f "$XDG_CONFIG_HOME/backgrounds/chwp.sh" ]] || fetch 'https://gitlab.com/brunolpsousa/dotfiles/-/raw/master/chwp.sh' > "$XDG_DATA_HOME/backgrounds/chwp.sh"
+
+          [[ -f "$XDG_CONFIG_HOME/backgrounds/chwp.sh" ]] || fetch \
+            'https://gitlab.com/brunolpsousa/dotfiles/-/raw/main/chwp.sh' > "$XDG_DATA_HOME/backgrounds/chwp.sh"
+
           chmod +x "$XDG_DATA_HOME/backgrounds/chwp.sh"
           echo '#!/usr/bin/env bash\nexport TERMX_NAUTILUS=1 && xterm' > "$XDG_DATA_HOME/nautilus/scripts/Terminal"
           chmod +x "$XDG_DATA_HOME/nautilus/scripts/Terminal"
@@ -1385,11 +1572,19 @@ arch-base() {
         fi
         break;;
 
-      KDE )
-        sh -c "${use_sudo} pacman -S --needed plasma-desktop sddm sddm-kcm plasma-wayland-session xdg-desktop-portal-kde qt5-wayland qt6-wayland bluedevil powerdevil breeze-gtk kde-gtk-config kdialog khotkeys kinfocenter kscreen kwallet-pam plasma-disks plasma-firewall plasma-nm plasma-pa dolphin-plugins ark filelight kcalc kcharselect gwenview qt5-imageformats ffmpegthumbs okular plasma-systemmonitor spectacle qt5-virtualkeyboard"
+      KDE ) sh -c "${use_sudo} pacman -S --needed \
+              xdg-desktop-portal-kde plasma-desktop plasma-wayland-session qt5-wayland qt6-wayland sddm sddm-kcm \
+              powerdevil bluedevil plasma-nm plasma-pa breeze-gtk kde-gtk-config kdialog khotkeys kinfocenter kscreen \
+              plasma-disks plasma-firewall dolphin-plugins ark filelight kcalc qt5-imageformats ffmpegthumbs \
+              plasma-systemmonitor kwallet-pam spectacle qt5-virtualkeyboard gwenview kcharselect okular"
+
         echo "\n>>> Do you wish to install KDE Games?\n"
-        sh -c "${use_sudo} pacman -S --needed bomber granatier kapman kblocks kfourinline kmines knavalbattle knetwalk kollision kpat ksnakeduel kspaceduel"
-        [[ -f '/etc/sddm.conf.d/kde_settings.conf' ]] && ! grep -q Breeze_Snow /etc/sddm.conf.d/kde_settings.conf && sh -c "${use_sudo} sed -i '/^RebootCommand/ s/$/\nNumlock=on\nInputMethod=qtvirtualkeyboard/; /=breeze$/ s/$/\nCursorTheme=Breeze_Snow/' /etc/sddm.conf.d/kde_settings.conf"
+        sh -c "${use_sudo} pacman -S --needed \
+          bomber granatier kapman kblocks kfourinline kmines knavalbattle knetwalk kollision kpat ksnakeduel kspaceduel"
+
+        [[ -f '/etc/sddm.conf.d/kde_settings.conf' ]] && ! grep -q Breeze_Snow /etc/sddm.conf.d/kde_settings.conf && \
+          sh -c "${use_sudo} sed -i '/^RebootCommand/ s/$/\nNumlock=on\nInputMethod=qtvirtualkeyboard/; /=breeze$/ s/$/\
+          \nCursorTheme=Breeze_Snow/' /etc/sddm.conf.d/kde_settings.conf"
         break;;
 
       Exit ) return;;
@@ -1397,9 +1592,9 @@ arch-base() {
   done
   unset use_sudo flatpk
 }
-#------------------------------------------------------------------------------#
-#################################### Prompt ####################################
-#------------------------------------------------------------------------------#
+#----------------------------------------------------------------------------------------------------------------------#
+######################################################## Prompt ########################################################
+#----------------------------------------------------------------------------------------------------------------------#
 # Custom prompt with a lot of stuff from Pure, Purification (based on Purity),
 # Spaceship and various plugins - with Async!
 
@@ -1467,10 +1662,16 @@ prompt_setup() {
   autoload -Uz colors && colors
   VIRTUAL_ENV_DISABLE_PROMPT=true
 
-  PS1='${PROMPT_SSH}%(!^%F{red}%n %F{white}%Bin ${DIR_LOCK}%F{yellow}%(4~|%-1~/.../%2~|%~)%f%b${VCS_INFO_MSG}${VCS_STATUS_MSG} >%F{yellow}>%B%(?.%F{yellow}.%F{red})>%f%b^%F{green}%n %F{white}%Bin ${DIR_LOCK}%F{cyan}%(4~|%-1~/.../%2~|%~)%f%b${VCS_INFO_MSG}${VCS_STATUS_MSG} >%F{cyan}>%B%(?.%F{cyan}.%F{red})>)%f%b '
+  local p_prefix='${PROMPT_SSH}%(!'
+  local p_root_1='^%F{red}%n %F{white}%Bin ${DIR_LOCK}%F{yellow}%(4~|%-1~/.../%2~|%~)%f%b'
+  local p_root_2='${VCS_INFO_MSG}${VCS_STATUS_MSG} >%F{yellow}>%B%(?.%F{yellow}.%F{red})>%f%b'
+  local p_user_1='^%F{green}%n %F{white}%Bin ${DIR_LOCK}%F{cyan}%(4~|%-1~/.../%2~|%~)%f%b'
+  local p_user_2='${VCS_INFO_MSG}${VCS_STATUS_MSG} >%F{cyan}>%B%(?.%F{cyan}.%F{red})>)%f%b '
+
+  PS1="${p_prefix}${p_root_1}${p_root_2}${p_user_1}${p_user_2}"
   RPS1='${SPACE_NOASYNC}${SPACE_ASYNC}${ELAPSED}${SPACE_BATTERY} %246F%* %(?.%F{green}✓.%F{red}✗)%f%b'
 }
-#------------------------------------------------------------------------------#
+#----------------------------------------------------------------------------------------------------------------------#
 # Set terminal title
 prompt_set_title() {
   setopt localoptions noshwordsplit
@@ -1499,7 +1700,7 @@ prompt_set_title() {
   # Set title atomically in one print statement so that it works when XTRACE is enabled.
   print -n $opts $'\e]0;'${hostname}${2}$'\a'
 }
-#------------------------------------------------------------------------------#
+#----------------------------------------------------------------------------------------------------------------------#
 # Elapsed and execution time display for commands in ZSH
 # https://gist.github.com/knadh/123bca5cfdae8645db750bfb49cb44b0
 command_time_preexec() {
@@ -1526,7 +1727,7 @@ command_time_precmd() {
     unset timer
   fi
 }
-#------------------------------------------------------------------------------#
+#----------------------------------------------------------------------------------------------------------------------#
 # https://vincent.bernat.ch/en/blog/2019-zsh-async-vcs-info
 # Display git info
 prompt_git_info() {
@@ -1543,7 +1744,8 @@ prompt_git_info() {
   vcs_info
 
   [[ -z "$vcs_info_msg_2_" ]] || local vcs_action="::$vcs_info_msg_2_"
-  [[ -z "$vcs_info_msg_0_" ]] || echo -n "$ZSH_THEME_GIT_PROMPT_PREFIX${vcs_info_msg_0_//\%/%%}$vcs_action$ZSH_THEME_GIT_PROMPT_SUFFIX"
+  [[ -z "$vcs_info_msg_0_" ]] || \
+    echo -n "$ZSH_THEME_GIT_PROMPT_PREFIX${vcs_info_msg_0_//\%/%%}$vcs_action$ZSH_THEME_GIT_PROMPT_SUFFIX"
 }
 
 prompt_git_info_done() {
@@ -1648,11 +1850,11 @@ prompt_git_status_precmd() {
   async_flush_jobs vbe_vcs_status
   async_job vbe_vcs_status prompt_git_status "$PWD"
 }
-#------------------------------------------------------------------------------#
+#----------------------------------------------------------------------------------------------------------------------#
 # SSH
 # https://github.com/agkozak/agkozak-zsh-prompt/blob/master/agkozak-zsh-prompt.plugin.zsh
 [[ -n ${SSH_CONNECTION-}${SSH_CLIENT-}${SSH_TTY-} ]] && PROMPT_SSH="%F{yellow}${(%):-%m}%}ː%b%f" || unset PROMPT_SSH
-#------------------------------------------------------------------------------#
+#----------------------------------------------------------------------------------------------------------------------#
 # Some stuff borrowed from Spaceship
 # Updated in 2023.06.09
 
@@ -1670,7 +1872,10 @@ spaceship_stuff() {
   builtin cd -q "$1"
   local SPACESHIP_PROMPT_DEFAULT_PREFIX=' '
   local SPACESHIP_PROMPT_DEFAULT_SUFFIX='%f%b'
-  local SS_LIST=(asdf hg package node bun deno ruby python elm elixir xcode swift golang perl php rust haskell scala kotlin java lua dart julia crystal docker docker_compose gcloud azure dotnet ocaml vlang zig purescript erlang kubectl ansible terraform pulumi ibmcloud ember flutter gradle maven)
+  local SS_LIST=(asdf hg package node bun deno ruby python elm elixir xcode swift golang perl php rust haskell scala
+                kotlin java lua dart julia crystal docker docker_compose gcloud azure dotnet ocaml vlang zig
+                purescript erlang kubectl ansible terraform pulumi ibmcloud ember flutter gradle maven)
+
   for async_section in "$SS_LIST[@]"; do
     local result="$(spaceship_$async_section)"
     [[ -z "$result" ]] || echo -n "$result"
@@ -1721,6 +1926,12 @@ spaceship_precmd() {
 # https://github.com/spaceship-prompt/spaceship-prompt/blob/master/lib/utils.zsh
 spaceship::exists() { command -v $1 >/dev/null 2>&1 }
 
+spaceship::print() {
+  for i in "$@"; do
+    echo -n "$i"
+  done
+}
+
 spaceship::upsearch() {
   zparseopts -E -D \
     s=silent -silent=silent
@@ -1766,7 +1977,8 @@ spaceship::datafile() {
     elif spaceship::exists ruby; then
       ruby -r yaml -e "puts '$key'.split('.').reduce(YAML::load_file('$file')) { |obj, key| obj[key] }" 2>/dev/null
     elif spaceship::exists python3; then
-      python3 -c "import yaml, functools; print(functools.reduce(lambda obj, key: obj[key] if key else obj, '$key'.split('.'), yaml.safe_load(open('$file'))))" 2>/dev/null
+      python3 -c "import yaml, functools; print(functools.reduce(lambda obj, \
+        key: obj[key] if key else obj, '$key'.split('.'), yaml.safe_load(open('$file'))))" 2>/dev/null
     else
       return 1
     fi
@@ -1778,9 +1990,11 @@ spaceship::datafile() {
     elif spaceship::exists yq; then
       yq -r ".$key" "$file" 2>/dev/null
     elif spaceship::exists ruby; then
-      ruby -r json -e "puts '$key'.split('.').reduce(JSON::load(File.read('$file'))){ |obj, key| obj[key] }" 2>/dev/null
+      ruby -r json -e \
+        "puts '$key'.split('.').reduce(JSON::load(File.read('$file'))){ |obj, key| obj[key] }" 2>/dev/null
     elif spaceship::exists python3; then
-      python3 -c "import json, functools; print(functools.reduce(lambda obj, key: obj[key] if key else obj, '$key'.split('.'), json.load(open('$file'))))" 2>/dev/null
+      python3 -c "import json, functools; print(functools.reduce(lambda obj, \
+        key: obj[key] if key else obj, '$key'.split('.'), json.load(open('$file'))))" 2>/dev/null
     elif spaceship::exists node; then
       node -p "require('./$file').$key" 2>/dev/null
     else
@@ -1806,7 +2020,7 @@ spaceship::datafile() {
 
   return 1
 }
-#------------------------------------------------------------------------------#
+#----------------------------------------------------------------------------------------------------------------------#
 # asdf-prompt plugin for zsh/oh-my-zsh
 # Updated 2023.02.09
 # https://github.com/CurryEleison/zsh-asdf-prompt
@@ -1875,7 +2089,7 @@ spaceship_asdf() {
   echo -n "${ZSH_THEME_ASDF_PROMPT_PREFIX-\{}"\
   "${asdfsummary}${ZSH_THEME_ASDF_PROMPT_POSTFIX-\}}"
 }
-#------------------------------------------------------------------------------#
+#----------------------------------------------------------------------------------------------------------------------#
 # https://github.com/spaceship-prompt/spaceship-prompt/tree/master/sections
 # https://www.nerdfonts.com/cheat-sheet
 
@@ -1910,7 +2124,14 @@ spaceship_ansible() {
   local ansible_version=$(ansible --version | head -1 | grep --color=never -oE '([0-9]+\.)([0-9]+\.)?([0-9]+)')
 
   # Display ansible section
-  echo -n "$SPACESHIP_ANSIBLE_COLOR$SPACESHIP_ANSIBLE_PREFIX${SPACESHIP_ANSIBLE_SYMBOL}v$ansible_version$SPACESHIP_ANSIBLE_SUFFIX"
+  local result=(
+    $SPACESHIP_ANSIBLE_COLOR
+    $SPACESHIP_ANSIBLE_PREFIX
+    $SPACESHIP_ANSIBLE_SYMBOL
+    $ansible_version
+    $SPACESHIP_ANSIBLE_SUFFIX
+  )
+  spaceship::print $result
 }
 
 # Amazon Web Services (AWS)
@@ -1929,7 +2150,14 @@ spaceship_aws() {
   [[ -z $profile ]] || [[ "$profile" == "default" ]] && return
 
   # Show prompt section
-  echo -n "$SPACESHIP_AWS_COLOR$SPACESHIP_AWS_PREFIX${SPACESHIP_AWS_SYMBOL}${profile}$SPACESHIP_AWS_SUFFIX"
+  local result=(
+    $SPACESHIP_AWS_COLOR
+    $SPACESHIP_AWS_PREFIX
+    $SPACESHIP_AWS_SYMBOL
+    $profile
+    $SPACESHIP_AWS_SUFFIX
+  )
+  spaceship::print $result
 }
 
 # Azure is a cloud computing platform operated by Microsoft for application management
@@ -1950,7 +2178,14 @@ spaceship_azure() {
   [[ -z "$AZ_ACCOUNT" ]] && return
 
   # Show prompt section
-  echo -n "$SPACESHIP_AZURE_COLOR$SPACESHIP_AZURE_PREFIX$SPACESHIP_AZURE_SYMBOL$AZ_ACCOUNT$SPACESHIP_AZURE_SUFFIX"
+  local result=(
+    $SPACESHIP_AZURE_COLOR
+    $SPACESHIP_AZURE_PREFIX
+    $SPACESHIP_AZURE_SYMBOL
+    $AZ_ACCOUNT
+    $SPACESHIP_AZURE_SUFFIX
+  )
+  spaceship::print $result
 }
 
 # Battery
@@ -2037,7 +2272,16 @@ spaceship_battery() {
   if [[ $SPACESHIP_BATTERY_SHOW == 'always' ||
         $battery_percent -lt $SPACESHIP_BATTERY_THRESHOLD ||
         $SPACESHIP_BATTERY_SHOW == 'charged' && $battery_status =~ '(^charging|charged|full)' ]]; then
-  echo -n "$battery_color$SPACESHIP_BATTERY_PREFIX$battery_symbol${battery_percent}%%$SPACESHIP_BATTERY_SUFFIX"
+
+  local result=(
+    $battery_color
+    $SPACESHIP_BATTERY_PREFIX
+    $battery_symbol
+    $battery_percent
+    %%
+    $SPACESHIP_BATTERY_SUFFIX
+  )
+  spaceship::print $result
   fi
 }
 
@@ -2060,7 +2304,14 @@ spaceship_bun() {
   # Get Bun version
   local bun_version=$(bun --version)
 
-  echo -n "$SPACESHIP_BUN_COLOR$SPACESHIP_BUN_PREFIX${SPACESHIP_BUN_SYMBOL}v$bun_version$SPACESHIP_BUN_SUFFIX"
+  local result=(
+    $SPACESHIP_BUN_COLOR
+    $SPACESHIP_BUN_PREFIX
+    $SPACESHIP_BUN_SYMBOL
+    $bun_version
+    $SPACESHIP_BUN_SUFFIX
+  )
+  spaceship::print $result
 }
 
 # Crystal is a programming that aimes to be "fast as C, slick as Ruby."
@@ -2082,7 +2333,14 @@ spaceship_crystal() {
 
   local crystal_version=$(crystal --version | awk '/Crystal*/ {print $2}')
 
-  echo -n "$SPACESHIP_CRYSTAL_COLOR$SPACESHIP_CRYSTAL_PREFIX${SPACESHIP_CRYSTAL_SYMBOL}v$crystal_version$SPACESHIP_CRYSTAL_SUFFIX"
+  local result=(
+    $SPACESHIP_CRYSTAL_COLOR
+    $SPACESHIP_CRYSTAL_PREFIX
+    $SPACESHIP_CRYSTAL_SYMBOL
+    $crystal_version
+    $SPACESHIP_CRYSTAL_SUFFIX
+  )
+  spaceship::print $result
 }
 
 # Conda - Package, dependency and environment management for any language
@@ -2105,7 +2363,14 @@ spaceship_conda() {
     conda_env=${CONDA_DEFAULT_ENV:t}
   fi
 
-  echo -n "$SPACESHIP_CONDA_COLOR$SPACESHIP_CONDA_PREFIX${SPACESHIP_CONDA_SYMBOL}${conda_env}$SPACESHIP_CONDA_SUFFIX"
+  local result=(
+    $SPACESHIP_CONDA_COLOR
+    $SPACESHIP_CONDA_PREFIX
+    $SPACESHIP_CONDA_SYMBOL
+    $conda_env
+    $SPACESHIP_CONDA_SUFFIX
+  )
+  spaceship::print $result
 }
 
 # Dart is a client-optimized language for fast apps on any platform
@@ -2124,11 +2389,19 @@ spaceship_dart() {
 
   # The Dart binary can be installed directly as 'dart-sdk' or as bundle via Flutter
   # The version can have the following patterns:
-  # dart-sdk >       Dart SDK version: 2.19.0-edge.efb509c114dcaf54d0a011f717b48893d71ec9c3 (be) (Thu Sep 29 01:58:56 2022 +0000) on "macos_x64"
+  # dart-sdk >       Dart SDK version: 2.19.0-edge.efb509c114dcaf54d0a011f717b48893d71ec9c3 (be)
+  #                                    (Thu Sep 29 01:58:56 2022 +0000) on "macos_x64"
   # flutter bundle > Dart SDK version: 2.18.1 (stable) (Tue Sep 13 11:42:55 2022 +0200) on "macos_x64"
   local dart_version=$(dart --version | awk '{sub(/-.*/, "", $4); print $4}')
 
-  echo -n "$SPACESHIP_DART_COLOR$SPACESHIP_DART_PREFIX${SPACESHIP_DART_SYMBOL}v${dart_version}$SPACESHIP_DART_SUFFIX"
+  local result=(
+    $SPACESHIP_DART_COLOR
+    $SPACESHIP_DART_PREFIX
+    $SPACESHIP_DART_SYMBOL
+    $dart_version
+    $SPACESHIP_DART_SUFFIX
+  )
+  spaceship::print $result
 }
 
 # Deno is a secure runtime for JavaScript and TypeScript.
@@ -2153,7 +2426,14 @@ spaceship_deno() {
 
   [[ "$deno_version" == "$SPACESHIP_DENO_DEFAULT_VERSION" ]] && return
 
-  echo -n "$SPACESHIP_DENO_COLOR$SPACESHIP_DENO_PREFIX${SPACESHIP_DENO_SYMBOL}v$deno_version$SPACESHIP_DENO_SUFFIX"
+  local result=(
+    $SPACESHIP_DENO_COLOR
+    $SPACESHIP_DENO_PREFIX
+    $SPACESHIP_DENO_SYMBOL
+    $deno_version
+    $SPACESHIP_DENO_SUFFIX
+  )
+  spaceship::print $result
 }
 
 # Docker automates the repetitive tasks of setting up development environments
@@ -2197,7 +2477,15 @@ spaceship_docker() {
 
   [[ $SPACESHIP_DOCKER_VERBOSE == false ]] && docker_version=${docker_version%-*}
 
-  echo -n "$SPACESHIP_DOCKER_COLOR$SPACESHIP_DOCKER_PREFIX${SPACESHIP_DOCKER_SYMBOL}v${docker_version}${docker_context_section}$SPACESHIP_DOCKER_SUFFIX"
+  local result=(
+    $SPACESHIP_DOCKER_COLOR
+    $SPACESHIP_DOCKER_PREFIX
+    $SPACESHIP_DOCKER_SYMBOL
+    $docker_version
+    $docker_context_section
+    $SPACESHIP_DOCKER_SUFFIX
+  )
+  spaceship::print $result
 }
 
 # Docker Context
@@ -2224,7 +2512,9 @@ spaceship_docker_context() {
     # Docker contexts can be set using either the DOCKER_CONTEXT environment variable
     # or the `docker context use` command. `docker context ls` will show the selected
     # context in both cases. But we are not interested in the local "default" context.
-    docker_remote_context=$(docker context ls --format '{{if .Current}}{{if and (ne .Name "default") (ne .Name "desktop-linux") (ne .Name "colima")}}{{.Name}}{{end}}{{end}}' 2>/dev/null)
+    docker_remote_context=$(docker context ls --format \
+      '{{if .Current}}{{if and (ne .Name "default") (ne .Name "desktop-linux")
+      (ne .Name "colima")}}{{.Name}}{{end}}{{end}}' 2>/dev/null)
     [[ $? -ne 0 ]] && return
 
     docker_remote_context=$(echo $docker_remote_context | tr -d '\n')
@@ -2232,7 +2522,13 @@ spaceship_docker_context() {
 
   [[ -z $docker_remote_context ]] && return
 
-  echo -n "$SPACESHIP_DOCKER_COLOR$SPACESHIP_DOCKER_CONTEXT_PREFIX${docker_remote_context}$SPACESHIP_DOCKER_CONTEXT_SUFFIX"
+  local result=(
+    $SPACESHIP_DOCKER_COLOR
+    $SPACESHIP_DOCKER_CONTEXT_PREFIX
+    $docker_remote_context
+    $SPACESHIP_DOCKER_CONTEXT_SUFFIX
+  )
+  spaceship::print $result
 }
 
 # Docker Compose - a tool for defining and running multi-container Docker applications.
@@ -2277,7 +2573,14 @@ spaceship_docker_compose() {
     statuses+="$(spaceship_docker_compose::paint $color $letter)"
   done <<< "$containers"
 
-  echo -n "$SPACESHIP_DOCKER_COMPOSE_COLOR$SPACESHIP_DOCKER_COMPOSE_PREFIX$SPACESHIP_DOCKER_COMPOSE_SYMBOL$statuses$SPACESHIP_DOCKER_COMPOSE_SUFFIX"
+  local result=(
+    $SPACESHIP_DOCKER_COMPOSE_COLOR
+    $SPACESHIP_DOCKER_COMPOSE_PREFIX
+    $SPACESHIP_DOCKER_COMPOSE_SYMBOL
+    $statuses
+    $SPACESHIP_DOCKER_COMPOSE_SUFFIX
+  )
+  spaceship::print $result
 }
 
 # .NET Framework is a software framework developed by Microsoft
@@ -2304,7 +2607,14 @@ spaceship_dotnet() {
   # when the version defined in global.json is not installed.
   [[ $? -eq 0 ]] || return
 
-  echo -n "$SPACESHIP_DOTNET_COLOR$SPACESHIP_DOTNET_PREFIX${SPACESHIP_DOTNET_SYMBOL}${dotnet_version}$SPACESHIP_DOTNET_SUFFIX"
+  local result=(
+    $SPACESHIP_DOTNET_COLOR
+    $SPACESHIP_DOTNET_PREFIX
+    $SPACESHIP_DOTNET_SYMBOL
+    $dotnet_version
+    $SPACESHIP_DOTNET_SUFFIX
+  )
+  spaceship::print $result
 }
 
 # Elixir is a dynamic, functional language designed for building scalable applications
@@ -2342,7 +2652,14 @@ spaceship_elixir() {
   # Add 'v' before elixir version that starts with a number
   [[ "${elixir_version}" =~ ^[0-9].+$ ]] && elixir_version="v${elixir_version}"
 
-  echo -n "$SPACESHIP_ELIXIR_COLOR$SPACESHIP_ELIXIR_PREFIX${SPACESHIP_ELIXIR_SYMBOL}${elixir_version}$SPACESHIP_ELIXIR_SUFFIX"
+  local result=(
+    $SPACESHIP_ELIXIR_COLOR
+    $SPACESHIP_ELIXIR_PREFIX
+    $SPACESHIP_ELIXIR_SYMBOL
+    $elixir_version
+    $SPACESHIP_ELIXIR_SUFFIX
+  )
+  spaceship::print $result
 }
 
 # Elm is a delightful language for reliable webapps
@@ -2362,7 +2679,14 @@ spaceship_elm() {
 
   local elm_version=$(elm --version 2>/dev/null)
 
-  echo -n "$SPACESHIP_ELM_COLOR$SPACESHIP_ELM_PREFIX${SPACESHIP_ELM_SYMBOL}v${elm_version}$SPACESHIP_ELM_SUFFIX"
+  local result=(
+    $SPACESHIP_ELM_COLOR
+    $SPACESHIP_ELM_PREFIX
+    $SPACESHIP_ELM_SYMBOL
+    $elm_version
+    $SPACESHIP_ELM_SUFFIX
+  )
+  spaceship::print $result
 }
 
 # Ember.js is an open-source JavaScript web framework, based on the MVVM pattern
@@ -2381,7 +2705,14 @@ spaceship_ember() {
   local ember_version=$(grep '"version":' ./node_modules/ember-cli/package.json | cut -d\" -f4)
   [[ $ember_version == "system" || $ember_version == "ember" ]] && return
 
-  echo -n "$SPACESHIP_EMBER_COLOR$SPACESHIP_EMBER_PREFIX${SPACESHIP_EMBER_SYMBOL}${ember_version}$SPACESHIP_EMBER_SUFFIX"
+  local result=(
+    $SPACESHIP_EMBER_COLOR
+    $SPACESHIP_EMBER_PREFIX
+    $SPACESHIP_EMBER_SYMBOL
+    $ember_version
+    $SPACESHIP_EMBER_SUFFIX
+  )
+  spaceship::print $result
 }
 
 # Erlang is a general-purpose, concurrent, functional programming language
@@ -2403,7 +2734,14 @@ spaceship_erlang() {
   # Extract version from erlang
   local erl_version="$(erl -noshell -eval 'io:fwrite("~s\n", [erlang:system_info(otp_release)]).' -s erlang halt)"
 
-  echo -n "$SPACESHIP_ERLANG_COLOR$SPACESHIP_ERLANG_PREFIX${SPACESHIP_ERLANG_SYMBOL}v$erl_version$SPACESHIP_ERLANG_SUFFIX"
+  local result=(
+    $SPACESHIP_ERLANG_COLOR
+    $SPACESHIP_ERLANG_PREFIX
+    $SPACESHIP_ERLANG_SYMBOL
+    $erl_version
+    $SPACESHIP_ERLANG_SUFFIX
+  )
+  spaceship::print $result
 }
 
 # Flutter is an open source framework for building multi-platform applications with the Dart programming language.
@@ -2427,7 +2765,15 @@ spaceship_flutter() {
   local flutter_channel=$(printf "$flutter_version_output" | awk '{print $5}')
   local flutter_channel_section="$(__spaceship_flutter_channel $flutter_channel)"
 
-  echo -n "$SPACESHIP_FLUTTER_COLOR$SPACESHIP_FLUTTER_PREFIX${SPACESHIP_FLUTTER_SYMBOL}v${flutter_version}${flutter_channel_section}$SPACESHIP_FLUTTER_SUFFIX"
+  local result=(
+    $SPACESHIP_FLUTTER_COLOR
+    $SPACESHIP_FLUTTER_PREFIX
+    $SPACESHIP_FLUTTER_SYMBOL
+    $flutter_version
+    $flutter_channel_section
+    $SPACESHIP_FLUTTER_SUFFIX
+  )
+  spaceship::print $result
 }
 
 # internal section for channel
@@ -2441,7 +2787,13 @@ __spaceship_flutter_channel() {
   [[ $SPACESHIP_FLUTTER_CHANNEL_SHOW == false ]] && return
 
   local flutter_channel=${1:?"unknown"}
-  echo -n "$SPACESHIP_FLUTTER_CHANNEL_SYMBOL$SPACESHIP_FLUTTER_CHANNEL_PREFIX${flutter_channel}$SPACESHIP_FLUTTER_CHANNEL_SUFFIX"
+  local result=(
+    $SPACESHIP_FLUTTER_CHANNEL_SYMBOL
+    $SPACESHIP_FLUTTER_CHANNEL_PREFIX
+    $flutter_channel
+    $SPACESHIP_FLUTTER_CHANNEL_SUFFIX
+  )
+  spaceship::print $result
 }
 
 # Google Cloud Platform (gcloud) is a tool that provides the primary command-line interface to Google Cloud Platform
@@ -2483,7 +2835,14 @@ spaceship_gcloud() {
   local gcloud_status="$gcloud_active_config/$gcloud_active_project"
 
   # Show prompt section
-  echo -n "$SPACESHIP_GCLOUD_COLOR$SPACESHIP_GCLOUD_PREFIX${SPACESHIP_GCLOUD_SYMBOL}$gcloud_status$SPACESHIP_GCLOUD_SUFFIX"
+  local result=(
+    $SPACESHIP_GCLOUD_COLOR
+    $SPACESHIP_GCLOUD_PREFIX
+    $SPACESHIP_GCLOUD_SYMBOL
+    $gcloud_status
+    $SPACESHIP_GCLOUD_SUFFIX
+  )
+  spaceship::print $result
 }
 
 # GNU Screen is a full-screen window manager that multiplexes a physical terminal
@@ -2504,7 +2863,14 @@ spaceship_gnu_screen() {
   # STY could not be empty because regex match
   local screen_session="$STY"
 
-  echo -n "$SPACESHIP_GNU_SCREEN_COLOR$SPACESHIP_GNU_SCREEN_PREFIX$SPACESHIP_GNU_SCREEN_SYMBOL$screen_session$SPACESHIP_GNU_SCREEN_SUFFIX"
+  local result=(
+    $SPACESHIP_GNU_SCREEN_COLOR
+    $SPACESHIP_GNU_SCREEN_PREFIX
+    $SPACESHIP_GNU_SCREEN_SYMBOL
+    $screen_session
+    $SPACESHIP_GNU_SCREEN_SUFFIX
+  )
+  spaceship::print $result
 }
 
 # Go is an open source programming language that makes it easy to build efficient software
@@ -2528,7 +2894,14 @@ spaceship_golang() {
   # https://github.com/spaceship-prompt/spaceship-prompt/issues/610
   local go_version=$(go version | awk '{ if ($3 ~ /^devel/) {print $3 ":" substr($4, 2)} else {print "v" substr($3, 3)} }')
 
-  echo -n "$SPACESHIP_GOLANG_COLOR${SPACESHIP_GOLANG_PREFIX}${SPACESHIP_GOLANG_SYMBOL}${go_version}${SPACESHIP_GOLANG_SUFFIX}"
+  local result=(
+    $SPACESHIP_GOLANG_COLOR
+    $SPACESHIP_GOLANG_PREFIX
+    $SPACESHIP_GOLANG_SYMBOL
+    $go_version
+    $SPACESHIP_GOLANG_SUFFIX
+  )
+  spaceship::print $result
 }
 
 # Gradle is an open-source build automation tool focused on flexibility and performance
@@ -2561,7 +2934,14 @@ spaceship_gradle() {
 
   [[ "$gradle_version" == "$SPACESHIP_GRADLE_DEFAULT_VERSION" ]] && return
 
-  echo -n "$SPACESHIP_GRADLE_COLOR$SPACESHIP_GRADLE_PREFIX${SPACESHIP_GRADLE_SYMBOL}$gradle_version$SPACESHIP_GRADLE_SUFFIX"
+  local result=(
+    $SPACESHIP_GRADLE_COLOR
+    $SPACESHIP_GRADLE_PREFIX
+    $SPACESHIP_GRADLE_SYMBOL
+    $gradle_version
+    $SPACESHIP_GRADLE_SUFFIX
+  )
+  spaceship::print $result
 }
 
 spaceship::gradle::find_root_project() {
@@ -2610,7 +2990,14 @@ spaceship_haskell() {
   local is_haskell_project=$(spaceship::upsearch stack.yaml)
   [[ -n "$is_haskell_project" || -n *.hs(#qN^/) || -n *.cabal(#qN) ]] || return
 
-  echo -n "$SPACESHIP_HASKELL_COLOR$SPACESHIP_HASKELL_PREFIX${SPACESHIP_HASKELL_SYMBOL}v${haskell_version}$SPACESHIP_HASKELL_SUFFIX"
+  local result=(
+    $SPACESHIP_HASKELL_COLOR
+    $SPACESHIP_HASKELL_PREFIX
+    $SPACESHIP_HASKELL_SYMBOL
+    $haskell_version
+    $SPACESHIP_HASKELL_SUFFIX
+  )
+  spaceship::print $result
 }
 
 # Mercurial (hg)
@@ -2627,7 +3014,14 @@ spaceship_hg() {
 
   [[ -z $hg_branch ]] && return
 
-  echo -n "$White$SPACESHIP_HG_PREFIX${hg_branch}${hg_status}$SPACESHIP_HG_SUFFIX"
+  local result(
+    $White
+    $SPACESHIP_HG_PREFIX
+    $hg_branch
+    $hg_status
+    $SPACESHIP_HG_SUFFIX
+  )
+  spaceship::print $result
 }
 
 spaceship::is_hg() {
@@ -2651,7 +3045,13 @@ spaceship_hg_branch() {
     hg_info=$(hg branch)
   fi
 
-  echo -n "$SPACESHIP_HG_BRANCH_COLOR$SPACESHIP_HG_BRANCH_PREFIX"$hg_info"$SPACESHIP_HG_BRANCH_SUFFIX"
+  local result=(
+    $SPACESHIP_HG_BRANCH_COLOR
+    $SPACESHIP_HG_BRANCH_PREFIX
+    $hg_info
+    $SPACESHIP_HG_BRANCH_SUFFIX
+  )
+  spaceship::print $result
 }
 
 # Mercurial (hg) status
@@ -2685,7 +3085,13 @@ spaceship_hg_status() {
   fi
 
   if [[ -n $hg_status ]]; then
-    echo -n "$SPACESHIP_HG_STATUS_COLOR$SPACESHIP_HG_STATUS_PREFIX"$hg_status"$SPACESHIP_HG_STATUS_SUFFIX"
+    local result=(
+      $SPACESHIP_HG_STATUS_COLOR
+      $SPACESHIP_HG_STATUS_PREFIX
+      $hg_status
+      $SPACESHIP_HG_STATUS_SUFFIX
+    )
+    spaceship::print $result
   fi
 }
 
@@ -2709,7 +3115,14 @@ spaceship_ibmcloud() {
   # check for that and set it to the full message manually.
   [[ "No" == $ibmcloud_account ]] && ibmcloud_account="No account targeted"
 
-  echo -n "$SPACESHIP_IBMCLOUD_COLOR$SPACESHIP_IBMCLOUD_PREFIX$SPACESHIP_IBMCLOUD_SYMBOL$ibmcloud_account$SPACESHIP_IBMCLOUD_SUFFIX"
+  local result=(
+    $SPACESHIP_IBMCLOUD_COLOR
+    $SPACESHIP_IBMCLOUD_PREFIX
+    $SPACESHIP_IBMCLOUD_SYMBOL
+    $ibmcloud_account
+    $SPACESHIP_IBMCLOUD_SUFFIX
+  )
+  spaceship::print $result
 }
 
 # Java is a class-based, object-oriented programming language
@@ -2733,7 +3146,14 @@ spaceship_java() {
   # Check if java version is not empty
   [[ -z "$java_version" ]] && return
 
-  echo -n "$SPACESHIP_JAVA_COLOR$SPACESHIP_JAVA_PREFIX${SPACESHIP_JAVA_SYMBOL}v${java_version}$SPACESHIP_JAVA_SUFFIX"
+  local result=(
+    $SPACESHIP_JAVA_COLOR
+    $SPACESHIP_JAVA_PREFIX
+    $SPACESHIP_JAVA_SYMBOL
+    $java_version
+    $SPACESHIP_JAVA_SUFFIX
+  )
+  spaceship::print $result
 }
 
 # Background Jobs
@@ -2760,7 +3180,16 @@ spaceship_jobs() {
     SPACESHIP_JOBS_AMOUNT_SUFFIX=''
   fi
 
-  echo -n "$SPACESHIP_JOBS_COLOR$SPACESHIP_JOBS_PREFIX${SPACESHIP_JOBS_SYMBOL}${SPACESHIP_JOBS_AMOUNT_PREFIX}${jobs_amount}${SPACESHIP_JOBS_AMOUNT_SUFFIX}$SPACESHIP_JOBS_SUFFIX"
+  local result=(
+    $SPACESHIP_JOBS_COLOR
+    $SPACESHIP_JOBS_PREFIX
+    $SPACESHIP_JOBS_SYMBOL
+    $SPACESHIP_JOBS_AMOUNT_PREFIX
+    $jobs_amount
+    $SPACESHIP_JOBS_AMOUNT_SUFFIX
+    $SPACESHIP_JOBS_SUFFIX
+  )
+  spaceship::print $result
 }
 
 # Julia is a high-level, high-performance dynamic programming language for numerical computing
@@ -2782,7 +3211,14 @@ spaceship_julia() {
 
   local julia_version=$(julia --version | grep --color=never -oE '([0-9]+\.)([0-9]+\.)?([0-9]+)')
 
-  echo -n "$SPACESHIP_JULIA_COLOR$SPACESHIP_JULIA_PREFIX${SPACESHIP_JULIA_SYMBOL}v${julia_version}$SPACESHIP_JULIA_SUFFIX"
+  local result=(
+    $SPACESHIP_JULIA_COLOR
+    $SPACESHIP_JULIA_PREFIX
+    $SPACESHIP_JULIA_SYMBOL
+    $julia_version
+    $SPACESHIP_JULIA_SUFFIX
+  )
+  spaceship::print $result
 }
 
 # Kotlin is a modern, concise and safe programming language
@@ -2802,7 +3238,14 @@ spaceship_kotlin() {
   local kotlin_version=$(kotlinc -version 2>&1 | grep --color=never -oE '([0-9]+\.)([0-9]+\.)?([0-9]+)' | head -n 1)
   [[ -z "$kotlin_version" ]] && return
 
-  echo -n "$SPACESHIP_KOTLIN_COLOR$SPACESHIP_KOTLIN_PREFIX${SPACESHIP_KOTLIN_SYMBOL}v$kotlin_version$SPACESHIP_KOTLIN_SUFFIX"
+  local result=(
+    $SPACESHIP_KOTLIN_COLOR
+    $SPACESHIP_KOTLIN_PREFIX
+    $SPACESHIP_KOTLIN_SYMBOL
+    $kotlin_version
+    $SPACESHIP_KOTLIN_SUFFIX
+  )
+  spaceship::print $result
 }
 
 # Kubernetes (kubectl) is an open-source system for deployment, scaling, and management of containerized applications
@@ -2820,7 +3263,15 @@ spaceship_kubectl() {
 
   [[ -z $kubectl_version && -z $kubectl_context ]] && return
 
-  echo -n "$SPACESHIP_KUBECTL_COLOR$SPACESHIP_KUBECTL_PREFIX${SPACESHIP_KUBECTL_SYMBOL}${kubectl_version}${kubectl_context}$SPACESHIP_KUBECTL_SUFFIX"
+  local result=(
+    $SPACESHIP_KUBECTL_COLOR
+    $SPACESHIP_KUBECTL_PREFIX
+    $SPACESHIP_KUBECTL_SYMBOL
+    $kubectl_version
+    $kubectl_context
+    $SPACESHIP_KUBECTL_SUFFIX
+  )
+  spaceship::print $result
 }
 
 # Kubectl version
@@ -2839,10 +3290,18 @@ spaceship_kubectl_version() {
   [[ -z $kube_context ]] && return
 
   # if kubectl can't connect kubernetes cluster, kubernetes version section will be not shown
-  local kubectl_version=$(kubectl version --short 2>/dev/null | grep "Server Version" | sed 's/Server Version: \(.*\)/\1/')
+  local kubectl_version=$(kubectl version --short 2>/dev/null | \
+    grep "Server Version" | sed 's/Server Version: \(.*\)/\1/')
+
   [[ -z $kubectl_version ]] && return
 
-  echo -n "$SPACESHIP_KUBECTL_VERSION_COLOR$SPACESHIP_KUBECTL_VERSION_PREFIX${kubectl_version}$SPACESHIP_KUBECTL_VERSION_SUFFIX"
+  local result=(
+    $SPACESHIP_KUBECTL_VERSION_COLOR
+    $SPACESHIP_KUBECTL_VERSION_PREFIX
+    $kubectl_version
+    $SPACESHIP_KUBECTL_VERSION_SUFFIX
+  )
+  spaceship::print $result
 }
 
 # Kubernetes context
@@ -2865,7 +3324,8 @@ spaceship_kubectl_context() {
     [[ -n $kube_namespace && "$kube_namespace" != "default" ]] && kube_context="$kube_context ($kube_namespace)"
   fi
 
-  # Apply custom color to section if $kube_context matches a pattern defined in SPACESHIP_KUBECONTEXT_COLOR_GROUPS array.
+  # Apply custom color to section if $kube_context matches a pattern defined in
+  # SPACESHIP_KUBECONTEXT_COLOR_GROUPS array.
   # See Options.md for usage example.
   local len=${#SPACESHIP_KUBECONTEXT_COLOR_GROUPS[@]}
   local it_to=$((len / 2))
@@ -2882,7 +3342,13 @@ spaceship_kubectl_context() {
 
   [[ -z "$section_color" ]] && section_color=$SPACESHIP_KUBECONTEXT_COLOR
 
-  echo -n "$section_color$SPACESHIP_KUBECONTEXT_PREFIX${kube_context}$SPACESHIP_KUBECONTEXT_SUFFIX"
+  local result=(
+    $section_color
+    $SPACESHIP_KUBECONTEXT_PREFIX
+    $kube_context
+    $SPACESHIP_KUBECONTEXT_SUFFIX
+  )
+  spaceship::print $result
 }
 
 # Lua is a powerful, efficient, lightweight, embeddable scripting language
@@ -2901,7 +3367,15 @@ spaceship_lua() {
 
   local lua_version=$(lua -v | awk '{print $2}')
 
-  echo -n "$SPACESHIP_LUA_COLOR$SPACESHIP_LUA_PREFIX${SPACESHIP_LUA_SYMBOL}v${lua_version}$SPACESHIP_LUA_SUFFIX"
+  local result=(
+    $SPACESHIP_LUA_COLOR
+    $SPACESHIP_LUA_PREFIX
+    $SPACESHIP_LUA_SYMBOL
+    $lua_version
+    $SPACESHIP_LUA_SUFFIX
+  )
+
+  spaceship::print $result
 }
 
 # Apache Maven is a software project management and comprehension tool
@@ -2931,7 +3405,14 @@ spaceship_maven() {
 
   [[ "$maven_version" == "$SPACESHIP_MAVEN_DEFAULT_VERSION" ]] && return
 
-  echo -n "$SPACESHIP_MAVEN_COLOR$SPACESHIP_MAVEN_PREFIX${SPACESHIP_MAVEN_SYMBOL}${maven_version}$SPACESHIP_MAVEN_SUFFIX"
+  local result=(
+    $SPACESHIP_MAVEN_COLOR
+    $SPACESHIP_MAVEN_PREFIX
+    $SPACESHIP_MAVEN_SYMBOL
+    $maven_version
+    $SPACESHIP_MAVEN_SUFFIX
+  )
+  spaceship::print $result
 }
 
 spaceship::maven::find_pom() {
@@ -2982,7 +3463,14 @@ spaceship_nix_shell() {
   fi
 
   # Show prompt section
-  echo -n "$SPACESHIP_NIX_SHELL_COLOR$SPACESHIP_NIX_SHELL_PREFIX$SPACESHIP_NIX_SHELL_SYMBOL$display_text$SPACESHIP_NIX_SHELL_SUFFIX"
+  local result=(
+    $SPACESHIP_NIX_SHELL_COLOR
+    $SPACESHIP_NIX_SHELL_PREFIX
+    $SPACESHIP_NIX_SHELL_SYMBOL
+    $display_text
+    $SPACESHIP_NIX_SHELL_SUFFIX
+  )
+  spaceship::print $result
 }
 
 # Node.js is a JavaScript runtime built on Chrome's V8 JavaScript engine
@@ -3019,7 +3507,14 @@ spaceship_node() {
   [[ $node_version == "system" || $node_version == "node" ]] && return
   [[ $node_version == $SPACESHIP_NODE_DEFAULT_VERSION ]] && return
 
-  echo -n "$SPACESHIP_NODE_COLOR$SPACESHIP_NODE_PREFIX${SPACESHIP_NODE_SYMBOL}${node_version}$SPACESHIP_NODE_SUFFIX"
+  local result=(
+    $SPACESHIP_NODE_COLOR
+    $SPACESHIP_NODE_PREFIX
+    $SPACESHIP_NODE_SYMBOL
+    ${node_version//v/}
+    $SPACESHIP_NODE_SUFFIX
+  )
+  spaceship::print $result
 }
 
 # OCaml is an industrial strength programming language supporting functional,
@@ -3054,11 +3549,19 @@ spaceship_ocaml() {
   # Add 'v' before OCaml version that starts with a number
   [[ "$ocaml_version" =~ ^[0-9].+$ ]] && ocaml_version="v$ocaml_version"
 
-  echo -n "$SPACESHIP_OCAML_COLOR$SPACESHIP_OCAML_PREFIX$SPACESHIP_OCAML_SYMBOL$ocaml_version$SPACESHIP_OCAML_SUFFIX"
+  local result=(
+    $SPACESHIP_OCAML_COLOR
+    $SPACESHIP_OCAML_PREFIX
+    $SPACESHIP_OCAML_SYMBOL
+    $ocaml_version
+    $SPACESHIP_OCAML_SUFFIX
+  )
+  spaceship::print $result
 }
 
 # Package - Current package version
-# These package managers supported: npm; lerna; Cargo; Composer; Julia; Maven; Gradle; Python (using pyproject.toml); Dart (Fluter)
+# These package managers supported: npm; lerna; Cargo; Composer; Julia; Maven;
+# Gradle; Python (using pyproject.toml); Dart (Fluter)
 spaceship_package() {
   local SPACESHIP_PACKAGE_SHOW="${SPACESHIP_PACKAGE_SHOW=true}"
   local SPACESHIP_PACKAGE_SHOW_PRIVATE="${SPACESHIP_PACKAGE_SHOW_PRIVATE=false}"
@@ -3178,8 +3681,14 @@ spaceship_package() {
       continue
     fi
 
-    echo -n "$SPACESHIP_PACKAGE_COLOR$SPACESHIP_PACKAGE_PREFIX$SPACESHIP_PACKAGE_SYMBOL$package_version$SPACESHIP_PACKAGE_SUFFIX"
-
+    local result=(
+      $SPACESHIP_PACKAGE_COLOR
+      $SPACESHIP_PACKAGE_PREFIX
+      $SPACESHIP_PACKAGE_SYMBOL
+      $package_version
+      $SPACESHIP_PACKAGE_SUFFIX
+    )
+    spaceship::print $result
     return
   done
 }
@@ -3203,7 +3712,14 @@ spaceship_perl() {
 
   local perl_version=$(perl -v 2>&1 | awk '/This/ {print $9}' | sed -r 's/[(v]+//g;s/[)]//g')
 
-  echo -n "$SPACESHIP_PERL_COLOR$SPACESHIP_PERL_PREFIX${SPACESHIP_PERL_SYMBOL}v$perl_version$SPACESHIP_PERL_SUFFIX"
+  local result=(
+    $SPACESHIP_PERL_COLOR
+    $SPACESHIP_PERL_PREFIX
+    $SPACESHIP_PERL_SYMBOL
+    $perl_version
+    $SPACESHIP_PERL_SUFFIX
+  )
+  spaceship::print $result
 }
 
 # PHP is a server-side scripting language designed primarily for web development
@@ -3225,7 +3741,14 @@ spaceship_php() {
 
   local php_version=$(php -v 2>&1 | grep --color=never -oe "^PHP\s*[0-9.]\+" | awk '{print $2}')
 
-  echo -n "$SPACESHIP_PHP_COLOR$SPACESHIP_PHP_PREFIX${SPACESHIP_PHP_SYMBOL}v${php_version}${SPACESHIP_PHP_SUFFIX}"
+  local result=(
+    $SPACESHIP_PHP_COLOR
+    $SPACESHIP_PHP_PREFIX
+    $SPACESHIP_PHP_SYMBOL
+    $php_version
+    $SPACESHIP_PHP_SUFFIX
+  )
+  spaceship::print $result
 }
 
 # Pulumi automates the repetitive tasks of setting up cloud resources
@@ -3246,7 +3769,14 @@ spaceship_pulumi() {
   local pulumi_stack=$(pulumi stack ls 2>/dev/null | sed -n -e '/\x2A/p' | cut -f1 -d" " | sed s/\*//)
   [[ -z $pulumi_stack ]] && return
 
-  echo -n "$SPACESHIP_PULUMI_COLOR$SPACESHIP_PULUMI_PREFIX$SPACESHIP_PULUMI_SYMBOL$pulumi_stack$SPACESHIP_PULUMI_SUFFIX"
+  local result=(
+    $SPACESHIP_PULUMI_COLOR
+    $SPACESHIP_PULUMI_PREFIX
+    $SPACESHIP_PULUMI_SYMBOL
+    $pulumi_stack
+    $SPACESHIP_PULUMI_SUFFIX
+  )
+  spaceship::print $result
 }
 
 # PureScript is a strongly-typed functional programming language that compiles to JavaScript
@@ -3269,7 +3799,14 @@ spaceship_purescript() {
   local purescript_version="$(purescript --version)"
 
   # Display PureScript section
-  echo -n "$SPACESHIP_PURESCRIPT_COLOR$SPACESHIP_PURESCRIPT_PREFIX${SPACESHIP_PURESCRIPT_SYMBOL}v$purescript_version$SPACESHIP_PURESCRIPT_SUFFIX"
+  local result=(
+    $SPACESHIP_PURESCRIPT_COLOR
+    $SPACESHIP_PURESCRIPT_PREFIX
+    $SPACESHIP_PURESCRIPT_SYMBOL
+    $purescript_version
+    $SPACESHIP_PURESCRIPT_SUFFIX
+  )
+  spaceship::print $result
 }
 
 # Python is an interpreted high-level programming language
@@ -3294,7 +3831,14 @@ spaceship_python() {
 
   [[ -z $py_version ]] && return
 
-  echo -n "$SPACESHIP_PYTHON_COLOR$SPACESHIP_PYTHON_PREFIX$SPACESHIP_PYTHON_SYMBOL$py_version$SPACESHIP_PYTHON_SUFFIX"
+  local result=(
+    $SPACESHIP_PYTHON_COLOR
+    $SPACESHIP_PYTHON_PREFIX
+    $SPACESHIP_PYTHON_SYMBOL
+    $py_version
+    $SPACESHIP_PYTHON_SUFFIX
+  )
+  spaceship::print $result
 }
 
 # Ruby is a dynamic, reflective, object-oriented, general-purpose programming language
@@ -3332,7 +3876,14 @@ spaceship_ruby() {
   # Add 'v' before ruby version that starts with a number
   [[ "${ruby_version}" =~ ^[0-9].+$ ]] && ruby_version="v${ruby_version}"
 
-  echo -n "$SPACESHIP_RUBY_COLOR$SPACESHIP_RUBY_PREFIX${SPACESHIP_RUBY_SYMBOL}${ruby_version}$SPACESHIP_RUBY_SUFFIX"
+  local result=(
+    $SPACESHIP_RUBY_COLOR
+    $SPACESHIP_RUBY_PREFIX
+    $SPACESHIP_RUBY_SYMBOL
+    $ruby_version
+    $SPACESHIP_RUBY_SUFFIX
+  )
+  spaceship::print $result
 }
 
 # Rust is a systems programming language sponsored by Mozilla Research
@@ -3356,10 +3907,18 @@ spaceship_rust() {
   local rust_version=$(rustc --version | cut -d ' ' -f2)
 
   if [[ $SPACESHIP_RUST_VERBOSE_VERSION == false ]]; then
-    local rust_version=$(echo $rust_version | cut -d '-' -f1) # Cut off -suffixes from version. "v1.30.0-beta.11" or "v1.30.0-nightly"
+    # Cut off -suffixes from version. "v1.30.0-beta.11" or "v1.30.0-nightly"
+    local rust_version=$(echo $rust_version | cut -d '-' -f1)
   fi
 
-  echo -n "$SPACESHIP_RUST_COLOR$SPACESHIP_RUST_PREFIX${SPACESHIP_RUST_SYMBOL}v${rust_version}$SPACESHIP_RUST_SUFFIX"
+  local result=(
+    $SPACESHIP_RUST_COLOR
+    $SPACESHIP_RUST_PREFIX
+    $SPACESHIP_RUST_SYMBOL
+    $rust_version
+    $SPACESHIP_RUST_SUFFIX
+  )
+  spaceship::print $result
 }
 
 # Scala is a strongly typed language supporting the functional and object oriented paradigms.
@@ -3382,7 +3941,14 @@ spaceship_scala() {
 
   [[ -z "$scala_version" || "${scala_version}" == "system" ]] && return
 
-  echo -n "$SPACESHIP_SCALA_COLOR$SPACESHIP_SCALA_PREFIX${SPACESHIP_SCALA_SYMBOL}v$scala_version$SPACESHIP_SCALA_SUFFIX"
+  local result=(
+    $SPACESHIP_SCALA_COLOR
+    $SPACESHIP_SCALA_PREFIX
+    $SPACESHIP_SCALA_SYMBOL
+    $scala_version
+    $SPACESHIP_SCALA_SUFFIX
+  )
+  spaceship::print $result
 }
 
 # Swift is a general-purpose, multi-paradigm, compiled programming language by Apple Inc
@@ -3409,7 +3975,14 @@ spaceship_swift() {
 
   [ -n "${swift_version}" ] || return
 
-  echo -n "$SPACESHIP_SWIFT_COLOR$SPACESHIP_SWIFT_PREFIX${SPACESHIP_SWIFT_SYMBOL}${swift_version}$SPACESHIP_SWIFT_SUFFIX"
+  local result=(
+    $SPACESHIP_SWIFT_COLOR
+    $SPACESHIP_SWIFT_PREFIX
+    $SPACESHIP_SWIFT_SYMBOL
+    $swift_version
+    $SPACESHIP_SWIFT_SUFFIX
+  )
+  spaceship::print $result
 }
 
 # Terraform Workspaces automates the repetitive tasks of setting up cloud resources
@@ -3430,7 +4003,14 @@ spaceship_terraform() {
   local terraform_workspace=$(<.terraform/environment)
   [[ -z $terraform_workspace ]] && return
 
-  echo -n "$SPACESHIP_TERRAFORM_COLOR$SPACESHIP_TERRAFORM_PREFIX$SPACESHIP_TERRAFORM_SYMBOL$terraform_workspace$SPACESHIP_TERRAFORM_SUFFIX"
+  local result=(
+    $SPACESHIP_TERRAFORM_COLOR
+    $SPACESHIP_TERRAFORM_PREFIX
+    $SPACESHIP_TERRAFORM_SYMBOL
+    $terraform_workspace
+    $SPACESHIP_TERRAFORM_SUFFIX
+  )
+  spaceship::print $result
 }
 
 # Virtualenv is a tool to create isolated Python environments
@@ -3459,7 +4039,14 @@ spaceship_venv() {
     venv="$VIRTUAL_ENV:t"
   fi
 
-  echo -n "$SPACESHIP_VENV_COLOR$SPACESHIP_VENV_PREFIX${SPACESHIP_VENV_SYMBOL}${venv}$SPACESHIP_VENV_SUFFIX"
+  local result=(
+    $SPACESHIP_VENV_COLOR
+    $SPACESHIP_VENV_PREFIX
+    $SPACESHIP_VENV_SYMBOL
+    $venv
+    $SPACESHIP_VENV_SUFFIX
+  )
+  spaceship::print $result
 }
 
 # V is a simple, fast, safe, compiled language for developing maintainable software.
@@ -3483,7 +4070,14 @@ spaceship_vlang() {
   local is_v_project=$(spaceship::upsearch v.mod vpkg.json .vpkg-lock.json)
   [[ -n "$is_v_project" || -n *.v(#qN^/) ]] || return
 
-  echo -n "$SPACESHIP_VLANG_COLOR$SPACESHIP_VLANG_PREFIX${SPACESHIP_VLANG_SYMBOL}v$v_version$SPACESHIP_VLANG_SUFFIX"
+  local result=(
+    $SPACESHIP_VLANG_COLOR
+    $SPACESHIP_VLANG_PREFIX
+    $SPACESHIP_VLANG_SYMBOL
+    $v_version
+    $SPACESHIP_VLANG_SUFFIX
+  )
+  spaceship::print $result
 }
 
 # Xcode is an integrated development environment for macOS
@@ -3512,7 +4106,14 @@ spaceship_xcode() {
       if spaceship::exists defaults; then
         local xcode_version=$(defaults read ${xcode_version_path} CFBundleShortVersionString)
 
-        echo -n "$SPACESHIP_XCODE_COLOR$SPACESHIP_XCODE_PREFIX${SPACESHIP_XCODE_SYMBOL}${xcode_version}$SPACESHIP_XCODE_SUFFIX"
+        local result=(
+          $SPACESHIP_XCODE_COLOR
+          $SPACESHIP_XCODE_PREFIX
+          ${SPACESHIP_XCODE_SYMBOL}
+          ${xcode_version}
+          $SPACESHIP_XCODE_SUFFIX
+        )
+        spaceship::print $result
       fi
     fi
   fi
@@ -3540,11 +4141,18 @@ spaceship_zig() {
   local zig_version="$(zig version)"
 
   # Display zig section
-  echo -n "$SPACESHIP_ZIG_COLOR$SPACESHIP_ZIG_PREFIX${SPACESHIP_ZIG_SYMBOL}v$zig_version$SPACESHIP_ZIG_SUFFIX"
+  local result=(
+    $SPACESHIP_ZIG_COLOR
+    $SPACESHIP_ZIG_PREFIX
+    $SPACESHIP_ZIG_SYMBOL
+    $zig_version
+    $SPACESHIP_ZIG_SUFFIX
+  )
+  spaceship::print $result
 }
-#------------------------------------------------------------------------------#
+#----------------------------------------------------------------------------------------------------------------------#
 prompt_setup "$@"
 [[ ! -s "$HOME/.alert" ]] || echo "\e[31m>\e[91m>\e[33m>\e[93m Check ~/.alert\n"
-#------------------------------------------------------------------------------#
-################################# END OF ZSHRC #################################
-#------------------------------------------------------------------------------#
+#----------------------------------------------------------------------------------------------------------------------#
+##################################################### END OF ZSHRC #####################################################
+#----------------------------------------------------------------------------------------------------------------------#
