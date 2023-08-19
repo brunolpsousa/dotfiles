@@ -1204,16 +1204,13 @@ arch-base() {
           fi
 
           if [[ ! -x /usr/bin/paru ]]; then
-            command mkdir -p $HOME/{.cache/paru/clone,.config/paru}
+            command mkdir -p "$XDG_CACHE_HOME/paru/clone"
             git clone 'https://aur.archlinux.org/paru-bin' "$XDG_CACHE_HOME/paru/clone/paru-bin"
             current_dir="$PWD"
             builtin cd -q "$XDG_CACHE_HOME/paru/clone/paru-bin"
             makepkg -sir
             builtin cd -q "$current_dir"
             unset current_dir
-
-            echo "[options]\nRemoveMake\nSudoLoop\nCombinedUpgrade\nUpgradeMenu\nNewsOnUpgrade" | \
-              tee "$XDG_CONFIG_HOME/paru/paru.conf" >/dev/null
           fi
         fi
 
