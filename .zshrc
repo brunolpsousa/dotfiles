@@ -585,7 +585,7 @@ dot() {
 # Convert image files to jxl
 cimg() {
   if ! command -v mogrify >/dev/null; then
-    echo 'Error: mogrify not found. Please, install imagemagick'
+    echo 'error: mogrify not found. Please, install imagemagick'
     return 1
   fi
   setopt nullglob
@@ -730,7 +730,7 @@ cal() {
 jvr() {
   local current_dir="$PWD"
   builtin cd -q $(sed 's/src.*/bin/g' <<< $current_dir) || return 1
-  class_path=$(find * -type f -name "$1*" | sed 's/.class//g')
+  local class_path=$(find * -type f -name "$1*" | sed 's/.class//g')
   java "$class_path"
   builtin cd -q $current_dir
   unset current_dir class_path
@@ -750,18 +750,20 @@ arch-date() { echo -n 'System was installed on '; ls -lct /etc | tail -1 | awk '
 alias yay='paru'
 paru() {
   [[ -z "$1" ]] && local args=('-Syu') || local args=("$@")
-  if command -v paru >/dev/null; then
+  if command -vp paru >/dev/null; then
     command paru "$args[@]" --topdown --removemake=yes --sudoloop --combinedupgrade --upgrademenu --newsonupgrade
-  elif command -v yay >/dev/null; then
-    command yay "$args[@]" --topdown --removemake --sudoloop --combinedupgrade --news
+  elif command -vp yay >/dev/null; then
+    command yay "$args[@]" --topdown --removemake --sudoloop --combinedupgrade
   else
-    echo 'Error: "paru" nor "yay" found'
+    echo 'error: "paru" nor "yay" found'
+    return 1
   fi
 }
 
 # Refresh Arch mirrors
 refresh() {
-  sudo reflector --protocol https --age 12 --latest 20 --connection-timeout 2 --download-timeout 2 --fastest 5 \
+  [[ "$EUID" != 0 ]] && local use_sudo='sudo'
+  $use_sudo reflector --protocol https --age 12 --latest 20 --connection-timeout 2 --download-timeout 2 --fastest 5 \
     --sort rate --save /etc/pacman.d/mirrorlist --verbose
 }
 
@@ -1143,13 +1145,10 @@ arch-base() {
     done
   fi
 
-  echo 'Do you want to update mirrors with reflector?'
+  echo 'Do you wish to update mirrors with reflector?'
   select yne in 'Yes' 'No' 'Exit'; do
     case $yne in
-      Yes )
-        $use_sudo sh -c "pacman -S --needed reflector; reflector --protocol https --age 12 --latest 20 \
-          --connection-timeout 2 --download-timeout 2 --fastest 5 --sort rate --save /etc/pacman.d/mirrorlist --verbose"
-        break;;
+      Yes ) $use_sudo pacman -S --needed reflector; refresh; break;;
       No ) break;;
       Exit ) return;;
     esac
@@ -1201,6 +1200,7 @@ arch-base() {
               $use_sudo sh -c "command cp /usr/bin/rg /var/lib/flatpak/app/io.neovim.nvim/current/active/files/bin"
           else
             sudo pacman -S --needed neovim nodejs rust firefox mpv steam qbittorrent qt6-wayland geeqie gnuchess
+            npm config set audit=false fund=false progress=off install-strategy=shallow
           fi
 
           if [[ ! -x /usr/bin/paru ]]; then
