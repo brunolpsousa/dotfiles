@@ -1869,7 +1869,7 @@ spaceship_stuff() {
   builtin cd -q "$1"
   local SPACESHIP_PROMPT_DEFAULT_PREFIX=' '
   local SPACESHIP_PROMPT_DEFAULT_SUFFIX='%f%b'
-  local SS_LIST=(asdf hg package node bun deno ruby python elm elixir xcode swift golang perl php rust haskell scala
+  local SS_LIST=(asdf hg package node bun deno react vue ruby python elm elixir xcode swift golang perl php rust haskell scala
                 kotlin java lua dart julia crystal docker docker_compose gcloud azure dotnet ocaml vlang zig
                 purescript erlang kubectl ansible terraform pulumi ibmcloud ember flutter gradle maven)
 
@@ -2102,8 +2102,7 @@ spaceship_ansible() {
   # Check if ansible is installed
   spaceship::exists ansible || return
 
-  # Show ansible section only when there are ansible-specific files in current
-  # working directory.
+  # Show ansible section only when there are ansible-specific files in current working directory.
   # Here glob qualifiers are used to check if files with specific extension are
   # present in directory. Read more about them here:
   # https://zsh.sourceforge.net/Doc/Release/Expansion.html
@@ -3154,7 +3153,6 @@ spaceship_java() {
 }
 
 # Background Jobs
-# Show icon if there's a working jobs in the background
 spaceship_jobs() {
   local SPACESHIP_JOBS_SHOW="${SPACESHIP_JOBS_SHOW=true}"
   local SPACESHIP_JOBS_PREFIX="${SPACESHIP_JOBS_PREFIX=""}"
@@ -3190,7 +3188,6 @@ spaceship_jobs() {
 }
 
 # Julia is a high-level, high-performance dynamic programming language for numerical computing
-# Show current version of Julia
 spaceship_julia() {
   local SPACESHIP_JULIA_SHOW="${SPACESHIP_JULIA_SHOW=true}"
   local SPACESHIP_JULIA_PREFIX="${SPACESHIP_JULIA_PREFIX="$SPACESHIP_PROMPT_DEFAULT_PREFIX"}"
@@ -3272,7 +3269,6 @@ spaceship_kubectl() {
 }
 
 # Kubectl version
-# Show current kubectl version
 spaceship_kubectl_version() {
   local SPACESHIP_KUBECTL_VERSION_SHOW="${SPACESHIP_KUBECTL_VERSION_SHOW=true}"
   local SPACESHIP_KUBECTL_VERSION_PREFIX="${SPACESHIP_KUBECTL_VERSION_PREFIX=""}"
@@ -3302,7 +3298,6 @@ spaceship_kubectl_version() {
 }
 
 # Kubernetes context
-# Show current context in kubectl
 spaceship_kubectl_context() {
   local SPACESHIP_KUBECONTEXT_SHOW="${SPACESHIP_KUBECONTEXT_SHOW=true}"
   local SPACESHIP_KUBECONTEXT_PREFIX="${SPACESHIP_KUBECONTEXT_PREFIX=""}"
@@ -3471,7 +3466,6 @@ spaceship_nix_shell() {
 }
 
 # Node.js is a JavaScript runtime built on Chrome's V8 JavaScript engine
-# Show current version of node, exception system.
 spaceship_node() {
   local SPACESHIP_NODE_SHOW="${SPACESHIP_NODE_SHOW=true}"
   local SPACESHIP_NODE_PREFIX="${SPACESHIP_NODE_PREFIX="$SPACESHIP_PROMPT_DEFAULT_PREFIX"}"
@@ -3720,7 +3714,6 @@ spaceship_perl() {
 }
 
 # PHP is a server-side scripting language designed primarily for web development
-# Show current version of PHP
 spaceship_php() {
   local SPACESHIP_PHP_SHOW="${SPACESHIP_PHP_SHOW=true}"
   local SPACESHIP_PHP_PREFIX="${SPACESHIP_PHP_PREFIX="$SPACESHIP_PROMPT_DEFAULT_PREFIX"}"
@@ -3838,8 +3831,41 @@ spaceship_python() {
   spaceship::print $result
 }
 
+# React is an open-source JavaScript web framework, created by Facebook
+spaceship_react() {
+  local SPACESHIP_REACT_SHOW="${SPACESHIP_REACT_SHOW=true}"
+  local SPACESHIP_REACT_ASYNC="${SPACESHIP_REACT_ASYNC=true}"
+  local SPACESHIP_REACT_PREFIX="${SPACESHIP_REACT_PREFIX="$SPACESHIP_PROMPT_DEFAULT_PREFIX"}"
+  local SPACESHIP_REACT_SUFFIX="${SPACESHIP_REACT_SUFFIX="$SPACESHIP_PROMPT_DEFAULT_SUFIX"}"
+  local SPACESHIP_REACT_SYMBOL="${SPACESHIP_REACT_SYMBOL="⚛ "}"
+  local SPACESHIP_REACT_COLOR="${SPACESHIP_REACT_COLOR="%F{cyan}"}"
+
+  [[ $SPACESHIP_REACT_SHOW == false ]] && return
+
+  # Upsearch for react package.json file
+  local react_package="$(spaceship::upsearch node_modules/react/package.json)"
+
+  # If package.json file is not found, exit
+  [[ -z "$react_package" ]] && return
+
+  # Get react version from package.json file
+  local react_version="$(spaceship::datafile --json $react_package version)"
+
+  # Check if tool version is correct
+  [[ -z $react_version || "$react_version" == "null" || "$react_version" == "undefined" ]] && return
+
+  # Display react section
+  local result=(
+    $SPACESHIP_REACT_COLOR
+    $SPACESHIP_REACT_PREFIX
+    $SPACESHIP_REACT_SYMBOL
+    $react_version
+    $SPACESHIP_REACT_SUFFIX
+  )
+  spaceship::print $result
+}
+
 # Ruby is a dynamic, reflective, object-oriented, general-purpose programming language
-# Show current version of Ruby
 spaceship_ruby() {
   local SPACESHIP_RUBY_SHOW="${SPACESHIP_RUBY_SHOW=true}"
   local SPACESHIP_RUBY_PREFIX="${SPACESHIP_RUBY_PREFIX="$SPACESHIP_PROMPT_DEFAULT_PREFIX"}"
@@ -3884,7 +3910,6 @@ spaceship_ruby() {
 }
 
 # Rust is a systems programming language sponsored by Mozilla Research
-# Show current version of Rust
 spaceship_rust() {
   local SPACESHIP_RUST_SHOW="${SPACESHIP_RUST_SHOW=true}"
   local SPACESHIP_RUST_PREFIX="${SPACESHIP_RUST_PREFIX="$SPACESHIP_PROMPT_DEFAULT_PREFIX"}"
@@ -3949,7 +3974,6 @@ spaceship_scala() {
 }
 
 # Swift is a general-purpose, multi-paradigm, compiled programming language by Apple Inc
-# Show current version of Swift
 spaceship_swift() {
   local SPACESHIP_SWIFT_SHOW_LOCAL="${SPACESHIP_SWIFT_SHOW_LOCAL=true}"
   local SPACESHIP_SWIFT_SHOW_GLOBAL="${SPACESHIP_SWIFT_SHOW_GLOBAL=false}"
@@ -4011,7 +4035,6 @@ spaceship_terraform() {
 }
 
 # Virtualenv is a tool to create isolated Python environments
-# Show current virtual environment (Python)
 spaceship_venv() {
   local SPACESHIP_VENV_SHOW="${SPACESHIP_VENV_SHOW=true}"
   local SPACESHIP_VENV_PREFIX="${SPACESHIP_VENV_PREFIX=" v:"}"
@@ -4077,6 +4100,40 @@ spaceship_vlang() {
   spaceship::print $result
 }
 
+# Vue.js is an approachable, performant and versatile framework for building web user interfaces.
+spaceship_vue() {
+  local SPACESHIP_VUE_SHOW="${SPACESHIP_VUE_SHOW=true}"
+  local SPACESHIP_VUE_ASYNC="${SPACESHIP_VUE_ASYNC=true}"
+  local SPACESHIP_VUE_PREFIX="${SPACESHIP_VUE_PREFIX="$SPACESHIP_PROMPT_DEFAULT_PREFIX"}"
+  local SPACESHIP_VUE_SUFFIX="${SPACESHIP_VUE_SUFFIX="$SPACESHIP_PROMPT_DEFAULT_SUFFIX"}"
+  local SPACESHIP_VUE_SYMBOL="${SPACESHIP_VUE_SYMBOL="𝗩 "}"
+  local SPACESHIP_VUE_COLOR="${SPACESHIP_VUE_COLOR="%114F"}"
+
+  [[ $SPACESHIP_VUE_SHOW == false ]] && return
+
+  # Upsearch for vue package.json file
+  local vue_package="$(spaceship::upsearch node_modules/vue/package.json)"
+
+  # If package.json file is not found, exit
+  [[ -z "$vue_package" ]] && return
+
+  # Get vue version from package.json file
+  local vue_version="$(spaceship::datafile --json $vue_package version)"
+
+  # Check if tool version is correct
+  [[ -z $vue_version || "$vue_version" == "null" || "$vue_version" == "undefined" ]] && return
+
+  # Display vue section
+  local result=(
+    $SPACESHIP_VUE_COLOR
+    $SPACESHIP_VUE_PREFIX
+    $SPACESHIP_VUE_SYMBOL
+    $vue_version
+    $SPACESHIP_VUE_SUFFIX
+  )
+  spaceship::print $result
+}
+
 # Xcode is an integrated development environment for macOS
 spaceship_xcode() {
   local SPACESHIP_XCODE_SHOW_LOCAL="${SPACESHIP_XCODE_SHOW_LOCAL=true}"
@@ -4130,8 +4187,7 @@ spaceship_zig() {
   # Check if zig command is available for execution
   spaceship::exists zig || return
 
-  # Show zig section only when there are zig-specific files in current
-  # working directory.
+  # Show zig section only when there are zig-specific files in current working directory.
   local is_zig_context="$(spaceship::upsearch build.zig)"
   [[ -n "$is_zig_context" || -n *.zig(#qN^/) ]] || return
 
