@@ -23,6 +23,12 @@ while true; do
   index=$(seq 0 $(("$wallpapers_size" - 1)) | shuf)
   for i in $index; do
     [[ -f ${wallpapers[$i]} ]] || break
+
+    hour="$(date '+%H')" && hour="${hour//^0/}"
+    if (("$hour" >= 7 && "$hour" < 19)) && [[ "${wallpapers[$i]}" =~ nsfw|NSFW ]]; then
+      continue
+    fi
+
     # Replace spaces with '%20' for gsettings
     wp=${wallpapers[$i]// /%20}
     gsettings set org.gnome.desktop.background picture-uri "file://$wp"
