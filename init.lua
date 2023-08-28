@@ -392,7 +392,7 @@ if pcall(require, "lazy") then
 						["<C-D>"] = cmp.mapping.scroll_docs(3),
 						["<C-Space>"] = cmp.mapping.complete(),
 						["<C-C>"] = cmp.mapping.abort(),
-						["<CR>"] = cmp.mapping.confirm({ behavior = cmp.ConfirmBehavior.Replace, select = true }),
+						["<CR>"] = cmp.mapping.confirm({ select = true }),
 						["<Tab>"] = cmp.mapping(function(fallback)
 							if cmp.visible() then
 								cmp.select_next_item({ behavior = cmp.SelectBehavior.Insert })
@@ -455,7 +455,7 @@ if pcall(require, "lazy") then
 						{ name = "path" },
 					},
 
-					confirm_opts = { behavior = cmp.ConfirmBehavior.Replace, select = true },
+					confirm_opts = { select = true },
 					experimental = { ghost_text = true },
 				})
 			end,
