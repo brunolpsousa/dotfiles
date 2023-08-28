@@ -246,20 +246,13 @@ if pcall(require, "lazy") then
 	require("lazy").setup({
 
 		{
-			"catppuccin/nvim",
-			name = "catppuccin",
+			"EdenEast/nightfox.nvim",
+			name = "nightfox",
 			lazy = false,
 			priority = 1000,
 			init = function()
-				pcall(vim.cmd.colorscheme, "catppuccin-mocha")
+				pcall(vim.cmd.colorscheme, "nightfox")
 			end,
-			opts = {
-				integrations = {
-					illuminate = true,
-					mason = true,
-					which_key = true,
-				},
-			},
 		},
 
 		{
