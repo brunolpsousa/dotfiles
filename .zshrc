@@ -1164,9 +1164,9 @@ arch-base() {
           alacritty tmux fzf ripgrep neofetch yt-dlp man-db tldr \
           base-devel pkgstats java-runtime-common reflector networkmanager \
           sbctl ufw iptables-nft ntfs-3g exfat-utils unrar zip p7zip imagemagick \
-          hunspell-en_US noto-fonts noto-fonts-cjk noto-fonts-emoji ttf-liberation gsfonts \
           android-udev android-tools xdg-desktop-portal xdg-desktop-portal-gtk lib32-gst-plugins-good \
           zsh zsh-autosuggestions zsh-completions zsh-history-substring-search zsh-syntax-highlighting \
+          hunspell-en_US noto-fonts noto-fonts-cjk noto-fonts-emoji ttf-liberation gsfonts ttf-jetbrains-mono-nerd \
           $(case $(lscpu | awk '/Model name:/{print $3}') in
           AMD) echo -n 'amd-ucode';;
           Intel\(R\)) echo -n 'intel-ucode';;
@@ -1327,7 +1327,8 @@ arch-base() {
           unset firefoxcfg
 
           # Nerd font config
-          if [[ ! $(find "$XDG_DATA_HOME/fonts" -name 'JetBrains*.ttf' 2>/dev/null) ]]; then
+          if [[ ! $(find "$XDG_DATA_HOME/fonts" -name 'JetBrains*.ttf' 2>/dev/null) ]] && \
+            ! pacman -Qi ttf-jetbrains-mono-nerd &>/dev/null; then
             echo 'Do you wish to install Nerd Fonts? [y/N]?' && read nerdcfg
             if [[ $nerdcfg =~ '^[yY]' ]]; then
               command mkdir -p "$XDG_DATA_HOME/fonts"
