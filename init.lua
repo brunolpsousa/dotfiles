@@ -72,7 +72,6 @@ keymap(
 vim.opt.termguicolors = true
 vim.opt.number = true
 vim.opt.relativenumber = true
-vim.opt.autoread = true
 vim.opt.shiftwidth = 2
 vim.opt.tabstop = 2
 vim.opt.expandtab = true
@@ -111,8 +110,8 @@ vim.opt.listchars:append("tab:>>,extends:▷,precedes:◁,trail:·,nbsp:~")
 vim.cmd("aunmenu PopUp")
 
 -- Autocommands
-vim.api.nvim_create_autocmd({ "FocusGained", "TermClose", "TermLeave", "CursorHold" }, {
-	command = "checktime | call feedkeys('lh')",
+vim.api.nvim_create_autocmd({ "CursorHold" }, {
+	command = "checktime",
 })
 
 vim.api.nvim_create_autocmd({ "TextYankPost" }, {
