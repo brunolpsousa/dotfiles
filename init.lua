@@ -246,10 +246,17 @@ vim.api.nvim_create_user_command("Tt", function()
 	end
 end, {})
 
-keymap({ "n" }, "<leader>t", "<cmd>Tt<CR>", { desc = "Theme" })
+keymap({ "n", "v" }, "<leader>t", "<cmd>Tt<CR>", { desc = "Theme" })
 
 vim.api.nvim_create_autocmd({ "BufEnter", "BufWritePost" }, {
-	command = "call feedkeys(' t')",
+	callback = function()
+		local mode = vim.api.nvim_get_mode()["mode"]
+		local keys = vim.api.nvim_replace_termcodes("<esc> t", true, false, true)
+		vim.api.nvim_feedkeys(mode == "i" and keys or " t", "m", true)
+		if mode == "i" then
+			vim.api.nvim_input(mode)
+		end
+	end,
 })
 
 -- Netrw
