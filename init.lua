@@ -454,34 +454,34 @@ if pcall(require, "lazy") then
 			config = function()
 				vim.opt.completeopt = { "menuone", "noselect" }
 
-				local kind_icons = {
-					Text = "",
-					Method = "m",
-					Function = "󰊕",
-					Constructor = "",
-					Field = "",
-					Variable = "",
-					Class = "",
-					Interface = "",
-					Module = "",
-					Property = "",
-					Unit = "",
-					Value = "",
-					Enum = "",
-					Keyword = "󰌋",
-					Snippet = "",
-					Color = "",
-					File = "",
-					Reference = "",
-					Folder = "",
-					EnumMember = "",
-					Constant = "",
-					Struct = "",
-					Event = "",
-					Operator = "",
-					TypeParameter = "",
-					Codeium = "󰚩",
-					Copilot = "",
+				Kind_icons = {
+					Text = " ",
+					Method = "m ",
+					Function = "󰊕 ",
+					Constructor = " ",
+					Field = " ",
+					Variable = " ",
+					Class = " ",
+					Interface = " ",
+					Module = " ",
+					Property = " ",
+					Unit = " ",
+					Value = " ",
+					Enum = " ",
+					Keyword = "󰌋 ",
+					Snippet = " ",
+					Color = " ",
+					File = " ",
+					Reference = " ",
+					Folder = " ",
+					EnumMember = " ",
+					Constant = " ",
+					Struct = " ",
+					Event = " ",
+					Operator = " ",
+					TypeParameter = " ",
+					Codeium = "󰚩 ",
+					Copilot = " ",
 				}
 
 				local has_words_before = function()
@@ -551,7 +551,7 @@ if pcall(require, "lazy") then
 									vim_item.kind_hl_group = group
 								end
 							else
-								vim_item.kind = kind_icons[vim_item.kind]
+								vim_item.kind = Kind_icons[vim_item.kind]
 							end
 							vim_item.menu = ({
 								nvim_lsp = "LSP",
@@ -582,7 +582,7 @@ if pcall(require, "lazy") then
 
 		{
 			"numToStr/Comment.nvim",
-			lazy = true,
+			event = "VeryLazy",
 			dependencies = {
 				{
 					"JoosepAlviste/nvim-ts-context-commentstring",
@@ -698,15 +698,23 @@ if pcall(require, "lazy") then
 			dependencies = { "nvim-tree/nvim-web-devicons" },
 			opts = function()
 				local hide_in_width = function()
+					local buffers = vim.api.nvim_exec2(
+						"echo len(filter(range(1, bufnr('$')), 'buflisted(v:val)'))",
+						{ output = true }
+					)
+					buffers = tonumber(buffers.output)
+					if buffers ~= nil and buffers > 7 then
+						return false
+					end
 					return vim.fn.winwidth(0) > 80
 				end
 
 				local diagnostics = {
 					"diagnostics",
 					sources = { "nvim_diagnostic" },
-					sections = { "error", "warn" },
-					symbols = { error = " ", warn = " " },
-					always_visible = true,
+					sections = { "error", "warn", "info", "hint" },
+					symbols = { error = " ", warn = " ", hint = " ", info = " " },
+					always_visible = false,
 				}
 
 				local diff = {
@@ -722,17 +730,58 @@ if pcall(require, "lazy") then
 					symbols = { alternate_file = "" },
 				}
 
-				local spaces = function()
-					return "spaces: " .. vim.api.nvim_buf_get_option(0, "shiftwidth")
-				end
+				local navic = {
+					function()
+						return require("nvim-navic").get_location()
+					end,
+					cond = function()
+						return package.loaded["nvim-navic"] and require("nvim-navic").is_available()
+					end,
+				}
+
+				local spaces = {
+					function()
+						return "spc: " .. vim.api.nvim_buf_get_option(0, "shiftwidth")
+					end,
+					cond = hide_in_width,
+				}
 
 				require("lualine").setup({
 					options = { globalstatus = true, section_separators = "", component_separators = "" },
+					winbar = {
+						lualine_c = {
+							{ "filename", path = 1, symbols = { modified = "  ", readonly = "", unnamed = "" } },
+							navic,
+						},
+					},
 					sections = {
-						lualine_a = { "mode" },
+						lualine_a = {
+							{
+								"mode",
+								fmt = function(str)
+									if hide_in_width() then
+										return str
+									end
+									return str:sub(1, 1)
+								end,
+							},
+						},
 						lualine_b = { "branch" },
 						lualine_c = { diagnostics, "%=", buffers },
-						lualine_x = { diff, spaces, "encoding", "filetype" },
+						lualine_x = {
+							diff,
+							spaces,
+							"filetype",
+							{
+								function()
+									return "  " .. require("dap").status()
+								end,
+								cond = function()
+									return package.loaded["dap"] and require("dap").status() ~= ""
+								end,
+							},
+							{ require("lazy.status").updates, cond = require("lazy.status").has_updates },
+						},
 						lualine_y = { "location" },
 						lualine_z = { "progress" },
 					},
@@ -740,8 +789,74 @@ if pcall(require, "lazy") then
 			end,
 		},
 
-		{ "RRethy/vim-illuminate", event = "VeryLazy" },
-		{ "lukas-reineke/indent-blankline.nvim", event = "BufReadPre", opts = {} },
+		{
+			"RRethy/vim-illuminate",
+			event = { "BufReadPost", "BufNewFile" },
+			opts = {
+				delay = 200,
+				large_file_cutoff = 2000,
+				large_file_overrides = {
+					providers = { "lsp" },
+				},
+			},
+			config = function(_, opts)
+				require("illuminate").configure(opts)
+
+				local function map(key, dir, buffer)
+					vim.keymap.set("n", key, function()
+						require("illuminate")["goto_" .. dir .. "_reference"](false)
+					end, { desc = dir:sub(1, 1):upper() .. dir:sub(2) .. " Reference", buffer = buffer })
+				end
+
+				map("]]", "next")
+				map("[[", "prev")
+
+				-- also set it after loading ftplugins, since a lot overwrite [[ and ]]
+				vim.api.nvim_create_autocmd("FileType", {
+					callback = function()
+						local buffer = vim.api.nvim_get_current_buf()
+						map("]]", "next", buffer)
+						map("[[", "prev", buffer)
+					end,
+				})
+			end,
+			keys = {
+				{ "]]", desc = "Next Reference" },
+				{ "[[", desc = "Prev Reference" },
+			},
+		},
+
+		{ "lukas-reineke/indent-blankline.nvim", event = { "BufReadPost", "BufNewFile" }, opts = {} },
+
+		{
+			"echasnovski/mini.indentscope",
+			version = false,
+			event = { "BufReadPre", "BufNewFile" },
+			opts = {
+				-- symbol = "▏",
+				symbol = "│",
+				options = { try_as_border = true },
+			},
+			init = function()
+				vim.api.nvim_create_autocmd("FileType", {
+					pattern = {
+						"help",
+						"alpha",
+						"dashboard",
+						"neo-tree",
+						"Trouble",
+						"lazy",
+						"mason",
+						"notify",
+						"toggleterm",
+						"lazyterm",
+					},
+					callback = function()
+						vim.b.miniindentscope_disable = true
+					end,
+				})
+			end,
+		},
 
 		{
 			"lewis6991/gitsigns.nvim",
@@ -1014,7 +1129,11 @@ if pcall(require, "lazy") then
 					lineFoldingOnly = true,
 				}
 
-				local on_attach = function(_, bufnr)
+				local on_attach = function(client, bufnr)
+					if client.server_capabilities.documentSymbolProvider then
+						require("nvim-navic").attach(client, bufnr)
+					end
+
 					vim.api.nvim_buf_set_option(bufnr, "omnifunc", "v:lua.vim.lsp.omnifunc")
 					lsp_keymaps()
 					context_menu()
@@ -1065,7 +1184,21 @@ if pcall(require, "lazy") then
 				end
 			end,
 		},
-
+		{
+			"SmiteshP/nvim-navic",
+			lazy = true,
+			init = function()
+				vim.g.navic_silence = true
+			end,
+			opts = function()
+				return {
+					separator = " ",
+					highlight = true,
+					depth_limit = 5,
+					icons = Kind_icons,
+				}
+			end,
+		},
 		{
 			"jose-elias-alvarez/null-ls.nvim",
 			event = { "BufReadPre", "BufNewFile" },
@@ -1093,6 +1226,18 @@ if pcall(require, "lazy") then
 					},
 				})
 			end,
+		},
+
+		{
+			"folke/persistence.nvim",
+			event = "BufReadPre",
+			opts = { options = { "buffers", "curdir", "tabpages", "winsize", "help", "globals", "skiprtp" } },
+    -- stylua: ignore
+    keys = {
+      { "<leader>rs", function() require("persistence").load() end, desc = "Restore Session" },
+      { "<leader>rl", function() require("persistence").load({ last = true }) end, desc = "Restore Last Session" },
+      { "<leader>rd", function() require("persistence").stop() end, desc = "Don't Save Current Session" },
+    },
 		},
 
 		{
@@ -1205,6 +1350,9 @@ if pcall(require, "lazy") then
 					l = {
 						name = "LSP",
 						f = { "<cmd>LspFormat<CR>", "Format" },
+					},
+					r = {
+						name = "Session",
 					},
 					x = {
 						name = "Plugins",
