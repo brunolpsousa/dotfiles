@@ -174,7 +174,7 @@ vim.api.nvim_create_autocmd({ "BufWritePre" }, {
 	end,
 })
 
--- go to last loc when opening a buffer
+-- Go to last loc when opening a buffer
 vim.api.nvim_create_autocmd("BufReadPost", {
 	callback = function()
 		local exclude = { "gitcommit" }
@@ -226,6 +226,30 @@ vim.api.nvim_create_autocmd({ "BufWritePre" }, {
 
 		pcall(vim.api.nvim_win_set_cursor, 0, pos)
 	end,
+})
+
+-- Set theme based on system
+vim.api.nvim_create_user_command("Tt", function()
+	local getBG = vim.fn.system("gtk-query-settings | awk -F '\"' '/gtk-theme-name:/{printf $2}'")
+	if getBG:match("^Adwaita$") then
+		vim.opt.background = "light"
+		pcall(vim.cmd.colorscheme, "dayfox")
+		if pcall(require, "lualine") then
+			require("lualine").setup({ options = { theme = "dayfox" } })
+		end
+	else
+		vim.opt.background = "dark"
+		pcall(vim.cmd.colorscheme, "nightfox")
+		if pcall(require, "lualine") then
+			require("lualine").setup({ options = { theme = "nightfox" } })
+		end
+	end
+end, {})
+
+keymap({ "n" }, "<leader>t", "<cmd>Tt<CR>", { desc = "Theme" })
+
+vim.api.nvim_create_autocmd({ "BufEnter", "BufWritePost" }, {
+	command = "call feedkeys(' t')",
 })
 
 -- Netrw
@@ -737,6 +761,7 @@ if pcall(require, "lazy") then
 					cond = function()
 						return package.loaded["nvim-navic"] and require("nvim-navic").is_available()
 					end,
+					draw_empty = true,
 				}
 
 				local spaces = {
@@ -750,7 +775,7 @@ if pcall(require, "lazy") then
 					options = { globalstatus = true, section_separators = "", component_separators = "" },
 					winbar = {
 						lualine_c = {
-							{ "filename", path = 1, symbols = { modified = "  ", readonly = "", unnamed = "" } },
+							{ "filename", path = 1, symbols = { modified = "●", readonly = "", unnamed = "" } },
 							navic,
 						},
 					},
@@ -1184,6 +1209,7 @@ if pcall(require, "lazy") then
 				end
 			end,
 		},
+
 		{
 			"SmiteshP/nvim-navic",
 			lazy = true,
@@ -1199,6 +1225,7 @@ if pcall(require, "lazy") then
 				}
 			end,
 		},
+
 		{
 			"jose-elias-alvarez/null-ls.nvim",
 			event = { "BufReadPre", "BufNewFile" },
