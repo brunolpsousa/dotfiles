@@ -234,11 +234,13 @@ vim.api.nvim_create_user_command("SysTheme", function()
 	if getBG:match("^Adwaita$") then
 		vim.opt.background = "light"
 		pcall(vim.cmd.colorscheme, "dayfox")
+		pcall(vim.cmd.colorscheme, "dayfox")
 		if pcall(require, "lualine") then
 			require("lualine").setup({ options = { theme = "dayfox" } })
 		end
 	else
 		vim.opt.background = "dark"
+		pcall(vim.cmd.colorscheme, "nightfox")
 		pcall(vim.cmd.colorscheme, "nightfox")
 		if pcall(require, "lualine") then
 			require("lualine").setup({ options = { theme = "nightfox" } })
@@ -357,15 +359,27 @@ vim.g.netrw_liststyle = 3
 
 vim.api.nvim_create_autocmd("FileType", {
 	pattern = "netrw",
-	callback = function()
+	callback = function(e)
+		if pcall(require, "which-key") then
+			require("which-key").register({
+				m = {
+					name = "Manage files",
+				},
+			}, { prefix = "<leader>e", buffer = e.buf })
+		end
+
 		vim.api.nvim_buf_set_keymap(0, "n", ".", "gh", { desc = "Toggle dotfiles" })
 		vim.api.nvim_buf_set_keymap(0, "n", "<leader>e.", "gh", { desc = "Toggle dotfiles" })
+
 		vim.api.nvim_buf_set_keymap(0, "n", "<leader>ed", "d", { desc = "New dir" })
 		vim.api.nvim_buf_set_keymap(0, "n", "<leader>eD", "D", { desc = "Delete" })
 		vim.api.nvim_buf_set_keymap(0, "n", "<leader>er", "r", { desc = "Remove" })
+
+		vim.api.nvim_buf_set_keymap(0, "n", "<leader>emt", "mt", { desc = "Target directory" })
+		vim.api.nvim_buf_set_keymap(0, "n", "<leader>emf", "mf", { desc = "Mark file" })
 		vim.api.nvim_buf_set_keymap(0, "n", "<leader>emc", "mc", { desc = "Copy marked" })
 		vim.api.nvim_buf_set_keymap(0, "n", "<leader>emm", "mm", { desc = "Move marked" })
-		vim.api.nvim_buf_set_keymap(0, "n", "<leader>emf", "mf", { desc = "Toggle mark" })
+
 		vim.api.nvim_buf_set_keymap(0, "n", "<leader>ei", "i", { desc = "Toggle styles" })
 		vim.api.nvim_buf_set_keymap(0, "n", "<leader>eI", "I", { desc = "Toggle banner" })
 		vim.api.nvim_buf_set_keymap(0, "n", "q", "<cmd>Lex<CR>", { desc = "Quit" })
@@ -737,7 +751,7 @@ if pcall(require, "lazy") then
 			event = "VeryLazy",
 			dependencies = { "nvim-tree/nvim-web-devicons" },
 			opts = function()
-				local hide_in_width = function()
+				local hide_section = function()
 					local buffers = vim.api.nvim_exec2(
 						"echo len(filter(range(1, bufnr('$')), 'buflisted(v:val)'))",
 						{ output = true }
@@ -760,7 +774,7 @@ if pcall(require, "lazy") then
 				local diff = {
 					"diff",
 					symbols = { added = " ", modified = " ", removed = " " },
-					cond = hide_in_width,
+					cond = hide_section,
 				}
 
 				local buffers = {
@@ -780,13 +794,6 @@ if pcall(require, "lazy") then
 					draw_empty = true,
 				}
 
-				-- local spaces = {
-				-- 	function()
-				-- 		return "spc: " .. vim.api.nvim_buf_get_option(0, "shiftwidth")
-				-- 	end,
-				-- 	cond = hide_in_width,
-				-- }
-
 				require("lualine").setup({
 					options = { globalstatus = true, section_separators = "", component_separators = "" },
 					winbar = {
@@ -800,7 +807,7 @@ if pcall(require, "lazy") then
 							{
 								"mode",
 								fmt = function(str)
-									if hide_in_width() then
+									if hide_section() then
 										return str
 									end
 									return str:sub(1, 1)
@@ -811,7 +818,6 @@ if pcall(require, "lazy") then
 						lualine_c = { diagnostics, "%=", buffers },
 						lualine_x = {
 							diff,
-							-- spaces,
 							"filetype",
 							{
 								function()
@@ -1078,17 +1084,6 @@ if pcall(require, "lazy") then
 					vim.lsp.with(vim.lsp.handlers.signature_help, { border = "rounded" })
 			end,
 			config = function()
-				local context_menu = function()
-					vim.cmd([[:amenu PopUp.Go\ to\ Definition <cmd>:lua vim.lsp.buf.definition()<CR>]])
-					vim.cmd([[:amenu PopUp.Go\ to\ Type\ Definition <cmd>:lua vim.lsp.buf.type_definition()<CR>]])
-					vim.cmd([[:amenu PopUp.Go\ to\ Implementations <cmd>:lua vim.lsp.buf.implementation()<CR>]])
-					vim.cmd([[:amenu PopUp.Go\ to\ References <cmd>:lua vim.lsp.buf.references()<CR>]])
-					vim.cmd([[:amenu PopUp.-Sep- :]])
-					vim.cmd([[:amenu PopUp.Rename\ Definition <cmd>:lua vim.lsp.buf.rename()<CR>]])
-					vim.cmd([[:amenu PopUp.Code\ Actions <cmd>:lua vim.lsp.buf.code_action()<CR>]])
-					vim.cmd([[:amenu PopUp.Format\ Document <cmd>:LspFormat<CR>]])
-				end
-
 				local lsp_keymaps = function(bufnr)
 					if pcall(require, "which-key") then
 						require("which-key").register({
@@ -1275,12 +1270,12 @@ if pcall(require, "lazy") then
 			"folke/persistence.nvim",
 			event = "BufReadPre",
 			opts = { options = { "buffers", "curdir", "tabpages", "winsize", "help", "globals", "skiprtp" } },
-    -- stylua: ignore
-    keys = {
-      { "<leader>rs", function() require("persistence").load() end, desc = "Restore Session" },
-      { "<leader>rl", function() require("persistence").load({ last = true }) end, desc = "Restore Last Session" },
-      { "<leader>rd", function() require("persistence").stop() end, desc = "Don't Save Current Session" },
-    },
+			-- stylua: ignore
+			keys = {
+				{ "<leader>rs", function() require("persistence").load() end, desc = "Restore Session" },
+				{ "<leader>rl", function() require("persistence").load({ last = true }) end, desc = "Restore Last Session" },
+				{ "<leader>rd", function() require("persistence").stop() end, desc = "Don't Save Current Session" },
+			},
 		},
 
 		{
