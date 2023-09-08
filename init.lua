@@ -229,7 +229,7 @@ vim.api.nvim_create_autocmd({ "BufWritePre" }, {
 })
 
 -- Set theme based on system
-vim.api.nvim_create_user_command("Tt", function()
+vim.api.nvim_create_user_command("SysTheme", function()
 	local getBG = vim.fn.system("gtk-query-settings | awk -F '\"' '/gtk-theme-name:/{printf $2}'")
 	if getBG:match("^Adwaita$") then
 		vim.opt.background = "light"
@@ -246,16 +246,25 @@ vim.api.nvim_create_user_command("Tt", function()
 	end
 end, {})
 
-keymap({ "n", "v" }, "<leader>t", "<cmd>Tt<CR>", { desc = "Theme" })
+keymap({ "n", "v" }, "<leader>t", "<cmd>SysTheme<CR>", { desc = "Theme" })
 
-vim.api.nvim_create_autocmd({ "BufEnter", "BufWritePost" }, {
+vim.api.nvim_create_autocmd({ "BufEnter" }, {
 	callback = function()
-		local mode = vim.api.nvim_get_mode()["mode"]
-		local keys = vim.api.nvim_replace_termcodes("<esc> t", true, false, true)
-		vim.api.nvim_feedkeys(mode == "i" and keys or " t", "m", true)
-		if mode == "i" then
-			vim.api.nvim_input(mode)
+		local currentTheme = vim.api.nvim_exec2("colorscheme", { output = true }).output
+		local getBG = vim.fn.system("gtk-query-settings | awk -F '\"' '/gtk-theme-name:/{printf $2}'")
+		local isDark = not getBG:match("^Adwaita$")
+
+		if isDark and currentTheme == "nightfox" then
+			return
+		elseif not isDark and currentTheme == "dayfox" then
+			return
 		end
+
+		vim.schedule(function()
+			local iMode = vim.api.nvim_get_mode()["mode"] == "i"
+			local keys = vim.api.nvim_replace_termcodes("<esc> ti", true, false, true)
+			vim.api.nvim_feedkeys(iMode and keys or " t", "m", true)
+		end)
 	end,
 })
 
@@ -771,12 +780,12 @@ if pcall(require, "lazy") then
 					draw_empty = true,
 				}
 
-				local spaces = {
-					function()
-						return "spc: " .. vim.api.nvim_buf_get_option(0, "shiftwidth")
-					end,
-					cond = hide_in_width,
-				}
+				-- local spaces = {
+				-- 	function()
+				-- 		return "spc: " .. vim.api.nvim_buf_get_option(0, "shiftwidth")
+				-- 	end,
+				-- 	cond = hide_in_width,
+				-- }
 
 				require("lualine").setup({
 					options = { globalstatus = true, section_separators = "", component_separators = "" },
@@ -802,7 +811,7 @@ if pcall(require, "lazy") then
 						lualine_c = { diagnostics, "%=", buffers },
 						lualine_x = {
 							diff,
-							spaces,
+							-- spaces,
 							"filetype",
 							{
 								function()
