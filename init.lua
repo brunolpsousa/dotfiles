@@ -110,8 +110,8 @@ vim.opt.listchars:append("tab:>>,extends:▷,precedes:◁,trail:·,nbsp:~")
 vim.cmd("aunmenu PopUp")
 
 -- Autocommands
-vim.api.nvim_create_autocmd({ "FocusGained", "TermClose", "TermLeave" }, {
-	command = "checktime | redraw!",
+vim.api.nvim_create_autocmd({ "CursorHold" }, {
+	command = "checktime",
 })
 
 vim.api.nvim_create_autocmd({ "TextYankPost" }, {
