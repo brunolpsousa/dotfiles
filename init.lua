@@ -229,27 +229,6 @@ vim.api.nvim_create_autocmd({ "BufWritePre" }, {
 })
 
 -- Set theme based on system
-vim.api.nvim_create_user_command("SysTheme", function()
-	local getBG = vim.fn.system("gtk-query-settings | awk -F '\"' '/gtk-theme-name:/{printf $2}'")
-	if getBG:match("^Adwaita$") then
-		vim.opt.background = "light"
-		pcall(vim.cmd.colorscheme, "dayfox")
-		pcall(vim.cmd.colorscheme, "dayfox")
-		if pcall(require, "lualine") then
-			require("lualine").setup({ options = { theme = "dayfox" } })
-		end
-	else
-		vim.opt.background = "dark"
-		pcall(vim.cmd.colorscheme, "nightfox")
-		pcall(vim.cmd.colorscheme, "nightfox")
-		if pcall(require, "lualine") then
-			require("lualine").setup({ options = { theme = "nightfox" } })
-		end
-	end
-end, {})
-
-keymap({ "n", "v" }, "<leader>t", "<cmd>SysTheme<CR>", { desc = "Theme" })
-
 vim.api.nvim_create_autocmd({ "BufEnter" }, {
 	callback = function()
 		local currentTheme = vim.api.nvim_exec2("colorscheme", { output = true }).output
@@ -421,6 +400,28 @@ if pcall(require, "lazy") then
 			name = "nightfox",
 			lazy = false,
 			priority = 1000,
+			init = function()
+				vim.api.nvim_create_user_command("SysTheme", function()
+					local getBG = vim.fn.system("gtk-query-settings | awk -F '\"' '/gtk-theme-name:/{printf $2}'")
+					if getBG:match("^Adwaita$") then
+						vim.opt.background = "light"
+						pcall(vim.cmd.colorscheme, "dayfox")
+						pcall(vim.cmd.colorscheme, "dayfox")
+						if pcall(require, "lualine") then
+							require("lualine").setup({ options = { theme = "dayfox" } })
+						end
+					else
+						vim.opt.background = "dark"
+						pcall(vim.cmd.colorscheme, "nightfox")
+						pcall(vim.cmd.colorscheme, "nightfox")
+						if pcall(require, "lualine") then
+							require("lualine").setup({ options = { theme = "nightfox" } })
+						end
+					end
+				end, {})
+				keymap({ "n", "v" }, "<leader>t", "<cmd>SysTheme<CR>", { desc = "Theme" })
+				vim.api.nvim_feedkeys(" t", "m", true)
+			end,
 		},
 
 		{
