@@ -752,15 +752,21 @@ if pcall(require, "lazy") then
 			dependencies = { "nvim-tree/nvim-web-devicons" },
 			opts = function()
 				local hide_section = function()
+					local width = vim.fn.winwidth(0)
 					local buffers = vim.api.nvim_exec2(
 						"echo len(filter(range(1, bufnr('$')), 'buflisted(v:val)'))",
 						{ output = true }
 					)
 					buffers = tonumber(buffers.output)
-					if buffers ~= nil and buffers > 7 then
+
+					local cond1 = width < 100
+					local cond2 = buffers ~= nil and buffers > 7
+					local cond3 = buffers ~= nil and buffers > 4 and width < 150
+
+					if cond1 or cond2 or cond3 then
 						return false
 					end
-					return vim.fn.winwidth(0) > 80
+					return true
 				end
 
 				local diagnostics = {
@@ -829,7 +835,7 @@ if pcall(require, "lazy") then
 							},
 							{ require("lazy.status").updates, cond = require("lazy.status").has_updates },
 						},
-						lualine_y = { "location" },
+						lualine_y = { { "location", cond = hide_section } },
 						lualine_z = { "progress" },
 					},
 				})
