@@ -256,9 +256,7 @@ vim.api.nvim_create_autocmd({ "BufEnter" }, {
 		local getBG = vim.fn.system("gtk-query-settings | awk -F '\"' '/gtk-theme-name:/{printf $2}'")
 		local isDark = not getBG:match("^Adwaita$")
 
-		if isDark and currentTheme == "nightfox" then
-			return
-		elseif not isDark and currentTheme == "dayfox" then
+		if isDark and currentTheme == "nightfox" or not isDark and currentTheme == "dayfox" then
 			return
 		end
 
@@ -423,9 +421,6 @@ if pcall(require, "lazy") then
 			name = "nightfox",
 			lazy = false,
 			priority = 1000,
-			init = function()
-				pcall(vim.cmd.colorscheme, "nightfox")
-			end,
 		},
 
 		{
