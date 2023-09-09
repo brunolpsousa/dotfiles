@@ -159,7 +159,7 @@ vim.api.nvim_create_autocmd({ "FileType" }, {
 	},
 	callback = function(event)
 		vim.bo[event.buf].buflisted = false
-		keymap("n", "q", "<cmd>close<CR>", { buffer = event.buf, silent = true })
+		keymap("n", "q", "<cmd>close<CR>", { buffer = event.buf, silent = true, nowait = true })
 	end,
 })
 
@@ -382,7 +382,7 @@ vim.api.nvim_create_autocmd("FileType", {
 
 		vim.api.nvim_buf_set_keymap(0, "n", "<leader>ei", "i", { desc = "Toggle styles" })
 		vim.api.nvim_buf_set_keymap(0, "n", "<leader>eI", "I", { desc = "Toggle banner" })
-		vim.api.nvim_buf_set_keymap(0, "n", "q", "<cmd>Lex<CR>", { desc = "Quit" })
+		vim.api.nvim_buf_set_keymap(0, "n", "q", "<cmd>Lex<CR>", { desc = "Quit", nowait = true })
 
 		if package.config:sub(1, 1) == "/" then
 			vim.g.netrw_localcopydircmd = "cp -r"
