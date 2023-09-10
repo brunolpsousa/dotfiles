@@ -1285,6 +1285,7 @@ if pcall(require, "lazy") then
 			event = "VeryLazy",
 			dependencies = {
 				"nvim-lua/plenary.nvim",
+				"debugloop/telescope-undo.nvim",
 				{
 					"ahmedkhalf/project.nvim",
 					name = "project_nvim",
@@ -1296,10 +1297,31 @@ if pcall(require, "lazy") then
 			},
 			init = function()
 				require("telescope").load_extension("projects")
+				require("telescope").load_extension("undo")
 			end,
 			opts = {
 				defaults = { path_display = { "smart" }, file_ignore_patterns = { ".git/", "node_modules" } },
 			},
+			config = function()
+				require("telescope").setup({
+					extensions = {
+						undo = {
+							mappings = {
+								i = {
+									["<C-CR>"] = require("telescope-undo.actions").yank_additions,
+									["<S-CR>"] = require("telescope-undo.actions").yank_deletions,
+									["<CR>"] = require("telescope-undo.actions").restore,
+								},
+								n = {
+									["y"] = require("telescope-undo.actions").yank_additions,
+									["Y"] = require("telescope-undo.actions").yank_deletions,
+									["<CR>"] = require("telescope-undo.actions").restore,
+								},
+							},
+						},
+					},
+				})
+			end,
 		},
 
 		{
@@ -1384,8 +1406,9 @@ if pcall(require, "lazy") then
 						},
 						r = { "<cmd>Telescope oldfiles<CR>", "Open recent file" },
 						R = { "<cmd>Telescope registers<CR>", "Registers" },
-						t = { "<cmd>Telescope live_grep<CR>", "Text" },
 						s = { "<cmd>Telescope resume<CR>", "Resume last search" },
+						t = { "<cmd>Telescope live_grep<CR>", "Text" },
+						u = { "<cmd>Telescope undo<CR>", "Undo tree" },
 					},
 					l = {
 						name = "LSP",
