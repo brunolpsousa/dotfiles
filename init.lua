@@ -1325,6 +1325,28 @@ if pcall(require, "lazy") then
 		},
 
 		{
+			"folke/todo-comments.nvim",
+			dependencies = { "nvim-lua/plenary.nvim" },
+			opts = {},
+			keys = {
+				{
+					"]t",
+					function()
+						require("todo-comments").jump_next()
+					end,
+					desc = "Next todo comment",
+				},
+				{
+					"[t",
+					function()
+						require("todo-comments").jump_prev()
+					end,
+					desc = "Previous todo comment",
+				},
+			},
+		},
+
+		{
 			"nvim-treesitter/nvim-treesitter",
 			event = { "BufReadPost", "BufNewFile" },
 			build = ":TSUpdate",
@@ -1395,6 +1417,7 @@ if pcall(require, "lazy") then
 						C = { "<cmd>Telescope commands<CR>", "Commands" },
 						e = { ":e %:h/<C-D>", "Edit file" },
 						f = { "<cmd>Telescope find_files<CR>", "Find file" },
+						g = { "<cmd>Telescope live_grep<CR>", "Text" },
 						h = { "<cmd>Telescope help_tags<CR>", "Help" },
 						H = { "<cmd>Telescope highlights<CR>", "Highlight groups" },
 						k = { "<cmd>Telescope keymaps<CR>", "Keymaps" },
@@ -1407,7 +1430,7 @@ if pcall(require, "lazy") then
 						r = { "<cmd>Telescope oldfiles<CR>", "Open recent file" },
 						R = { "<cmd>Telescope registers<CR>", "Registers" },
 						s = { "<cmd>Telescope resume<CR>", "Resume last search" },
-						t = { "<cmd>Telescope live_grep<CR>", "Text" },
+						t = { "<cmd>TodoTelescope<CR>", "TODO" },
 						u = { "<cmd>Telescope undo<CR>", "Undo tree" },
 					},
 					l = {
