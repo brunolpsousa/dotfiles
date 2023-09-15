@@ -623,8 +623,10 @@ tomp3() {
   if [[ -n "$@" ]]; then
     mkdir -p ./mp3_files
     for f in "$@"; do
+      [[ -f "$f" ]] || continue
       ffmpeg -i "$f" -vn -ar 44100 -ac 2 -b:a 192k "./mp3_files/${f%.*}.mp3"
     done
+    command rmdir ./mp3_files &>/dev/null
   else
     echo 'Usage: tomp3 <file 1> <file 2> <file.extension> <*.extension> <*>'
     return 1
@@ -634,11 +636,15 @@ tomp3() {
 # Convert media files to mp4
 tomp4() {
   if [[ -n "$@" ]]; then
+    local codec
+    [[ "$1" == "--x265" ]] && codec=libx265 || codec=libx264
     mkdir -p ./mp4_files
     for f in "$@"; do
+      [[ -f "$f" ]] || continue
       ffmpeg -i "$f" -vf "pad=ceil(iw/2)*2:ceil(ih/2)*2" \
-        -vcodec libx265 -crf 28 "./mp4_files/${f%.*}.mp4"
+        -vcodec "$codec" -crf 28 "./mp4_files/${f%.*}.mp4"
     done
+    command rmdir ./mp4_files &>/dev/null
   else
     echo 'Usage: tomp4 <file 1> <file 2> <file.extension> <*.extension> <*>'
     return 1
