@@ -627,6 +627,7 @@ tomp3() {
       ffmpeg -i "$f" -vn -ar 44100 -ac 2 -b:a 192k "./mp3_files/${f%.*}.mp3"
     done
     command rmdir ./mp3_files &>/dev/null
+    return 0
   else
     echo 'Usage: tomp3 <file 1> <file 2> <file.extension> <*.extension> <*>'
     return 1
@@ -645,6 +646,7 @@ tomp4() {
         -vcodec "$codec" -crf 28 "./mp4_files/${f%.*}.mp4"
     done
     command rmdir ./mp4_files &>/dev/null
+    return 0
   else
     echo 'Usage: tomp4 <file 1> <file 2> <file.extension> <*.extension> <*>'
     return 1
