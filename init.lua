@@ -99,7 +99,7 @@ vim.opt.linebreak = true
 vim.opt.list = true
 vim.opt.pumblend = 10
 vim.opt.pumheight = 15
-vim.opt.pumwidth = 4
+vim.opt.pumwidth = 3
 vim.opt.confirm = true
 vim.opt.signcolumn = "yes"
 vim.opt.virtualedit = "none"
@@ -713,8 +713,12 @@ if pcall(require, "lazy") then
 				delay = 200,
 				large_file_cutoff = 2000,
 				large_file_overrides = {
-					providers = { "lsp" },
+					providers = { "lsp", "treesitter", "regex" },
 				},
+				filetypes_denylist = {
+					"NvimTree",
+				},
+				under_cursor = false,
 			},
 			config = function(_, opts)
 				require("illuminate").configure(opts)
@@ -747,7 +751,6 @@ if pcall(require, "lazy") then
 
 		{
 			"echasnovski/mini.indentscope",
-			version = false,
 			event = { "BufReadPre", "BufNewFile" },
 			opts = {
 				-- symbol = "▏",
