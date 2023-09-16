@@ -333,7 +333,7 @@ vim.g.netrw_keepdir = 0
 vim.g.netrw_sort_sequence = [[[\/]$,*]]
 vim.g.netrw_sizestyle = "H"
 vim.g.netrw_liststyle = 3
-vim.g.netrw_browse_split = 4
+-- vim.g.netrw_browse_split = 4
 
 vim.api.nvim_create_autocmd("FileType", {
 	pattern = "netrw",
