@@ -107,6 +107,7 @@ vim.opt.splitkeep = "screen"
 vim.opt.spelllang = { "en_us", "pt_br" }
 vim.opt.wildmode = "longest:full,full"
 vim.opt.listchars:append("tab:>>,extends:▷,precedes:◁,trail:·,nbsp:~")
+vim.opt.fillchars:append("eob: ")
 vim.cmd("aunmenu PopUp")
 
 -- Autocommands
@@ -229,7 +230,7 @@ vim.api.nvim_create_autocmd({ "BufWritePre" }, {
 })
 
 -- Set theme based on system
-vim.api.nvim_create_autocmd({ "BufEnter" }, {
+vim.api.nvim_create_autocmd({ "VimEnter", "BufEnter" }, {
 	callback = function()
 		local currentTheme = vim.api.nvim_exec2("colorscheme", { output = true }).output
 		local getBG = vim.fn.system("gtk-query-settings | awk -F '\"' '/gtk-theme-name:/{printf $2}'")
@@ -244,138 +245,6 @@ vim.api.nvim_create_autocmd({ "BufEnter" }, {
 			local keys = vim.api.nvim_replace_termcodes("<esc> ti", true, false, true)
 			vim.api.nvim_feedkeys(iMode and keys or " t", "m", true)
 		end)
-	end,
-})
-
--- Netrw
--- https://github.com/doom-neovim/doom-nvim/blob/main/lua/doom/modules/features/netrw/init.lua
-local function draw_icons()
-	if vim.bo.filetype ~= "netrw" then
-		return
-	end
-	local is_devicons_available, devicons = xpcall(require, debug.traceback, "nvim-web-devicons")
-	if not is_devicons_available then
-		return
-	end
-	local default_signs = {
-		netrw_dir = {
-			text = "",
-			texthl = "netrwDir",
-		},
-		netrw_file = {
-			text = "",
-			texthl = "netrwPlain",
-		},
-		netrw_exec = {
-			text = "",
-			texthl = "netrwExe",
-		},
-		netrw_link = {
-			text = "",
-			texthl = "netrwSymlink",
-		},
-	}
-	local bufnr = vim.api.nvim_win_get_buf(0)
-	vim.fn.sign_unplace("*", { buffer = bufnr })
-
-	for sign_name, sign_opts in pairs(default_signs) do
-		vim.fn.sign_define(sign_name, sign_opts)
-	end
-
-	local cur_line_nr = 1
-	local total_lines = vim.fn.line("$")
-	while cur_line_nr <= total_lines do
-		local sign_name = "netrw_file"
-		local line = vim.fn.getline(cur_line_nr)
-
-		local is_empty = function(str)
-			return str == "" or str == nil
-		end
-
-		if is_empty(line) then
-			cur_line_nr = cur_line_nr + 1
-		else
-			if line:find("/$") then
-				sign_name = "netrw_dir"
-			elseif line:find("@%s+-->") then
-				sign_name = "netrw_link"
-			elseif line:find("*$") then
-				sign_name:find("netrw_exec")
-			else
-				local filetype = line:match("^.*%.(.*)")
-				if not filetype and line:find("LICENSE") then
-					filetype = "md"
-				elseif line:find("rc$") then
-					filetype = "conf"
-				end
-				if not filetype then
-					filetype = "default"
-				end
-
-				local icon, icon_highlight = devicons.get_icon(line, filetype, { default = "" })
-				sign_name = "netrw_" .. filetype
-				vim.fn.sign_define(sign_name, {
-					text = icon,
-					texthl = icon_highlight,
-				})
-			end
-			vim.fn.sign_place(cur_line_nr, sign_name, sign_name, bufnr, {
-				lnum = cur_line_nr,
-			})
-			cur_line_nr = cur_line_nr + 1
-		end
-	end
-end
-
-vim.g.netrw_winsize = 20
-vim.g.netrw_banner = 0
-vim.g.netrw_keepdir = 0
-vim.g.netrw_sort_sequence = [[[\/]$,*]]
-vim.g.netrw_sizestyle = "H"
-vim.g.netrw_liststyle = 3
--- vim.g.netrw_browse_split = 4
-
-vim.api.nvim_create_autocmd("FileType", {
-	pattern = "netrw",
-	callback = function(e)
-		if pcall(require, "which-key") then
-			require("which-key").register({
-				m = {
-					name = "Manage files",
-				},
-			}, { prefix = "<leader>e", buffer = e.buf })
-		end
-
-		vim.api.nvim_buf_set_keymap(0, "n", ".", "gh", { desc = "Toggle dotfiles" })
-		vim.api.nvim_buf_set_keymap(0, "n", "<leader>e.", "gh", { desc = "Toggle dotfiles" })
-
-		vim.api.nvim_buf_set_keymap(0, "n", "<leader>ed", "d", { desc = "New dir" })
-		vim.api.nvim_buf_set_keymap(0, "n", "<leader>eD", "D", { desc = "Delete" })
-		vim.api.nvim_buf_set_keymap(0, "n", "<leader>er", "r", { desc = "Remove" })
-
-		vim.api.nvim_buf_set_keymap(0, "n", "<leader>emt", "mt", { desc = "Target directory" })
-		vim.api.nvim_buf_set_keymap(0, "n", "<leader>emf", "mf", { desc = "Mark file" })
-		vim.api.nvim_buf_set_keymap(0, "n", "<leader>emc", "mc", { desc = "Copy marked" })
-		vim.api.nvim_buf_set_keymap(0, "n", "<leader>emm", "mm", { desc = "Move marked" })
-
-		vim.api.nvim_buf_set_keymap(0, "n", "<leader>ei", "i", { desc = "Toggle styles" })
-		vim.api.nvim_buf_set_keymap(0, "n", "<leader>eI", "I", { desc = "Toggle banner" })
-		vim.api.nvim_buf_set_keymap(0, "n", "q", "<cmd>Lex<CR>", { desc = "Quit", nowait = true })
-
-		if package.config:sub(1, 1) == "/" then
-			vim.g.netrw_localcopydircmd = "cp -r"
-			vim.g.netrw_localmkdir = "mkdir -p"
-			vim.g.netrw_localrmdir = "rm -r"
-		end
-
-		draw_icons()
-	end,
-})
-
-vim.api.nvim_create_autocmd({ "TextChanged" }, {
-	pattern = { "*" },
-	callback = function()
-		draw_icons()
 	end,
 })
 
@@ -745,7 +614,6 @@ if pcall(require, "lazy") then
 		{
 			"nvim-lualine/lualine.nvim",
 			event = "VeryLazy",
-			dependencies = { "nvim-tree/nvim-web-devicons" },
 			opts = function()
 				local hide_section = function()
 					local width = vim.fn.winwidth(0)
@@ -1174,7 +1042,6 @@ if pcall(require, "lazy") then
 
 					vim.api.nvim_buf_set_option(bufnr, "omnifunc", "v:lua.vim.lsp.omnifunc")
 					lsp_keymaps()
-					context_menu()
 				end
 
 				for _, server in pairs(require("mason-lspconfig").get_installed_servers()) do
@@ -1237,6 +1104,58 @@ if pcall(require, "lazy") then
 					icons = Kind_icons,
 				}
 			end,
+		},
+
+		{
+			"nvim-tree/nvim-tree.lua",
+			dependencies = { "nvim-tree/nvim-web-devicons" },
+			init = function()
+				vim.g.loaded_netrw = 1
+				vim.g.loaded_netrwPlugin = 1
+				vim.api.nvim_feedkeys(" t", "m", true)
+			end,
+			-- config = function()
+			-- 	vim.api.nvim_feedkeys(" t", "m", true)
+			-- end,
+			opts = {
+				disable_netrw = true,
+				renderer = {
+					group_empty = true,
+					special_files = {},
+					highlight_diagnostics = true,
+					symlink_destination = false,
+					indent_markers = {
+						enable = true,
+					},
+					icons = {
+						git_placement = "after",
+						show = {
+							folder_arrow = false,
+						},
+						glyphs = {
+							git = {
+								unstaged = "",
+								untracked = "",
+							},
+						},
+					},
+				},
+				diagnostics = {
+					enable = true,
+					show_on_dirs = true,
+				},
+				filters = {
+					git_ignored = false,
+					custom = {
+						"^.git$",
+					},
+				},
+				actions = {
+					open_file = {
+						quit_on_open = true,
+					},
+				},
+			},
 		},
 
 		{
@@ -1409,7 +1328,7 @@ if pcall(require, "lazy") then
 			end,
 			config = function()
 				require("which-key").register({
-					e = { "<cmd>Lex<CR>", "Netrw" },
+					e = { "<cmd>NvimTreeToggle<CR>", "NvimTree" },
 					f = {
 						name = "Find",
 						b = { "<cmd>Telescope buffers<CR>", "Buffers" },
@@ -1417,6 +1336,7 @@ if pcall(require, "lazy") then
 						C = { "<cmd>Telescope commands<CR>", "Commands" },
 						e = { ":e %:h/<C-D>", "Edit file" },
 						f = { "<cmd>Telescope find_files<CR>", "Find file" },
+						F = { "<cmd>NvimTreeFindFileToggle<CR>", "Find file in NvimTree" },
 						g = { "<cmd>Telescope live_grep<CR>", "Text" },
 						h = { "<cmd>Telescope help_tags<CR>", "Help" },
 						H = { "<cmd>Telescope highlights<CR>", "Highlight groups" },
