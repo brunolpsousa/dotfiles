@@ -373,34 +373,34 @@ if pcall(require, "lazy") then
 			config = function()
 				vim.opt.completeopt = { "menuone", "noselect" }
 
-				Kind_icons = {
-					Text = " ",
-					Method = "m ",
-					Function = "󰊕 ",
-					Constructor = " ",
-					Field = " ",
-					Variable = " ",
-					Class = " ",
-					Interface = " ",
-					Module = " ",
-					Property = " ",
-					Unit = " ",
-					Value = " ",
-					Enum = " ",
-					Keyword = "󰌋 ",
-					Snippet = " ",
-					Color = " ",
-					File = " ",
-					Reference = " ",
-					Folder = " ",
-					EnumMember = " ",
-					Constant = " ",
-					Struct = " ",
-					Event = " ",
-					Operator = " ",
-					TypeParameter = " ",
-					Codeium = "󰚩 ",
-					Copilot = " ",
+				kind_icons = {
+					Text = "󰉿",
+					Method = "m",
+					Function = "󰊕",
+					Constructor = "",
+					Field = "",
+					Variable = "󰆧",
+					Class = "󰌗",
+					Interface = "",
+					Module = "",
+					Property = "",
+					Unit = "",
+					Value = "󰎠",
+					Enum = "",
+					Keyword = "󰌋",
+					Snippet = "",
+					Color = "󰏘",
+					File = "󰈙",
+					Reference = "",
+					Folder = "󰉋",
+					EnumMember = "",
+					Constant = "󰇽",
+					Struct = "",
+					Event = "",
+					Operator = "󰆕",
+					TypeParameter = "󰊄",
+					Codeium = "󰚩",
+					Copilot = "",
 				}
 
 				local has_words_before = function()
@@ -470,7 +470,7 @@ if pcall(require, "lazy") then
 									vim_item.kind_hl_group = group
 								end
 							else
-								vim_item.kind = Kind_icons[vim_item.kind]
+								vim_item.kind = kind_icons[vim_item.kind]
 							end
 							vim_item.menu = ({
 								nvim_lsp = "LSP",
@@ -793,13 +793,13 @@ if pcall(require, "lazy") then
 					},
 					delete = {
 						hl = "GitSignsDelete",
-						text = "契",
+						text = "󰐊",
 						numhl = "GitSignsDeleteNr",
 						linehl = "GitSignsDeleteLn",
 					},
 					topdelete = {
 						hl = "GitSignsDelete",
-						text = "契",
+						text = "󰐊",
 						numhl = "GitSignsDeleteNr",
 						linehl = "GitSignsDeleteLn",
 					},
@@ -1119,7 +1119,6 @@ if pcall(require, "lazy") then
 					separator = " ",
 					highlight = true,
 					depth_limit = 5,
-					icons = Kind_icons,
 				}
 			end,
 		},
