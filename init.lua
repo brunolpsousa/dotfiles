@@ -912,6 +912,7 @@ if pcall(require, "lazy") then
 						ensure_installed = {
 							"bashls",
 							"cssls",
+							"eslint",
 							"html",
 							"jsonls",
 							"lua_ls",
@@ -958,7 +959,7 @@ if pcall(require, "lazy") then
 					vim.lsp.with(vim.lsp.handlers.signature_help, { border = "rounded" })
 			end,
 			config = function()
-				local lsp_keymaps = function(bufnr)
+				local function lsp_keymaps(bufnr)
 					if pcall(require, "which-key") then
 						require("which-key").register({
 							K = { vim.lsp.buf.hover, "Hover" },
@@ -1044,8 +1045,15 @@ if pcall(require, "lazy") then
 						require("nvim-navic").attach(client, bufnr)
 					end
 
+					if client.name == "eslint" then
+						vim.api.nvim_create_autocmd("BufWritePre", {
+							buffer = bufnr,
+							command = "EslintFixAll",
+						})
+					end
+
 					vim.api.nvim_buf_set_option(bufnr, "omnifunc", "v:lua.vim.lsp.omnifunc")
-					lsp_keymaps()
+					lsp_keymaps(bufnr)
 				end
 
 				for _, server in pairs(require("mason-lspconfig").get_installed_servers()) do
@@ -1055,6 +1063,12 @@ if pcall(require, "lazy") then
 						on_attach = on_attach,
 						capabilities = capabilities,
 					}
+
+					if server == "eslint" then
+						opts.settings = {
+							workingDirectory = { mode = "auto" },
+						}
+					end
 
 					if server == "lua_ls" then
 						opts.settings = {
@@ -1124,9 +1138,7 @@ if pcall(require, "lazy") then
 					special_files = {},
 					highlight_diagnostics = true,
 					symlink_destination = false,
-					indent_markers = {
-						enable = true,
-					},
+					indent_markers = { enable = true },
 					icons = {
 						git_placement = "after",
 						show = {
@@ -1149,6 +1161,7 @@ if pcall(require, "lazy") then
 					git_ignored = false,
 					custom = {
 						"^.git$",
+						"^node_modules$",
 					},
 				},
 				actions = {
