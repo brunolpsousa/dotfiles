@@ -763,6 +763,7 @@ if pcall(require, "lazy") then
 						"help",
 						"alpha",
 						"dashboard",
+						"NvimTree",
 						"neo-tree",
 						"Trouble",
 						"lazy",
@@ -1115,11 +1116,7 @@ if pcall(require, "lazy") then
 			init = function()
 				vim.g.loaded_netrw = 1
 				vim.g.loaded_netrwPlugin = 1
-				vim.api.nvim_feedkeys(" t", "m", true)
 			end,
-			-- config = function()
-			-- 	vim.api.nvim_feedkeys(" t", "m", true)
-			-- end,
 			opts = {
 				disable_netrw = true,
 				renderer = {
@@ -1133,7 +1130,8 @@ if pcall(require, "lazy") then
 					icons = {
 						git_placement = "after",
 						show = {
-							folder_arrow = false,
+							folder = false,
+							folder_arrow = true,
 						},
 						glyphs = {
 							git = {
