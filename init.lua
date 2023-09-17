@@ -230,7 +230,7 @@ vim.api.nvim_create_autocmd({ "BufWritePre" }, {
 })
 
 -- Set theme based on system
-vim.api.nvim_create_autocmd({ "VimEnter", "BufEnter" }, {
+vim.api.nvim_create_autocmd({ "BufEnter" }, {
 	callback = function()
 		local currentTheme = vim.api.nvim_exec2("colorscheme", { output = true }).output
 		local getBG = vim.fn.system("gtk-query-settings | awk -F '\"' '/gtk-theme-name:/{printf $2}'")
@@ -290,6 +290,7 @@ if pcall(require, "lazy") then
 					end
 				end, {})
 				keymap({ "n", "v" }, "<leader>t", "<cmd>SysTheme<CR>", { desc = "Theme" })
+				pcall(vim.cmd, "SysTheme")
 			end,
 		},
 
@@ -713,10 +714,13 @@ if pcall(require, "lazy") then
 				delay = 200,
 				large_file_cutoff = 2000,
 				large_file_overrides = {
-					providers = { "lsp", "treesitter", "regex" },
+					providers = { "lsp" },
 				},
 				filetypes_denylist = {
+					"neo-tree",
 					"NvimTree",
+					"lazy",
+					"mason",
 				},
 				under_cursor = false,
 			},
@@ -762,8 +766,8 @@ if pcall(require, "lazy") then
 						"help",
 						"alpha",
 						"dashboard",
-						"NvimTree",
 						"neo-tree",
+						"NvimTree",
 						"Trouble",
 						"lazy",
 						"mason",
@@ -887,7 +891,6 @@ if pcall(require, "lazy") then
 			dependencies = {
 				{
 					"williamboman/mason.nvim",
-					lazy = true,
 					build = ":MasonUpdate",
 					init = function()
 						local packages = {
@@ -905,7 +908,6 @@ if pcall(require, "lazy") then
 				},
 				{
 					"williamboman/mason-lspconfig.nvim",
-					lazy = true,
 					build = ":MasonUpdate",
 					opts = {
 						ensure_installed = {
