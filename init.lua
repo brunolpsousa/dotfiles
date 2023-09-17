@@ -373,7 +373,7 @@ if pcall(require, "lazy") then
 			config = function()
 				vim.opt.completeopt = { "menuone", "noselect" }
 
-				kind_icons = {
+				local kind_icons = {
 					Text = "󰉿",
 					Method = "m",
 					Function = "󰊕",
@@ -636,8 +636,8 @@ if pcall(require, "lazy") then
 				local diagnostics = {
 					"diagnostics",
 					sources = { "nvim_diagnostic" },
-					sections = { "error", "warn", "info", "hint" },
-					symbols = { error = " ", warn = " ", hint = " ", info = " " },
+					sections = { "error", "warn", "hint", "info" },
+					symbols = { error = " ", warn = " ", hint = " ", info = " " },
 					always_visible = false,
 				}
 
@@ -753,7 +753,6 @@ if pcall(require, "lazy") then
 			"echasnovski/mini.indentscope",
 			event = { "BufReadPre", "BufNewFile" },
 			opts = {
-				-- symbol = "▏",
 				symbol = "│",
 				options = { try_as_border = true },
 			},
@@ -929,12 +928,12 @@ if pcall(require, "lazy") then
 				local signs = {
 					{ name = "DiagnosticSignError", text = "" },
 					{ name = "DiagnosticSignWarn", text = "" },
-					{ name = "DiagnosticSignHint", text = "" },
-					{ name = "DiagnosticSignInfo", text = "" },
+					{ name = "DiagnosticSignHint", text = "" },
+					{ name = "DiagnosticSignInfo", text = "" },
 				}
 
 				local config = {
-					virtual_text = false,
+					virtual_text = { prefix = "●" },
 					signs = { active = signs },
 					update_in_insert = true,
 					underline = true,
@@ -1146,8 +1145,8 @@ if pcall(require, "lazy") then
 						},
 						glyphs = {
 							git = {
-								unstaged = "",
 								untracked = "",
+								unstaged = "",
 							},
 						},
 					},
