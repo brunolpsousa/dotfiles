@@ -195,7 +195,7 @@ local function lsp_format(async, bufnr)
 	async = async or false
 	vim.lsp.buf.format({
 		filter = function(client)
-			if client.name == "tsserver" then
+			if client.name == "tsserver" or client.name == "jsonls" then
 				return false
 			end
 			return true
