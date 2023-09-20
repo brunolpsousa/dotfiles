@@ -368,7 +368,7 @@ if pcall(require, "lazy") then
 					end,
 				},
 				{
-					"jcdickinson/codeium.nvim",
+					"Exafunction/codeium.nvim",
 					dependencies = { "jcdickinson/http.nvim", build = "cargo build --workspace --release" },
 					opts = {},
 				},
