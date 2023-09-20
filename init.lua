@@ -1197,7 +1197,7 @@ if pcall(require, "lazy") then
 					show_on_dirs = true,
 				},
 				filters = {
-					git_ignored = false,
+					git_ignored = true,
 					custom = { "^.git$", "^node_modules$", "^.vscode$" },
 				},
 				actions = {
