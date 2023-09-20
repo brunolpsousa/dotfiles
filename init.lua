@@ -221,6 +221,7 @@ vim.api.nvim_create_autocmd({ "BufWritePre" }, {
 
 		-- Trim whitespaces
 		vim.cmd([[:silent %s/\s\+$//e]])
+
 		-- Remove comments with no subsequent content (#, %, ;;, --, //)
 		-- Match comments at the beginning of the line or preceded by spaces/tabs
 		vim.cmd([[:silent %s/\(^\|^\s\{}\)\(#\|%\|;;\|--\|\/\/\)$//e]])
@@ -289,6 +290,7 @@ if pcall(require, "lazy") then
 						end
 					end
 				end, {})
+
 				keymap({ "n", "v" }, "<leader>t", "<cmd>SysTheme<CR>", { desc = "Theme" })
 				pcall(vim.cmd, "SysTheme")
 			end,
@@ -1159,10 +1161,7 @@ if pcall(require, "lazy") then
 				},
 				filters = {
 					git_ignored = false,
-					custom = {
-						"^.git$",
-						"^node_modules$",
-					},
+					custom = { "^.git$", "^node_modules$", "^.vscode$" },
 				},
 				actions = {
 					open_file = {
@@ -1261,21 +1260,10 @@ if pcall(require, "lazy") then
 			"folke/todo-comments.nvim",
 			dependencies = { "nvim-lua/plenary.nvim" },
 			opts = {},
+			-- stylua: ignore
 			keys = {
-				{
-					"]t",
-					function()
-						require("todo-comments").jump_next()
-					end,
-					desc = "Next todo comment",
-				},
-				{
-					"[t",
-					function()
-						require("todo-comments").jump_prev()
-					end,
-					desc = "Previous todo comment",
-				},
+				{ "]t", function() require("todo-comments").jump_next() end, desc = "Next todo comment", },
+				{ "[t", function() require("todo-comments").jump_prev() end, desc = "Previous todo comment", },
 			},
 		},
 
