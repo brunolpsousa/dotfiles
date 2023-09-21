@@ -607,7 +607,7 @@ if pcall(require, "lazy") then
 
 		{
 			"jinh0/eyeliner.nvim",
-			event = "VeryLazy",
+			lazy = true,
 			opts = {
 				highlight_on_key = true,
 				dim = true,
@@ -1360,7 +1360,7 @@ if pcall(require, "lazy") then
 
 		{
 			"folke/which-key.nvim",
-			event = "VeryLazy",
+			lazy = false,
 			init = function()
 				vim.o.timeout = true
 				vim.o.timeoutlen = 300
