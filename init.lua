@@ -1156,6 +1156,17 @@ if pcall(require, "lazy") then
 				sort = {
 					sorter = function(nodes)
 						local function natural_cmp(left, right)
+							if left.type == "link" then
+								local is_dir = vim.fn.isdirectory(left.name) == 1
+								-- stylua: ignore
+								if is_dir then left.type = "directory" else left.type = "file" end
+							end
+							if right.type == "link" then
+								local is_dir = vim.fn.isdirectory(right.name) == 1
+								-- stylua: ignore
+								if is_dir then right.type = "directory" else right.type = "file" end
+							end
+
 							if left.type ~= right.type then
 								return left.type < right.type
 							end
