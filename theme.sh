@@ -33,11 +33,8 @@ send_sig_to_editor() {
   local editor_pid
   editor_pid=$(pgrep "$EDITOR")
 
-  # Send SIGWINCH signal to all editor processes
-  # https://en.wikipedia.org/wiki/Signal_(IPC)#Miscellaneous_signals
-  # https://unix.stackexchange.com/questions/362389/send-sigwinch-from-the-keyboard
   for pid in $editor_pid; do
-    kill -28 "$pid"
+    kill -SIGWINCH "$pid"
   done
 }
 
