@@ -1297,11 +1297,12 @@ if pcall(require, "lazy") then
 				require("telescope").load_extension("projects")
 				require("telescope").load_extension("undo")
 			end,
-			opts = {
-				defaults = { path_display = { "smart" }, file_ignore_patterns = { ".git/", "node_modules" } },
-			},
 			config = function()
 				require("telescope").setup({
+					defaults = { path_display = { "smart" }, file_ignore_patterns = { ".git/", "node_modules" } },
+					pickers = {
+						find_files = { hidden = true, no_ignore = false },
+					},
 					extensions = {
 						undo = {
 							mappings = {
