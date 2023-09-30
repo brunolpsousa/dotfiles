@@ -29,5 +29,18 @@ ch_tmux() {
   tmux source-file "$tconf"
 }
 
+send_sig_to_editor() {
+  local editor_pid
+  editor_pid=$(pgrep "$EDITOR")
+
+  # Send SIGWINCH signal to all editor processes
+  # https://en.wikipedia.org/wiki/Signal_(IPC)#Miscellaneous_signals
+  # https://unix.stackexchange.com/questions/362389/send-sigwinch-from-the-keyboard
+  for pid in $editor_pid; do
+    kill -28 "$pid"
+  done
+}
+
 ch_alacritty
 ch_tmux
+send_sig_to_editor
