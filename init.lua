@@ -673,7 +673,15 @@ if pcall(require, "lazy") then
 					options = { globalstatus = true, section_separators = "", component_separators = "" },
 					winbar = {
 						lualine_c = {
-							{ "filename", path = 1, symbols = { modified = "●", readonly = "", unnamed = "" } },
+							{
+								"filename",
+								path = 1,
+								symbols = { modified = "●", readonly = "", unnamed = "" },
+								cond = function()
+									local buf = vim.api.nvim_get_current_buf()
+									return vim.api.nvim_buf_get_option(buf, "filetype") ~= "NvimTree"
+								end,
+							},
 							navic,
 						},
 					},
