@@ -8,7 +8,7 @@ tconf="$HOME/.config/tmux/tmux.conf"
 
 isDark=$(sleep 0.05 && gsettings get org.gnome.desktop.interface color-scheme)
 
-chAlacritty() {
+ch_alacritty() {
   if [[ "$isDark" =~ "dark" ]]; then
     grep -q -m1 "[lL]ight" "$theme" || return
     mv "$theme" "$light"
@@ -20,7 +20,7 @@ chAlacritty() {
   fi
 }
 
-chTmux() {
+ch_tmux() {
   if grep -q -m1 "[lL]ight" "$theme"; then
     sed -i "s/\(status-style fg=colour\)254/\1235/g" "$tconf"
   elif grep -q -m1 "[dD]ark" "$theme"; then
@@ -29,5 +29,5 @@ chTmux() {
   tmux source-file "$tconf"
 }
 
-chAlacritty
-chTmux
+ch_alacritty
+ch_tmux
