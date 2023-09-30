@@ -1368,6 +1368,13 @@ if pcall(require, "lazy") then
 					autopairs = { enable = true },
 					indent = { enable = true },
 					context_commentstring = { enable = true, enable_autocmd = false },
+					incremental_selection = {
+						enable = true,
+						keymaps = {
+							node_incremental = "v",
+							node_decremental = "<BS>",
+						},
+					},
 				})
 			end,
 		},
