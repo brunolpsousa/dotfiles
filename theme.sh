@@ -1,32 +1,32 @@
 #!/bin/env bash
-theme="$HOME/.config/alacritty/theme.yml"
-dark="$HOME/.config/alacritty/dark.yml"
-light="$HOME/.config/alacritty/light.yml"
-tconf="$HOME/.config/tmux/tmux.conf"
 
-[[ -f "$theme" || -f "$HOME/.config/tmux/tmux.conf" ]] || exit
+alacritty_config="$HOME/.config/alacritty/alacritty.yml"
+tmux_config="$HOME/.config/tmux/tmux.conf"
+
+[[ -f "$alacritty_config" || -f "$tmux_config" ]] || exit
 
 isDark=$(sleep 0.05 && gsettings get org.gnome.desktop.interface color-scheme)
 
 ch_alacritty() {
+  [[ -f "$alacritty_config" ]] && command -vp alacritty >/dev/null || return
+
   if [[ "$isDark" =~ "dark" ]]; then
-    grep -q -m1 "[lL]ight" "$theme" || return
-    mv "$theme" "$light"
-    mv "$dark" "$theme"
+    sed -i "s/light/dark/" "$alacritty_config"
   elif [[ "$isDark" =~ "default" ]]; then
-    grep -q -m1 "[dD]ark" "$theme" || return
-    mv "$theme" "$dark"
-    mv "$light" "$theme"
+    sed -i "s/dark/light/" "$alacritty_config"
   fi
 }
 
 ch_tmux() {
-  if grep -q -m1 "[lL]ight" "$theme"; then
-    sed -i "s/\(status-style fg=colour\)254/\1235/g" "$tconf"
-  elif grep -q -m1 "[dD]ark" "$theme"; then
-    sed -i "s/\(status-style fg=colour\)235/\1254/g" "$tconf"
+  [[ -f "$tmux_config" ]] && command -vp tmux >/dev/null || return
+
+  if grep -q "[lL]ight" "$alacritty_config"; then
+    sed -i "s/\(status-style fg=colour\)254/\1235/g" "$tmux_config"
+  elif grep -q "[dD]ark" "$alacritty_config"; then
+    sed -i "s/\(status-style fg=colour\)235/\1254/g" "$tmux_config"
   fi
-  tmux source-file "$tconf"
+
+  tmux source-file "$tmux_config"
 }
 
 send_sig_to_editor() {

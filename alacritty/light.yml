@@ -1,6 +1,4 @@
 # Light: https://github.com/catppuccin/alacritty/blob/main/catppuccin-latte.yml
-window:
-  decorations_theme_variant: Light
 colors:
   # Default colors
   primary:

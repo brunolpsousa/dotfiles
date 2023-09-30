@@ -25,4 +25,4 @@ key_bindings:
   - { key: W, mods: Control|Shift, action: Quit }
 
 import:
-  - ~/.config/alacritty/theme.yml
+  - ~/.config/alacritty/dark.yml
