@@ -231,7 +231,9 @@ vim.api.nvim_create_autocmd({ "BufWritePre" }, {
 })
 
 -- Set theme based on system
-vim.api.nvim_create_autocmd({ "BufEnter" }, {
+-- https://github.com/will/bgwinch.nvim
+vim.api.nvim_create_autocmd("Signal", {
+	pattern = "SIGWINCH",
 	callback = function()
 		local currentTheme = vim.api.nvim_exec2("colorscheme", { output = true }).output
 		local getBG = vim.fn.system("gtk-query-settings | awk -F '\"' '/gtk-theme-name:/{printf $2}'")
