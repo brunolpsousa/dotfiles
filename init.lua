@@ -1238,7 +1238,7 @@ if pcall(require, "lazy") then
 		},
 
 		{
-			"jose-elias-alvarez/null-ls.nvim",
+			"nvimtools/none-ls.nvim",
 			event = { "BufReadPre", "BufNewFile" },
 			opts = function()
 				require("null-ls").setup({
