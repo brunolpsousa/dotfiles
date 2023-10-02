@@ -769,7 +769,7 @@ if pcall(require, "lazy") then
 			main = "ibl",
 			opts = {
 				indent = { tab_char = "│" },
-				scope = { enabled = true },
+				scope = { enabled = true, show_start = false, show_end = false },
 			},
 		},
 
