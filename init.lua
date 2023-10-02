@@ -954,8 +954,15 @@ if pcall(require, "lazy") then
 					{ name = "DiagnosticSignInfo", text = "" },
 				}
 
+				local virtual_text
+				local function toggle_virtual_text()
+					virtual_text = not virtual_text and { prefix = "●" } or false
+					vim.diagnostic.config({ virtual_text = virtual_text })
+				end
+				keymap("n", "<leader>lv", toggle_virtual_text, { desc = "Toggle virtual text" })
+
 				local config = {
-					virtual_text = { prefix = "●" },
+					virtual_text = false,
 					signs = { active = signs },
 					update_in_insert = true,
 					underline = true,
