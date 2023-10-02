@@ -27,10 +27,6 @@ local colors = {
 	surface1 = "#45475a",
 	surface0 = "#313244",
 
-	base = "#1e1e2e",
-	mantle = "#181825",
-	crust = "#11111b",
-
 	dark = {
 		theme = "Dracula",
 		in_brightness = 0.75,
@@ -54,6 +50,9 @@ local colors = {
 		tab_inac_fg = "#a9b1d6",
 		tab_btn_bg = "#282a36",
 		tab_btn_fg = "#f8f8f2",
+		crust = "#11111b",
+		mantle = "#181825",
+		base = "#1e1e2e",
 	},
 
 	light = {
@@ -79,6 +78,9 @@ local colors = {
 		tab_inac_fg = "#665c54",
 		tab_btn_bg = "#ebdbb2",
 		tab_btn_fg = "#3b3052",
+		crust = "#dce0e8",
+		mantle = "#e6e9ef",
+		base = "#eff1f5",
 	},
 }
 
@@ -187,7 +189,7 @@ wez.on("format-tab-title", function(tab)
 		{ Text = get_process(tab) },
 		{ Text = " " },
 		{ Text = get_current_working_dir(tab) },
-		{ Foreground = { Color = colors.base } },
+		{ Foreground = { Color = color.base } },
 		{ Text = "  ▕" },
 	})
 end)
