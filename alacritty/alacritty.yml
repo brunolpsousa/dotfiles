@@ -1,8 +1,8 @@
 window:
   dynamic_padding: true
   dimensions:
-    columns: 146
-    lines: 45
+    columns: 164
+    lines: 48
   opacity: 0.95
 
 font:
