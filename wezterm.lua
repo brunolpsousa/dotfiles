@@ -210,8 +210,6 @@ for host, _ in pairs(wez.enumerate_ssh_hosts()) do
 end
 
 return {
-	front_end = "OpenGL",
-	webgpu_power_preference = "HighPerformance",
 	show_update_window = false,
 	check_for_updates = false,
 	exit_behavior = "Close",
