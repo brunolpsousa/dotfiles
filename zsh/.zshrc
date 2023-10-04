@@ -93,9 +93,9 @@ setopt hist_ignore_all_dups
 HISTFILE="$XDG_STATE_HOME/zsh/zshist"
 HISTSIZE=10000
 SAVEHIST=$HISTSIZE
-[[ ! -d "$ZDOTDIR" || ! -d "$XDG_CACHE_HOME" || ! -d "$XDG_DATA_HOME/zsh" \
-|| ! -d "$XDG_STATE_HOME/zsh" ]] && mkdir -p "$ZDOTDIR" "$XDG_CACHE_HOME" \
-"$XDG_DATA_HOME/zsh" "$XDG_STATE_HOME/zsh" >/dev/null 2>&1
+[[ ! -d "$XDG_CONFIG_HOME/zsh" || ! -d "$XDG_CACHE_HOME" || ! -d "$XDG_DATA_HOME/zsh" \
+|| ! -d "$XDG_STATE_HOME/zsh"  || ! -d "$ZDOTDIR" ]] && mkdir -p "$XDG_DATA_HOME/zsh" \
+"$ZDOTDIR" "$XDG_CACHE_HOME" "$XDG_CONFIG_HOME/zsh" "$XDG_STATE_HOME/zsh" >/dev/null 2>&1
 #--------------------------------------------------------------------------------------------------#
 # Completion
 autoload -Uz compinit && compinit -d "$XDG_CACHE_HOME/zcompdump"
@@ -446,9 +446,12 @@ fi
 if [[ -f "$XDG_CONFIG_HOME/zsh/aliases.zsh" ]]; then
   source "$XDG_CONFIG_HOME/zsh/aliases.zsh"
 else
+  echo 'Downloading aliases.zsh...'
   fetch 'https://gitlab.com/brunolpsousa/dotfiles/-/raw/main/zsh/aliases.zsh' \
     > "$XDG_CONFIG_HOME/zsh/aliases.zsh"
-  source "$XDG_CONFIG_HOME/zsh/aliases.zsh"
+  source "$XDG_CONFIG_HOME/zsh/aliases.zsh" ||
+    echo "$(date '+%Y-%m-%d %H:%M:%S') - Failed to load aliases.zsh" \
+    >> "$HOME/.alert"
 fi
 #--------------------------------------------------------------------------------------------------#
 ############################################ Arch Config ###########################################
@@ -456,9 +459,12 @@ fi
 if [[ -f "$XDG_CONFIG_HOME/zsh/arch.zsh" ]]; then
   source "$XDG_CONFIG_HOME/zsh/arch.zsh"
 else
+  echo 'Downloading arch.zsh...'
   fetch 'https://gitlab.com/brunolpsousa/dotfiles/-/raw/main/zsh/arch.zsh' \
     > "$XDG_CONFIG_HOME/zsh/arch.zsh"
-  source "$XDG_CONFIG_HOME/zsh/arch.zsh"
+  source "$XDG_CONFIG_HOME/zsh/arch.zsh" ||
+    echo "$(date '+%Y-%m-%d %H:%M:%S') - Failed to load arch.zsh" \
+    >> "$HOME/.alert"
 fi
 #--------------------------------------------------------------------------------------------------#
 ############################################## Prompt ##############################################
@@ -466,9 +472,12 @@ fi
 if [[ -f "$XDG_CONFIG_HOME/zsh/prompt.zsh" ]]; then
   source "$XDG_CONFIG_HOME/zsh/prompt.zsh"
 else
+  echo 'Downloading prompt.zsh...'
   fetch 'https://gitlab.com/brunolpsousa/dotfiles/-/raw/main/zsh/prompt.zsh' \
     > "$XDG_CONFIG_HOME/zsh/prompt.zsh"
-  source "$XDG_CONFIG_HOME/zsh/prompt.zsh"
+  source "$XDG_CONFIG_HOME/zsh/prompt.zsh" ||
+    echo "$(date '+%Y-%m-%d %H:%M:%S') - Failed to load prompt.zsh" \
+    >> "$HOME/.alert"
 fi
 #--------------------------------------------------------------------------------------------------#
 ############################################## Alert ###############################################
