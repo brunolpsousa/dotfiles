@@ -40,15 +40,14 @@ ch_tmux() {
 }
 
 send_sig_to_editor() {
+
   if [[ "$EDITOR" =~ 'nvim' ]]; then
-    editor='nvim'
+    EDITOR='nvim'
   elif [[ "$EDITOR" =~ 'vim' ]]; then
-    editor='vim'
-  else
-    editor="$EDITOR"
+    EDITOR='vim'
   fi
 
-  killall -SIGWINCH "$editor"
+  killall -SIGWINCH "$EDITOR"
 }
 
 ch_plasma() {
