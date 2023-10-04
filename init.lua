@@ -232,12 +232,22 @@ vim.api.nvim_create_autocmd({ "BufWritePre" }, {
 
 -- Set theme based on system
 -- https://github.com/will/bgwinch.nvim
+local function sysDarkStatus()
+	local getBG_1 = vim.fn.system("gsettings get org.gnome.desktop.interface color-scheme")
+	local getBG_2 = vim.fn.system("grep gtk-application-prefer-dark-theme ~/.config/gtk-3.0/settings.ini")
+	local getBG_3 = vim.fn.system("gtk-query-settings | awk -F '\"' '/gtk-theme-name:/{printf $2}'")
+
+	if getBG_1:match("^'prefer-dark'$") or getBG_2:match("true") or getBG_3:match("^Adwaita-dark$") then
+		return true
+	end
+	return not getBG_1:match("^'default'$") and not getBG_2:match("false") and not getBG_3:match("^Adwaita$")
+end
+
 vim.api.nvim_create_autocmd("Signal", {
 	pattern = "SIGWINCH",
 	callback = function()
 		local currentTheme = vim.api.nvim_exec2("colorscheme", { output = true }).output
-		local getBG = vim.fn.system("gtk-query-settings | awk -F '\"' '/gtk-theme-name:/{printf $2}'")
-		local isDark = not getBG:match("^Adwaita$")
+		local isDark = sysDarkStatus()
 
 		if isDark and currentTheme == "nightfox" or not isDark and currentTheme == "dayfox" then
 			return
@@ -275,8 +285,9 @@ if pcall(require, "lazy") then
 			priority = 1000,
 			init = function()
 				vim.api.nvim_create_user_command("SysTheme", function()
-					local getBG = vim.fn.system("gtk-query-settings | awk -F '\"' '/gtk-theme-name:/{printf $2}'")
-					if getBG:match("^Adwaita$") then
+					local isDark = sysDarkStatus()
+
+					if not isDark then
 						vim.opt.background = "light"
 						pcall(vim.cmd.colorscheme, "dayfox")
 						pcall(vim.cmd.colorscheme, "dayfox")
