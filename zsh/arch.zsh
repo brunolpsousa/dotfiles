@@ -779,6 +779,11 @@ arch-base() {
           '\nUnit=theme.service\n\n[Install]\nWantedBy=default.target' |
           ${use_sudo} tee /etc/systemd/user/theme.timer >/dev/null
 
+        # Map Meta (Super) to toggle overview
+        kwriteconfig5 --file "$XDG_CONFIG_HOME/kwinrc" --group ModifierOnlyShortcuts --key Meta \
+          "org.kde.kglobalaccel,/component/kwin,org.kde.kglobalaccel.Component,invokeShortcut,Overview" \
+          && qdbus org.kde.KWin /KWin reconfigure
+
         chmod +x "$XDG_DATA_HOME/zsh/theme.sh"
         systemctl --user daemon-reload
         systemctl --user enable --now theme.timer
