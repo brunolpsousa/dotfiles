@@ -1239,17 +1239,16 @@ arch-base() {
               > "$XDG_DATA_HOME/icons/qbittorrent-tray.png"
 
             flatpak install \
-              io.neovim.nvim \
-              org.freedesktop.Sdk.Extension.node18 org.freedesktop.Sdk.Extension.rust-stable \
+              io.neovim.nvim org.freedesktop.Sdk.Extension.node18 \
               org.mozilla.firefox org.freedesktop.Platform.ffmpeg-full com.brave.Browser \
               io.mpv.Mpv org.geeqie.Geeqie org.qbittorrent.qBittorrent com.valvesoftware.Steam
-            flatpak override -u --env=FLATPAK_ENABLE_SDK_EXT=node18,rust-stable io.neovim.nvim
+            flatpak override -u --env=FLATPAK_ENABLE_SDK_EXT=node18 io.neovim.nvim
 
             [[ ! -x /usr/bin/rg ]] || $use_sudo sh -c \
               "command cp /usr/bin/rg /var/lib/flatpak/app/io.neovim.nvim/current/active/files/bin"
           else
             sudo pacman -S --needed \
-              neovim nodejs rust firefox mpv steam qbittorrent qt6-wayland geeqie gnuchess
+              neovim nodejs firefox mpv steam qbittorrent qt6-wayland geeqie gnuchess
             command npm config set audit=false fund=false progress=off install-strategy=shallow
           fi
 

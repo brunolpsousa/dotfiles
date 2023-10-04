@@ -396,8 +396,13 @@ if pcall(require, "lazy") then
 				},
 				{
 					"Exafunction/codeium.nvim",
-					dependencies = { "jcdickinson/http.nvim", build = "cargo build --workspace --release" },
-					opts = {},
+					config = function()
+						local file_size =
+							tonumber(vim.api.nvim_exec2("echo getfsize(expand(@%))", { output = true })["output"])
+						if file_size > -2 and file_size <= 127830 then
+							require("codeium").setup({})
+						end
+					end,
 				},
 			},
 			config = function()
