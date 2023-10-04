@@ -1241,14 +1241,14 @@ arch-base() {
             flatpak install \
               io.neovim.nvim org.freedesktop.Sdk.Extension.node18 \
               org.mozilla.firefox org.freedesktop.Platform.ffmpeg-full com.brave.Browser \
-              io.mpv.Mpv org.geeqie.Geeqie org.qbittorrent.qBittorrent com.valvesoftware.Steam
+              io.mpv.Mpv org.qbittorrent.qBittorrent com.valvesoftware.Steam
             flatpak override -u --env=FLATPAK_ENABLE_SDK_EXT=node18 io.neovim.nvim
 
             [[ ! -x /usr/bin/rg ]] || $use_sudo sh -c \
               "command cp /usr/bin/rg /var/lib/flatpak/app/io.neovim.nvim/current/active/files/bin"
           else
             sudo pacman -S --needed \
-              neovim nodejs firefox mpv steam qbittorrent qt6-wayland geeqie gnuchess
+              neovim npm firefox mpv steam qbittorrent qt6-wayland
             command npm config set audit=false fund=false progress=off install-strategy=shallow
           fi
 
