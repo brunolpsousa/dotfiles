@@ -38,8 +38,37 @@ send_sig_to_editor() {
   killall -SIGWINCH "$editor"
 }
 
+ch_plasma() {
+  command -vp plasmashell >/dev/null || return
+
+  local hour
+  hour="$(date '+%H' | sed -E 's/^0//')"
+
+  if (("$hour" >= 6 && "$hour" < 17)); then
+    sed -i 's/\(gtk-application-prefer-dark-theme=\)true/\1false/' "$HOME/.config/gtk-3.0/settings.ini"
+    gsettings set org.gnome.desktop.interface color-scheme default
+    plasma-apply-colorscheme BreezeLight
+    plasma-apply-desktoptheme breeze-light
+    plasma-apply-cursortheme Breeze_Snow
+    # plasma-apply-lookandfeel -a org.kde.breeze.desktop
+    # lookandfeeltool -a org.kde.breeze.desktop
+    # nohup plasmashell --replace &
+  else
+    sed -i 's/\(gtk-application-prefer-dark-theme=\)false/\1true/' "$HOME/.config/gtk-3.0/settings.ini"
+    gsettings set org.gnome.desktop.interface color-scheme prefer-dark
+    plasma-apply-colorscheme BreezeDark
+    plasma-apply-desktoptheme breeze-dark
+    plasma-apply-cursortheme Breeze_Snow
+    # plasma-apply-cursortheme breeze_cursors
+    # plasma-apply-lookandfeel -a org.kde.breezedark.desktop
+    # lookandfeeltool -a org.kde.breezedark.desktop
+    # nohup plasmashell --replace &
+  fi
+
+  isDark=$(gsettings get org.gnome.desktop.interface color-scheme)
 }
 
+ch_plasma &&
 ch_alacritty
 ch_tmux
 send_sig_to_editor
