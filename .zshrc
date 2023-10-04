@@ -46,7 +46,7 @@ SSH_AGENT_PID=''
 SSH_AUTH_SOCK="${XDG_RUNTIME_DIR}/gnupg/S.gpg-agent.ssh"
 
 [[ -z $ZDOTDIR ]] && ZDOTDIR="$HOME"
-[[ -x $(command -v plasmashell) ]] && export GTK_USE_PORTAL=1 || export QT_QPA_PLATFORMTHEME='gnome'
+[[ -x $(command -v plasmashell) ]] && export GTK_USE_PORTAL=0 || export QT_QPA_PLATFORMTHEME='gnome'
 [[ -d "$HOME/.local/bin" ]] && export PATH="$HOME/.local/bin:$PATH"
 [[ -d "$XDG_DATA_HOME/npm/bin" ]] && export PATH="$XDG_DATA_HOME/npm/bin:$PATH"
 [[ -d "$XDG_DATA_HOME/cargo/bin" ]] && export PATH="$XDG_DATA_HOME/cargo/bin:$PATH"
