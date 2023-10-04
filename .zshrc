@@ -1633,7 +1633,7 @@ arch-base() {
         echo -e '[Unit]\nDescription=Change Wallpapers\nStartLimitIntervalSec=3' \
           '\nStartLimitBurst=5\n\n[Service]' \
           "\nExecStart=$XDG_CONFIG_HOME/zsh/chwp.sh\nRestart=always\nRestartSec=3" \
-          '\n\n[Install]\nWantedBy=default.target' | \
+          '\n\n[Install]\nWantedBy=default.target' |
           ${use_sudo} tee /etc/systemd/user/chwp.service >/dev/null
 
         sh -c "${use_sudo} \
@@ -1677,6 +1677,18 @@ arch-base() {
           sh -c "${use_sudo} sed -i \
           '/^RebootCommand/ s/$/\nNumlock=on\nInputMethod=qtvirtualkeyboard/; /=breeze$/ s/$/\
           \nCursorTheme=Breeze_Snow/' /etc/sddm.conf.d/kde_settings.conf"
+
+        echo -e '[Unit]\nDescription=Set Theme\n' \
+          "\n[Service]\nExecStart=$XDG_CONFIG_HOME/zsh/theme.sh\n" |
+          ${use_sudo} tee /etc/systemd/user/theme.service >/dev/null
+        echo -e '[Unit]\nDescription=Set Theme\n\n[Timer]' \
+          '\nOnCalendar=*-*-* 6:35:00\nOnCalendar=*-*-* 17:45:00\nPersistent=true' \
+          '\nUnit=theme.service\n\n[Install]\nWantedBy=default.target' |
+          ${use_sudo} tee /etc/systemd/user/theme.timer >/dev/null
+
+        chmod +x "$XDG_CONFIG_HOME/zsh/theme.sh"
+        systemctl --user daemon-reload
+        systemctl --user enable --now theme.timer
         break;;
 
       Exit ) return;;
