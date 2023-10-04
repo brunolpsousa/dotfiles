@@ -231,18 +231,32 @@ vim.api.nvim_create_autocmd({ "BufWritePre" }, {
 })
 
 -- Set theme based on system
--- https://github.com/will/bgwinch.nvim
+-- https://flatpak.github.io/xdg-desktop-portal/#gdbus-org.freedesktop.portal.Settings
 local function sysDarkStatus()
-	local getBG_1 = vim.fn.system("gsettings get org.gnome.desktop.interface color-scheme")
-	local getBG_2 = vim.fn.system("grep gtk-application-prefer-dark-theme ~/.config/gtk-3.0/settings.ini")
-	local getBG_3 = vim.fn.system("gtk-query-settings | awk -F '\"' '/gtk-theme-name:/{printf $2}'")
+	-- Returns 0 for no preference; 1 for dark; 2 for light
+	local getBG = io.popen(
+		"gdbus call --session"
+			.. " --dest=org.freedesktop.portal.Desktop"
+			.. " --object-path=/org/freedesktop/portal/desktop"
+			.. " --method=org.freedesktop.portal.Settings.Read"
+			.. " org.freedesktop.appearance color-scheme"
+	)
 
-	if getBG_1:match("^'prefer-dark'$") or getBG_2:match("true") or getBG_3:match("^Adwaita-dark$") then
+	if getBG == nil then
 		return true
 	end
-	return not getBG_1:match("^'default'$") and not getBG_2:match("false") and not getBG_3:match("^Adwaita$")
+
+	local result = string.match(getBG:read("*a"), " %d")
+	getBG:close()
+
+	if result == " 1" or result ~= " 0" and result ~= " 2" then
+		return true
+	end
+
+	return false
 end
 
+-- https://github.com/will/bgwinch.nvim
 vim.api.nvim_create_autocmd("Signal", {
 	pattern = "SIGWINCH",
 	callback = function()
