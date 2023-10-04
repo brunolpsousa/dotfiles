@@ -2,9 +2,6 @@
 
 alacritty_config="$HOME/.config/alacritty/alacritty.yml"
 tmux_config="$HOME/.config/tmux/tmux.conf"
-
-[[ -f "$alacritty_config" || -f "$tmux_config" ]] || exit
-
 isDark=$(sleep 0.05 && gsettings get org.gnome.desktop.interface color-scheme)
 
 ch_alacritty() {
@@ -30,12 +27,17 @@ ch_tmux() {
 }
 
 send_sig_to_editor() {
-  local editor_pid
-  editor_pid=$(pgrep "$EDITOR")
+  if [[ "$EDITOR" =~ 'nvim' ]]; then
+    editor='nvim'
+  elif [[ "$EDITOR" =~ 'vim' ]]; then
+    editor='vim'
+  else
+    editor="$EDITOR"
+  fi
 
-  for pid in $editor_pid; do
-    kill -SIGWINCH "$pid"
-  done
+  killall -SIGWINCH "$editor"
+}
+
 }
 
 ch_alacritty
