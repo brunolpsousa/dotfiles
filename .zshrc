@@ -1630,11 +1630,11 @@ arch-base() {
             file-roller gnome-calculator gnome-chess gnome-mines"
         fi
 
-        sh -c "echo -e '[Unit]\nDescription=Change Wallpapers\nStartLimitIntervalSec=3' \
+        echo -e '[Unit]\nDescription=Change Wallpapers\nStartLimitIntervalSec=3' \
           '\nStartLimitBurst=5\n\n[Service]' \
-          '\nExecStart=/home/bruno/.local/share/backgrounds/chwp.sh\nRestart=always\nRestartSec=3' \
+          "\nExecStart=$XDG_CONFIG_HOME/zsh/chwp.sh\nRestart=always\nRestartSec=3" \
           '\n\n[Install]\nWantedBy=default.target' | \
-          ${use_sudo} tee /etc/systemd/user/chwp.service >/dev/null"
+          ${use_sudo} tee /etc/systemd/user/chwp.service >/dev/null
 
         sh -c "${use_sudo} \
           sed -i 's/#HandleLidSwitch=suspend/HandleLidSwitch=lock/' /etc/systemd/logind.conf"
@@ -1643,13 +1643,13 @@ arch-base() {
           gdm dbus-launch gsettings set org.gnome.desktop.peripherals.touchpad tap-to-click true
 
         if [[ "$EUID" != 0 ]]; then
-          command mkdir -p "$XDG_DATA_HOME/backgrounds"
+          command mkdir -p "$XDG_CONFIG_HOME/zsh" "$XDG_DATA_HOME/nautilus/scripts"
 
-          [[ -f "$XDG_CONFIG_HOME/backgrounds/chwp.sh" ]] || fetch \
+          [[ -f "$XDG_CONFIG_HOME/zsh/chwp.sh" ]] || fetch \
             'https://gitlab.com/brunolpsousa/dotfiles/-/raw/main/chwp.sh' \
-            > "$XDG_DATA_HOME/backgrounds/chwp.sh"
+            > "$XDG_CONFIG_HOME/zsh/chwp.sh"
 
-          chmod +x "$XDG_DATA_HOME/backgrounds/chwp.sh"
+          chmod +x "$XDG_CONFIG_HOME/zsh/chwp.sh"
           echo '#!/usr/bin/env bash\nexport TERMX_NAUTILUS=1 && xterm' \
             > "$XDG_DATA_HOME/nautilus/scripts/Terminal"
           chmod +x "$XDG_DATA_HOME/nautilus/scripts/Terminal"
