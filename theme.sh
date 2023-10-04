@@ -57,15 +57,11 @@ ch_plasma() {
   hour="$(date '+%H' | sed -E 's/^0//')"
 
   if (("$hour" >= 6 && "$hour" < 17)); then
-    sed -i 's/\(gtk-application-prefer-dark-theme=\)true/\1false/' "$HOME/.config/gtk-3.0/settings.ini"
-    gsettings set org.gnome.desktop.interface color-scheme default
     plasma-apply-colorscheme BreezeLight
     plasma-apply-desktoptheme breeze-light
     plasma-apply-cursortheme Breeze_Snow
     unset isDark
   else
-    sed -i 's/\(gtk-application-prefer-dark-theme=\)false/\1true/' "$HOME/.config/gtk-3.0/settings.ini"
-    gsettings set org.gnome.desktop.interface color-scheme prefer-dark
     plasma-apply-colorscheme BreezeDark
     plasma-apply-desktoptheme breeze-dark
     plasma-apply-cursortheme Breeze_Snow
