@@ -371,8 +371,13 @@ alias reset-gnome-appgrid='gsettings reset org.gnome.shell app-picker-layout'
 alias paclog='grep -nC 2 --color=auto warning: /var/log/pacman.log'
 
 # Update .zshrc
-alias zupd="fetch https://gitlab.com/brunolpsousa/dotfiles/-/raw/main/zsh/.zshrc \
-  > $ZDOTDIR/.zshrc && source $ZDOTDIR/.zshrc"
+zupd() {
+  fetch https://gitlab.com/brunolpsousa/dotfiles/-/raw/main/zsh/.zshrc \
+    > $ZDOTDIR/.zshrc
+  command rm "$XDG_CONFIG_HOME"/zsh/*.zsh
+  set -e
+  exec zsh
+}
 
 # Weather by wttr.in
 alias weather="fetch https://wttr.in"
