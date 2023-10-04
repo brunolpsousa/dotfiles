@@ -2,16 +2,29 @@
 
 alacritty_config="$HOME/.config/alacritty/alacritty.yml"
 tmux_config="$HOME/.config/tmux/tmux.conf"
-isDark=$(sleep 0.05 && gsettings get org.gnome.desktop.interface color-scheme)
+isDark=$(
+  isDark=$(
+            sleep 0.05 &&
+            gdbus call --session \
+            --dest=org.freedesktop.portal.Desktop \
+            --object-path=/org/freedesktop/portal/desktop \
+            --method=org.freedesktop.portal.Settings.Read \
+            org.freedesktop.appearance color-scheme |
+            cut -d " " -f2
+          )
+  result=${isDark::1}
+  [[ "$result" == "1" || "$result" != "0" && "$result" != "2" ]] && echo "dark"
+)
 
 ch_alacritty() {
   [[ -f "$alacritty_config" ]] && command -vp alacritty >/dev/null || return
 
-  if [[ "$isDark" =~ "dark" ]]; then
-    sed -i "s/light/dark/" "$alacritty_config"
-  elif [[ "$isDark" =~ "default" ]]; then
+  if [[ -z $isDark ]]; then
     sed -i "s/dark/light/" "$alacritty_config"
+    return
   fi
+
+  sed -i "s/light/dark/" "$alacritty_config"
 }
 
 ch_tmux() {
