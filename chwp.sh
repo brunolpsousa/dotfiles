@@ -24,7 +24,7 @@ while true; do
   for i in $index; do
     [[ -f ${wallpapers[$i]} ]] || break
 
-    hour="$(date '+%H')" && hour="${hour//^0/}"
+    hour="$(date '+%H' | sed -r 's/^0//')"
     if (("$hour" >= 7 && "$hour" < 19)) && [[ "${wallpapers[$i]}" =~ nsfw|NSFW ]]; then
       continue
     fi
