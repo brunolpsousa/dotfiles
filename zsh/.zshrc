@@ -535,7 +535,7 @@ ssh() {
   # If there is no zsh on the remote machine, install this.
   local zsh_url='https://raw.githubusercontent.com/romkatv/zsh-bin/master/install'
   # If there is no ~/.zshrc on the remote machine, install this.
-  local zshrc_url='https://raw.githubusercontent.com/brunolpsousa/dotfiles/main/.zshrc'
+  local zshrc_url='https://raw.githubusercontent.com/brunolpsousa/dotfiles/main/zsh/.zshrc'
 
   # Copy all these files and directories (relative to $HOME) from local machine
   # to remote. Silently skip files that don't exist locally and override existing
@@ -813,7 +813,7 @@ alias reset-gnome-appgrid='gsettings reset org.gnome.shell app-picker-layout'
 alias paclog='grep -nC 2 --color=auto warning: /var/log/pacman.log'
 
 # Update .zshrc
-alias zupd="fetch https://gitlab.com/brunolpsousa/dotfiles/-/raw/main/.zshrc \
+alias zupd="fetch https://gitlab.com/brunolpsousa/dotfiles/-/raw/main/zsh/.zshrc \
   > $ZDOTDIR/.zshrc && source $ZDOTDIR/.zshrc"
 
 # Weather by wttr.in
@@ -1448,7 +1448,7 @@ arch-base() {
               > "$XDG_CONFIG_HOME/alacritty/dark.yml"
             fetch 'https://gitlab.com/brunolpsousa/dotfiles/-/raw/main/alacritty/light.yml' \
               > "$XDG_CONFIG_HOME/alacritty/light.yml"
-            fetch 'https://gitlab.com/brunolpsousa/dotfiles/-/raw/main/theme.sh' \
+            fetch 'https://gitlab.com/brunolpsousa/dotfiles/-/raw/main/zsh/theme.sh' \
               > "$XDG_CONFIG_HOME/zsh/theme.sh"
 
             case $(lscpu | awk '/Model name:/{print $3}') in Intel\(R\)) sed -i \
@@ -1645,7 +1645,7 @@ arch-base() {
           command mkdir -p "$XDG_CONFIG_HOME/zsh" "$XDG_DATA_HOME/nautilus/scripts"
 
           [[ -f "$XDG_CONFIG_HOME/zsh/chwp.sh" ]] || fetch \
-            'https://gitlab.com/brunolpsousa/dotfiles/-/raw/main/chwp.sh' \
+            'https://gitlab.com/brunolpsousa/dotfiles/-/raw/main/zsh/chwp.sh' \
             > "$XDG_CONFIG_HOME/zsh/chwp.sh"
 
           chmod +x "$XDG_CONFIG_HOME/zsh/chwp.sh"
