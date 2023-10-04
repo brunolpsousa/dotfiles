@@ -1450,15 +1450,15 @@ arch-base() {
             fetch 'https://gitlab.com/brunolpsousa/dotfiles/-/raw/main/alacritty/light.yml' \
               > "$XDG_CONFIG_HOME/alacritty/light.yml"
             fetch 'https://gitlab.com/brunolpsousa/dotfiles/-/raw/main/theme.sh' \
-              > "$XDG_CONFIG_HOME/alacritty/theme.sh"
+              > "$XDG_CONFIG_HOME/zsh/theme.sh"
 
             case $(lscpu | awk '/Model name:/{print $3}') in Intel\(R\)) sed -i \
               's/\(columns: \)146/\1115/g; s/\(lines: \)45/\132/g' \
               "$XDG_CONFIG_HOME/alacritty/alacritty.yml";;
             esac
 
-            chmod +x "$XDG_CONFIG_HOME/alacritty/theme.sh"
-            sh -c "$XDG_CONFIG_HOME/alacritty/theme.sh"
+            chmod +x "$XDG_CONFIG_HOME/zsh/theme.sh"
+            sh -c "$XDG_CONFIG_HOME/zsh/theme.sh"
 
             if [[ -f '/usr/local/bin/xterm' ]]; then
               local xtermVar
@@ -1470,7 +1470,7 @@ arch-base() {
               echo '#!/usr/bin/env bash\nTERMX="alacritty"' \
                 '\n[[ -n "$ZSH_TMUX_STARTED" ]] || tmux new-session -d -s main -c "$HOME"' \
                 '\ntvar="$(tmux list-sessions | grep main)"\nsh -c ' \
-                '"$HOME/.config/alacritty/theme.sh"\nif grep -q attached <<< "$tvar" && ' \
+                '"$HOME/.config/zsh/theme.sh"\nif grep -q attached <<< "$tvar" && ' \
                 'pgrep "$TERMX"; then\n  tmux neww -t=main -c "$@"' \
                 '\nelif [[ -n "$tvar" && -z "$*" && -z "$TERMX_NAUTILUS" ]] && '\
                 '! pgrep "$TERMX"; then\n  "$TERMX"\nelse\n  tmux neww -t=main -c "$@"' \
