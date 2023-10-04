@@ -768,7 +768,7 @@ if pcall(require, "lazy") then
 			event = { "BufReadPost", "BufNewFile" },
 			main = "ibl",
 			opts = {
-				indent = { tab_char = "│" },
+				indent = { char = "│", tab_char = "│" },
 				scope = { enabled = true, show_start = false, show_end = false },
 			},
 		},
