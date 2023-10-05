@@ -240,6 +240,7 @@ local function sysDarkStatus()
 			.. " --object-path=/org/freedesktop/portal/desktop"
 			.. " --method=org.freedesktop.portal.Settings.Read"
 			.. " org.freedesktop.appearance color-scheme"
+			.. " 2>/dev/null"
 	)
 
 	if getBG == nil then

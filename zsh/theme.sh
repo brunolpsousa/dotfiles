@@ -9,7 +9,7 @@ isDark=$(
             --dest=org.freedesktop.portal.Desktop \
             --object-path=/org/freedesktop/portal/desktop \
             --method=org.freedesktop.portal.Settings.Read \
-            org.freedesktop.appearance color-scheme |
+            org.freedesktop.appearance color-scheme 2>/dev/null |
             cut -d " " -f2
           )
   result=${isDark::1}
@@ -60,11 +60,13 @@ ch_plasma() {
     plasma-apply-colorscheme BreezeLight
     plasma-apply-desktoptheme breeze-light
     plasma-apply-cursortheme Breeze_Snow
+    plasma-apply-lookandfeel -a org.kde.breeze.desktop
     unset isDark
   else
     plasma-apply-colorscheme BreezeDark
     plasma-apply-desktoptheme breeze-dark
     plasma-apply-cursortheme Breeze_Snow
+    plasma-apply-lookandfeel -a org.kde.breezedark.desktop
     isDark="dark"
   fi
 }
