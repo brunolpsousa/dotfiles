@@ -254,7 +254,6 @@ arch-base() {
   local yne flatpk
   if [[ -z $zenv || -z $zprof ]]; then
     echo 'Do you wish to configure zshenv and zprofile?'
-    local yne
     select yne in 'Yes' 'No' 'Exit'; do
       case $yne in
         Yes )
