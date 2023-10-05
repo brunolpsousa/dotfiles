@@ -40,13 +40,13 @@ ch_tmux() {
 }
 
 send_sig_to_editor() {
-
   if [[ "$EDITOR" =~ 'nvim' ]]; then
     EDITOR='nvim'
   elif [[ "$EDITOR" =~ 'vim' ]]; then
     EDITOR='vim'
   fi
 
+  pgrep "$EDITOR" || return
   killall -SIGWINCH "$EDITOR"
 }
 
@@ -59,14 +59,14 @@ ch_plasma() {
   if (("$hour" >= 6 && "$hour" < 17)); then
     plasma-apply-colorscheme BreezeLight
     plasma-apply-desktoptheme breeze-light
-    plasma-apply-cursortheme Breeze_Snow
     plasma-apply-lookandfeel -a org.kde.breeze.desktop
+    plasma-apply-cursortheme Breeze_Snow
     unset isDark
   else
     plasma-apply-colorscheme BreezeDark
     plasma-apply-desktoptheme breeze-dark
-    plasma-apply-cursortheme Breeze_Snow
     plasma-apply-lookandfeel -a org.kde.breezedark.desktop
+    plasma-apply-cursortheme Breeze_Snow
     isDark="dark"
   fi
 }
