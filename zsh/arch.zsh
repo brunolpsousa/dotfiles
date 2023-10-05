@@ -584,12 +584,13 @@ arch-base() {
             command mkdir -p "$XDG_CONFIG_HOME/tmux"
             fetch 'https://gitlab.com/brunolpsousa/dotfiles/-/raw/main/tmux.conf' \
               > "$XDG_CONFIG_HOME/tmux/tmux.conf"
-            echo "Do you wish to remap tmux's prefix to C-['CHAR']? [y/N]" && read tmuxprefix
-            [[ $tmuxprefix =~ '^[yY]' ]] && echo 'Enter a char:' && read tmuxbind
+            echo "Do you wish to remap tmux's prefix? [y/N]" && read tmuxprefix
+            [[ $tmuxprefix =~ '^[yY]' ]] && echo 'Enter a modifier [C/M]:' && read tmuxmod \
+              && echo 'Enter a char:' && read tmuxbind
 
-            [[ -n $tmuxbind ]] && echo "# remap prefix from C-b to C-$tmuxbind\n" \
-              "unbind C-b\nset-option -g prefix C-$tmuxbind\n" \
-              "bind-key C-$tmuxbind send-prefix" >> "$XDG_CONFIG_HOME/tmux/tmux.conf"
+            [[ -n $tmuxbind ]] && echo "# remap prefix from C-b to $tmuxmod-$tmuxbind\n" \
+              "unbind C-b\nset-option -g prefix $tmuxmod-$tmuxbind\n" \
+              "bind-key $tmuxmod-$tmuxbind send-prefix" >> "$XDG_CONFIG_HOME/tmux/tmux.conf"
           fi
 
           # Wezterm config
