@@ -30,12 +30,13 @@ ch_alacritty() {
 ch_tmux() {
   [[ -f "$tmux_config" ]] && command -vp tmux >/dev/null || return
 
-  if grep -q "[lL]ight" "$alacritty_config"; then
+  if grep -q "[lL]ight" "$alacritty_config" && command -vp alacritty >/dev/null; then
     sed -i "s/\(status-style fg=colour\)254/\1235/g" "$tmux_config"
-  elif grep -q "[dD]ark" "$alacritty_config"; then
+  else
     sed -i "s/\(status-style fg=colour\)235/\1254/g" "$tmux_config"
   fi
 
+  pgrep "tmux" || return
   tmux source-file "$tmux_config"
 }
 
