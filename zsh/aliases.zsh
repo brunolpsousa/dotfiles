@@ -266,7 +266,7 @@ bd() {
     fi
   done
 }
-bindkey -s '^F' 'bd^M'
+bindkey -s '^F' ' bd^M'
 
 # SSH
 vscp() {
