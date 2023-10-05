@@ -429,7 +429,6 @@ fi
 #--------------------------------------------------------------------------------------------------#
 ############################################### Tmux ###############################################
 #--------------------------------------------------------------------------------------------------#
-# If tmux is executable and not already inside a session:
 # if command -v tmux >/dev/null && [[ -z $TMUX && -z $ZSH_TMUX_STARTED ]]; then
 #   tvar="$(tmux list-sessions &>/dev/null | grep main)"
 #   export ZSH_TMUX_STARTED=1
