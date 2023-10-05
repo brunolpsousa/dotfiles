@@ -300,14 +300,14 @@ arch-base() {
     case $yne in
       Yes )
         $use_sudo sh -c "pacman -Syu --needed \
+          fzf ripgrep neofetch yt-dlp man-db tldr \
+          base-devel pkgstats reflector networkmanager \
           pipewire pipewire-alsa pipewire-pulse wireplumber \
-          alacritty tmux fzf ripgrep neofetch yt-dlp man-db tldr \
           android-udev android-tools zsh ttf-jetbrains-mono-nerd \
-          base-devel pkgstats java-runtime-common reflector networkmanager \
-          sbctl ufw iptables-nft ntfs-3g exfat-utils unrar zip p7zip imagemagick \
           xdg-desktop-portal xdg-desktop-portal-gtk lib32-gst-plugins-good \
+          hunspell-en_US gsfonts noto-fonts noto-fonts-cjk noto-fonts-emoji \
+          sbctl ufw iptables-nft ntfs-3g exfat-utils unrar zip p7zip imagemagick \
           zsh-autosuggestions zsh-completions zsh-history-substring-search zsh-syntax-highlighting \
-          hunspell-en_US noto-fonts noto-fonts-cjk noto-fonts-emoji ttf-liberation gsfonts \
           $(case $(lscpu | awk '/Model name:/{print $3}') in
           AMD) echo -n 'amd-ucode';;
           Intel\(R\)) echo -n 'intel-ucode';;
@@ -564,10 +564,10 @@ arch-base() {
                 '\n[[ -n "$ZSH_TMUX_STARTED" ]] || tmux new-session -d -s main -c "$HOME"' \
                 '\ntvar="$(tmux list-sessions | grep main)"\nsh -c ' \
                 '"$HOME/.local/share/zsh/theme.sh"\nif grep -q attached <<< "$tvar" && ' \
-                'pgrep "$TERMX"; then\n  tmux neww -t=main -c "$@"' \
+                'pgrep "$TERMX"; then\n  tmux neww -t=main -c "$@"\n  "$TERMX" -e tmux a' \
                 '\nelif [[ -n "$tvar" && -z "$*" && -z "$TERMX_NAUTILUS" ]] && '\
-                '! pgrep "$TERMX"; then\n  "$TERMX"\nelse\n  tmux neww -t=main -c "$@"' \
-                '\n  "$TERMX"\nfi' | sudo tee '/usr/local/bin/xterm' >/dev/null
+                '! pgrep "$TERMX"; then\n  "$TERMX" -e tmux a\nelse\n  tmux neww -t=main -c "$@"' \
+                '\n  "$TERMX" -e tmux a\nfi' | sudo tee '/usr/local/bin/xterm' >/dev/null
 
               sudo chmod +x '/usr/local/bin/xterm'
 
