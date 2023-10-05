@@ -587,9 +587,9 @@ arch-base() {
             [[ $tmuxprefix =~ '^[yY]' ]] && echo 'Enter a modifier [C/M]:' && read tmuxmod \
               && echo 'Enter a char:' && read tmuxbind
 
-            [[ -n $tmuxbind ]] && echo "# remap prefix from C-b to $tmuxmod-$tmuxbind\n" \
-              "unbind C-b\nset-option -g prefix $tmuxmod-$tmuxbind\n" \
-              "bind-key $tmuxmod-$tmuxbind send-prefix" >> "$XDG_CONFIG_HOME/tmux/tmux.conf"
+            [[ -n $tmuxbind ]] && echo "# remap prefix from C-b to $tmuxmod-$tmuxbind" \
+              "\nunbind C-b\nset-option -g prefix $tmuxmod-$tmuxbind" \
+              "\nbind-key $tmuxmod-$tmuxbind send-prefix" >> "$XDG_CONFIG_HOME/tmux/tmux.conf"
           fi
 
           # Wezterm config
