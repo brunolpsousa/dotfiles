@@ -559,12 +559,12 @@ arch-base() {
               [[ $xtermVar =~ '^[yY]' ]] && sudo rm -i '/usr/local/bin/xterm'
             fi
             if [[ ! -f '/usr/local/bin/xterm' ]] && command -v tmux >/dev/null; then
-              echo '#!/usr/bin/env bash\nTERMX="alacritty"' \
+              echo '#!/usr/bin/env bash\n\nTERMX="alacritty"' \
                 '\n[[ -n "$ZSH_TMUX_STARTED" ]] || tmux new-session -d -s main -c "$HOME"' \
-                '\ntvar="$(tmux list-sessions | grep main)"\nsh -c ' \
-                '"$HOME/.local/share/zsh/theme.sh"\nif grep -q attached <<< "$tvar" && ' \
-                'pgrep "$TERMX"; then\n  tmux neww -t=main -c "$@"\n  "$TERMX" -e tmux a' \
-                '\nelif [[ -n "$tvar" && -z "$*" && -z "$TERMX_NAUTILUS" ]] && '\
+                '\ntvar="$(tmux list-sessions | grep main)"\nsh -c' \
+                '"$HOME/.local/share/zsh/theme.sh"\n\nif grep -q attached <<< "$tvar" &&' \
+                'pgrep "$TERMX"; then\n  tmux neww -t=main -c "$@"' \
+                '\nelif [[ -n "$tvar" && -z "$*" && -z "$TERMX_NAUTILUS" ]] &&'\
                 '! pgrep "$TERMX"; then\n  "$TERMX" -e tmux a\nelse\n  tmux neww -t=main -c "$@"' \
                 '\n  "$TERMX" -e tmux a\nfi' | sudo tee '/usr/local/bin/xterm' >/dev/null
 
