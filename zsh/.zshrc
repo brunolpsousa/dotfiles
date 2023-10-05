@@ -427,19 +427,21 @@ else
     >> "$HOME/.alert"
 fi
 #--------------------------------------------------------------------------------------------------#
+############################################### Tmux ###############################################
+#--------------------------------------------------------------------------------------------------#
 # If tmux is executable and not already inside a session:
-if command -v tmux >/dev/null && [[ -z $TMUX && -z $ZSH_TMUX_STARTED ]]; then
-  tvar="$(tmux list-sessions &>/dev/null | grep main)"
-  export ZSH_TMUX_STARTED=1
-  if grep -q attached <<< "$tvar"; then
-    tmux neww -t=main -c "$PWD" && tmux a -t=main
-  elif [[ -n $tvar ]]; then
-    tmux a -t=main
-  else
-    tmux new -As main -c "$PWD"
-  fi
-  unset tvar && NEW_LINE_BEFORE_PROMPT=1
-fi
+# if command -v tmux >/dev/null && [[ -z $TMUX && -z $ZSH_TMUX_STARTED ]]; then
+#   tvar="$(tmux list-sessions &>/dev/null | grep main)"
+#   export ZSH_TMUX_STARTED=1
+#   if grep -q attached <<< "$tvar"; then
+#     tmux neww -t=main -c "$PWD" && tmux a -t=main
+#   elif [[ -n $tvar ]]; then
+#     tmux a -t=main
+#   else
+#     tmux new -As main -c "$PWD"
+#   fi
+#   unset tvar && NEW_LINE_BEFORE_PROMPT=1
+# fi
 #--------------------------------------------------------------------------------------------------#
 ############################################## Aliases #############################################
 #--------------------------------------------------------------------------------------------------#
