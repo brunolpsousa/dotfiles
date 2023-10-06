@@ -28,12 +28,24 @@ isDark=$(
 ch_alacritty() {
   [[ -f "$alacritty_config" ]] && command -vp alacritty >/dev/null || return
 
-  if [[ -z $isDark ]]; then
+  light_mode() {
     sed -i "s/dark/light/" "$alacritty_config"
+  }
+  dark_mode() {
+    sed -i "s/light/dark/" "$alacritty_config"
+  }
+
+  if [[ -n $1 ]]; then
+    if [[ -n $isDark ]]; then light_mode; else dark_mode; fi
     return
   fi
 
-  sed -i "s/light/dark/" "$alacritty_config"
+  if [[ -z $isDark ]]; then
+    light_mode
+    return
+  fi
+
+  dark_mode
 }
 
 ch_tmux() {
@@ -45,7 +57,7 @@ ch_tmux() {
     sed -i "s/\(status-style fg=colour\)235/\1254/g" "$tmux_config"
   fi
 
-  pgrep "tmux" || return
+  pgrep "tmux" >/dev/null || return
   tmux source-file "$tmux_config"
 }
 
@@ -56,32 +68,47 @@ send_sig_to_editor() {
     EDITOR='vim'
   fi
 
-  pgrep "$EDITOR" || return
+  pgrep "$EDITOR" >/dev/null || return
   killall -SIGWINCH "$EDITOR"
 }
 
-ch_plasma() {
-  command -vp plasmashell >/dev/null || return
+ch_system() {
+  light_mode() {
+    unset isDark
+    gsettings set org.gnome.desktop.interface color-scheme "default"
+    if command -vp plasmashell >/dev/null; then
+      plasma-apply-colorscheme BreezeLight
+      plasma-apply-desktoptheme breeze-light
+      plasma-apply-lookandfeel -a org.kde.breeze.desktop
+      plasma-apply-cursortheme Breeze_Snow
+    fi
+  }
+  dark_mode() {
+    isDark="dark"
+    gsettings set org.gnome.desktop.interface color-scheme "prefer-dark"
+    if command -vp plasmashell >/dev/null; then
+      plasma-apply-colorscheme BreezeDark
+      plasma-apply-desktoptheme breeze-dark
+      plasma-apply-lookandfeel -a org.kde.breezedark.desktop
+      plasma-apply-cursortheme Breeze_Snow
+    fi
+  }
+
+  if [[ -n $1 ]]; then
+    if [[ -n $isDark ]]; then light_mode; else dark_mode; fi
+    return
+  fi
 
   local hour
   hour="$(date '+%H' | sed -E 's/^0//')"
-
   if (("$hour" >= 6 && "$hour" < 17)); then
-    plasma-apply-colorscheme BreezeLight
-    plasma-apply-desktoptheme breeze-light
-    plasma-apply-lookandfeel -a org.kde.breeze.desktop
-    plasma-apply-cursortheme Breeze_Snow
-    unset isDark
+    [[ -z $1 ]] || light_mode
   else
-    plasma-apply-colorscheme BreezeDark
-    plasma-apply-desktoptheme breeze-dark
-    plasma-apply-lookandfeel -a org.kde.breezedark.desktop
-    plasma-apply-cursortheme Breeze_Snow
-    isDark="dark"
+    [[ -z $1 ]] || dark_mode
   fi
 }
 
-ch_plasma
-ch_alacritty
+ch_system "$@"
+ch_alacritty "$@"
 ch_tmux
 send_sig_to_editor
