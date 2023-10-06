@@ -18,7 +18,7 @@ isDark=$(
   for _ in {1..5}; do
     if [[ -n $isDark ]]; then break; fi
     systemctl --user restart xdg-desktop-portal
-    sleep 0.5
+    sleep 0.2
     isDark=$(get_bg)
   done
   result=${isDark::1}
@@ -28,24 +28,12 @@ isDark=$(
 ch_alacritty() {
   [[ -f "$alacritty_config" ]] && command -vp alacritty >/dev/null || return
 
-  light_mode() {
-    sed -i "s/dark/light/" "$alacritty_config"
-  }
-  dark_mode() {
-    sed -i "s/light/dark/" "$alacritty_config"
-  }
-
-  if [[ -n $1 ]]; then
-    if [[ -n $isDark ]]; then light_mode; else dark_mode; fi
-    return
-  fi
-
   if [[ -z $isDark ]]; then
-    light_mode
+    sed -i "s/dark/light/" "$alacritty_config"
     return
   fi
 
-  dark_mode
+  sed -i "s/light/dark/" "$alacritty_config"
 }
 
 ch_tmux() {
@@ -76,6 +64,7 @@ ch_system() {
   light_mode() {
     unset isDark
     gsettings set org.gnome.desktop.interface color-scheme "default"
+    gsettings set org.gnome.desktop.interface gtk-theme "Adwaita"
     if command -vp plasmashell >/dev/null; then
       plasma-apply-colorscheme BreezeLight
       plasma-apply-desktoptheme breeze-light
@@ -86,6 +75,7 @@ ch_system() {
   dark_mode() {
     isDark="dark"
     gsettings set org.gnome.desktop.interface color-scheme "prefer-dark"
+    gsettings set org.gnome.desktop.interface gtk-theme "Adwaita-dark"
     if command -vp plasmashell >/dev/null; then
       plasma-apply-colorscheme BreezeDark
       plasma-apply-desktoptheme breeze-dark
@@ -102,13 +92,13 @@ ch_system() {
   local hour
   hour="$(date '+%H' | sed -E 's/^0//')"
   if (("$hour" >= 6 && "$hour" < 17)); then
-    [[ -n $1 ]] || light_mode
+    light_mode
   else
-    [[ -n $1 ]] || dark_mode
+    dark_mode
   fi
 }
 
 ch_system "$@"
-ch_alacritty "$@"
+ch_alacritty
 ch_tmux
 send_sig_to_editor
