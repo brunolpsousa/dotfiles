@@ -102,9 +102,9 @@ ch_system() {
   local hour
   hour="$(date '+%H' | sed -E 's/^0//')"
   if (("$hour" >= 6 && "$hour" < 17)); then
-    [[ -z $1 ]] || light_mode
+    [[ -n $1 ]] || light_mode
   else
-    [[ -z $1 ]] || dark_mode
+    [[ -n $1 ]] || dark_mode
   fi
 }
 
