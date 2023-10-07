@@ -93,9 +93,12 @@ ch_system() {
     return
   fi
 
-  local hour
+  local hour minutes
   hour="$(date '+%H' | sed -E 's/^0//')"
-  if (("$hour" >= 6 && "$hour" < 17)); then
+  minutes="$(date '+%M' | sed -E 's/^0//')"
+  if (("$hour" == 6 && "$minutes" >= 35 ||
+      "$hour" == 17 && "$minutes" <= 45 ||
+      "$hour" > 6 && "$hour" < 17)); then
     light_mode
   else
     dark_mode
