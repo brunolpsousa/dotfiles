@@ -551,29 +551,6 @@ arch-base() {
 
             chmod +x "$XDG_DATA_HOME/zsh/theme.sh"
             sh -c "$XDG_DATA_HOME/zsh/theme.sh"
-
-            if [[ -f '/usr/local/bin/xterm' ]]; then
-              local xtermVar
-              echo && ls -lh '/usr/local/bin/xterm' && echo && cat '/usr/local/bin/xterm' && echo
-              echo "Do you wish to delete xterm to install Alacritty tweak? [y/N]" && read xtermVar
-              [[ $xtermVar =~ '^[yY]' ]] && sudo rm -i '/usr/local/bin/xterm'
-            fi
-            if [[ ! -f '/usr/local/bin/xterm' ]] && command -v tmux >/dev/null; then
-              echo '#!/usr/bin/env bash\n\nTERMX="alacritty"' \
-                '\n[[ -n "$ZSH_TMUX_STARTED" ]] || tmux new-session -d -s main -c "$HOME"' \
-                '\ntvar="$(tmux list-sessions | grep main)"\nsh -c' \
-                '"$HOME/.local/share/zsh/theme.sh"\n\nif grep -q attached <<< "$tvar" &&' \
-                'pgrep "$TERMX"; then\n  tmux neww -t=main -c "$@"' \
-                '\nelif [[ -n "$tvar" && -z "$*" && -z "$TERMX_NAUTILUS" ]] &&'\
-                '! pgrep "$TERMX"; then\n  "$TERMX" -e tmux a\nelse\n  tmux neww -t=main -c "$@"' \
-                '\n  "$TERMX" -e tmux a\nfi' | sudo tee '/usr/local/bin/xterm' >/dev/null
-
-              sudo chmod +x '/usr/local/bin/xterm'
-
-              [[ ! -f '/bin/xterm' ]] || echo "$(date '+%Y-%m-%d %H:%M:%S') - " \
-                "Warning: /bin/xterm exists and overlaps with /usr/local/bin/xterm" \
-                >> "$HOME/.alert"
-            fi
           fi
 
           # Tmux config
@@ -601,24 +578,25 @@ arch-base() {
 
             case $(lscpu | awk '/Model name:/{print $3}') in
               Intel\(R\))
-                sed -i 's/\(initial_cols = \)148/\1112/g; s/\(initial_rows = \)40/\130/g' \
+                sed -i 's/\(initial_cols = \)166/\1112/g; s/\(initial_rows = \)48/\130/g' \
                 "$XDG_CONFIG_HOME/wezterm/wezterm.lua";;
             esac
+          fi
 
-            if [[ -f '/usr/local/bin/xterm' ]]; then
-              echo && ls -lh '/usr/local/bin/xterm' && echo && cat '/usr/local/bin/xterm' && echo
-              echo "Do you wish to delete xterm to install Wezterm tweak? [y/N]" && read xtermVar
-              [[ $xtermVar =~ '^[yY]' ]] && sudo rm -i '/usr/local/bin/xterm'
-            fi
-            if [[ ! -f '/usr/local/bin/xterm' ]]; then
-              echo '#!/usr/bin/env bash\nwezterm start --cwd "$PWD" "$@"' | \
-                sudo tee '/usr/local/bin/xterm' >/dev/null
-              sudo chmod +x '/usr/local/bin/xterm'
+          # Xterm config
+          if [[ -f '/usr/local/bin/xterm' ]] && ! grep -q tmux_xterm '/usr/local/bin/xterm'; then
+            echo && ls -lh '/usr/local/bin/xterm' && echo && cat '/usr/local/bin/xterm' && echo
+            echo "Do you wish to delete xterm? [y/N]" && read xtermVar
+            [[ $xtermVar =~ '^[yY]' ]] && sudo rm -i '/usr/local/bin/xterm'
+          fi
+          if [[ ! -f '/usr/local/bin/xterm' ]]; then
+            echo '#!/usr/bin/env bash\nzsh "$HOME/.config/zsh/.zshrc" tmux_xterm "$@"' | \
+              sudo tee '/usr/local/bin/xterm' >/dev/null
+            sudo chmod +x '/usr/local/bin/xterm'
 
-              [[ ! -f '/bin/xterm' ]] || echo "$(date '+%Y-%m-%d %H:%M:%S') - " \
-                "Warning: /bin/xterm exists and overlaps with /usr/local/bin/xterm" \
-                >> "$HOME/.alert"
-            fi
+            [[ ! -f '/bin/xterm' ]] || echo "$(date '+%Y-%m-%d %H:%M:%S') - " \
+              "Warning: /bin/xterm exists and overlaps with /usr/local/bin/xterm" \
+              >> "$HOME/.alert"
           fi
 
           # mpv config

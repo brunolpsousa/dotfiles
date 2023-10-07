@@ -57,8 +57,6 @@ SSH_AUTH_SOCK="${XDG_RUNTIME_DIR}/gnupg/S.gpg-agent.ssh"
 systemctl $s_local import-environment EDITOR VISUAL \
   XDG_CACHE_HOME XDG_CONFIG_HOME XDG_DATA_HOME XDG_STATE_HOME LS_COLORS MOZ_ENABLE_WAYLAND \
   QT_QPA_PLATFORM QT_QPA_PLATFORMTHEME GTK_USE_PORTAL 2>/dev/null; unset s_local
-
-[[ $- == *i* ]] || return
 #--------------------------------------------------------------------------------------------------#
 ############################################## General #############################################
 #--------------------------------------------------------------------------------------------------#
@@ -429,6 +427,34 @@ fi
 #--------------------------------------------------------------------------------------------------#
 ############################################### Tmux ###############################################
 #--------------------------------------------------------------------------------------------------#
+tmux_xterm() {
+  sh -c "$XDG_DATA_HOME/zsh/theme.sh" 2>/dev/null
+
+  if command -vp alacritty >/dev/null && command -vp tmux >/dev/null; then
+    tmux new-session -d -s main -c "$HOME" 2>/dev/null
+    local tmux_main_session="$(tmux list-sessions | grep main)"
+    if grep -q attached <<< "$tmux_main_session" && pgrep alacritty; then
+      local tmux_alt_session="$(tmux list-sessions | grep alt)"
+      if [[ -z $tmux_alt_session ]]; then
+        tmux new-session -d -s alt -c "$@"
+        alacritty -e tmux a -t=alt
+      else
+        tmux neww -t=alt -c "$PWD" && tmux a -t=alt
+      fi
+    elif [[ -n "$tmux_main_session" && -z "$*" && -z "$TERMX_NAUTILUS" ]] && ! pgrep alacritty; then
+      alacritty -e tmux a -t=main
+    else
+      tmux neww -t=main -c "$@"
+      alacritty -e tmux a -t=main
+    fi
+  elif command -vp alacritty >/dev/null; then
+    alacritty
+  elif command -vp wezterm >/dev/null; then
+    wezterm start --cwd "$PWD" "$@"
+  fi
+}
+"$@"
+
 tmux_attach() {
   if command -v tmux >/dev/null; then
     tvar="$(tmux list-sessions &>/dev/null | grep main)"
