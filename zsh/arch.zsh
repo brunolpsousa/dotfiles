@@ -321,6 +321,13 @@ arch-base() {
           if command -v flatpak >/dev/null; then
             echo '\e[31mwarning:\033[0m flatpak is installed'
           fi
+
+          if command -v brave >/dev/null && ! grep -q MiddleClickAutoscroll \
+            "$XDG_DATA_HOME/applications/brave-browser.desktop" 2>/dev/null; then
+            command cp /usr/share/applications/brave-browser.desktop "$XDG_DATA_HOME/applications"
+            sed -i 's/\(Exec=brave\)/\1 --enable-blink-features=MiddleClickAutoscroll/' \
+              "$XDG_DATA_HOME/share/applications/brave-browser.desktop"
+          fi
         fi
 
         if [[ "$EUID" != 0 ]]; then
