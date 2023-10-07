@@ -62,9 +62,11 @@ send_sig_to_editor() {
 
 ch_system() {
   light_mode() {
-    unset isDark
-    gsettings set org.gnome.desktop.interface color-scheme "default"
-    gsettings set org.gnome.desktop.interface gtk-theme "Adwaita"
+    if ! command -vp gnome-shell >/dev/null; then
+      unset isDark
+      gsettings set org.gnome.desktop.interface color-scheme "default"
+      gsettings set org.gnome.desktop.interface gtk-theme "Adwaita"
+    fi
     if command -vp plasmashell >/dev/null; then
       plasma-apply-colorscheme BreezeLight
       plasma-apply-desktoptheme breeze-light
@@ -73,9 +75,11 @@ ch_system() {
     fi
   }
   dark_mode() {
-    isDark="dark"
-    gsettings set org.gnome.desktop.interface color-scheme "prefer-dark"
-    gsettings set org.gnome.desktop.interface gtk-theme "Adwaita-dark"
+    if ! command -vp gnome-shell >/dev/null; then
+      isDark="dark"
+      gsettings set org.gnome.desktop.interface color-scheme "prefer-dark"
+      gsettings set org.gnome.desktop.interface gtk-theme "Adwaita-dark"
+    fi
     if command -vp plasmashell >/dev/null; then
       plasma-apply-colorscheme BreezeDark
       plasma-apply-desktoptheme breeze-dark
