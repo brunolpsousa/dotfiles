@@ -39,7 +39,7 @@ ch_alacritty() {
 ch_tmux() {
   [[ -f "$tmux_config" ]] && command -vp tmux >/dev/null || return
 
-  if grep -q "[lL]ight" "$alacritty_config" && command -vp alacritty >/dev/null; then
+  if [[ -z $isDark ]] && (pgrep alacritty || pgrep wezterm); then
     sed -i "s/\(status-style fg=colour\)254/\1235/g" "$tmux_config"
   else
     sed -i "s/\(status-style fg=colour\)235/\1254/g" "$tmux_config"
