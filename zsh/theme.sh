@@ -40,9 +40,13 @@ ch_tmux() {
   [[ -f "$tmux_config" ]] && command -vp tmux >/dev/null || return
 
   if [[ -z $isDark ]] && (pgrep alacritty >/dev/null || pgrep wezterm >/dev/null); then
-    sed -i "s/\(status-style fg=colour\)254/\1235/g" "$tmux_config"
+    sed -i 's/\(status-style fg=colour\)254/\1235/;
+    s/\(message-style fg=colour\)254/\1235/;
+    /message-style/ s/\(bg=colour\)235/\1254/' "$tmux_config"
   else
-    sed -i "s/\(status-style fg=colour\)235/\1254/g" "$tmux_config"
+    sed -i 's/\(status-style fg=colour\)235/\1254/;
+    s/\(message-style fg=colour\)235/\1254/;
+    /message-style/ s/\(bg=colour\)254/\1235/' "$tmux_config"
   fi
 
   pgrep "tmux" >/dev/null || return
