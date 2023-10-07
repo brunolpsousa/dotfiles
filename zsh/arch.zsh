@@ -325,23 +325,54 @@ arch-base() {
 
         if [[ "$EUID" != 0 ]]; then
           if [[ "$flatpk" =~ '^[yY]' ]] && command -v flatpak >/dev/null; then
-            local qbt-tray='qbittorrent/qBittorrent/master/src/icons/qbittorrent-tray.svg'
             command mkdir -p "$XDG_DATA_HOME/icons"
+            command mkdir -p "$XDG_DATA_HOME/flatpak/exports/share/applications"
+            local qbt_tray='qbittorrent/qBittorrent/master/src/icons/qbittorrent-tray.svg'
 
-            fetch "https://raw.githubusercontent.com/${qbt-tray}" \
+            fetch "https://raw.githubusercontent.com/${qbt_tray}" \
               > "$XDG_DATA_HOME/icons/qbittorrent-tray.png"
 
             flatpak install \
-              io.neovim.nvim org.freedesktop.Sdk.Extension.node18 \
               org.mozilla.firefox org.freedesktop.Platform.ffmpeg-full com.brave.Browser \
               io.mpv.Mpv org.qbittorrent.qBittorrent com.valvesoftware.Steam
-            flatpak override -u --env=FLATPAK_ENABLE_SDK_EXT=node18 io.neovim.nvim
 
-            [[ ! -x /usr/bin/rg ]] || $use_sudo sh -c \
-              "command cp /usr/bin/rg /var/lib/flatpak/app/io.neovim.nvim/current/active/files/bin"
+            if ! grep -q MiddleClickAutoscroll \
+              "$XDG_DATA_HOME/flatpak/exports/share/applications/com.brave.Browser.desktop" \
+              2>/dev/null; then
+              command cp \
+                '/var/lib/flatpak/app/com.brave.Browser/current/active/export/share/applications/com.brave.Browser.desktop' \
+                "$XDG_DATA_HOME/flatpak/exports/share/applications/"
+
+              sed -i \
+                's/\(\@\@u\)/\1 --enable-blink-features=MiddleClickAutoscroll/' \
+                "$XDG_DATA_HOME/flatpak/exports/share/applications/com.brave.Browser.desktop"
+            fi
+
+            if ! grep -q "sh -c" \
+              "$XDG_DATA_HOME/flatpak/exports/share/applications/com.valvesoftware.Steam.desktop" \
+              2>/dev/null; then
+              command cp \
+                '/var/lib/flatpak/app/com.valvesoftware.Steam/current/active/export/share/applications/com.valvesoftware.Steam.desktop' \
+                "$XDG_DATA_HOME/flatpak/exports/share/applications/"
+
+              sed -i \
+                's/\(Exec=\)\/usr\/bin\/flatpak/\1sh -c "rm ~\/.var\/app\/com.valvesoftware.Steam\/{Musics,Pictures}; \/usr\/bin\/flatpak/;
+                  /Exec=sh/ s/$/"/' \
+                "$XDG_DATA_HOME/flatpak/exports/share/applications/com.valvesoftware.Steam.desktop"
+            fi
+
+            echo 'Do you wish to install Flatpak Neovim [y/N]?' && read flpk_nvim
+            if [[ "$flpk_nvim" =~ '^[yY]' ]]; then
+              flatpak install io.neovim.nvim org.freedesktop.Sdk.Extension.node18
+              flatpak override -u --env=FLATPAK_ENABLE_SDK_EXT=node18 io.neovim.nvim
+              [[ ! -x /usr/bin/rg ]] || $use_sudo sh -c \
+                "command cp /usr/bin/rg /var/lib/flatpak/app/io.neovim.nvim/current/active/files/bin"
+            else
+              sudo pacman -S --needed neovim npm
+            fi
+            unset flpk_nvim
           else
-            sudo pacman -S --needed \
-              neovim npm firefox mpv steam qbittorrent qt6-wayland
+            sudo pacman -S --needed firefox mpv steam qbittorrent qt6-wayland
             command npm config set audit=false fund=false progress=off install-strategy=shallow
           fi
 
