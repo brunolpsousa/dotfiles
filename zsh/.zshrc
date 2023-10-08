@@ -448,7 +448,7 @@ tmux_xterm() {
       alacritty -e tmux a -t=main
     fi
   elif command -vp alacritty >/dev/null; then
-    alacritty
+    alacritty "$@"
   elif command -vp wezterm >/dev/null; then
     wezterm start --cwd "$PWD" "$@"
   fi
@@ -457,7 +457,7 @@ tmux_xterm() {
 
 tmux_attach() {
   if command -v tmux >/dev/null; then
-    tvar="$(tmux list-sessions &>/dev/null | grep main)"
+    local tvar="$(tmux list-sessions &>/dev/null | grep main)"
     if grep -q attached <<< "$tvar"; then
       tmux neww -t=main -c "$PWD" && tmux a -t=main
     elif [[ -n $tvar ]]; then
