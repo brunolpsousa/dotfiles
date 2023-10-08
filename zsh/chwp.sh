@@ -24,6 +24,18 @@ while true; do
   for i in $index; do
     [[ -f ${wallpapers[$i]} ]] || break
 
+    while true; do
+      suspend_list=(steam)
+      keep_suspend=0
+      for s in "${suspend_list[@]}"; do
+        if pgrep "$s" >/dev/null; then
+          sleep 15m
+          keep_suspend=1
+        fi
+      done
+      [[ $keep_suspend == 0 ]] && break
+    done
+
     hour="$(date '+%H' | sed -r 's/^0//')"
     if (("$hour" >= 7 && "$hour" < 19)) && [[ "${wallpapers[$i]}" =~ nsfw|NSFW ]]; then
       continue
