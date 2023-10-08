@@ -583,7 +583,7 @@ arch-base() {
               > "$XDG_DATA_HOME/zsh/theme.sh"
 
             case $(lscpu | awk '/Model name:/{print $3}') in Intel\(R\)) sed -i \
-              's/\(columns: \)146/\1115/g; s/\(lines: \)45/\132/g' \
+              's/\(columns: \)156/\1115/g; s/\(lines: \)48/\132/g' \
               "$XDG_CONFIG_HOME/alacritty/alacritty.yml";;
             esac
 
