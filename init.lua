@@ -55,7 +55,7 @@ keymap("v", "<A-j>", ":m'>+1<CR>gv=gv", { silent = true, desc = "Move line down"
 keymap("v", "<A-k>", ":m'<-2<CR>gv=gv", { silent = true, desc = "Move line up" })
 
 keymap("v", "p", "P", { desc = "Paste" })
-keymap("v", "<leader>d", '"+ygvd', { desc = "Delete to clipboard" })
+keymap({ "n", "v" }, "<leader>d", '"+d', { desc = "Delete to clipboard" })
 keymap({ "n", "v" }, "<leader>y", '"+y', { desc = "Yank to clipboard" })
 keymap({ "n", "v" }, "<leader>p", '"+p', { desc = "Paste from clipboard" })
 keymap({ "n", "v" }, "<leader>P", '"+P', { desc = "Paste from clipboard" })
