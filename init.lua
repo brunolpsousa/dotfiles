@@ -178,7 +178,7 @@ vim.api.nvim_create_autocmd({ "BufWritePre" }, {
 -- Go to last loc when opening a buffer
 vim.api.nvim_create_autocmd("BufReadPost", {
 	callback = function()
-		local exclude = { "gitcommit" }
+		local exclude = { "diff", "gitcommit" }
 		local buf = vim.api.nvim_get_current_buf()
 		if vim.tbl_contains(exclude, vim.bo[buf].filetype) then
 			return
@@ -205,19 +205,32 @@ local function lsp_format(async, bufnr)
 	})
 end
 
-vim.api.nvim_create_user_command("LspFormat", function()
-	lsp_format(true)
-end, {})
+local format_on_save = true
+local function toggle_format_on_save()
+	format_on_save = not format_on_save
+end
 
 vim.api.nvim_create_autocmd({ "BufWritePre" }, {
 	callback = function()
-		local exclude = { "diff" }
+		local exclude = { "diff", "gitcommit", "tsconfig.json" }
 		local buf = vim.api.nvim_get_current_buf()
+
 		if vim.tbl_contains(exclude, vim.bo[buf].filetype) then
 			return
 		end
 
+		local bufname = vim.api.nvim_buf_get_name(buf)
+		for _, e in pairs(exclude) do
+			if bufname:find(e) then
+				format_on_save = false
+			end
+		end
+
 		local pos = vim.api.nvim_win_get_cursor(0)
+
+		if format_on_save then
+			lsp_format()
+		end
 
 		-- Trim whitespaces
 		vim.cmd([[:silent %s/\s\+$//e]])
@@ -1035,7 +1048,6 @@ if pcall(require, "lazy") then
 						require("which-key").register({
 							l = {
 								name = "LSP",
-								f = { "<cmd>LspFormat<CR>", "Format" },
 								r = { vim.lsp.buf.rename, "Rename" },
 								h = { vim.lsp.buf.signature_help, "Signature Help" },
 								a = { vim.lsp.buf.code_action, "Code Action" },
@@ -1469,7 +1481,9 @@ if pcall(require, "lazy") then
 					},
 					l = {
 						name = "LSP",
-						f = { "<cmd>LspFormat<CR>", "Format" },
+						-- stylua: ignore
+						f = { function() lsp_format(true) end, "Format", },
+						V = { toggle_format_on_save, "Toggle format on save" },
 					},
 					r = {
 						name = "Session",
