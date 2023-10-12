@@ -3,43 +3,46 @@ local act = wez.action
 local isDark = wez.gui.get_appearance():find("Dark")
 
 local colors = {
-	rosewater = "#f5e0dc",
-	flamingo = "#f2cdcd",
-	pink = "#f5c2e7",
-	mauve = "#cba6f7",
-	red = "#f38ba8",
-	maroon = "#eba0ac",
-	peach = "#fab387",
-	yellow = "#f9e2af",
-	green = "#a6e3a1",
-	teal = "#94e2d5",
-	sapphire = "#74c7ec",
-	blue = "#89b4fa",
-	lavender = "#b4befe",
-
-	text = "#cdd6f4",
-	subtext1 = "#bac2de",
-	subtext0 = "#a6adc8",
-	overlay2 = "#9399b2",
-	overlay1 = "#7f849c",
-	overlay0 = "#6c7086",
-	surface2 = "#585b70",
-	surface1 = "#45475a",
-	surface0 = "#313244",
-
 	dark = {
-		theme = "Dracula",
+		theme = "Dracula (Official)",
 		in_brightness = 0.75,
 
+		rosewater = "#f5e0dc",
+		flamingo = "#f2cdcd",
+		pink = "#f5c2e7",
+		mauve = "#cba6f7",
+		red = "#f38ba8",
+		maroon = "#eba0ac",
+		peach = "#fab387",
+		yellow = "#f9e2af",
+		green = "#a6e3a1",
+		teal = "#94e2d5",
 		sky = "#89dceb",
-		cursor_fg = "#11111b",
+		sapphire = "#74c7ec",
+		blue = "#89b4fa",
+		lavender = "#b4befe",
+
+		text = "#cdd6f4",
+		subtext1 = "#bac2de",
+		subtext0 = "#a6adc8",
+		overlay2 = "#9399b2",
+		overlay1 = "#7f849c",
+		overlay0 = "#6c7086",
+		surface2 = "#585b70",
+		surface1 = "#45475a",
+		surface0 = "#313244",
+
+		base = "#1e1e2e",
+		mantle = "#181825",
+		crust = "#11111b",
+
 		ac_title_bg = "#1A1B26",
 		ac_title_fg = "#f8f8f2",
 		inac_title_bg = "#2b2042",
 		inac_title_fg = "#cccccc",
 		ac_title_border = "#2b2042",
 		inac_title_border = "#2b2042",
-		button_bg = "#1A1B26",
+		button_bg = "#1a1b26",
 		button_fg = "#cccccc",
 		button_hover_bg = "#3b3052",
 		button_hover_fg = "#f8f8f2",
@@ -50,18 +53,42 @@ local colors = {
 		tab_inac_fg = "#a9b1d6",
 		tab_btn_bg = "#282a36",
 		tab_btn_fg = "#f8f8f2",
-		crust = "#11111b",
-		mantle = "#181825",
-		base = "#1e1e2e",
 	},
 
 	light = {
 		theme = "Catppuccin Latte",
 		in_brightness = 0.85,
 
-		sky = "#041A40",
-		cursor_fg = "#f5e0dc",
-		ac_title_bg = "#eff1f5",
+		rosewater = "#dc8a78",
+		flamingo = "#dd7878",
+		pink = "#ea76cb",
+		mauve = "#8839ef",
+		red = "#d20f39",
+		maroon = "#e64553",
+		peach = "#fe640b",
+		yellow = "#df8e1d",
+		green = "#40a02b",
+		teal = "#179299",
+		sky = "#04a5e5",
+		sapphire = "#209fb5",
+		blue = "#1e66f5",
+		lavender = "#7287fd",
+
+		text = "#4c4f69",
+		subtext1 = "#5c5f77",
+		subtext0 = "#6c6f85",
+		overlay2 = "#7c7f93",
+		overlay1 = "#8c8fa1",
+		overlay0 = "#9ca0b0",
+		surface2 = "#acb0be",
+		surface1 = "#bcc0cc",
+		surface0 = "#ccd0da",
+
+		base = "#eff1f5",
+		mantle = "#e6e9ef",
+		crust = "#dce0e8",
+
+		ac_title_bg = "#eff9f5",
 		ac_title_fg = "#041A40",
 		inac_title_bg = "#dce0e8",
 		inac_title_fg = "#4c4f69",
@@ -69,7 +96,7 @@ local colors = {
 		inac_title_border = "#dce0e8",
 		button_bg = "#eff1f5",
 		button_fg = "#3b3052",
-		button_hover_bg = "#3b3052",
+		button_hover_bg = "#7287fd",
 		button_hover_fg = "#f8f8f2",
 		tab_bg = "#e6e9ef",
 		tab_ac_bg = "#eff1f5",
@@ -78,13 +105,10 @@ local colors = {
 		tab_inac_fg = "#3b3052",
 		tab_btn_bg = "#e6e9ef",
 		tab_btn_fg = "#3b3052",
-		crust = "#dce0e8",
-		mantle = "#e6e9ef",
-		base = "#eff1f5",
 	},
 }
 
-local color = isDark and colors.dark or colors.light
+colors = isDark and colors.dark or colors.light
 
 local function get_process(tab)
 	local process_icons = {
@@ -164,7 +188,7 @@ local function get_process(tab)
 
 	local process_name = string.gsub(tab.active_pane.foreground_process_name, "(.*[/\\])(.*)", "%2")
 	local function process_func()
-		local process_string = { { Foreground = { Color = color.sky } }, { Text = string.format("%s", process_name) } }
+		local process_string = { { Foreground = { Color = colors.sky } }, { Text = string.format("%s", process_name) } }
 		if string.format("%s", process_name) == "" then
 			return process_icons["zsh"]
 		else
@@ -189,7 +213,7 @@ wez.on("format-tab-title", function(tab)
 		{ Text = get_process(tab) },
 		{ Text = " " },
 		{ Text = get_current_working_dir(tab) },
-		{ Foreground = { Color = color.base } },
+		{ Foreground = { Color = colors.base } },
 		{ Text = "  ▕" },
 	})
 end)
@@ -219,37 +243,36 @@ return {
 	enable_scroll_bar = false,
 	audible_bell = "Disabled",
 	ssh_domains = ssh_domains,
+	warn_about_missing_glyphs = false,
 	font = wez.font_with_fallback({ {
 		family = "JetBrainsMono Nerd Font Mono",
 		weight = "Medium",
 	} }),
-	freetype_load_target = "Light",
-	freetype_render_target = "HorizontalLcd",
 	font_size = 10,
 	line_height = 1.0,
 	tab_bar_at_bottom = true,
 	use_fancy_tab_bar = false,
 	show_new_tab_button_in_tab_bar = false,
 	hide_tab_bar_if_only_one_tab = true,
-	window_background_opacity = 0.9,
+	window_background_opacity = 0.95,
 	foreground_text_hsb = {
 		hue = 1.0,
 		saturation = 1.0,
 		brightness = 1.0,
 	},
 	window_frame = {
-		active_titlebar_bg = color.ac_title_bg,
-		active_titlebar_fg = color.ac_title_fg,
-		inactive_titlebar_bg = color.inac_title_bg,
-		inactive_titlebar_fg = color.inac_title_fg,
-		active_titlebar_border_bottom = color.ac_title_border,
-		inactive_titlebar_border_bottom = color.inac_title_border,
-		button_bg = color.button_bg,
-		button_fg = color.button_fg,
-		button_hover_bg = color.button_hover_bg,
-		button_hover_fg = color.button_hover_fg,
-		font = wez.font("Noto Sans", { weight = "Regular" }),
-		font_size = 10,
+		active_titlebar_bg = colors.ac_title_bg,
+		active_titlebar_fg = colors.ac_title_fg,
+		inactive_titlebar_bg = colors.inac_title_bg,
+		inactive_titlebar_fg = colors.inac_title_fg,
+		active_titlebar_border_bottom = colors.ac_title_border,
+		inactive_titlebar_border_bottom = colors.inac_title_border,
+		button_bg = colors.button_bg,
+		button_fg = colors.button_fg,
+		button_hover_bg = colors.button_hover_bg,
+		button_hover_fg = colors.button_hover_fg,
+		font = wez.font("Noto Sans", { weight = "Medium" }),
+		font_size = 9,
 	},
 	window_padding = {
 		left = 0,
@@ -259,33 +282,32 @@ return {
 	},
 	inactive_pane_hsb = {
 		saturation = 0.8,
-		brightness = color.in_brightness,
+		brightness = colors.in_brightness,
 	},
-	color_scheme = color.theme,
+	color_scheme = colors.theme,
 	colors = {
-		cursor_fg = color.cursor_fg,
 		tab_bar = {
-			background = color.tab_bg,
+			background = colors.tab_bg,
 			active_tab = {
-				bg_color = color.tab_ac_bg,
-				fg_color = color.tab_ac_fg,
+				bg_color = colors.tab_ac_bg,
+				fg_color = colors.tab_ac_fg,
 				intensity = "Normal",
 				underline = "None",
 				italic = false,
 				strikethrough = false,
 			},
 			inactive_tab = {
-				bg_color = color.tab_inac_bg,
-				fg_color = color.tab_inac_fg,
+				bg_color = colors.tab_inac_bg,
+				fg_color = colors.tab_inac_fg,
 			},
 			inactive_tab_hover = {
-				bg_color = color.tab_inac_bg,
-				fg_color = color.tab_inac_fg,
+				bg_color = colors.tab_inac_bg,
+				fg_color = colors.tab_inac_fg,
 				italic = true,
 			},
 			new_tab = {
-				bg_color = color.tab_btn_bg,
-				fg_color = color.tab_btn_fg,
+				bg_color = colors.tab_btn_bg,
+				fg_color = colors.tab_btn_fg,
 			},
 			new_tab_hover = {
 				bg_color = "#6272a4",
