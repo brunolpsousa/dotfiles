@@ -1292,6 +1292,12 @@ if pcall(require, "lazy") then
 		},
 
 		{
+			"windwp/nvim-ts-autotag",
+			event = "InsertEnter",
+			opts = {},
+		},
+
+		{
 			"nvimtools/none-ls.nvim",
 			event = { "BufReadPre", "BufNewFile" },
 			opts = function()
