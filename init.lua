@@ -964,9 +964,13 @@ if pcall(require, "lazy") then
 							"shellcheck",
 							"stylua",
 						}
-						vim.api.nvim_create_user_command("MasonInstallAll", function()
-							vim.cmd("MasonInstall " .. table.concat(packages, " "))
-						end, {})
+
+						local installed_packages = require("mason-registry").get_installed_package_names()
+						for _, v in pairs(packages) do
+							if not vim.tbl_contains(installed_packages, v) then
+								vim.cmd("MasonInstall " .. v)
+							end
+						end
 					end,
 					opts = {},
 				},
