@@ -608,7 +608,7 @@ arch-base() {
           fi
 
           # Wezterm config
-          if command -v wezterm >/dev/null; then
+          if command -v wezterm >/dev/null || command -v org.wezfurlong.wezterm >/dev/null; then
             command mkdir -p "$XDG_CONFIG_HOME/wezterm"
 
             fetch 'https://gitlab.com/brunolpsousa/dotfiles/-/raw/main/wezterm.lua' \

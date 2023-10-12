@@ -452,6 +452,9 @@ tmux_xterm() {
   elif command -vp wezterm >/dev/null; then
     wezterm start --cwd "$PWD" "$@"
   fi
+  elif command -vp org.wezfurlong.wezterm >/dev/null; then
+    org.wezfurlong.wezterm start --cwd "$PWD" "$@"
+  fi
 }
 "$@"
 
