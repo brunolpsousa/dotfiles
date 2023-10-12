@@ -723,7 +723,7 @@ arch-base() {
           xdg-desktop-portal-gnome gst-plugin-pipewire gvfs-mtp \
           gnome-shell gnome-session gdm gnome-keyring gnome-control-center nautilus \
           gnome-disk-utility gnome-system-monitor gnome-tweaks gnome-themes-extra \
-          webp-pixbuf-loader ffmpegthumbnailer"
+          loupe webp-pixbuf-loader ffmpegthumbnailer"
 
         if [[ -z "$flatpk" ]]; then
           echo 'Do you wish to use Flatpak [y/N]?'
@@ -732,7 +732,8 @@ arch-base() {
 
         if [[ "$flatpk" =~ '^[yY]' ]]; then
           command -v flatpak >/dev/null || sh -c "${use_sudo} pacman -S flatpak"
-          flatpak install org.gnome.FileRoller org.gnome.Calculator org.gnome.Chess org.gnome.Mines
+          flatpak install \
+            org.gnome.Loupe org.gnome.FileRoller org.gnome.Calculator org.gnome.Chess org.gnome.Mines
           flatpak override -u --filesystem=host org.gnome.FileRoller
         else
           sh -c "${use_sudo} pacman -S --needed \
