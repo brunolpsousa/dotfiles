@@ -440,6 +440,7 @@ tmux_xterm() {
         alacritty -e tmux a -t=alt
       else
         tmux neww -t=alt -c "$@" && tmux a -t=alt
+        if ! grep -q attached <<< "$tmux_alt_session"; then alacritty -e tmux a -t=alt; fi
       fi
     elif [[ -n "$tmux_main_session" && -z "$*" && -z "$TERMX_NAUTILUS" ]] && ! pgrep alacritty; then
       alacritty -e tmux a -t=main
