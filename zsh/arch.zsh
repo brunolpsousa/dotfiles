@@ -643,7 +643,7 @@ arch-base() {
             command -v mpv >/dev/null && local baseMpv="$XDG_CONFIG_HOME" ||
               local baseMpv="$HOME/.var/app/io.mpv.Mpv/config"
 
-            command mkdir -p "$baseMpv/mpv/scripts"
+            command mkdir -p "$baseMpv/mpv/{scripts,scripts-opts}"
             echo 'idle=yes\nvolume=25\nautofit-smaller=50%x50%\nautofit-larger=90%x90%' \
               > "$baseMpv/mpv/mpv.conf"
 
@@ -659,6 +659,12 @@ arch-base() {
             fetch \
               'https://raw.githubusercontent.com/jonniek/mpv-playlistmanager/master/playlistmanager.lua' \
               > "$baseMpv/mpv/scripts/playlistmanager.lua"
+            fetch \
+              'https://raw.githubusercontent.com/dfaker/VR-reversal/master/360plugin.lua' \
+              > "$baseMpv/mpv/scripts/360plugin.lua"
+            fetch \
+              'https://raw.githubusercontent.com/dfaker/VR-reversal/master/script-opts/360plugin.conf' \
+              > "$baseMpv/mpv/scripts-opts/360plugin.conf"
 
             sed -i 's/\(key_loadfiles = "\)"/\1CTRL+l"/g' "$baseMpv/mpv/scripts/playlistmanager.lua"
           fi
