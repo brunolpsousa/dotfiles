@@ -44,6 +44,7 @@ while true; do
     # Replace spaces with '%20' for gsettings
     wp=${wallpapers[$i]// /%20}
     gsettings set org.gnome.desktop.background picture-uri "file://$wp"
+    sleep 1.5
     gsettings set org.gnome.desktop.background picture-uri-dark "file://$wp"
     sleep 3m
   done
