@@ -88,7 +88,7 @@ local colors = {
 		mantle = "#e6e9ef",
 		crust = "#dce0e8",
 
-		ac_title_bg = "#eff9f5",
+		ac_title_bg = "#eff1f5",
 		ac_title_fg = "#041A40",
 		inac_title_bg = "#dce0e8",
 		inac_title_fg = "#4c4f69",
@@ -248,6 +248,8 @@ return {
 		family = "JetBrainsMono Nerd Font Mono",
 		weight = "Medium",
 	} }),
+	-- freetype_load_target = "Light",
+	-- freetype_render_target = "HorizontalLcd",
 	font_size = 10,
 	line_height = 1.0,
 	tab_bar_at_bottom = true,
