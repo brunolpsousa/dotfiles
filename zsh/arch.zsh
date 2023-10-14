@@ -341,7 +341,7 @@ arch-base() {
 
             flatpak install \
               org.mozilla.firefox org.freedesktop.Platform.ffmpeg-full com.brave.Browser \
-              io.mpv.Mpv org.qbittorrent.qBittorrent com.valvesoftware.Steam
+              io.mpv.Mpv org.qbittorrent.qBittorrent org.kde.PlatformTheme.QGnomePlatform com.valvesoftware.Steam
 
             if ! grep -q MiddleClickAutoscroll \
               "$XDG_DATA_HOME/flatpak/exports/share/applications/com.brave.Browser.desktop" \
@@ -729,7 +729,7 @@ arch-base() {
           xdg-desktop-portal-gnome gst-plugin-pipewire gvfs-mtp \
           gnome-shell gnome-session gdm gnome-keyring gnome-control-center nautilus \
           gnome-disk-utility gnome-system-monitor gnome-tweaks gnome-themes-extra \
-          loupe webp-pixbuf-loader ffmpegthumbnailer"
+          webp-pixbuf-loader ffmpegthumbnailer"
 
         if [[ -z "$flatpk" ]]; then
           echo 'Do you wish to use Flatpak [y/N]?'
@@ -743,7 +743,7 @@ arch-base() {
           flatpak override -u --filesystem=host org.gnome.FileRoller
         else
           sh -c "${use_sudo} pacman -S --needed \
-            file-roller gnome-calculator gnome-chess gnome-mines"
+            loupe file-roller gnome-calculator gnome-chess gnome-mines"
         fi
 
         echo -e '[Unit]\nDescription=Change Wallpapers\nStartLimitIntervalSec=3' \
@@ -766,7 +766,7 @@ arch-base() {
             > "$XDG_DATA_HOME/zsh/chwp.sh"
 
           chmod +x "$XDG_DATA_HOME/zsh/chwp.sh"
-          echo '#!/usr/bin/env bash\nexport TERMX_NAUTILUS=1 && xterm' \
+          echo '#!/usr/bin/env bash\nexport TERMX_NAUTILUS=1 && xterm "$PWD"' \
             > "$XDG_DATA_HOME/nautilus/scripts/Terminal"
           chmod +x "$XDG_DATA_HOME/nautilus/scripts/Terminal"
           echo 'F4 Terminal' > "$XDG_CONFIG_HOME/nautilus/scripts-accels"
