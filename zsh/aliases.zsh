@@ -176,6 +176,12 @@ cimg() {
   command rmdir -v ./cimg
 }
 
+vr() {
+  local mpv_bin="$(command -v mpv || command -v io.mpv.Mpv)"
+  if [[ ! -x "$mpv_bin" ]]; then echo 'error: `mpv` not found'; return 1; fi
+  "$mpv_bin" --script-opts=360plugin-enabled=yes "$@"
+}
+
 # Convert media files to mp3
 tomp3() {
   if [[ -n "$@" ]]; then
@@ -343,7 +349,7 @@ paru() {
     command yay "$args[@]" \
       --topdown --removemake --sudoloop --combinedupgrade
   else
-    echo 'error: "paru" nor "yay" found'
+    echo 'error: `paru` nor `yay` found'
     return 1
   fi
 }
