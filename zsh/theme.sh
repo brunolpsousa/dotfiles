@@ -39,7 +39,12 @@ ch_alacritty() {
 ch_tmux() {
   [[ -f "$tmux_config" ]] && command -vp tmux >/dev/null || return
 
-  if [[ -z $isDark ]] && (command -vp alacritty >/dev/null || command -vp wezterm >/dev/null); then
+  if [[ -z $isDark ]] &&
+    (
+      command -vp alacritty >/dev/null ||
+      command -vp wezterm   >/dev/null ||
+      command -vp org.wezfurlong.wezterm >/dev/null
+    ); then
     sed -i 's/\(status-style fg=colour\)254/\1235/;
     s/\(message-style fg=colour\)254/\1235/;
     /message-style/ s/\(bg=colour\)235/\1254/' "$tmux_config"
