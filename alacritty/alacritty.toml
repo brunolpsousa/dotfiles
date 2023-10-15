@@ -1,0 +1,38 @@
+import = ["~/.config/alacritty/dark.toml"]
+
+[cursor]
+blink_timeout = 90
+
+[font]
+size = 10
+
+[font.bold]
+family = "JetBrainsMono Nerd Font Mono"
+
+[font.bold_italic]
+family = "JetBrainsMono Nerd Font Mono"
+
+[font.italic]
+family = "JetBrainsMono Nerd Font Mono"
+
+[font.normal]
+family = "JetBrainsMono Nerd Font Mono"
+style = "Medium"
+
+[[keyboard.bindings]]
+action = "SpawnNewInstance"
+key = "T"
+mods = "Control|Shift"
+
+[[keyboard.bindings]]
+action = "Quit"
+key = "W"
+mods = "Control|Shift"
+
+[window]
+dynamic_padding = true
+opacity = 0.95
+
+[window.dimensions]
+columns = 156
+lines = 48

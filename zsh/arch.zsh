@@ -573,18 +573,18 @@ arch-base() {
           if command -v alacritty >/dev/null; then
             command mkdir -p "$XDG_CONFIG_HOME/alacritty"
 
-            fetch 'https://gitlab.com/brunolpsousa/dotfiles/-/raw/main/alacritty/alacritty.yml' \
-              > "$XDG_CONFIG_HOME/alacritty/alacritty.yml"
-            fetch 'https://gitlab.com/brunolpsousa/dotfiles/-/raw/main/alacritty/dark.yml' \
-              > "$XDG_CONFIG_HOME/alacritty/dark.yml"
-            fetch 'https://gitlab.com/brunolpsousa/dotfiles/-/raw/main/alacritty/light.yml' \
-              > "$XDG_CONFIG_HOME/alacritty/light.yml"
+            fetch 'https://gitlab.com/brunolpsousa/dotfiles/-/raw/main/alacritty/alacritty.toml' \
+              > "$XDG_CONFIG_HOME/alacritty/alacritty.toml"
+            fetch 'https://gitlab.com/brunolpsousa/dotfiles/-/raw/main/alacritty/dark.toml' \
+              > "$XDG_CONFIG_HOME/alacritty/dark.toml"
+            fetch 'https://gitlab.com/brunolpsousa/dotfiles/-/raw/main/alacritty/light.toml' \
+              > "$XDG_CONFIG_HOME/alacritty/light.toml"
             fetch 'https://gitlab.com/brunolpsousa/dotfiles/-/raw/main/zsh/theme.sh' \
               > "$XDG_DATA_HOME/zsh/theme.sh"
 
             case $(lscpu | awk '/Model name:/{print $3}') in Intel\(R\)) sed -i \
               's/\(columns: \)156/\1115/g; s/\(lines: \)48/\132/g' \
-              "$XDG_CONFIG_HOME/alacritty/alacritty.yml";;
+              "$XDG_CONFIG_HOME/alacritty/alacritty.toml";;
             esac
 
             chmod +x "$XDG_DATA_HOME/zsh/theme.sh"
