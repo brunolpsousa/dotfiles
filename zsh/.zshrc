@@ -431,21 +431,22 @@ tmux_xterm() {
   sh -c "$XDG_DATA_HOME/zsh/theme.sh" 2>/dev/null
 
   if command -vp alacritty >/dev/null && command -vp tmux >/dev/null; then
-    tmux new-session -d -s main -c "$HOME" 2>/dev/null
+    [[ -z "$1" ]] && local args=("$HOME") || local args=("$@")
     local tmux_main_session="$(tmux list-sessions | grep main)"
+    tmux new-session -d -s main -c "$HOME" 2>/dev/null
     if grep -q attached <<< "$tmux_main_session" && pgrep alacritty; then
       local tmux_alt_session="$(tmux list-sessions | grep alt)"
       if [[ -z $tmux_alt_session ]]; then
-        tmux new-session -d -s alt -c "$@"
+        tmux new-session -d -s alt -c "$args[@]"
         alacritty -e tmux a -t=alt
       else
-        tmux neww -t=alt -c "$@" && tmux a -t=alt
+        tmux neww -t=alt -c "$args[@]" && tmux a -t=alt
         if ! grep -q attached <<< "$tmux_alt_session"; then alacritty -e tmux a -t=alt; fi
       fi
     elif [[ -n "$tmux_main_session" && -z "$*" && -z "$TERMX_NAUTILUS" ]] && ! pgrep alacritty; then
       alacritty -e tmux a -t=main
     else
-      tmux neww -t=main -c "$@"
+      tmux neww -t=main -c "$args[@]"
       alacritty -e tmux a -t=main
     fi
   elif command -vp alacritty >/dev/null; then
