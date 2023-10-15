@@ -1,6 +1,6 @@
 #!/bin/env bash
 
-alacritty_config="$HOME/.config/alacritty/alacritty.yml"
+alacritty_config="$HOME/.config/alacritty/alacritty.toml"
 tmux_config="$HOME/.config/tmux/tmux.conf"
 
 get_bg() {
