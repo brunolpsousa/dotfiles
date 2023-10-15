@@ -78,8 +78,8 @@ ch_system() {
     fi
     if command -vp plasmashell >/dev/null; then
       plasma-apply-colorscheme BreezeLight
-      plasma-apply-desktoptheme breeze-light
-      plasma-apply-lookandfeel -a org.kde.breeze.desktop
+      # plasma-apply-desktoptheme breeze-light
+      # plasma-apply-lookandfeel -a org.kde.breeze.desktop
       plasma-apply-cursortheme Breeze_Snow
     fi
   }
@@ -91,8 +91,8 @@ ch_system() {
     fi
     if command -vp plasmashell >/dev/null; then
       plasma-apply-colorscheme BreezeDark
-      plasma-apply-desktoptheme breeze-dark
-      plasma-apply-lookandfeel -a org.kde.breezedark.desktop
+      # plasma-apply-desktoptheme breeze-dark
+      # plasma-apply-lookandfeel -a org.kde.breezedark.desktop
       plasma-apply-cursortheme Breeze_Snow
     fi
   }
