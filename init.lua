@@ -693,6 +693,16 @@ if pcall(require, "lazy") then
 				local diff = {
 					"diff",
 					symbols = { added = " ", modified = " ", removed = " " },
+					source = function()
+						local gitsigns = vim.b.gitsigns_status_dict
+						if gitsigns then
+							return {
+								added = gitsigns.added,
+								modified = gitsigns.changed,
+								removed = gitsigns.removed,
+							}
+						end
+					end,
 					cond = hide_section,
 				}
 
@@ -1353,10 +1363,6 @@ if pcall(require, "lazy") then
 					},
 				},
 			},
-			init = function()
-				require("telescope").load_extension("projects")
-				require("telescope").load_extension("undo")
-			end,
 			config = function()
 				require("telescope").setup({
 					defaults = { path_display = { "smart" }, file_ignore_patterns = { ".git/", "node_modules" } },
@@ -1380,6 +1386,8 @@ if pcall(require, "lazy") then
 						},
 					},
 				})
+				require("telescope").load_extension("projects")
+				require("telescope").load_extension("undo")
 			end,
 		},
 
