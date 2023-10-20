@@ -431,24 +431,21 @@ tmux_xterm() {
   sh -c "$XDG_DATA_HOME/zsh/theme.sh" 2>/dev/null
 
   if command -vp alacritty >/dev/null && command -vp tmux >/dev/null; then
+    local tmux_session="$(tmux list-sessions | grep main)"
     [[ -z "$1" ]] && local args=("$HOME") || local args=("$@")
-    local tmux_main_session="$(tmux list-sessions | grep main)"
-    tmux new-session -d -s main -c "$HOME" 2>/dev/null
-    if grep -q attached <<< "$tmux_main_session" && pgrep alacritty; then
-      local tmux_alt_session="$(tmux list-sessions | grep alt)"
-      if [[ -z $tmux_alt_session ]]; then
-        tmux new-session -d -s alt -c "$args[@]"
-        alacritty -e tmux a -t=alt
-      else
-        tmux neww -t=alt -c "$args[@]" && tmux a -t=alt
-        if ! grep -q attached <<< "$tmux_alt_session"; then alacritty -e tmux a -t=alt; fi
-      fi
-    elif [[ -n "$tmux_main_session" && -z "$*" && -z "$TERMX_NAUTILUS" ]] && ! pgrep alacritty; then
-      alacritty -e tmux a -t=main
+    [[ -n $tmux_session ]] || tmux new-session -ds main -c "$HOME" 2>/dev/null
+
+    if grep -q attached <<< "$tmux_session" && pgrep alacritty; then
+      tmux neww -t=main -c "$args[@]"
+    elif [[ -z "$*" ]]; then
+      export att_tmux=1
+      alacritty --working-directory "$HOME"
     else
       tmux neww -t=main -c "$args[@]"
-      alacritty -e tmux a -t=main
+      export att_tmux=1
+      alacritty --working-directory "$HOME"
     fi
+
   elif command -vp alacritty >/dev/null; then
     alacritty "$@"
   elif command -vp wezterm >/dev/null; then
@@ -461,19 +458,22 @@ tmux_xterm() {
 
 tmux_attach() {
   if command -v tmux >/dev/null; then
-    local tvar="$(tmux list-sessions &>/dev/null | grep main)"
-    if grep -q attached <<< "$tvar"; then
+    local tmux_session="$(tmux list-sessions | grep main)"
+    if grep -q attached <<< "$tmux_session"; then
       tmux neww -t=main -c "$PWD" && tmux a -t=main
-    elif [[ -n $tvar ]]; then
+    elif [[ -n $tmux_session ]]; then
       tmux a -t=main
     else
       tmux new -As main -c "$PWD"
     fi
-    unset tvar && NEW_LINE_BEFORE_PROMPT=1
+    NEW_LINE_BEFORE_PROMPT=1
+  else
+    echo 'error: `tmux` not found'
+    return 1
   fi
 }
 bindkey -s '^[c' ' tmux_attach^M'
-[[ "$TERM" == alacritty ]] && tmux_attach
+[[ -z "$att_tmux" ]] || tmux_attach; unset att_tmux
 #--------------------------------------------------------------------------------------------------#
 ############################################## Aliases #############################################
 #--------------------------------------------------------------------------------------------------#

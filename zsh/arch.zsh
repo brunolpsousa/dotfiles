@@ -628,7 +628,7 @@ arch-base() {
             [[ $xtermVar =~ '^[yY]' ]] && sudo rm -i '/usr/local/bin/xterm'
           fi
           if [[ ! -f '/usr/local/bin/xterm' ]]; then
-            echo '#!/usr/bin/env bash\nzsh "$HOME/.config/zsh/.zshrc" tmux_xterm "$@"' | \
+            echo '#!/usr/bin/env zsh\nzsh "$HOME/.config/zsh/.zshrc" tmux_xterm "$@"' | \
               sudo tee '/usr/local/bin/xterm' >/dev/null
             sudo chmod +x '/usr/local/bin/xterm'
 
@@ -766,7 +766,7 @@ arch-base() {
             > "$XDG_DATA_HOME/zsh/chwp.sh"
 
           chmod +x "$XDG_DATA_HOME/zsh/chwp.sh"
-          echo '#!/usr/bin/env bash\nexport TERMX_NAUTILUS=1 && xterm "$PWD"' \
+          echo '#!/usr/bin/env zsh\nxterm "$PWD"' \
             > "$XDG_DATA_HOME/nautilus/scripts/Terminal"
           chmod +x "$XDG_DATA_HOME/nautilus/scripts/Terminal"
           echo 'F4 Terminal' > "$XDG_CONFIG_HOME/nautilus/scripts-accels"
