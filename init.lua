@@ -112,7 +112,7 @@ vim.cmd("aunmenu PopUp")
 
 -- Autocommands
 vim.api.nvim_create_autocmd({ "CursorHold" }, {
-	command = "checktime",
+	command = "checktime|rshada|wshada",
 })
 
 vim.api.nvim_create_autocmd({ "TextYankPost" }, {
