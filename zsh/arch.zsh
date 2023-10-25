@@ -510,7 +510,8 @@ arch-base() {
             echo '/* #PlacesToolbarItems { filter: grayscale(1); } */\n#unified-extensions-button' \
               '{\n  width: 0.1px;\n  padding-inline: 0 !important;\n}' \
               '\n#unified-extensions-button > .toolbarbutton-icon {' \
-              '\n  width: 0 !important;\n}' > "$HOME/chrome/userChrome.css"
+              '\n  width: 0 !important;\n}\n#private-browsing-indicator-with-label > label {' \
+              '\n  display: none;\n}' > "$HOME/chrome/userChrome.css"
 
             ln -sf "$HOME/Pictures/Wallpapers/Module Abyss Lapis."* "$HOME/chrome/img" &>/dev/null
           fi
