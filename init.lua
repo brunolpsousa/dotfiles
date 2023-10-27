@@ -41,7 +41,6 @@ keymap("n", "<leader>q", "<cmd>qa<CR>", { desc = "Close all windows" })
 keymap("n", "<Tab>", "<cmd>bnext<CR>", { desc = "Next buffer" })
 keymap("n", "<S-Tab>", "<cmd>bprevious<CR>", { desc = "Previous buffer" })
 
-keymap("n", "<Esc><Esc>", "<cmd>nohlsearch<CR>", { desc = "Clear highlight" })
 keymap("t", "<Esc>", "<C-Bslash><C-N>", { desc = "Return to normal mode" })
 keymap("n", "<C-Bslash>", "<cmd>sp term://$SHELL<CR><cmd>resize -8<CR>i", { desc = "Open terminal" })
 
@@ -67,6 +66,19 @@ keymap(
 	"<esc><cmd>lua require('Comment.api').toggle.linewise(vim.fn.visualmode())<CR>",
 	{ desc = "Comment block" }
 )
+
+local function toggle_search()
+	if vim.g.search_hl then
+		vim.cmd("nohlsearch")
+		vim.g.search_hl = false
+	else
+		vim.cmd("set hlsearch")
+		vim.g.search_hl = true
+	end
+end
+-- stylua: ignore
+keymap("n", "<Esc><Esc>", function() toggle_search() end, { desc = "Toggle search highlight" })
+keymap({ "n", "v" }, "/", "<cmd>lua vim.g.search_hl = true<CR>/", { desc = "Search" })
 
 -- Options
 vim.opt.termguicolors = true
