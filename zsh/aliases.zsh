@@ -232,7 +232,7 @@ todec() {
 ## print values in different bases of a decimal number
 dec() {
   if [[ $1 -gt 0 && $2 -eq 16 ]]; then
-    printf '%d (base 10) equals to %x (base %d)\n' $1 $2 $1
+    printf '%d (base 10) equals to %x (base %d)\n' $1 $1 $2
   elif [[ $1 -gt 0 ]] && [[ $2 -gt 1 && $2 -lt 10 ]]; then
     local val=$1
     local result=''
