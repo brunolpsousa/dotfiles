@@ -167,7 +167,7 @@ cimg() {
     for i in *."$f"; do
       [[ ! "$i" ]] || command mv "$i" ./cimg
     done
-    mogrify -format jxl ./cimg/*."$f"
+    mogrify -format jxl ./cimg/*."$f" &&
     find -path "./cimg/*.$f" | xargs -I '{}' mv '{}' "$XDG_CACHE_HOME/cimg"
   done
     for i in ./cimg/*.jxl; do
