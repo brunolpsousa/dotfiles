@@ -32,6 +32,9 @@ action = "Quit"
 key = "W"
 mods = "Control|Shift"
 
+[mouse]
+hide_when_typing = true
+
 [window]
 dynamic_padding = true
 opacity = 0.95
