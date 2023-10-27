@@ -382,7 +382,7 @@ zupd() {
     > "$ZDOTDIR/.zshrc.tmp"
   [[ -s "$ZDOTDIR/.zshrc.tmp" ]] || { command rm -I "$ZDOTDIR/.zshrc.tmp"; return 1 }
   command mv "$ZDOTDIR/.zshrc.tmp" "$ZDOTDIR/.zshrc"
-  command rm "$XDG_CONFIG_HOME"/zsh/*.zsh
+  command rm -I "$XDG_CONFIG_HOME"/zsh/*.zsh
   set -e
   exec zsh
 }
