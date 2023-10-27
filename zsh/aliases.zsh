@@ -379,7 +379,9 @@ alias paclog='grep -nC 2 --color=auto warning: /var/log/pacman.log'
 # Update .zshrc
 zupd() {
   fetch https://gitlab.com/brunolpsousa/dotfiles/-/raw/main/zsh/.zshrc \
-    > $ZDOTDIR/.zshrc
+    > "$ZDOTDIR/.zshrc.tmp"
+  [[ -s "$ZDOTDIR/.zshrc.tmp" ]] || return 1
+  command mv "$ZDOTDIR/.zshrc.tmp" "$ZDOTDIR/.zshrc"
   command rm "$XDG_CONFIG_HOME"/zsh/*.zsh
   set -e
   exec zsh

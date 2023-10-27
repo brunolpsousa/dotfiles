@@ -313,7 +313,7 @@ source /usr/share/fzf/key-bindings.zsh 2>/dev/null
 source /usr/share/fzf/completion.zsh 2>/dev/null
 #--------------------------------------------------------------------------------------------------#
 # zsh-async
-if [[ -f "$XDG_DATA_HOME/zsh/async.zsh" ]]; then
+if [[ -s "$XDG_DATA_HOME/zsh/async.zsh" ]]; then
   source "$XDG_DATA_HOME/zsh/async.zsh"
 else
   echo 'Downloading zsh-async...'
@@ -326,9 +326,9 @@ fi
 # Auto Suggestions
 load_autoSuggestions() {
   local plugin='zsh-autosuggestions.zsh'
-  if [[ -f "/usr/share/zsh/plugins/zsh-autosuggestions/$plugin" ]]; then
+  if [[ -s "/usr/share/zsh/plugins/zsh-autosuggestions/$plugin" ]]; then
     source "/usr/share/zsh/plugins/zsh-autosuggestions/$plugin"
-  elif [[ -f "$XDG_DATA_HOME/zsh/zsh-autosuggestions.zsh" ]]; then
+  elif [[ -s "$XDG_DATA_HOME/zsh/zsh-autosuggestions.zsh" ]]; then
     source "$XDG_DATA_HOME/zsh/zsh-autosuggestions.zsh"
   else
     echo 'Downloading zsh-autosuggestions...'
@@ -372,9 +372,9 @@ fi
 # History substring search
 load_historySubstringSearch() {
   local plugin='zsh-history-substring-search.zsh'
-  if [[ -f "/usr/share/zsh/plugins/zsh-history-substring-search/$plugin" ]]; then
+  if [[ -s "/usr/share/zsh/plugins/zsh-history-substring-search/$plugin" ]]; then
     source "/usr/share/zsh/plugins/zsh-history-substring-search/$plugin"
-  elif [[ -f "$XDG_DATA_HOME/zsh/zsh-history-substring-search.zsh" ]]; then
+  elif [[ -s "$XDG_DATA_HOME/zsh/zsh-history-substring-search.zsh" ]]; then
     source "$XDG_DATA_HOME/zsh/zsh-history-substring-search.zsh"
   else
     echo 'Downloading zsh-history-substring-search...'
@@ -401,9 +401,9 @@ else
 fi
 #--------------------------------------------------------------------------------------------------#
 # Syntax highlighting
-if [[ -f '/usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh' ]]; then
+if [[ -s '/usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh' ]]; then
   source '/usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh'
-elif [[ -f "$XDG_DATA_HOME/zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh" ]]; then
+elif [[ -s "$XDG_DATA_HOME/zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh" ]]; then
   source "$XDG_DATA_HOME/zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
 else
   echo 'Downloading zsh-syntax-highlighting...'
