@@ -431,7 +431,7 @@ tmux_xterm() {
   sh -c "$XDG_DATA_HOME/zsh/theme.sh" 2>/dev/null
 
   if command -vp alacritty >/dev/null && command -vp tmux >/dev/null; then
-    local tmux_session="$(tmux list-sessions | grep main)"
+    local tmux_session="$(tmux list-sessions &>/dev/null | grep main)"
     [[ -z "$1" ]] && local args=("$HOME") || local args=("$@")
     [[ -n $tmux_session ]] || tmux new-session -ds main -c "$HOME" 2>/dev/null
 
@@ -458,7 +458,7 @@ tmux_xterm() {
 
 tmux_attach() {
   if command -v tmux >/dev/null; then
-    local tmux_session="$(tmux list-sessions | grep main)"
+    local tmux_session="$(tmux list-sessions &>/dev/null | grep main)"
     if grep -q attached <<< "$tmux_session"; then
       tmux neww -t=main -c "$PWD" && tmux a -t=main
     elif [[ -n $tmux_session ]]; then
