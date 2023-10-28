@@ -436,6 +436,7 @@ tmux_xterm() {
     [[ -n $tmux_session ]] || tmux new-session -ds main -c "$HOME" 2>/dev/null
 
     if grep -q attached <<< "$tmux_session" && pgrep alacritty; then
+      unset att_tmux
       tmux neww -t=main -c "$args[@]"
     elif [[ -z "$*" ]]; then
       export att_tmux=1
@@ -473,7 +474,7 @@ tmux_attach() {
   fi
 }
 bindkey -s '^[c' ' tmux_attach^M'
-[[ -z "$att_tmux" ]] || tmux_attach; unset att_tmux
+[[ -z "$att_tmux" ]] || tmux_attach
 #--------------------------------------------------------------------------------------------------#
 ############################################## Aliases #############################################
 #--------------------------------------------------------------------------------------------------#
