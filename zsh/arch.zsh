@@ -663,7 +663,7 @@ arch-base() {
             [[ $xtermVar =~ '^[yY]' ]] && sudo rm -i '/usr/local/bin/xterm'
           fi
           if [[ ! -f '/usr/local/bin/xterm' ]]; then
-            echo '#!/usr/bin/env zsh\nzsh "$HOME/.config/zsh/.zshrc" tmux_xterm "$@"' | \
+            echo '#!/usr/bin/env zsh\nzsh "$ZDOTDIR/.zshrc" tmux_xterm "$@"' | \
               sudo tee '/usr/local/bin/xterm' >/dev/null
             sudo chmod +x '/usr/local/bin/xterm'
 
