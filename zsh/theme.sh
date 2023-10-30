@@ -74,7 +74,7 @@ ch_system() {
   light_mode() {
     if ! command -vp gnome-shell >/dev/null; then
       unset isDark
-      gsettings set org.gnome.desktop.interface color-scheme "default"
+      gsettings set org.gnome.desktop.interface color-scheme "prefer-light"
       gsettings set org.gnome.desktop.interface gtk-theme "Adwaita"
     fi
     if command -vp plasmashell >/dev/null; then
