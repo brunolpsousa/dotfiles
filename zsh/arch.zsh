@@ -459,6 +459,60 @@ arch-base() {
       case $yne in
 
         Yes )
+          # mpv config
+          if command -v mpv >/dev/null || command -v io.mpv.Mpv >/dev/null; then
+            command -v mpv >/dev/null && local baseMpv="$XDG_CONFIG_HOME" ||
+              local baseMpv="$HOME/.var/app/io.mpv.Mpv/config"
+
+            command mkdir -p "$baseMpv/mpv/{scripts,scripts-opts}"
+            echo 'idle=yes\nvolume=25\nautofit-smaller=50%x50%\nautofit-larger=90%x90%' \
+              > "$baseMpv/mpv/mpv.conf"
+
+            echo 'Ctrl+q quit\nF11 cycle fullscreen\nENTER cycle fullscreen' \
+              '\nKP_ENTER cycle fullscreen\nWHEEL_UP osd-msg-bar seek 3' \
+              '\nWHEEL_DOWN osd-msg-bar seek -3\nLEFT osd-msg-bar seek -5' \
+              '\nRIGHT osd-msg-bar seek  5\nUP osd-msg-bar seek 15\nDOWN osd-msg-bar seek -15' \
+              '\nkp9 add volume -2\nkp0 add volume 2' > "$baseMpv/mpv/input.conf"
+
+            fetch \
+              'https://raw.githubusercontent.com/brunolpsousa/mpv-nextfile/master/nextfile.lua' \
+              > "$baseMpv/mpv/scripts/nextfile.lua"
+            fetch \
+              'https://raw.githubusercontent.com/jonniek/mpv-playlistmanager/master/playlistmanager.lua' \
+              > "$baseMpv/mpv/scripts/playlistmanager.lua"
+            fetch \
+              'https://raw.githubusercontent.com/dfaker/VR-reversal/master/360plugin.lua' \
+              > "$baseMpv/mpv/scripts/360plugin.lua"
+            fetch \
+              'https://raw.githubusercontent.com/dfaker/VR-reversal/master/script-opts/360plugin.conf' \
+              > "$baseMpv/mpv/scripts-opts/360plugin.conf"
+
+            sed -i 's/\(key_loadfiles = "\)"/\1CTRL+l"/g' "$baseMpv/mpv/scripts/playlistmanager.lua"
+          fi
+
+          # Firefox config
+          echo 'Do you wish to create Firefox config in "$HOME/chrome" [y/N]?'
+          local firefoxcfg; read firefoxcfg
+          if [[ $firefoxcfg =~ '^[yY]' ]]; then
+            command mkdir -p "$HOME/chrome"
+
+            echo '@-moz-document url(about:home), url(about:newtab), url(about:privatebrowsing) {' \
+              '\n  .click-target-container *,\n  .top-sites-list * {\n    color: #fff !important;' \
+              '\n    text-shadow: 2px 2px 2px #222 !important;\n  }\n\n  body::before {' \
+              '\n    content: '';\n    z-index: -1;\n    position: fixed;\n    top: 0;' \
+              '\n    left: 0;\n    background: #f9a no-repeat url(img) center;' \
+              '\n    background-size: cover;\n    width: 100vw;' \
+              '\n    height: 100vh;\n  }\n}' > "$HOME/chrome/userContent.css"
+
+            echo '/* #PlacesToolbarItems { filter: grayscale(1); } */\n#unified-extensions-button' \
+              '{\n  width: 0.1px;\n  padding-inline: 0 !important;\n}' \
+              '\n#unified-extensions-button > .toolbarbutton-icon {' \
+              '\n  width: 0 !important;\n}\n#private-browsing-indicator-with-label > label {' \
+              '\n  display: none;\n}' > "$HOME/chrome/userChrome.css"
+
+            ln -sf "$HOME/Pictures/Wallpapers/Module Abyss Lapis."* "$HOME/chrome/img" &>/dev/null
+          fi
+
           # Git config
           if [[ ! -f $XDG_CONFIG_HOME/git/config ]]; then
             echo 'Do you wish to set up git?'
@@ -486,32 +540,12 @@ arch-base() {
                     git config --global commit.gpgsign true
 
                   break;;
-
                 No ) break;;
                 Exit ) return;;
               esac
             done
           fi
 
-          # Firefox config
-          echo 'Do you wish to create Firefox config in "$HOME/chrome" [y/N]?'
-          local firefoxcfg; read firefoxcfg
-          if [[ $firefoxcfg =~ '^[yY]' ]]; then
-            command mkdir -p "$HOME/chrome"
-
-            echo '@-moz-document url(about:home), url(about:newtab), url(about:privatebrowsing) {' \
-              '\n  .click-target-container *,\n  .top-sites-list * {\n    color: #fff !important;' \
-              '\n    text-shadow: 2px 2px 2px #222 !important;\n  }\n\n  body::before {' \
-              '\n    content: '';\n    z-index: -1;\n    position: fixed;\n    top: 0;' \
-              '\n    left: 0;\n    background: #f9a no-repeat url(img) center;' \
-              '\n    background-size: cover;\n    width: 100vw;' \
-              '\n    height: 100vh;\n  }\n}' > "$HOME/chrome/userContent.css"
-
-            echo '/* #PlacesToolbarItems { filter: grayscale(1); } */\n#unified-extensions-button' \
-              '{\n  width: 0.1px;\n  padding-inline: 0 !important;\n}' \
-              '\n#unified-extensions-button > .toolbarbutton-icon {' \
-              '\n  width: 0 !important;\n}\n#private-browsing-indicator-with-label > label {' \
-              '\n  display: none;\n}' > "$HOME/chrome/userChrome.css"
           # Theme
           install_theme() {
             if command -v alacritty >/dev/null  ||
@@ -520,7 +554,6 @@ arch-base() {
               return
             fi
 
-            ln -sf "$HOME/Pictures/Wallpapers/Module Abyss Lapis."* "$HOME/chrome/img" &>/dev/null
             local installTheme
             echo "Do you wish to install Theme script? [y/N]" && read installTheme
             [[ "$installTheme" =~ '^[yY]' ]] && return
@@ -555,7 +588,7 @@ arch-base() {
           # Neovim config
           if [[ "$EDITOR" =~ 'nvim' ]]; then
             useFkNvim() {
-              if [[ $EDITOR == 'io.neovim.nvim' ]] || [[ $flatpk =~ '^[yY]' ]]; then
+              if [[ "$EDITOR" == 'io.neovim.nvim' || $flatpk =~ '^[yY]' ]]; then
                 return
               fi
               local useFNvim
@@ -639,39 +672,7 @@ arch-base() {
               >> "$HOME/.alert"
           fi
 
-          # mpv config
-          if command -v mpv >/dev/null || command -v io.mpv.Mpv >/dev/null; then
-
-            command -v mpv >/dev/null && local baseMpv="$XDG_CONFIG_HOME" ||
-              local baseMpv="$HOME/.var/app/io.mpv.Mpv/config"
-
-            command mkdir -p "$baseMpv/mpv/{scripts,scripts-opts}"
-            echo 'idle=yes\nvolume=25\nautofit-smaller=50%x50%\nautofit-larger=90%x90%' \
-              > "$baseMpv/mpv/mpv.conf"
-
-            echo 'Ctrl+q quit\nF11 cycle fullscreen\nENTER cycle fullscreen' \
-              '\nKP_ENTER cycle fullscreen\nWHEEL_UP osd-msg-bar seek 3' \
-              '\nWHEEL_DOWN osd-msg-bar seek -3\nLEFT osd-msg-bar seek -5' \
-              '\nRIGHT osd-msg-bar seek  5\nUP osd-msg-bar seek 15\nDOWN osd-msg-bar seek -15' \
-              '\nkp9 add volume -2\nkp0 add volume 2' > "$baseMpv/mpv/input.conf"
-
-            fetch \
-              'https://raw.githubusercontent.com/brunolpsousa/mpv-nextfile/master/nextfile.lua' \
-              > "$baseMpv/mpv/scripts/nextfile.lua"
-            fetch \
-              'https://raw.githubusercontent.com/jonniek/mpv-playlistmanager/master/playlistmanager.lua' \
-              > "$baseMpv/mpv/scripts/playlistmanager.lua"
-            fetch \
-              'https://raw.githubusercontent.com/dfaker/VR-reversal/master/360plugin.lua' \
-              > "$baseMpv/mpv/scripts/360plugin.lua"
-            fetch \
-              'https://raw.githubusercontent.com/dfaker/VR-reversal/master/script-opts/360plugin.conf' \
-              > "$baseMpv/mpv/scripts-opts/360plugin.conf"
-
-            sed -i 's/\(key_loadfiles = "\)"/\1CTRL+l"/g' "$baseMpv/mpv/scripts/playlistmanager.lua"
-          fi
           break;;
-
         No ) break;;
         Exit ) return;;
       esac
