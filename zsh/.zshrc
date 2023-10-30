@@ -32,7 +32,7 @@ editors=(nvim io.neovim.nvim vim nano)
 for ed in ${editors[@]}; do
   if command -v $ed >/dev/null; then
     export EDITOR=$ed
-    export VISUAL="$EDITOR"
+    export VISUAL=$EDITOR
     break
   fi
 done
@@ -298,7 +298,7 @@ fetch() {
   elif command -v wget >/dev/null; then
     wget -qO- -- "$1"
   else
-    echo 'error: "curl" nor "wget" found'
+    echo 'error: `curl` nor `wget` found'
   fi
 }
 #--------------------------------------------------------------------------------------------------#
@@ -435,7 +435,11 @@ tmux_xterm() {
     [[ -z "$1" ]] && local args=("$HOME") || local args=("$@")
     [[ -n $tmux_session ]] || tmux new-session -ds main -c "$HOME" 2>/dev/null
 
-    if grep -q attached <<< "$tmux_session" && pgrep alacritty; then
+    case $TTY in
+      /dev/ttyS[0-9]*) local is_tty=1;;
+    esac
+
+    if grep -q attached <<< "$tmux_session" && [[ -z $is_tty ]]; then
       unset att_tmux
       tmux neww -t=main -c "$args[@]"
     elif [[ -z "$*" ]]; then
