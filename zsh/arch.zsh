@@ -512,8 +512,24 @@ arch-base() {
               '\n#unified-extensions-button > .toolbarbutton-icon {' \
               '\n  width: 0 !important;\n}\n#private-browsing-indicator-with-label > label {' \
               '\n  display: none;\n}' > "$HOME/chrome/userChrome.css"
+          # Theme
+          install_theme() {
+            if command -v alacritty >/dev/null  ||
+              command -v plasmashell >/dev/null ||
+              command -v gnome-shell >/dev/null; then
+              return
+            fi
 
             ln -sf "$HOME/Pictures/Wallpapers/Module Abyss Lapis."* "$HOME/chrome/img" &>/dev/null
+            local installTheme
+            echo "Do you wish to install Theme script? [y/N]" && read installTheme
+            [[ "$installTheme" =~ '^[yY]' ]] && return
+          }
+          if install_theme; then
+            fetch 'https://gitlab.com/brunolpsousa/dotfiles/-/raw/main/zsh/theme.sh' \
+              > "$XDG_DATA_HOME/zsh/theme.sh"
+            chmod +x "$XDG_DATA_HOME/zsh/theme.sh"
+            sh -c "$XDG_DATA_HOME/zsh/theme.sh"
           fi
 
           # Nerd font config
@@ -580,16 +596,11 @@ arch-base() {
               > "$XDG_CONFIG_HOME/alacritty/dark.toml"
             fetch 'https://gitlab.com/brunolpsousa/dotfiles/-/raw/main/alacritty/light.toml' \
               > "$XDG_CONFIG_HOME/alacritty/light.toml"
-            fetch 'https://gitlab.com/brunolpsousa/dotfiles/-/raw/main/zsh/theme.sh' \
-              > "$XDG_DATA_HOME/zsh/theme.sh"
 
             case $(lscpu | awk '/Model name:/{print $3}') in Intel\(R\)) sed -i \
               's/\(columns: \)156/\1115/g; s/\(lines: \)48/\132/g' \
               "$XDG_CONFIG_HOME/alacritty/alacritty.toml";;
             esac
-
-            chmod +x "$XDG_DATA_HOME/zsh/theme.sh"
-            sh -c "$XDG_DATA_HOME/zsh/theme.sh"
           fi
 
           # Tmux config
