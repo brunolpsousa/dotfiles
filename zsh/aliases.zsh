@@ -156,23 +156,27 @@ dot() {
 # Convert image files to jxl
 cimg() {
   if ! command -v mogrify >/dev/null; then
-    echo 'error: mogrify not found. Please, install imagemagick'
+    echo 'error: `mogrify` not found. Please, install `imagemagick`'
     return 1
   fi
+
   setopt nullglob
-  current_dir="$PWD"
-  mkdir -p ./cimg "$XDG_CACHE_HOME/cimg"
-  img_formats=(jpg jpeg png apng bmp svg tif tiff webp avif heic)
+  local current_dir="$PWD"
+  local img_formats=(jpg jpeg png apng bmp svg tif tiff webp avif heic)
+  command mkdir -p ./cimg "$XDG_CACHE_HOME/cimg"
+
   for f in "${img_formats[@]}"; do
     for i in *."$f"; do
       [[ ! "$i" ]] || command mv "$i" ./cimg
     done
     mogrify -format jxl ./cimg/*."$f" &&
-    find -path "./cimg/*.$f" | xargs -I '{}' mv '{}' "$XDG_CACHE_HOME/cimg"
+      find -path "./cimg/*.$f" | xargs -I '{}' mv '{}' "$XDG_CACHE_HOME/cimg"
   done
-    for i in ./cimg/*.jxl; do
-      [[ ! "$i" ]] || command mv "$i" "$current_dir"
-    done
+
+  for i in ./cimg/*.jxl; do
+    [[ ! "$i" ]] || command mv "$i" "$current_dir"
+  done
+
   command rmdir -v ./cimg
 }
 
@@ -193,7 +197,7 @@ tomp3() {
     command rmdir ./mp3_files &>/dev/null
     return 0
   else
-    echo 'Usage: tomp3 <file 1> <file 2> <file.extension> <*.extension> <*>'
+    echo 'Usage: tomp3 <file_1> <file_2> <file.extension> <*.extension> <*>'
     return 1
   fi
 }
@@ -212,40 +216,74 @@ tomp4() {
     command rmdir ./mp4_files &>/dev/null
     return 0
   else
-    echo 'Usage: tomp4 <file 1> <file 2> <file.extension> <*.extension> <*>'
+    echo 'Usage: tomp4 [--x265] <file_1> <file_2> <file.extension> <*.extension> <*>'
     return 1
   fi
 }
 
-## print the decimal value of a number
+# Print the decimal value of a number
 todec() {
-  if [[ -n $1 && $2 -eq 16 ]]; then
-    printf "%s (base %d) equals to %d (base 10)\n" $1 $2 0x$1
-  elif [[ -n $1 && $2 -gt 0 && ! $2 -eq 10 ]]; then
-    printf "%s (base %d) equals to %d (base 10)\n" $1 $2 $(($2#$1))
-  else
-    print 'Usage: todec <number> <number-base>'
+  [[ $1 == '-s' ]] && { local silent=1; shift }
+
+  if [[ -z $2 || $1 -eq 10 || $1 -le 1 && $1 != 'a' ]]; then
+    print 'Usage: todec <base|[a]scii> <number>'
     return 1
+  fi
+
+  if [[ $1 == 'a' ]]; then
+    [[ $silent ]] && printf '%d' \'$2 ||
+      printf "%s (ASCII) equals to %d (base 10)\n" $2 \'$2
+  else
+    [[ $silent ]] && echo $(($1#$2)) ||
+      printf "%s (base %d) equals to %d (base 10)\n" $2 $1 $(($1#$2))
   fi
 }
 
-## print values in different bases of a decimal number
+# Print values in different bases of a decimal number
 dec() {
-  if [[ $1 -gt 0 && $2 -eq 16 ]]; then
-    printf '%d (base 10) equals to %x (base %d)\n' $1 $1 $2
-  elif [[ $1 -gt 0 ]] && [[ $2 -gt 1 && $2 -lt 10 ]]; then
-    local val=$1
-    local result=''
-    local base=$2
-    while [ $val -ne 0 ]; do
-      result=$(($val % $base))$result # residual is next digit
+  [[ $1 == '-s' ]] && { local silent=1; shift }
+  [[ ! $2 =~ '[0-9]' || $1 -le 1 ]] && { print 'Usage: dec <base> <number>'; return 1 }
+  local result
+
+  if [[ $1 -eq 16 ]]; then
+    result=$(printf '%x' $2)
+  elif [[ $1 -gt 1 && $2 -gt 0 ]]; then
+    local val=$2
+    local base=$1
+    while [[ $val -ne 0 ]]; do
+      result=$(($val % $base))$result
       val=$(($val / $base))
     done
-    echo "$1 (base 10) equals to $result (base $2)"
-  else
-    print 'Usage: dec <decimal-number> <base-to-convert>'
-    return 1
   fi
+
+  [[ $result ]] || { print 'Usage: dec <base> <number>'; return 1 }
+
+  [[ $silent ]] && echo $result ||
+    echo "$2 (base 10) equals to $result (base $1)"
+}
+
+# Print most common conversions for a given number
+num() {
+  { [[ $1 -eq 10 ]] || todec $1 $2 >/dev/null } &&
+    { [[ $1 == 'a' || $1 -eq 16 ]] || dec $1 $2 >/dev/null } ||
+    { echo 'Usage: num <base> <number>'; return 1 }
+
+  [[ $1 -eq 10 ]] && local decimal=$2 || local decimal=$(todec -s $1 $2)
+
+  local binary=$(dec -s 2 $decimal)
+  local octal=$(dec -s 8 $decimal)
+  local hexa=$(dec -s 16 $decimal)
+  local ascii=$(printf "\x$hexa")
+  local unicode=$(printf "\u$hexa")
+
+  local p_binary="Binary: $binary"
+  local p_octal="Octal: $octal"
+  local p_decimal="Decimal: $decimal"
+  local p_hexa="Hexa: $hexa"
+  local p_ascii="Ascii: $ascii"
+  local p_unicode="Unicode: $unicode"
+
+  echo "$p_binary\n$p_octal\n$p_decimal\n$p_hexa\n$p_ascii\n$p_unicode"
 }
 
 bd() {
