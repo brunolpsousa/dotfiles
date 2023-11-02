@@ -427,58 +427,73 @@ fi
 #--------------------------------------------------------------------------------------------------#
 ############################################### Tmux ###############################################
 #--------------------------------------------------------------------------------------------------#
-tmux_xterm() {
-  sh -c "$XDG_DATA_HOME/zsh/theme.sh" 2>/dev/null
+exec_term() {
+  if command -v alacritty >/dev/null; then
+    alacritty --working-directory "$HOME"
+  elif command -v wezterm >/dev/null; then
+    wezterm start --cwd "$PWD"
+  elif command -v org.wezfurlong.wezterm >/dev/null; then
+    org.wezfurlong.wezterm start --cwd "$PWD"
+  else
+    return 1
+  fi
+}
 
-  if command -vp alacritty >/dev/null && command -vp tmux >/dev/null; then
-    local tmux_session="$(tmux list-sessions &>/dev/null | grep main)"
-    [[ -z "$1" ]] && local args=("$HOME") || local args=("$@")
-    [[ -n $tmux_session ]] || tmux new-session -ds main -c "$HOME" 2>/dev/null
-
-    case $TTY in
-      /dev/ttyS[0-9]*) local is_tty=1;;
-    esac
-
-    if grep -q attached <<< "$tmux_session" && [[ -z $is_tty ]]; then
-      unset att_tmux
-      tmux neww -t=main -c "$args[@]"
-    elif [[ -z "$*" ]]; then
-      export att_tmux=1
-      alacritty --working-directory "$HOME"
-    else
-      tmux neww -t=main -c "$args[@]"
-      export att_tmux=1
-      alacritty --working-directory "$HOME"
-    fi
-
-  elif command -vp alacritty >/dev/null; then
+xterm_fallback() {
+  if command -v alacritty >/dev/null; then
     alacritty "$@"
-  elif command -vp wezterm >/dev/null; then
+  elif command -v wezterm >/dev/null; then
     wezterm start --cwd "$PWD" "$@"
-  elif command -vp org.wezfurlong.wezterm >/dev/null; then
+  elif command -v org.wezfurlong.wezterm >/dev/null; then
     org.wezfurlong.wezterm start --cwd "$PWD" "$@"
+  fi
+}
+
+tmux_xterm() {
+  zsh "$XDG_DATA_HOME/zsh/theme.sh" 2>/dev/null
+
+  if ! command -v tmux >/dev/null; then
+    xterm_fallback; return
+  fi
+
+  case $TTY in
+    /dev/ttyS[0-9]*) local is_tty=1 ;;
+  esac
+
+  local tmux_session="$(tmux list-sessions &>/dev/null | grep main)"
+  [[ -z "$1" ]] && local args=("$HOME") || local args=("$@")
+  [[ -n $tmux_session ]] || tmux new-session -ds main -c "$HOME" 2>/dev/null
+
+  if grep -q attached <<< "$tmux_session" && [[ -z $is_tty ]]; then
+    unset att_tmux; tmux neww -t=main -c "$args[@]"
+  elif [[ -z "$*" ]]; then
+    export att_tmux=1; exec_term
+  else
+    tmux neww -t=main -c "$args[@]"
+    export att_tmux=1; exec_term
   fi
 }
 "$@"
 
 tmux_attach() {
-  if command -v tmux >/dev/null; then
-    local tmux_session="$(tmux list-sessions &>/dev/null | grep main)"
-    if grep -q attached <<< "$tmux_session"; then
-      tmux neww -t=main -c "$PWD" && tmux a -t=main
-    elif [[ -n $tmux_session ]]; then
-      tmux a -t=main
-    else
-      tmux new -As main -c "$PWD"
-    fi
-    NEW_LINE_BEFORE_PROMPT=1
+  if ! command -v tmux >/dev/null; then
+    echo 'error: `tmux` not found'; return 1
+  fi
+
+  local tmux_session="$(tmux list-sessions &>/dev/null | grep main)"
+  NEW_LINE_BEFORE_PROMPT=1; unset att_tmux
+
+  if grep -q attached <<< "$tmux_session"; then
+    tmux neww -t=main -c "$PWD" && tmux a -t=main
+  elif [[ $tmux_session ]]; then
+    tmux a -t=main
   else
-    echo 'error: `tmux` not found'
-    return 1
+    tmux new -As main -c "$PWD"
   fi
 }
+
 bindkey -s '^[c' ' tmux_attach^M'
-[[ -z "$att_tmux" ]] || tmux_attach
+[[ -z $att_tmux ]] || tmux_attach
 #--------------------------------------------------------------------------------------------------#
 ############################################## Aliases #############################################
 #--------------------------------------------------------------------------------------------------#
