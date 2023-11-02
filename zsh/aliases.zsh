@@ -242,8 +242,10 @@ todec() {
 # Print values in different bases of a decimal number
 dec() {
   [[ $1 == '-s' ]] && { local silent=1; shift }
-  [[ ! $2 =~ '[0-9]' || $1 -le 1 ]] && { print 'Usage: dec <base> <number>'; return 1 }
-  local result
+  [[ -z $2 || $1 -le 1 && $1 != 'a' ]] && { print 'Usage: dec <base> <number>'; return 1 }
+
+  local result p_base
+  [[ $1 == 'a' ]] && p_base='ASCII' || p_base="base $1"
 
   if [[ $1 -eq 16 ]]; then
     result=$(printf '%x' $2)
@@ -254,12 +256,14 @@ dec() {
       result=$(($val % $base))$result
       val=$(($val / $base))
     done
+  elif [[ $1 == 'a' ]]; then
+    result=$(printf "\x$(dec -s 16 $2)")
   fi
 
   [[ $result ]] || { print 'Usage: dec <base> <number>'; return 1 }
 
   [[ $silent ]] && echo $result ||
-    echo "$2 (base 10) equals to $result (base $1)"
+    echo "$2 (base 10) equals to $result ($p_base)"
 }
 
 # Print most common conversions for a given number
@@ -273,7 +277,7 @@ num() {
   local binary=$(dec -s 2 $decimal)
   local octal=$(dec -s 8 $decimal)
   local hexa=$(dec -s 16 $decimal)
-  local ascii=$(printf "\x$hexa")
+  local ascii=$(dec -s a $decimal)
   local unicode=$(printf "\u$hexa")
 
   local p_binary="Binary: $binary"
