@@ -431,11 +431,9 @@ exec_term() {
   if command -v alacritty >/dev/null; then
     alacritty --working-directory "$HOME"
   elif command -v wezterm >/dev/null; then
-    wezterm start --cwd "$PWD"
+    wezterm start --cwd "$HOME"
   elif command -v org.wezfurlong.wezterm >/dev/null; then
-    org.wezfurlong.wezterm start --cwd "$PWD"
-  else
-    return 1
+    org.wezfurlong.wezterm start --cwd "$HOME"
   fi
 }
 
