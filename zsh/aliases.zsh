@@ -277,7 +277,7 @@ dec() {
     elif [[ $bs == 'a' ]]; then
       result+=("$(printf "\x$(dec -s 16 $1)")")
     elif [[ $bs == 'u' ]]; then
-      result+=("$(echo -n "\u$(dec -s 16 $1)")")
+      result+=("$(printf "\u$(dec -s 16 $1)")")
     elif [[ $bs -gt 1 && $1 -gt 0 ]]; then
       local base=$bs val=$1 rslt=
       while [[ $val -ne 0 ]]; do
