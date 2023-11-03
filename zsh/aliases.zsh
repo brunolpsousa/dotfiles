@@ -224,70 +224,100 @@ tomp4() {
 # Print the decimal value of a number
 todec() {
   [[ $1 == '-s' ]] && { local silent=1; shift }
+  local p_base bs=$1; bs=${bs//-/}
 
-  if [[ -z $2 || $1 -eq 10 || $1 -le 1 && $1 != 'a' ]]; then
-    print 'Usage: todec <base|[a]scii> <number>'
-    return 1
+  case $bs in
+    (a|A)(|scii|SCII))                         bs=a; p_base='ASCII' ;;
+    (b|B)(|in|IN|inary|INARY))                 bs=2 ;;
+    (o|O)(|ct|CT|ctal|CTAL))                   bs=8 ;;
+    (h|H|x|X|hex|HEX|Hexadecimal|HEXADECIMAL)) bs=16 ;;
+  esac
+
+  if [[ -z $2 || $bs -eq 10 || $bs -le 1 && $bs != 'a' ]]; then
+    echo 'Usage: todec <base> <number>'; return 1
   fi
 
-  if [[ $1 == 'a' ]]; then
-    [[ $silent ]] && printf '%d' \'$2 ||
-      printf "%s (ASCII) equals to %d (base 10)\n" $2 \'$2
-  else
-    [[ $silent ]] && echo $(($1#$2)) ||
-      printf "%s (base %d) equals to %d (base 10)\n" $2 $1 $(($1#$2))
-  fi
+  shift; local nums="$*" result=()
+  [[ $bs == 'a' ]] || p_base="base $bs"
+
+  while [[ $1 ]]; do
+    [[ $bs == 'a' ]] &&
+      result+=("$(printf '%d' \'$1)") ||
+      result+=("$(($bs#$1))")
+    shift
+  done
+
+  [[ $silent ]] && echo "${result[*]}" ||
+    printf "%s ($p_base) equals to %s (base 10)\n" "$nums" "${result[*]}"
 }
 
 # Print values in different bases of a decimal number
 dec() {
   [[ $1 == '-s' ]] && { local silent=1; shift }
-  [[ -z $2 || $1 -le 1 && $1 != 'a' ]] && { print 'Usage: dec <base> <number>'; return 1 }
+  local p_base bs=$1; bs=${bs//-/}
 
-  local result p_base
-  [[ $1 == 'a' ]] && p_base='ASCII' || p_base="base $1"
+  case $bs in
+    (a|A)(|scii|SCII))                         bs=a; p_base='ASCII' ;;
+    (u|U)(|ni|NI|nicode|NICODE))               bs=u; p_base='Unicode' ;;
+    (b|B)(|in|IN|inary|INARY))                 bs=2 ;;
+    (o|O)(|ct|CT|ctal|CTAL))                   bs=8 ;;
+    (d|D)(|ec|EC|ecimal|ECIMAL))               bs=10 ;;
+    (h|H|x|X|hex|HEX|Hexadecimal|HEXADECIMAL)) bs=16 ;;
+  esac
 
-  if [[ $1 -eq 16 ]]; then
-    result=$(printf '%x' $2)
-  elif [[ $1 -gt 1 && $2 -gt 0 ]]; then
-    local val=$2
-    local base=$1
-    while [[ $val -ne 0 ]]; do
-      result=$(($val % $base))$result
-      val=$(($val / $base))
-    done
-  elif [[ $1 == 'a' ]]; then
-    result=$(printf "\x$(dec -s 16 $2)")
-  fi
+  [[ -z $2 || $bs -le 1 && ! $bs =~ '^[au]$' ]] &&
+    { echo 'Usage: dec <base> <number>'; return 1 }; shift
 
-  [[ $result ]] || { print 'Usage: dec <base> <number>'; return 1 }
+  local nums="$*" result=()
+  [[ $bs =~ '^[au]$' ]] || p_base="base $bs"
 
-  [[ $silent ]] && echo $result ||
-    echo "$2 (base 10) equals to $result ($p_base)"
+  while [[ $1 ]]; do
+    if [[ $bs -eq 16 ]]; then
+      result+=("$(printf '%x' $1)")
+    elif [[ $bs == 'a' ]]; then
+      result+=("$(printf "\x$(dec -s 16 $1)")")
+    elif [[ $bs == 'u' ]]; then
+      result+=("$(echo -n "\u$(dec -s 16 $1)")")
+    elif [[ $bs -gt 1 && $1 -gt 0 ]]; then
+      local base=$bs val=$1 rslt=
+      while [[ $val -ne 0 ]]; do
+        rslt=$((val % base))$rslt
+        val=$((val / base))
+      done
+      result+=("$rslt")
+    fi
+    shift
+  done
+
+  [[ ${result[*]} ]] || return 1
+
+  [[ $silent ]] && echo "${result[*]}" ||
+    echo "$nums (base 10) equals to ${result[*]} ($p_base)"
 }
 
 # Print most common conversions for a given number
 num() {
-  { [[ $1 -eq 10 ]] || todec $1 $2 >/dev/null } &&
-    { [[ $1 == 'a' || $1 -eq 16 ]] || dec $1 $2 >/dev/null } ||
+  { [[ $1 -eq 10 ]] || todec "$1" "$2" &>/dev/null } &&
+    { [[ $1 =~ '[aA]' || $1 -eq 16 ]] || dec "$1" "$2" &>/dev/null } ||
     { echo 'Usage: num <base> <number>'; return 1 }
 
-  [[ $1 -eq 10 ]] && local decimal=$2 || local decimal=$(todec -s $1 $2)
+  local bs=$1; shift
+  [[ $bs -eq 10 ]] && local decimal=("$@") || local decimal=($(todec -s $bs "$@"))
 
-  local binary=$(dec -s 2 $decimal)
-  local octal=$(dec -s 8 $decimal)
-  local hexa=$(dec -s 16 $decimal)
-  local ascii=$(dec -s a $decimal)
-  local unicode=$(printf "\u$hexa")
+  local binary=$(dec -s 2 "${decimal[@]}")
+  local octal=$(dec -s 8 "${decimal[@]}")
+  local hex=$(dec -s 16 "${decimal[@]}")
+  local ascii=$(dec -s a "${decimal[@]}")
+  local unicode=$(dec -s u "${decimal[@]}")
 
   local p_binary="Binary: $binary"
   local p_octal="Octal: $octal"
-  local p_decimal="Decimal: $decimal"
-  local p_hexa="Hexa: $hexa"
+  local p_decimal="Decimal: ${decimal[*]}"
+  local p_hexa="Hex: $hex"
   local p_ascii="Ascii: $ascii"
   local p_unicode="Unicode: $unicode"
 
-  echo "$p_binary\n$p_octal\n$p_decimal\n$p_hexa\n$p_ascii\n$p_unicode"
+  echo -e "$p_binary\n$p_octal\n$p_decimal\n$p_hexa\n$p_ascii\n$p_unicode"
 }
 
 bd() {
