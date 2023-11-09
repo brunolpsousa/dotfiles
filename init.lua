@@ -224,32 +224,35 @@ end
 
 vim.api.nvim_create_autocmd({ "BufWritePre" }, {
 	callback = function()
-		local exclude = { "diff", "gitcommit", "tsconfig.json" }
+		local exclude = { "diff" }
+		local exclude_fmt_on_save = { "tsconfig.json" }
 		local buf = vim.api.nvim_get_current_buf()
+		local ft = vim.bo[buf].filetype
 
-		if vim.tbl_contains(exclude, vim.bo[buf].filetype) then
+		if vim.tbl_contains(exclude, ft) then
 			return
-		end
-
-		local bufname = vim.api.nvim_buf_get_name(buf)
-		for _, e in pairs(exclude) do
-			if bufname:find(e) then
-				format_on_save = false
-			end
 		end
 
 		local pos = vim.api.nvim_win_get_cursor(0)
 
-		if format_on_save then
-			lsp_format()
+		-- Trim whitespaces
+		if ft ~= "markdown" then
+			vim.cmd([[:silent %s/\s\+$//e]])
 		end
 
-		-- Trim whitespaces
-		vim.cmd([[:silent %s/\s\+$//e]])
-
-		-- Remove comments with no subsequent content (#, %, ;;, --, //)
+		-- Remove comments with no subsequent content (# % ;; -- //)
 		-- Match comments at the beginning of the line or preceded by spaces/tabs
 		vim.cmd([[:silent %s/\(^\|^\s\{}\)\(#\|%\|;;\|--\|\/\/\)$//e]])
+
+		if format_on_save then
+			local bufname = vim.api.nvim_buf_get_name(buf)
+			for _, e in pairs(exclude_fmt_on_save) do
+				if bufname:find(e) then
+					return
+				end
+			end
+			lsp_format()
+		end
 
 		pcall(vim.api.nvim_win_set_cursor, 0, pos)
 	end,
