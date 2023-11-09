@@ -118,7 +118,7 @@ vim.opt.virtualedit = "none"
 vim.opt.splitkeep = "screen"
 vim.opt.spelllang = { "en_us", "pt_br" }
 vim.opt.wildmode = "longest:full,full"
-vim.opt.listchars:append("tab:  ▷,extends:»,precedes:«,trail:·,nbsp:⣿")
+vim.opt.listchars:append("tab:  ▷,extends:»,precedes:«,lead: ,trail:·,multispace:·,nbsp:⣿")
 vim.opt.fillchars:append("eob: ")
 vim.cmd("aunmenu PopUp")
 
