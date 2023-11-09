@@ -665,7 +665,7 @@ if pcall(require, "lazy") then
 
 		{
 			"jinh0/eyeliner.nvim",
-			lazy = true,
+			event = "VeryLazy",
 			opts = {
 				highlight_on_key = true,
 				dim = true,
