@@ -289,7 +289,7 @@ vim.api.nvim_create_autocmd("Signal", {
 		local currentTheme = vim.api.nvim_exec2("colorscheme", { output = true }).output
 		local isDark = sysDarkStatus()
 
-		if isDark and currentTheme == "nightfox" or not isDark and currentTheme == "dayfox" then
+		if isDark and currentTheme == DarkTheme or not isDark and currentTheme == LightTheme then
 			return
 		end
 
@@ -325,28 +325,39 @@ if pcall(require, "lazy") then
 			priority = 1000,
 			init = function()
 				vim.api.nvim_create_user_command("SysTheme", function()
+					DarkTheme = "nightfox"
+					LightTheme = "dayfox"
 					local isDark = sysDarkStatus()
 
 					if not isDark then
 						vim.opt.background = "light"
-						pcall(vim.cmd.colorscheme, "dayfox")
-						pcall(vim.cmd.colorscheme, "dayfox")
+						pcall(vim.cmd.colorscheme, LightTheme)
+						pcall(vim.cmd.colorscheme, LightTheme)
 						if pcall(require, "lualine") then
-							require("lualine").setup({ options = { theme = "dayfox" } })
+							require("lualine").setup({ options = { theme = LightTheme } })
 						end
 					else
 						vim.opt.background = "dark"
-						pcall(vim.cmd.colorscheme, "nightfox")
-						pcall(vim.cmd.colorscheme, "nightfox")
+						pcall(vim.cmd.colorscheme, DarkTheme)
+						pcall(vim.cmd.colorscheme, DarkTheme)
 						if pcall(require, "lualine") then
-							require("lualine").setup({ options = { theme = "nightfox" } })
+							require("lualine").setup({ options = { theme = DarkTheme } })
 						end
 					end
 				end, {})
 
 				keymap({ "n", "v" }, "<leader>t", "<cmd>SysTheme<CR>", { desc = "Theme" })
-				pcall(vim.cmd, "SysTheme")
+				vim.schedule(function()
+					pcall(vim.cmd, "SysTheme")
+				end)
 			end,
+			opts = {
+				palettes = { nightfox = { bg1 = "#151f2c", bg3 = "#1c293a" }, dayfox = { bg3 = "#eeeaea" } },
+				groups = {
+					nightfox = { Whitespace = { fg = "#4e616e" }, GitSignsCurrentLineBlame = { fg = "#4e616e" } },
+					dayfox = { Whitespace = { fg = "#bec1ce" } },
+				},
+			},
 		},
 
 		{
