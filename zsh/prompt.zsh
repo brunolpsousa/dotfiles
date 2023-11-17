@@ -266,7 +266,7 @@ prompt_git_status_precmd() {
   PROMPT_SSH="%F{yellow}${(%):-%m}%}ː%b%f" || unset PROMPT_SSH
 #--------------------------------------------------------------------------------------------------#
 # Some stuff borrowed from Spaceship
-# Updated in 2023.09.10
+# Updated in 2023.11.17
 
 spaceship_noasync() {
   local SPACESHIP_PROMPT_DEFAULT_PREFIX=' '
@@ -373,26 +373,89 @@ spaceship::upsearch() {
   return 1
 }
 
-spaceship::datafile() {
+spaceship::extract::python() {
+  local imports=$1 load=$2; shift 2
+  local keys=("$@")
+  python -c "import $imports, functools; data=$load; print(next(filter(None, map(lambda key: functools.reduce(lambda obj, key: obj[key] if key in obj else {}, key.split('.'), data), ['${(j|','|)keys}'])), None))" 2>/dev/null
+}
+
+spaceship::extract::python::yaml() {
+  local file=$1; shift
+  spaceship::extract::python yaml "yaml.safe_load(open('$file'))" "$@"
+}
+
+spaceship::extract::python::json() {
+  local file=$1; shift
+  spaceship::extract::python json "json.load(open('$file'))" "$@"
+}
+
+spaceship::extract::python::toml() {
+  local file=$1; shift
+  local import py_version="${(@)$(python3 -V 2>&1)[2]}"
+  autoload is-at-least
+  # Python 3.11 added tomllib in the stdlib.
+  # Previous versions require the tomli package
+  if is-at-least 3.11 "$py_version" ]]; then
+    import=tomllib
+  else
+    import=tomli
+  fi
+  spaceship::extract::python "$import" "$import.load(open('$file', 'rb'))" "$@"
+}
+
+spaceship::extract::jq() {
+  local exe=$1 file=$2; shift 2
+  local keys=("$@")
+  "$exe" -r ".${(j| // .|)keys}" "$file" 2>/dev/null
+}
+
+spaceship::extract::ruby() {
+  local import=$1 load=$2; shift 2
+  local keys=("$@")
+  ruby -r "$import" -e "puts ['${(j|','|)keys}'].map { |key| key.split('.').reduce($load) { |obj, key| obj[key] } }.find(&:itself)" 2>/dev/null
+}
+
+spaceship::extract::ruby::yaml() {
+  local file=$1; shift
+  spaceship::extract::ruby 'yaml' "YAML::load_file('$file')" "$@"
+}
+
+spaceship::extract::ruby::json() {
+  local file=$1; shift
+  spaceship::extract::ruby 'json' "JSON::load(File.read('$file'))" "$@"
+}
+
+spaceship::extract::node::json() {
+  local file=$1; shift
+  local keys=("$@")
+  node -p "['${(j|','|)keys}'].map(s => s.split('.').reduce((obj, key) => obj[key], require('./$file'))).find(Boolean)" 2>/dev/null
+}
+
+# Read data file with dot notation (JSON, YAML, TOML, XML). Additional keys
+# will be used as alternatives.
+# USAGE:
+#   spaceship::extract --<type> <file> [...keys]
+# EXAMPLE:
+#  $ spaceship::extract --json package.json "author.name"
+#  > "John Doe"
+#  $ spaceship::extract --toml pyproject.toml "project.version" "tool.poetry.version"
+spaceship::extract() {
+  # Parse CLI options
   zparseopts -E -D \
     -json=json \
     -yaml=yaml \
     -toml=toml \
     -xml=xml
 
-  local file="$1" key="$2"
+  local file="$1"; shift
 
   if [[ -n "$yaml" ]]; then
     if spaceship::exists yq; then
-      yq -r ".$key" "$file"
+      spaceship::extract::jq yq "$file" "$@"
     elif spaceship::exists ruby; then
-      ruby -r yaml -e \
-        "puts '$key'.split('.').reduce(YAML::load_file('$file')) { |obj, key| obj[key] }" \
-        2>/dev/null
+      spaceship::extract::ruby::yaml "$file" "$@"
     elif spaceship::exists python3; then
-      python3 -c "import yaml, functools; print(functools.reduce(lambda obj, \
-        key: obj[key] if key else obj, '$key'.split('.'), yaml.safe_load(open('$file'))))" \
-        2>/dev/null
+      spaceship::extract::python::yaml "$file" "$@"
     else
       return 1
     fi
@@ -400,18 +463,15 @@ spaceship::datafile() {
 
   if [[ -n "$json" ]]; then
     if spaceship::exists jq; then
-      jq -r ".$key" "$file" 2>/dev/null
+      spaceship::extract::jq jq "$file" "$@"
     elif spaceship::exists yq; then
-      yq -r ".$key" "$file" 2>/dev/null
+      spaceship::extract::jq yq "$file" "$@"
     elif spaceship::exists ruby; then
-      ruby -r json -e \
-        "puts '$key'.split('.').reduce(JSON::load(File.read('$file'))){ |obj, key| obj[key] }" \
-        2>/dev/null
+      spaceship::extract::ruby::json "$file" "$@"
     elif spaceship::exists python3; then
-      python3 -c "import json, functools; print(functools.reduce(lambda obj, \
-        key: obj[key] if key else obj, '$key'.split('.'), json.load(open('$file'))))" 2>/dev/null
+      spaceship::extract::python::json "$file" "$@"
     elif spaceship::exists node; then
-      node -p "require('./$file').$key" 2>/dev/null
+      spaceship::extract::node::json "$file" "$@"
     else
       return 1
     fi
@@ -419,7 +479,9 @@ spaceship::datafile() {
 
   if [[ -n "$toml" ]]; then
     if spaceship::exists tomlq; then
-      tomlq -r ".$key" "$file"
+      spaceship::extract::jq tomlq "$file" "$@"
+    elif spaceship::exists python3; then
+      spaceship::extract::python::toml "$file" "$@"
     else
       return 1
     fi
@@ -427,7 +489,7 @@ spaceship::datafile() {
 
   if [[ -n "$xml" ]]; then
     if spaceship::exists xq; then
-      xq -r ".$key" "$file"
+      spaceship::extract::jq xq "$file" "$@"
     else
       return 1
     fi
@@ -437,7 +499,7 @@ spaceship::datafile() {
 }
 #--------------------------------------------------------------------------------------------------#
 # asdf-prompt plugin for zsh/oh-my-zsh
-# Updated 2023.02.09
+# Updated 2023.11.17
 # https://github.com/CurryEleison/zsh-asdf-prompt
 spaceship_asdf() {
   local ZSH_THEME_ASDF_PROMPT_PREFIX="%{$fg_bold[magenta]%}{"
@@ -1175,7 +1237,7 @@ spaceship_flutter() {
   spaceship::exists flutter || return
 
   pubspec_file=$(spaceship::upsearch pubspec.yaml pubspec.yml) || return
-  local is_flutter_project="$(spaceship::datafile --yaml $pubspec_file "dependencies.flutter")"
+  local is_flutter_project="$(spaceship::extract --yaml $pubspec_file "dependencies.flutter")"
 
   [[ -n "$is_flutter_project" &&  "$is_flutter_project" != "null" ]] || return
 
@@ -2004,8 +2066,8 @@ spaceship_package() {
 
     package_json=$(spaceship::upsearch package.json) || return
 
-    local package_version="$(spaceship::datafile --json $package_json version)"
-    local is_private_package="$(spaceship::datafile --json $package_json private)"
+    local package_version="$(spaceship::extract --json $package_json version)"
+    local is_private_package="$(spaceship::extract --json $package_json private)"
 
     if [[ "$SPACESHIP_PACKAGE_SHOW_PRIVATE" == false && "$is_private_package" == true ]]; then
       return 0
@@ -2027,7 +2089,7 @@ spaceship_package() {
 
     lerna_json=$(spaceship::upsearch lerna.json) || return
 
-    local package_version="$(spaceship::datafile --json $lerna_json version)"
+    local package_version="$(spaceship::extract --json $lerna_json version)"
 
     if [[ "$package_version" == "independent" ]]; then
       package_version="($package_version)"
@@ -2053,7 +2115,7 @@ spaceship_package() {
 
     composer_json=$(spaceship::upsearch composer.json) || return
 
-    spaceship::datafile --json $composer_json "version"
+    spaceship::extract --json $composer_json "version"
   }
 
   spaceship_package::julia() {
@@ -2061,7 +2123,7 @@ spaceship_package() {
 
     project_toml=$(spaceship::upsearch Project.toml) || return
 
-    spaceship::datafile --toml $project_toml "version"
+    spaceship::extract --toml $project_toml "version"
   }
 
   spaceship_package::maven() {
@@ -2085,9 +2147,9 @@ spaceship_package() {
   spaceship_package::python() {
     pyproject_toml=$(spaceship::upsearch pyproject.toml) || return
 
-    spaceship::datafile --toml $project_toml "tool.poetry.version"
+    spaceship::extract --toml $project_toml "tool.poetry.version"
     if [[ $? != 0 ]]; then
-      spaceship::datafile --toml $project_toml "project.version"
+      spaceship::extract --toml $project_toml "project.version"
     fi
   }
 
@@ -2096,7 +2158,7 @@ spaceship_package() {
 
     pubspec_file=$(spaceship::upsearch pubspec.yaml pubspec.yml) || return
 
-    spaceship::datafile --yaml $pubspec_file "version"
+    spaceship::extract --yaml $pubspec_file "version"
   }
 
   # Show package version only when repository is a package
@@ -2289,7 +2351,7 @@ spaceship_react() {
   [[ -z "$react_package" ]] && return
 
   # Get react version from package.json file
-  local react_version="$(spaceship::datafile --json $react_package version)"
+  local react_version="$(spaceship::extract --json $react_package version)"
 
   # Check if tool version is correct
   [[ -z $react_version || "$react_version" == "null" || "$react_version" == "undefined" ]] && return
@@ -2558,7 +2620,7 @@ spaceship_vue() {
   [[ -z "$vue_package" ]] && return
 
   # Get vue version from package.json file
-  local vue_version="$(spaceship::datafile --json $vue_package version)"
+  local vue_version="$(spaceship::extract --json $vue_package version)"
 
   # Check if tool version is correct
   [[ -z $vue_version || "$vue_version" == "null" || "$vue_version" == "undefined" ]] && return
