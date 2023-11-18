@@ -59,6 +59,7 @@ keymap({ "n", "v" }, "<leader>y", '"+y', { desc = "Yank to clipboard" })
 keymap({ "n", "v" }, "<leader>p", '"+p', { desc = "Paste from clipboard" })
 keymap({ "n", "v" }, "<leader>P", '"+P', { desc = "Paste from clipboard" })
 
+keymap("n", "gl", vim.diagnostic.open_float, { desc = "Float" })
 keymap("n", "<leader>/", "<cmd>lua require('Comment.api').toggle.linewise.current()<CR>", { desc = "Comment line" })
 keymap(
 	"x",
@@ -1081,7 +1082,6 @@ if pcall(require, "lazy") then
 								D = { vim.lsp.buf.declaration, "Declaration" },
 								i = { vim.lsp.buf.implementation, "Implementation" },
 								r = { vim.lsp.buf.references, "References" },
-								l = { vim.diagnostic.open_float, "Float" },
 							},
 						}, { buffer = bufnr })
 
@@ -1344,7 +1344,7 @@ if pcall(require, "lazy") then
 							extra_args = { "--max-line-length=88", "--extend-ignore=E203" },
 						}),
 						require("null-ls").builtins.code_actions.shellcheck,
-						require("null-ls").builtins.diagnostics.shellcheck,
+						require("null-ls").builtins.diagnostics.zsh,
 						require("null-ls").builtins.formatting.stylua,
 						require("null-ls").builtins.formatting.google_java_format,
 						require("null-ls").builtins.formatting.black.with({ extra_args = { "--fast", "--preview" } }),
