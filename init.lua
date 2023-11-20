@@ -351,9 +351,7 @@ if pcall(require, "lazy") then
 				end, {})
 
 				keymap({ "n", "v" }, "<leader>t", "<cmd>SysTheme<CR>", { desc = "Theme" })
-				vim.schedule(function()
-					pcall(vim.cmd, "SysTheme")
-				end)
+				pcall(vim.cmd, "SysTheme")
 			end,
 			opts = {
 				palettes = { nightfox = { bg1 = "#151f2c", bg3 = "#1c293a" }, dayfox = { bg3 = "#eeeaea" } },
