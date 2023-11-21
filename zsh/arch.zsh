@@ -305,7 +305,7 @@ arch-base() {
           android-udev android-tools zsh ttf-jetbrains-mono-nerd \
           xdg-desktop-portal xdg-desktop-portal-gtk lib32-gst-plugins-good \
           hunspell-en_US gsfonts noto-fonts noto-fonts-cjk noto-fonts-emoji \
-          sbctl ufw iptables-nft ntfs-3g exfat-utils unrar zip p7zip imagemagick \
+          sbctl ufw iptables-nft dosfstools exfat-utils ntfs-3g unrar zip p7zip imagemagick \
           zsh-autosuggestions zsh-completions zsh-history-substring-search zsh-syntax-highlighting \
           $(case $(lscpu | awk '/Model name:/{print $3}') in
           AMD) echo -n 'amd-ucode';;
