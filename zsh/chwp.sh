@@ -36,15 +36,15 @@ while true; do
       [[ $keep_suspend == 0 ]] && break
     done
 
-    hour="$(date '+%H' | sed -r 's/^0//')"
+    : "$(date '+%H')"; hour="${_##0}"
     if (("$hour" >= 7 && "$hour" < 19)) && [[ "${wallpapers[$i]}" =~ nsfw|NSFW ]]; then
       continue
     fi
 
-    # Replace spaces with '%20' for gsettings
+    # Replace spaces with `%20` for gsettings
     wp=${wallpapers[$i]// /%20}
     gsettings set org.gnome.desktop.background picture-uri "file://$wp"
-    sleep 1.5
+    sleep 2
     gsettings set org.gnome.desktop.background picture-uri-dark "file://$wp"
     sleep 3m
   done
