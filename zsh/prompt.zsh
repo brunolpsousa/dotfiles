@@ -319,15 +319,24 @@ spaceship_precmd() {
 spaceship::exists() { (( ${+commands[$1]} )) }
 
 spaceship::grep() {
-  if [[ "$1" =~ '^-' && "$1" != '-q' ]]; then
+  if [[ "$1" =~ '^-[^qvoeE]' ]]; then
     \grep "$@"; return
+  elif [[ "$1" == '-q' ]]; then
+    shift; spaceship::grep::out() { [[ "$1" =~ "$2" ]] && : }
+  elif [[ "$1" == '-v' ]]; then
+    shift; spaceship::grep::out() { [[ "$1" =~ "$2" ]] || echo "$1" }
+  elif [[ "$1" =~ '^-[^\w\s]*o[^\w\s]*' ]]; then
+    shift; setopt BASH_REMATCH
+    spaceship::grep::out() { [[ "$1" =~ "$2" ]] && echo "$BASH_REMATCH[1]" }
+  else
+    spaceship::grep::out() { [[ "$1" =~ "$2" ]] && echo "$1" }
   fi
 
-  [[ "$1" == '-q' ]] && { local quiet=true; shift }; local input
-  [[ $2 ]] && input="$2" || input="$(</dev/stdin)"
+  local input="$2"
+  [[ $2 ]] || input="$(</dev/stdin)"
 
   while IFS= read -r line; do
-    [[ "$line" =~ "$1" ]] && { [[ $q ]] || echo "$line" }
+    spaceship::grep::out "$line" "$1"
   done <<< "$input"
 }
 
@@ -508,11 +517,11 @@ spaceship_asdf() {
   local toolvers_fname=${ASDF_DEFAULT_TOOL_VERSIONS_FILENAME-.tool-versions}
   # Decide how we filter what is shown
   if [[ $ZSH_THEME_ASDF_PROMPT_FILTER != "ALL" ]]; then
-    currenttools=$(spaceship::grep -v ' system ' <<< $currenttools)
+    currenttools=$(spaceship::grep -v ' system ' $currenttools)
   fi
   if [[ -z "${ZSH_THEME_ASDF_PROMPT_FILTER// }" \
       || $ZSH_THEME_ASDF_PROMPT_FILTER == "COMPACT" ]]; then
-    currenttools=$(grep -v "$HOME/$toolvers_fname" <<< $currenttools)
+    currenttools=$(spaceship::grep -v "$HOME/$toolvers_fname" $currenttools)
   fi
 
   # Decide if anything is left to process and return if not.
@@ -696,7 +705,7 @@ spaceship_battery() {
     [[ -z "$battery_data" ]] && return
 
     # Colored output from pmset will break prompt if grep is aliased to show colors
-    battery_percent="$(spaceship::grep -oE '[0-9]{1,3}%' <<< $battery_data)"
+    battery_percent="$(spaceship::grep -oE '[0-9]{1,3}%' $battery_data)"
     battery_status="$(awk -F '; *' '{ print $2 }' <<< $battery_data)"
   elif spaceship::exists acpi; then
     battery_data=$(acpi -b 2>/dev/null | head -1)
@@ -2227,7 +2236,7 @@ spaceship_php() {
   local is_php_project="$(spaceship::upsearch composer.json)"
   [[ -n "$is_php_project" || -n *.php(#qN^/) ]] || return
 
-  local php_version=$(php -v 2>&1 | spaceship::grep -oe "^PHP\s*[0-9.]\+" | awk '{print $2}')
+  local php_version=$(php -v 2>&1 | spaceship::grep -oe "^PHP\s*[0-9.]+" | awk '{print $2}')
 
   local result=(
     $SPACESHIP_PHP_COLOR
