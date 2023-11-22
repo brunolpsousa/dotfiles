@@ -86,7 +86,6 @@ ex() {
 
 # Portable shell through SSH
 # https://github.com/romkatv/dotfiles-public/blob/6dfc6a34e91a8d87bb0716cf7c6f8e57487efb78/bin/ssh.zsh
-
 ssh() {
   emulate zsh -o pipefail -o extended_glob
 
@@ -114,7 +113,7 @@ ssh() {
     set -ue
     printf "%s" '${(q)dump//$'\n'}' | base64 -d | tar -C ~ -xzpo
     fetch() {
-      if command -v curl >/dev/null 2>&1; then
+      if (( ${+commands[curl]} )); then
         curl -fsSL -- "$1"
       else
         wget -O- -- "$1"
@@ -125,7 +124,7 @@ ssh() {
       mv ~/.zshrc.tmp.$$ ~/.zshrc
     fi
     export PATH="$HOME/.local/bin:$PATH"
-    if ! command -v zsh >/dev/null 2>&1; then
+    if ! (( ${+commands[zsh]} )); then
       if [ ! -x ~/.local/bin/zsh ]; then
         fetch '${(q)zsh_url}' > ~/.zsh-bin_install.tmp.$$
         mv ~/.zsh-bin_install.tmp.$$ ~/.zsh-bin_install
@@ -155,7 +154,7 @@ dot() {
 
 # Convert image files to jxl
 cimg() {
-  if ! command -v mogrify >/dev/null; then
+  if ! exist mogrify; then
     echo 'error: `mogrify` not found. Please, install `imagemagick`'
     return 1
   fi
@@ -163,21 +162,21 @@ cimg() {
   setopt nullglob
   local current_dir="$PWD"
   local img_formats=(jpg jpeg png apng bmp svg tif tiff webp avif heic)
-  command mkdir -p ./cimg "$XDG_CACHE_HOME/cimg"
+  \mkdir -p ./cimg "$XDG_CACHE_HOME/cimg"
 
   for f in "${img_formats[@]}"; do
     for i in *."$f"; do
-      [[ ! "$i" ]] || command mv "$i" ./cimg
+      [[ ! "$i" ]] || \mv "$i" ./cimg
     done
     mogrify -format jxl ./cimg/*."$f" &&
       find -path "./cimg/*.$f" | xargs -I '{}' mv '{}' "$XDG_CACHE_HOME/cimg"
   done
 
   for i in ./cimg/*.jxl; do
-    [[ ! "$i" ]] || command mv "$i" "$current_dir"
+    [[ ! "$i" ]] || \mv "$i" "$current_dir"
   done
 
-  command rmdir -v ./cimg
+  \rmdir -v ./cimg
 }
 
 vr() {
@@ -194,7 +193,7 @@ tomp3() {
       [[ -f "$f" ]] || continue
       ffmpeg -i "$f" -vn -ar 44100 -ac 2 -b:a 192k "./mp3_files/${f%.*}.mp3"
     done
-    command rmdir ./mp3_files &>/dev/null
+    \rmdir ./mp3_files &>/dev/null
     return 0
   else
     echo 'Usage: tomp3 <file_1> <file_2> <file.extension> <*.extension> <*>'
@@ -213,7 +212,7 @@ tomp4() {
       ffmpeg -i "$f" -vf "pad=ceil(iw/2)*2:ceil(ih/2)*2" \
         -vcodec "$codec" -crf 28 "./mp4_files/${f%.*}.mp4"
     done
-    command rmdir ./mp4_files &>/dev/null
+    \rmdir ./mp4_files &>/dev/null
     return 0
   else
     echo 'Usage: tomp4 [--x265] <file_1> <file_2> <file.extension> <*.extension> <*>'
@@ -322,12 +321,12 @@ num() {
 
 bd() {
   while true; do
-    local selection="$(command ls -aNv --group-directories-first 2>/dev/null | fzf --height 95% \
+    local selection="$(\ls -aNv --group-directories-first 2>/dev/null | fzf --height 95% \
       --reverse --info hidden --prompt "$(pwd)/" --preview ' cd_pre="$(echo $(pwd)/$(echo {}))";
       echo $cd_pre 2>/dev/null;
       echo;
-      command ls -ANv --group-directories-first --color=always "${cd_pre}" 2>/dev/null;
-      command less -F {} 2>/dev/null' --bind ctrl-j:preview-down,ctrl-k:preview-up \
+      \ls -ANv --group-directories-first --color=always "${cd_pre}" 2>/dev/null;
+      less -F {} 2>/dev/null' --bind ctrl-j:preview-down,ctrl-k:preview-up \
         --preview-window=right:65%)"
     if [[ -d "$selection" ]]; then
       >/dev/null builtin cd -q "$selection"
@@ -389,11 +388,10 @@ cal() {
 # https://stackoverflow.com/questions/10986794/remove-part-of-path-on-unix
 jvr() {
   local current_dir="$PWD"
-  builtin cd -q $(sed 's/src.*/bin/g' <<< $current_dir) || return 1
+  cd -q "$(sed 's/src.*/bin/g' <<< $current_dir)" || return 1
   local class_path=$(find * -type f -name "$1*" | sed 's/.class//g')
   java "$class_path"
-  builtin cd -q $current_dir
-  unset current_dir class_path
+  cd -q "$current_dir"
 }
 
 jvc() {
@@ -414,10 +412,10 @@ arch-date() {
 alias yay='paru'
 paru() {
   [[ -z "$1" ]] && local args=('-Syu') || local args=("$@")
-  if command -vp paru >/dev/null; then
+  if exist paru; then
     command paru "$args[@]" \
       --topdown --removemake=yes --sudoloop --combinedupgrade --upgrademenu --newsonupgrade
-  elif command -vp yay >/dev/null; then
+  elif exist yay; then
     command yay "$args[@]" \
       --topdown --removemake --sudoloop --combinedupgrade
   else
@@ -438,7 +436,7 @@ reset-gnome() {
   if [[ -z $1 ]]; then
     gsettings list-schemas | xargs -n 1 gsettings reset-recursively
   else
-    gsettings list-schemas | command grep "$1" | xargs -n 1 gsettings reset-recursively
+    gsettings list-schemas | grep "$1" | xargs -n 1 gsettings reset-recursively
   fi
 }
 
@@ -452,9 +450,9 @@ alias paclog='grep -nC 2 --color=auto warning: /var/log/pacman.log'
 zupd() {
   fetch https://gitlab.com/brunolpsousa/dotfiles/-/raw/main/zsh/.zshrc \
     > "$ZDOTDIR/.zshrc.tmp"
-  [[ -s "$ZDOTDIR/.zshrc.tmp" ]] || { command rm -I "$ZDOTDIR/.zshrc.tmp"; return 1 }
-  command mv "$ZDOTDIR/.zshrc.tmp" "$ZDOTDIR/.zshrc"
-  command rm -I "$XDG_CONFIG_HOME"/zsh/*.zsh
+  [[ -s "$ZDOTDIR/.zshrc.tmp" ]] || { rm -I "$ZDOTDIR/.zshrc.tmp"; return 1 }
+  \mv "$ZDOTDIR/.zshrc.tmp" "$ZDOTDIR/.zshrc"
+  rm -I "$XDG_CONFIG_HOME"/zsh/*.zsh
   exec zsh
 }
 

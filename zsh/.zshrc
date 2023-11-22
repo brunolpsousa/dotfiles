@@ -30,7 +30,7 @@ export LESS_TERMCAP_us=$'\e[1;4;31m'
 
 editors=(nvim io.neovim.nvim vim nano)
 for ed in ${editors[@]}; do
-  if command -v $ed >/dev/null; then
+  if (( ${+commands[$ed]} )); then
     export EDITOR=$ed
     export VISUAL=$EDITOR
     break
@@ -46,10 +46,10 @@ SSH_AGENT_PID=''
 SSH_AUTH_SOCK="${XDG_RUNTIME_DIR}/gnupg/S.gpg-agent.ssh"
 
 [[ -z $ZDOTDIR ]] && ZDOTDIR="$HOME"
-[[ -x $(command -v plasmashell) ]] && export GTK_USE_PORTAL=0 || export QT_QPA_PLATFORMTHEME='gnome'
 [[ -d "$HOME/.local/bin" ]] && export PATH="$HOME/.local/bin:$PATH"
 [[ -d "$XDG_DATA_HOME/npm/bin" ]] && export PATH="$XDG_DATA_HOME/npm/bin:$PATH"
 [[ -d "$XDG_DATA_HOME/cargo/bin" ]] && export PATH="$XDG_DATA_HOME/cargo/bin:$PATH"
+[[ (( ${+commands[plasmashell]} )) ]] && export GTK_USE_PORTAL=0 || export QT_QPA_PLATFORMTHEME='gnome'
 [[ "$EUID" != 0 ]] && umask 022 && s_local='--user' || umask 002
 [[ "$LANG" == 'C'  || "$LANG" == '' ]] &&
   echo "$(date '+%Y-%m-%d %H:%M:%S') - The \$LANG ($LANG) variable is not set." >> "$HOME/.alert"
@@ -292,10 +292,11 @@ bindkey '^Z' ctrl-z-toggle
 #--------------------------------------------------------------------------------------------------#
 ############################################## Plugins #############################################
 #--------------------------------------------------------------------------------------------------#
+exist() { (( ${+commands[$1]} )) }
 fetch() {
-  if command -v curl >/dev/null; then
+  if exist curl; then
     curl -fsSL -- "$1"
-  elif command -v wget >/dev/null; then
+  elif exist wget; then
     wget -qO- -- "$1"
   else
     echo 'error: `curl` nor `wget` found'
@@ -361,7 +362,7 @@ if [[ ! -d '/usr/share/licenses/zsh-completions' ]]; then
       zsh-completions-master/{zsh-completions.plugin.zsh,"src/*"} \
       -d "$XDG_DATA_HOME/zsh" 2>/dev/null
 
-    command mv "$XDG_DATA_HOME/zsh/zsh-completions-master" \
+    \mv "$XDG_DATA_HOME/zsh/zsh-completions-master" \
       "$XDG_DATA_HOME/zsh/zsh-completions" 2>/dev/null
 
     source "$XDG_DATA_HOME/zsh/zsh-completions/zsh-completions.plugin.zsh" ||
@@ -417,7 +418,7 @@ else
     {zsh-syntax-highlighting.zsh,"highlighters/*",.revision-hash,.version} \
     -d "$XDG_DATA_HOME/zsh" 2>/dev/null
 
-  command mv "$XDG_DATA_HOME/zsh/zsh-syntax-highlighting-master" \
+  \mv "$XDG_DATA_HOME/zsh/zsh-syntax-highlighting-master" \
     "$XDG_DATA_HOME/zsh/zsh-syntax-highlighting/" 2>/dev/null
 
   source "$XDG_DATA_HOME/zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh" ||
@@ -428,21 +429,21 @@ fi
 ############################################### Tmux ###############################################
 #--------------------------------------------------------------------------------------------------#
 exec_term() {
-  if command -v alacritty >/dev/null; then
+  if exist alacritty; then
     alacritty --working-directory "$HOME"
-  elif command -v wezterm >/dev/null; then
+  elif exist wezterm; then
     wezterm start --cwd "$HOME"
-  elif command -v org.wezfurlong.wezterm >/dev/null; then
+  elif exist org.wezfurlong.wezterm; then
     org.wezfurlong.wezterm start --cwd "$HOME"
   fi
 }
 
 xterm_fallback() {
-  if command -v alacritty >/dev/null; then
+  if exist alacritty; then
     alacritty "$@"
-  elif command -v wezterm >/dev/null; then
+  elif exist wezterm; then
     wezterm start --cwd "$PWD" "$@"
-  elif command -v org.wezfurlong.wezterm >/dev/null; then
+  elif exist org.wezfurlong.wezterm; then
     org.wezfurlong.wezterm start --cwd "$PWD" "$@"
   fi
 }
@@ -450,7 +451,7 @@ xterm_fallback() {
 tmux_xterm() {
   zsh "$XDG_DATA_HOME/zsh/theme.sh" 2>/dev/null
 
-  if ! command -v tmux >/dev/null; then
+  if ! exist tmux; then
     xterm_fallback; return
   fi
 
@@ -474,7 +475,7 @@ tmux_xterm() {
 "$@"
 
 tmux_attach() {
-  if ! command -v tmux >/dev/null; then
+  if ! exist tmux; then
     echo 'error: `tmux` not found'; return 1
   fi
 

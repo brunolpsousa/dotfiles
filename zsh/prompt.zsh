@@ -139,7 +139,7 @@ command_time_precmd() {
 # https://vincent.bernat.ch/en/blog/2019-zsh-async-vcs-info
 # Display git info
 prompt_git_info() {
-  builtin cd -q "$1"
+  cd -q "$1"
   local ZSH_THEME_GIT_PROMPT_PREFIX='%F{white}%B on%b %242F:'
   local ZSH_THEME_GIT_PROMPT_SUFFIX='%f'
 
@@ -181,9 +181,9 @@ prompt_git_info_precmd() {
 
 # Display git status
 prompt_git_status() {
-  builtin cd -q "$1"
+  cd -q "$1"
   local INDEX STATUS
-  INDEX=$(command git status --porcelain -b 2>/dev/null)
+  INDEX=$(git status --porcelain -b 2>/dev/null)
   local ZSH_THEME_GIT_PROMPT_ADDED='%F{green}+%f'
   local ZSH_THEME_GIT_PROMPT_MODIFIED='%F{blue}%f'
   local ZSH_THEME_GIT_PROMPT_DELETED='%F{red}-%f'
@@ -194,49 +194,30 @@ prompt_git_status() {
   local ZSH_THEME_GIT_PROMPT_BEHIND='%B%F{red}%f%b'
   local ZSH_THEME_GIT_PROMPT_AHEAD='%B%F{green}%f%b'
 
-  if $(grep -qE -- '^\?\? ' <<< "$INDEX"); then
-    STATUS+=" $ZSH_THEME_GIT_PROMPT_UNTRACKED"
-  fi
+  git_loop() {
+    while IFS= read -r line; do
+      if [[ "$line" =~ "$1" ]]; then
+        STATUS+=" $2"; break
+      fi
+    done <<< "$INDEX"
+  }
 
-  if $(grep -qE -- '^A  |^M  |^MM ' <<< "$INDEX"); then
-    STATUS+=" $ZSH_THEME_GIT_PROMPT_ADDED"
-  fi
+  git_loop '^\?\? ' "$ZSH_THEME_GIT_PROMPT_UNTRACKED"
+  git_loop '^A  |^M  |^MM ' "$ZSH_THEME_GIT_PROMPT_ADDED"
+  git_loop '^ M |^AM |^MM |^ T ' "$ZSH_THEME_GIT_PROMPT_MODIFIED"
+  git_loop '^R  ' "$ZSH_THEME_GIT_PROMPT_RENAMED"
+  git_loop '^ D |^D  |^AD ' "$ZSH_THEME_GIT_PROMPT_DELETED"
 
-  if $(grep -qE -- '^ M |^AM |^MM |^ T ' <<< "$INDEX"); then
-    STATUS+=" $ZSH_THEME_GIT_PROMPT_MODIFIED"
-  fi
-
-  if $(grep -q -- '^R  ' <<< "$INDEX"); then
-    STATUS+=" $ZSH_THEME_GIT_PROMPT_RENAMED"
-  fi
-
-  if $(grep -qE -- '^ D |^D  |^AD ' <<< "$INDEX"); then
-    STATUS+=" $ZSH_THEME_GIT_PROMPT_DELETED"
-  fi
-
-  if $(command git rev-parse --verify refs/stash >/dev/null 2>&1); then
+  if $(git rev-parse --verify refs/stash >/dev/null 2>&1); then
     STATUS+=" $ZSH_THEME_GIT_PROMPT_STASHED"
   fi
 
-  if $(grep -q -- '^UU ' <<< "$INDEX"); then
-    STATUS+=" $ZSH_THEME_GIT_PROMPT_UNMERGED"
-  fi
+  git_loop '^UU ' "$ZSH_THEME_GIT_PROMPT_UNMERGED"
+  git_loop '^## [^ ]+ .*ahead' "$ZSH_THEME_GIT_PROMPT_AHEAD"
+  git_loop '^## [^ ]+ .*behind' "$ZSH_THEME_GIT_PROMPT_BEHIND"
+  git_loop '^## [^ ]+ .*diverged' "$ZSH_THEME_GIT_PROMPT_DIVERGED"
 
-  if $(grep -q -- '^## [^ ]\+ .*ahead' <<< "$INDEX"); then
-    STATUS+=" $ZSH_THEME_GIT_PROMPT_AHEAD"
-  fi
-
-  if $(grep -q -- '^## [^ ]\+ .*behind' <<< "$INDEX"); then
-    STATUS+=" $ZSH_THEME_GIT_PROMPT_BEHIND"
-  fi
-
-  if $(grep -q -- '^## [^ ]\+ .*diverged' <<< "$INDEX"); then
-    STATUS+=" $ZSH_THEME_GIT_PROMPT_DIVERGED"
-  fi
-
-  if [[ -n "$STATUS" ]]; then
-    echo -n "$STATUS"
-  fi
+  [[ "$STATUS" ]] && echo -n "$STATUS"
 }
 
 prompt_git_status_done() {
@@ -279,7 +260,7 @@ spaceship_noasync() {
 }
 
 spaceship_stuff() {
-  builtin cd -q "$1"
+  cd -q "$1"
   local SPACESHIP_PROMPT_DEFAULT_PREFIX=' '
   local SPACESHIP_PROMPT_DEFAULT_SUFFIX='%f%b'
   local SS_LIST=(asdf hg package node bun deno react vue ruby python elm elixir xcode swift golang
@@ -335,7 +316,20 @@ spaceship_precmd() {
 
 # Utils
 # https://github.com/spaceship-prompt/spaceship-prompt/blob/master/lib/utils.zsh
-spaceship::exists() { command -v $1 >/dev/null 2>&1 }
+spaceship::exists() { (( ${+commands[$1]} )) }
+
+spaceship::grep() {
+  if [[ "$1" =~ '^-' && "$1" != '-q' ]]; then
+    \grep "$@"; return
+  fi
+
+  [[ "$1" == '-q' ]] && { local quiet=true; shift }; local input
+  [[ $2 ]] && input="$2" || input="$(</dev/stdin)"
+
+  while IFS= read -r line; do
+    [[ "$line" =~ "$1" ]] && { [[ $q ]] || echo "$line" }
+  done <<< "$input"
+}
 
 spaceship::print() {
   for i in "$@"; do
@@ -514,11 +508,11 @@ spaceship_asdf() {
   local toolvers_fname=${ASDF_DEFAULT_TOOL_VERSIONS_FILENAME-.tool-versions}
   # Decide how we filter what is shown
   if [[ $ZSH_THEME_ASDF_PROMPT_FILTER != "ALL" ]]; then
-    currenttools=$(echo $currenttools | grep -v ' system ' -)
+    currenttools=$(spaceship::grep -v ' system ' <<< $currenttools)
   fi
   if [[ -z "${ZSH_THEME_ASDF_PROMPT_FILTER// }" \
       || $ZSH_THEME_ASDF_PROMPT_FILTER == "COMPACT" ]]; then
-    currenttools=$(echo $currenttools | grep -v "$HOME/$toolvers_fname" -)
+    currenttools=$(grep -v "$HOME/$toolvers_fname" <<< $currenttools)
   fi
 
   # Decide if anything is left to process and return if not.
@@ -591,13 +585,14 @@ spaceship_ansible() {
   local detected_playbooks
 
   if [[ -n "$yaml_files" ]]; then
-    detected_playbooks="$(grep --color=never -oE "tasks|hosts|roles" $yaml_files)"
+    detected_playbooks="$(spaceship::grep -oE "tasks|hosts|roles" $yaml_files)"
   fi
 
   [[ -n "$ansible_configs" || -n "$detected_playbooks" ]] || return
 
   # Retrieve ansible version
-  local ansible_version=$(ansible --version | head -1 | grep -oE '([0-9]+\.)([0-9]+\.)?([0-9]+)')
+  local ansible_version=$(ansible --version | head -1 |
+    spaceship::grep -oE '([0-9]+\.)([0-9]+\.)?([0-9]+)')
 
   # Display ansible section
   local result=(
@@ -684,33 +679,33 @@ spaceship_battery() {
 
   [[ $SPACESHIP_BATTERY_SHOW == false ]] && return
 
-  local battery_data battery_percent battery_status battery_color
+  local battery battery_data battery_percent battery_status battery_color
 
   if spaceship::exists upower; then
-    local battery=$(command upower -e | grep battery | head -1)
+    battery=$(upower -e | spaceship::grep battery | head -1)
     # Return if no battery
     [[ -z $battery ]] && return
 
     battery_data=$(upower -i $battery)
-    battery_percent="$( echo "$battery_data" | grep percentage | awk '{print $2}' )"
-    battery_status="$( echo "$battery_data" | grep state | awk '{print $2}' )"
+    battery_percent="$(spaceship::grep percentage "$battery_data" | awk '{print $2}')"
+    battery_status="$(spaceship::grep state "$battery_data" | awk '{print $2}')"
   elif spaceship::exists pmset; then
-    battery_data=$(pmset -g batt | grep "InternalBattery")
+    battery_data=$(pmset -g batt | spaceship::grep "InternalBattery")
 
     # Return if no internal battery
     [[ -z "$battery_data" ]] && return
 
     # Colored output from pmset will break prompt if grep is aliased to show colors
-    battery_percent="$( echo $battery_data | \grep -oE '[0-9]{1,3}%' )"
-    battery_status="$( echo $battery_data | awk -F '; *' '{ print $2 }' )"
+    battery_percent="$(spaceship::grep -oE '[0-9]{1,3}%' <<< $battery_data)"
+    battery_status="$(awk -F '; *' '{ print $2 }' <<< $battery_data)"
   elif spaceship::exists acpi; then
     battery_data=$(acpi -b 2>/dev/null | head -1)
 
     # Return if no battery
     [[ -z $battery_data ]] && return
 
-    battery_status_and_percent="$(\
-      echo $battery_data | sed 's/Battery [0-9]*: \(.*\), \([0-9]*\)%.*/\1:\2/')"
+    battery_status_and_percent="$(sed 's/Battery [0-9]*: \(.*\), \([0-9]*\)%.*/\1:\2/' \
+      <<< $battery_data)"
     battery_status_and_percent_array=("${(@s/:/)battery_status_and_percent}")
     battery_status=$battery_status_and_percent_array[1]:l
     battery_percent=$battery_status_and_percent_array[2]
@@ -723,7 +718,7 @@ spaceship_battery() {
   fi
 
   # Remove trailing % and symbols for comparison
-  battery_percent="$(echo $battery_percent | tr -d '%[,;]')"
+  battery_percent="$(tr -d '%[,;]' <<< $battery_percent)"
 
   # Change color based on battery percentage
   if [[ $battery_percent == 100 || $battery_status =~ "(charged|full)" ]]; then
@@ -1122,7 +1117,7 @@ spaceship_elixir() {
 
   if [[ $elixir_version == "" ]]; then
     spaceship::exists elixir || return
-    elixir_version=$(elixir -v 2>/dev/null | command grep "Elixir" --color=never | cut -d ' ' -f 2)
+    elixir_version=$(elixir -v 2>/dev/null | spaceship::grep Elixir | cut -d ' ' -f 2)
   fi
 
   [[ $elixir_version == "system" ]] && return
@@ -1181,7 +1176,8 @@ spaceship_ember() {
   # Show EMBER status only for folders w/ ember-cli-build.js files
   [[ -f ember-cli-build.js && -f node_modules/ember-cli/package.json ]] || return
 
-  local ember_version=$(grep '"version":' ./node_modules/ember-cli/package.json | cut -d\" -f4)
+  local ember_version=$(spaceship::grep '"version":' ./node_modules/ember-cli/package.json |
+    cut -d\" -f4)
   [[ $ember_version == "system" || $ember_version == "ember" ]] && return
 
   local result=(
@@ -1492,11 +1488,12 @@ spaceship_hg() {
 
   [[ $SPACESHIP_HG_SHOW == false ]] && return
 
+  spaceship::exists hg || return
   spaceship::is_hg || return
 
   local hg_branch="$(spaceship_hg_branch)" hg_status="$(spaceship_hg_status)"
 
-  [[ -z $hg_branch ]] && return
+  [[ $hg_branch || hg_status ]] || return
 
   local result(
     $White
@@ -1555,28 +1552,28 @@ spaceship_hg_status() {
 
   # Indicators are suffixed instead of prefixed to each other to
   # provide uniform view across git and mercurial indicators
-  if $(echo "$INDEX" | grep -E '^\? ' &> /dev/null); then
+  if spaceship::grep -q '^\? ' <<< "$INDEX"; then
     hg_status="$SPACESHIP_HG_STATUS_UNTRACKED$hg_status"
   fi
-  if $(echo "$INDEX" | grep -E '^A ' &> /dev/null); then
+  if spaceship::grep -q '^A ' <<< "$INDEX"; then
     hg_status="$SPACESHIP_HG_STATUS_ADDED$hg_status"
   fi
-  if $(echo "$INDEX" | grep -E '^M ' &> /dev/null); then
+  if spaceship::grep -q '^M ' <<< "$INDEX"; then
     hg_status="$SPACESHIP_HG_STATUS_MODIFIED$hg_status"
   fi
-  if $(echo "$INDEX" | grep -E '^(R|!)' &> /dev/null); then
+  if spaceship::grep -q '^(R|!)' <<< "$INDEX"; then
     hg_status="$SPACESHIP_HG_STATUS_DELETED$hg_status"
   fi
 
-  if [[ -n $hg_status ]]; then
-    local result=(
-      $SPACESHIP_HG_STATUS_COLOR
-      $SPACESHIP_HG_STATUS_PREFIX
-      $hg_status
-      $SPACESHIP_HG_STATUS_SUFFIX
-    )
-    spaceship::print $result
-  fi
+  [[ $hg_status ]] || return
+
+  local result=(
+    $SPACESHIP_HG_STATUS_COLOR
+    $SPACESHIP_HG_STATUS_PREFIX
+    $hg_status
+    $SPACESHIP_HG_STATUS_SUFFIX
+  )
+  spaceship::print $result
 }
 
 # IBM Cloud Command Line Interface
@@ -1593,7 +1590,7 @@ spaceship_ibmcloud() {
 
   spaceship::exists ibmcloud || return
 
-  local ibmcloud_account=$(ibmcloud target | grep Account | awk '{print $2}')
+  local ibmcloud_account=$(ibmcloud target | spaceship::grep Account | awk '{print $2}')
   [[ -z $ibmcloud_account ]] && return
 
   # If no account is targeted, the awk command will return "No", so we need to
@@ -1626,7 +1623,7 @@ spaceship_java() {
   local is_java_project="$(spaceship::upsearch $java_project_globs)"
   [[ -n "$is_java_project" || -n *.(java|class|jar|war)(#qN^/) ]] || return
 
-  local java_version=$(java -version 2>&1 | grep version --color=never | awk -F '"' '{print $2}')
+  local java_version=$(java -version 2>&1 | spaceship::grep version | awk -F '"' '{print $2}')
 
   # Check if java version is not empty
   [[ -z "$java_version" ]] && return
@@ -1692,7 +1689,7 @@ spaceship_julia() {
   local is_julia_project="$(spaceship::upsearch Project.toml JuliaProject.toml Manifest.toml)"
   [[ -n "$is_julia_project" || -n *.jl(#qN^/) ]] || return
 
-  local julia_version=$(julia --version | grep --color=never -oE '([0-9]+\.)([0-9]+\.)?([0-9]+)')
+  local julia_version=$(julia --version | spaceship::grep -oE '([0-9]+\.)([0-9]+\.)?([0-9]+)')
 
   local result=(
     $SPACESHIP_JULIA_COLOR
@@ -1719,7 +1716,7 @@ spaceship_kotlin() {
 
   # Extract kotlin version
   local kotlin_version=$(kotlinc -version 2>&1 | \
-    grep --color=never -oE '([0-9]+\.)([0-9]+\.)?([0-9]+)' | head -n 1)
+    spaceship::grep -oE '([0-9]+\.)([0-9]+\.)?([0-9]+)' | head -n 1)
   [[ -z "$kotlin_version" ]] && return
 
   local result=(
@@ -1777,7 +1774,7 @@ spaceship_kubectl_version() {
 
   # if kubectl can't connect kubernetes cluster, kubernetes version section will be not shown
   local kubectl_version=$(kubectl version --short 2>/dev/null | \
-    grep "Server Version" | sed 's/Server Version: \(.*\)/\1/')
+    spaceship::grep "Server Version" | sed 's/Server Version: \(.*\)/\1/')
 
   [[ -z $kubectl_version ]] && return
 
@@ -2106,7 +2103,7 @@ spaceship_package() {
     # `cargo pkgid` need Cargo.lock exists too. If it does't, do not show package version
     # https://github.com/spaceship-prompt/spaceship-prompt/pull/617
     local pkgid=$(cargo pkgid 2>&1)
-    echo "$pkgid" | grep -q "error:" && return
+    spaceship::grep -q 'error:' <<< "$pkgid" && return
     echo "${pkgid##*\#}"
   }
 
@@ -2138,10 +2135,10 @@ spaceship_package() {
     spaceship::upsearch -s settings.gradle settings.gradle.kts || return
 
     gradle_exe=$(spaceship::upsearch gradlew) ||
-      (spaceship::exists gradle && gradle_exe="gradle") || return
+      (spaceship::exists gradle && gradle_exe='gradle') || return
 
     $gradle_exe properties --no-daemon --console=plain -q 2>/dev/null | \
-      grep "^version:" | awk '{printf $2}'
+      spaceship::grep '^version:' | awk '{printf $2}'
   }
 
   spaceship_package::python() {
@@ -2230,7 +2227,7 @@ spaceship_php() {
   local is_php_project="$(spaceship::upsearch composer.json)"
   [[ -n "$is_php_project" || -n *.php(#qN^/) ]] || return
 
-  local php_version=$(php -v 2>&1 | grep --color=never -oe "^PHP\s*[0-9.]\+" | awk '{print $2}')
+  local php_version=$(php -v 2>&1 | spaceship::grep -oe "^PHP\s*[0-9.]\+" | awk '{print $2}')
 
   local result=(
     $SPACESHIP_PHP_COLOR
@@ -2461,7 +2458,7 @@ spaceship_scala() {
   [[ -n "$is_scala_context" || -n *.scala(#qN^/) || -n *.sbt(#qN^/) ]] || return
 
   # pipe version info into stdout; won't work otherwise
-  local scala_version=$(scalac -version 2>&1 | grep --color=never -Eo "[0-9]+\.[0-9]+\.[0-9]+")
+  local scala_version=$(scalac -version 2>&1 | spaceship::grep -Eo "[0-9]+\.[0-9]+\.[0-9]+")
 
   [[ -z "$scala_version" || "${scala_version}" == "system" ]] && return
 
@@ -2491,7 +2488,7 @@ spaceship_swift() {
   if [[ $SPACESHIP_SWIFT_SHOW_GLOBAL == true ]] ; then
     swift_version=$(swiftenv version | sed 's/ .*//')
   elif [[ $SPACESHIP_SWIFT_SHOW_LOCAL == true ]] ; then
-    if swiftenv version | grep ".swift-version" > /dev/null; then
+    if swiftenv version | spaceship::grep -q ".swift-version"; then
       swift_version=$(swiftenv version | sed 's/ .*//')
     fi
   fi
@@ -2582,8 +2579,8 @@ spaceship_vlang() {
 
   local v_version
 
-  if command v 2>/dev/null; then
-    v_version=$(command v version | cut -d ' ' -f2)
+  if spaceship::exists v; then
+    v_version=$(\v version | cut -d ' ' -f2)
   fi
 
   [[ -z "$v_version" ]] && return
@@ -2651,7 +2648,7 @@ spaceship_xcode() {
   if [[ $SPACESHIP_XCODE_SHOW_GLOBAL == true ]] ; then
     xcode_path=$(xcenv version | sed 's/ .*//')
   elif [[ $SPACESHIP_XCODE_SHOW_LOCAL == true ]] ; then
-    if xcenv version | grep ".xcode-version" > /dev/null; then
+    if xcenv version | spaceship::grep -q ".xcode-version"; then
       xcode_path=$(xcenv version | sed 's/ .*//')
     fi
   fi

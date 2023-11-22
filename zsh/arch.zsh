@@ -318,22 +318,22 @@ arch-base() {
           $use_sudo pacman -S --needed flatpak
         else
           flatpk='N'
-          if command -v flatpak >/dev/null; then
+          if exist flatpak; then
             echo '\e[31mwarning:\033[0m flatpak is installed'
           fi
 
-          if command -v brave >/dev/null && ! grep -q MiddleClickAutoscroll \
+          if exist brave && ! grep -q MiddleClickAutoscroll \
             "$XDG_DATA_HOME/applications/brave-browser.desktop" 2>/dev/null; then
-            command cp /usr/share/applications/brave-browser.desktop "$XDG_DATA_HOME/applications"
+            \cp /usr/share/applications/brave-browser.desktop "$XDG_DATA_HOME/applications"
             sed -i 's/\(Exec=brave\)/\1 --enable-blink-features=MiddleClickAutoscroll/' \
               "$XDG_DATA_HOME/share/applications/brave-browser.desktop"
           fi
         fi
 
         if [[ "$EUID" != 0 ]]; then
-          if [[ "$flatpk" =~ '^[yY]' ]] && command -v flatpak >/dev/null; then
-            command mkdir -p "$XDG_DATA_HOME/icons"
-            command mkdir -p "$XDG_DATA_HOME/flatpak/exports/share/applications"
+          if [[ "$flatpk" =~ '^[yY]' ]] && exist flatpak; then
+            \mkdir -p "$XDG_DATA_HOME/icons"
+            \mkdir -p "$XDG_DATA_HOME/flatpak/exports/share/applications"
             local qbt_tray='qbittorrent/qBittorrent/master/src/icons/qbittorrent-tray.svg'
 
             fetch "https://raw.githubusercontent.com/${qbt_tray}" \
@@ -346,7 +346,7 @@ arch-base() {
             if ! grep -q MiddleClickAutoscroll \
               "$XDG_DATA_HOME/flatpak/exports/share/applications/com.brave.Browser.desktop" \
               2>/dev/null; then
-              command cp \
+              \cp \
                 '/var/lib/flatpak/app/com.brave.Browser/current/active/export/share/applications/com.brave.Browser.desktop' \
                 "$XDG_DATA_HOME/flatpak/exports/share/applications/"
 
@@ -358,7 +358,7 @@ arch-base() {
             if ! grep -q "sh -c" \
               "$XDG_DATA_HOME/flatpak/exports/share/applications/com.valvesoftware.Steam.desktop" \
               2>/dev/null; then
-              command cp \
+              \cp \
                 '/var/lib/flatpak/app/com.valvesoftware.Steam/current/active/export/share/applications/com.valvesoftware.Steam.desktop' \
                 "$XDG_DATA_HOME/flatpak/exports/share/applications/"
 
@@ -373,23 +373,23 @@ arch-base() {
               flatpak install io.neovim.nvim org.freedesktop.Sdk.Extension.node18
               flatpak override -u --env=FLATPAK_ENABLE_SDK_EXT=node18 io.neovim.nvim
               [[ ! -x /usr/bin/rg ]] || $use_sudo sh -c \
-                "command cp /usr/bin/rg /var/lib/flatpak/app/io.neovim.nvim/current/active/files/bin"
+                "\cp /usr/bin/rg /var/lib/flatpak/app/io.neovim.nvim/current/active/files/bin"
             else
               sudo pacman -S --needed neovim npm
             fi
             unset flpk_nvim
           else
             sudo pacman -S --needed firefox mpv steam qbittorrent qt6-wayland
-            command npm config set audit=false fund=false progress=off install-strategy=shallow
+            npm config set audit=false fund=false progress=off install-strategy=shallow
           fi
 
           if [[ ! -x /usr/bin/paru ]]; then
-            command mkdir -p "$XDG_CACHE_HOME/paru/clone"
+            \mkdir -p "$XDG_CACHE_HOME/paru/clone"
             git clone 'https://aur.archlinux.org/paru-bin' "$XDG_CACHE_HOME/paru/clone/paru-bin"
             local current_dir="$PWD"
-            builtin cd -q "$XDG_CACHE_HOME/paru/clone/paru-bin"
+            cd -q "$XDG_CACHE_HOME/paru/clone/paru-bin"
             makepkg -sir
-            builtin cd -q "$current_dir"
+            cd -q "$current_dir"
           fi
         fi
 
@@ -460,11 +460,11 @@ arch-base() {
 
         Yes )
           # mpv config
-          if command -v mpv >/dev/null || command -v io.mpv.Mpv >/dev/null; then
-            command -v mpv >/dev/null && local baseMpv="$XDG_CONFIG_HOME" ||
+          if exist mpv || exist io.mpv.Mpv; then
+            exist mpv && local baseMpv="$XDG_CONFIG_HOME" ||
               local baseMpv="$HOME/.var/app/io.mpv.Mpv/config"
 
-            command mkdir -p "$baseMpv/mpv/{scripts,scripts-opts}"
+            \mkdir -p "$baseMpv/mpv/{scripts,scripts-opts}"
             echo 'idle=yes\nvolume=25\nautofit-smaller=50%x50%\nautofit-larger=90%x90%' \
               > "$baseMpv/mpv/mpv.conf"
 
@@ -494,7 +494,7 @@ arch-base() {
           echo 'Do you wish to create Firefox config in "$HOME/chrome" [y/N]?'
           local firefoxcfg; read firefoxcfg
           if [[ $firefoxcfg =~ '^[yY]' ]]; then
-            command mkdir -p "$HOME/chrome"
+            \mkdir -p "$HOME/chrome"
 
             echo '@-moz-document url(about:home), url(about:newtab), url(about:privatebrowsing) {' \
               '\n  .click-target-container *,\n  .top-sites-list * {\n    color: #fff !important;' \
@@ -520,7 +520,7 @@ arch-base() {
               case $yne in
 
                 Yes )
-                  command mkdir -p "$XDG_CONFIG_HOME/git"
+                  \mkdir -p "$XDG_CONFIG_HOME/git"
                   touch "$XDG_CONFIG_HOME/git/config"
                   git config --global init.defaultBranch main
 
@@ -548,11 +548,7 @@ arch-base() {
 
           # Theme
           install_theme() {
-            if command -v alacritty >/dev/null  ||
-              command -v plasmashell >/dev/null ||
-              command -v gnome-shell >/dev/null; then
-              return
-            fi
+            exist alacritty || exist plasmashell || exist gnome-shell || return
 
             local installTheme
             echo "Do you wish to install Theme script? [y/N]" && read installTheme
@@ -573,7 +569,7 @@ arch-base() {
             ! pacman -Qi ttf-jetbrains-mono-nerd &>/dev/null; then
             echo 'Do you wish to install Nerd Fonts? [y/N]?' && read nerdcfg
             if [[ $nerdcfg =~ '^[yY]' ]]; then
-              command mkdir -p "$XDG_DATA_HOME/fonts"
+              \mkdir -p "$XDG_DATA_HOME/fonts"
               echo 'Downloading Nerd Fonts...'
 
               [[ -f "$XDG_CACHE_HOME/$font.zip" ]] || fetch \
@@ -606,12 +602,12 @@ arch-base() {
               'https://gitlab.com/brunolpsousa/dotfiles/-/raw/main/init.lua' \
               > "$baseNvim/nvim/init.lua"
 
-            command mkdir -p "$baseNvim/nvim/spell"
+            \mkdir -p "$baseNvim/nvim/spell"
           fi
 
           # Alacritty config
-          if command -v alacritty >/dev/null; then
-            command mkdir -p "$XDG_CONFIG_HOME/alacritty"
+          if exist alacritty; then
+            \mkdir -p "$XDG_CONFIG_HOME/alacritty"
 
             fetch 'https://gitlab.com/brunolpsousa/dotfiles/-/raw/main/alacritty/alacritty.toml' \
               > "$XDG_CONFIG_HOME/alacritty/alacritty.toml"
@@ -628,9 +624,9 @@ arch-base() {
 
           # Tmux config
           # Vim color fix: https://gist.github.com/andersevenrud/015e61af2fd264371032763d4ed965b6
-          if command -v tmux >/dev/null; then
+          if exist tmux; then
             local tmuxprefix tmuxbind
-            command mkdir -p "$XDG_CONFIG_HOME/tmux"
+            \mkdir -p "$XDG_CONFIG_HOME/tmux"
             fetch 'https://gitlab.com/brunolpsousa/dotfiles/-/raw/main/tmux.conf' \
               > "$XDG_CONFIG_HOME/tmux/tmux.conf"
             echo "Do you wish to remap tmux's prefix? [y/N]" && read tmuxprefix
@@ -643,8 +639,8 @@ arch-base() {
           fi
 
           # Wezterm config
-          if command -v wezterm >/dev/null || command -v org.wezfurlong.wezterm >/dev/null; then
-            command mkdir -p "$XDG_CONFIG_HOME/wezterm"
+          if exist wezterm || exist org.wezfurlong.wezterm; then
+            \mkdir -p "$XDG_CONFIG_HOME/wezterm"
 
             fetch 'https://gitlab.com/brunolpsousa/dotfiles/-/raw/main/wezterm.lua' \
               > "$XDG_CONFIG_HOME/wezterm/wezterm.lua"
@@ -740,7 +736,7 @@ arch-base() {
         fi
 
         if [[ "$flatpk" =~ '^[yY]' ]]; then
-          command -v flatpak >/dev/null || sh -c "${use_sudo} pacman -S flatpak"
+          exist flatpak || sh -c "${use_sudo} pacman -S flatpak"
           flatpak install \
             org.gnome.Loupe org.gnome.FileRoller org.gnome.Calculator org.gnome.Chess org.gnome.Mines
           flatpak override -u --filesystem=host org.gnome.FileRoller
@@ -762,7 +758,7 @@ arch-base() {
           gdm dbus-launch gsettings set org.gnome.desktop.peripherals.touchpad tap-to-click true
 
         if [[ "$EUID" != 0 ]]; then
-          command mkdir -p "$XDG_CONFIG_HOME/zsh" "$XDG_DATA_HOME/nautilus/scripts"
+          \mkdir -p "$XDG_CONFIG_HOME/zsh" "$XDG_DATA_HOME/nautilus/scripts"
 
           [[ -f "$XDG_DATA_HOME/zsh/chwp.sh" ]] || fetch \
             'https://gitlab.com/brunolpsousa/dotfiles/-/raw/main/zsh/chwp.sh' \
