@@ -221,6 +221,15 @@ end
 local format_on_save = true
 local function toggle_format_on_save()
 	format_on_save = not format_on_save
+	local status = format_on_save and "enabled" or "disabled"
+	print("Format on save was " .. status)
+end
+
+local remove_comments_on_save = true
+local function toggle_remove_comments_on_save()
+	remove_comments_on_save = not remove_comments_on_save
+	local status = remove_comments_on_save and "enabled" or "disabled"
+	print("Remove empty comments on save was " .. status)
 end
 
 vim.api.nvim_create_autocmd({ "BufWritePre" }, {
@@ -243,11 +252,13 @@ vim.api.nvim_create_autocmd({ "BufWritePre" }, {
 
 		-- Remove comments with no subsequent content (# % ;; -- //)
 		-- Match comments at the beginning of the line or preceded by spaces/tabs
-		if ft:find("sh") then
+		if remove_comments_on_save then
 			-- Don't remove `;;` in `sh` files as it can be used as an operator for `case`
-			vim.cmd([[:silent %s/\(^\|^\s\{}\)\(#\|%\|--\|\/\/\)$//e]])
-		else
-			vim.cmd([[:silent %s/\(^\|^\s\{}\)\(#\|%\|;;\|--\|\/\/\)$//e]])
+			if ft:find("sh") then
+				vim.cmd([[:silent %s/\(^\|^\s\{}\)\(#\|%\|--\|\/\/\)$//e]])
+			else
+				vim.cmd([[:silent %s/\(^\|^\s\{}\)\(#\|%\|;;\|--\|\/\/\)$//e]])
+			end
 		end
 
 		if format_on_save then
@@ -1047,6 +1058,8 @@ if pcall(require, "lazy") then
 				local function toggle_virtual_text()
 					virtual_text = not virtual_text and { prefix = "●" } or false
 					vim.diagnostic.config({ virtual_text = virtual_text })
+					local status = virtual_text and "enabled" or "disabled"
+					print("Virtual text was " .. status)
 				end
 				keymap("n", "<leader>lv", toggle_virtual_text, { desc = "Toggle virtual text" })
 
@@ -1530,7 +1543,8 @@ if pcall(require, "lazy") then
 						name = "LSP",
 						-- stylua: ignore
 						f = { function() lsp_format(true) end, "Format", },
-						V = { toggle_format_on_save, "Toggle format on save" },
+						t = { toggle_remove_comments_on_save, "Toggle remove empty comments on save" },
+						T = { toggle_format_on_save, "Toggle format on save" },
 					},
 					r = {
 						name = "Session",
