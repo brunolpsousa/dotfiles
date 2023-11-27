@@ -109,11 +109,12 @@ ssh() {
   local_files=(~/$^local_files(N))
   dump=$(tar -C ~ -pczT <(print -rl -- ${(@)local_files#$HOME/}) | base64) || return
 
-  command ssh -t "$@" '
+  "${commands[ssh]}" -t "$@" '
     set -ue
     printf "%s" '${(q)dump//$'\n'}' | base64 -d | tar -C ~ -xzpo
+    exists() { command -v "$1" >/dev/null; }
     fetch() {
-      if (( ${+commands[curl]} )); then
+      if exists curl; then
         curl -fsSL -- "$1"
       else
         wget -O- -- "$1"
@@ -124,7 +125,7 @@ ssh() {
       mv ~/.zshrc.tmp.$$ ~/.zshrc
     fi
     export PATH="$HOME/.local/bin:$PATH"
-    if ! (( ${+commands[zsh]} )); then
+    if ! exists zsh; then
       if [ ! -x ~/.local/bin/zsh ]; then
         fetch '${(q)zsh_url}' > ~/.zsh-bin_install.tmp.$$
         mv ~/.zsh-bin_install.tmp.$$ ~/.zsh-bin_install
@@ -154,7 +155,7 @@ dot() {
 
 # Convert image files to jxl
 cimg() {
-  if ! exist mogrify; then
+  if ! exists mogrify; then
     echo 'error: `mogrify` not found. Please, install `imagemagick`'
     return 1
   fi
@@ -191,37 +192,37 @@ vr() {
 
 # Convert media files to mp3
 tomp3() {
-  if [[ -n "$@" ]]; then
-    mkdir -p ./mp3_files
-    for f in "$@"; do
-      [[ -f "$f" ]] || continue
-      ffmpeg -i "$f" -vn -ar 44100 -ac 2 -b:a 192k "./mp3_files/${f%.*}.mp3"
-    done
-    \rmdir ./mp3_files &>/dev/null
-    return 0
-  else
+  if [[ -z "$1" ]]; then
     echo 'Usage: tomp3 <file_1> <file_2> <file.extension> <*.extension> <*>'
     return 1
   fi
+
+  mkdir -p ./mp3_files
+  for f in "$@"; do
+    [[ -f "$f" ]] || continue
+    ffmpeg -i "$f" -vn -ar 44100 -ac 2 -b:a 192k "./mp3_files/${f%.*}.mp3"
+  done
+  \rmdir ./mp3_files &>/dev/null
+  return 0
 }
 
 # Convert media files to mp4
 tomp4() {
-  if [[ -n "$@" ]]; then
-    local codec
-    [[ "$1" == "--x265" ]] && codec=libx265 || codec=libx264
-    mkdir -p ./mp4_files
-    for f in "$@"; do
-      [[ -f "$f" ]] || continue
-      ffmpeg -i "$f" -vf "pad=ceil(iw/2)*2:ceil(ih/2)*2" \
-        -vcodec "$codec" -crf 28 "./mp4_files/${f%.*}.mp4"
-    done
-    \rmdir ./mp4_files &>/dev/null
-    return 0
-  else
+  if [[ -z "$1" ]]; then
     echo 'Usage: tomp4 [--x265] <file_1> <file_2> <file.extension> <*.extension> <*>'
     return 1
   fi
+
+  local codec
+  [[ "$1" == "--x265" ]] && codec=libx265 || codec=libx264
+  mkdir -p ./mp4_files
+  for f in "$@"; do
+    [[ -f "$f" ]] || continue
+    ffmpeg -i "$f" -vf "pad=ceil(iw/2)*2:ceil(ih/2)*2" \
+      -vcodec "$codec" -crf 28 "./mp4_files/${f%.*}.mp4"
+  done
+  \rmdir ./mp4_files &>/dev/null
+  return 0
 }
 
 # Print the decimal value of a number
@@ -336,7 +337,7 @@ bd() {
       >/dev/null builtin cd -q "$selection"
     elif [[ -f "$selection" ]]; then
       for file in "$selection"; do
-        if grep -q text <<< $(file $file); then
+        if file $file | grepsh -q text; then
           "$EDITOR" "$selection" 2>/dev/null
         else
           xdg-open "$selection" >/dev/null 2>&1
@@ -377,15 +378,12 @@ speedtest() {
   fetch "$sURL" | python - "$@"
  }
 
-# by default show 3 months of calendar with week number
-# but also allow to override it
+# by default show 3 months of calendar with week number but also allow to override it
 cal() {
-  local CALENDAR="$(command -vp cal)"
   if [[ "$#" -eq 0 ]]; then
-    "$CALENDAR" -w3
-  else
-    "$CALENDAR" "$@"
+    "${commands[cal]}" -w3; return
   fi
+  "${commands[cal]}" "$@"
 }
 
 #Compile and run Java code
@@ -416,11 +414,11 @@ arch-date() {
 alias yay='paru'
 paru() {
   [[ -z "$1" ]] && local args=('-Syu') || local args=("$@")
-  if exist paru; then
-    command paru "$args[@]" \
+  if exists paru; then
+    "${commands[paru]}" "$args[@]" \
       --topdown --removemake=yes --sudoloop --combinedupgrade --upgrademenu --newsonupgrade
-  elif exist yay; then
-    command yay "$args[@]" \
+  elif exists yay; then
+    "${commands[yay]}" "$args[@]" \
       --topdown --removemake --sudoloop --combinedupgrade
   else
     echo 'error: `paru` nor `yay` found'

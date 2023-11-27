@@ -316,29 +316,8 @@ spaceship_precmd() {
 
 # Utils
 # https://github.com/spaceship-prompt/spaceship-prompt/blob/master/lib/utils.zsh
-spaceship::exists() { (( ${+commands[$1]} )) }
-
-spaceship::grep() {
-  if [[ "$1" =~ '^-[^qvoeE]' ]]; then
-    \grep "$@"; return
-  elif [[ "$1" == '-q' ]]; then
-    shift; spaceship::grep::out() { [[ "$1" =~ "$2" ]] && : }
-  elif [[ "$1" == '-v' ]]; then
-    shift; spaceship::grep::out() { [[ "$1" =~ "$2" ]] || echo "$1" }
-  elif [[ "$1" =~ '^-[^\w\s]*o[^\w\s]*' ]]; then
-    shift; setopt BASH_REMATCH
-    spaceship::grep::out() { [[ "$1" =~ "$2" ]] && echo "$BASH_REMATCH[1]" }
-  else
-    spaceship::grep::out() { [[ "$1" =~ "$2" ]] && echo "$1" }
-  fi
-
-  local input="$2"
-  [[ $2 ]] || input="$(</dev/stdin)"
-
-  while IFS= read -r line; do
-    spaceship::grep::out "$line" "$1"
-  done <<< "$input"
-}
+alias spaceship::exists='exists'
+alias spaceship::grep='grepsh'
 
 spaceship::print() {
   for i in "$@"; do

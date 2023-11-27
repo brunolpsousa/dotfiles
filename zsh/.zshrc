@@ -290,18 +290,43 @@ function ctrl-z-toggle {
 zle -N ctrl-z-toggle
 bindkey '^Z' ctrl-z-toggle
 #--------------------------------------------------------------------------------------------------#
-############################################## Plugins #############################################
+############################################### Tools ##############################################
 #--------------------------------------------------------------------------------------------------#
-exist() { (( ${+commands[$1]} )) }
+exists() { (( ${+commands[$1]} )) }
+
+grepsh() {
+  if [[ "$1" =~ '^-[^qvoeE]' ]]; then
+    "${commands[grep]}" "$@"; return
+  elif [[ "$1" == '-q' ]]; then
+    shift; grepsh::out() { [[ "$1" =~ "$2" ]] && : }
+  elif [[ "$1" == '-v' ]]; then
+    shift; grepsh::out() { [[ "$1" =~ "$2" ]] || echo "$1" }
+  elif [[ "$1" =~ '^-[^\w\s]*o[^\w\s]*' ]]; then
+    shift; setopt BASH_REMATCH
+    grepsh::out() { [[ "$1" =~ "$2" ]] && echo "$BASH_REMATCH[1]" }
+  else
+    grepsh::out() { [[ "$1" =~ "$2" ]] && echo "$1" }
+  fi
+
+  local input="$2"
+  [[ $2 ]] || input="$(</dev/stdin)"
+
+  while IFS= read -r line; do
+    grepsh::out "$line" "$1"
+  done <<< "$input"
+}
+
 fetch() {
-  if exist curl; then
+  if exists curl; then
     curl -fsSL -- "$1"
-  elif exist wget; then
+  elif exists wget; then
     wget -qO- -- "$1"
   else
     echo 'error: `curl` nor `wget` found'
   fi
 }
+#--------------------------------------------------------------------------------------------------#
+############################################## Plugins #############################################
 #--------------------------------------------------------------------------------------------------#
 # asdf
 source /opt/asdf-vm/asdf.sh 2>/dev/null
@@ -429,21 +454,21 @@ fi
 ############################################### Tmux ###############################################
 #--------------------------------------------------------------------------------------------------#
 exec_term() {
-  if exist alacritty; then
+  if exists alacritty; then
     alacritty --working-directory "$HOME"
-  elif exist wezterm; then
+  elif exists wezterm; then
     wezterm start --cwd "$HOME"
-  elif exist org.wezfurlong.wezterm; then
+  elif exists org.wezfurlong.wezterm; then
     org.wezfurlong.wezterm start --cwd "$HOME"
   fi
 }
 
 xterm_fallback() {
-  if exist alacritty; then
+  if exists alacritty; then
     alacritty "$@"
-  elif exist wezterm; then
+  elif exists wezterm; then
     wezterm start --cwd "$PWD" "$@"
-  elif exist org.wezfurlong.wezterm; then
+  elif exists org.wezfurlong.wezterm; then
     org.wezfurlong.wezterm start --cwd "$PWD" "$@"
   fi
 }
@@ -451,7 +476,7 @@ xterm_fallback() {
 tmux_xterm() {
   zsh "$XDG_DATA_HOME/zsh/theme.sh" 2>/dev/null
 
-  if ! exist tmux; then
+  if ! exists tmux; then
     xterm_fallback; return
   fi
 
@@ -459,11 +484,11 @@ tmux_xterm() {
     /dev/ttyS[0-9]*) local is_tty=1 ;;
   esac
 
-  local tmux_session="$(tmux list-sessions &>/dev/null | grep main)"
+  local tmux_session="$(tmux list-sessions &>/dev/null | grepsh main)"
   [[ -z "$1" ]] && local args=("$HOME") || local args=("$@")
   [[ -n $tmux_session ]] || tmux new-session -ds main -c "$HOME" 2>/dev/null
 
-  if grep -q attached <<< "$tmux_session" && [[ -z $is_tty ]]; then
+  if grepsh -q attached "$tmux_session" && [[ -z $is_tty ]]; then
     unset att_tmux; tmux neww -t=main -c "$args[@]"
   elif [[ -z "$*" ]]; then
     export att_tmux=1; exec_term
@@ -475,14 +500,14 @@ tmux_xterm() {
 "$@"
 
 tmux_attach() {
-  if ! exist tmux; then
+  if ! exists tmux; then
     echo 'error: `tmux` not found'; return 1
   fi
 
-  local tmux_session="$(tmux list-sessions &>/dev/null | grep main)"
+  local tmux_session="$(tmux list-sessions &>/dev/null | grepsh main)"
   NEW_LINE_BEFORE_PROMPT=1; unset att_tmux
 
-  if grep -q attached <<< "$tmux_session"; then
+  if grepsh -q attached "$tmux_session"; then
     tmux neww -t=main -c "$PWD" && tmux a -t=main
   elif [[ $tmux_session ]]; then
     tmux a -t=main

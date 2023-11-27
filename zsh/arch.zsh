@@ -318,11 +318,11 @@ arch-base() {
           $use_sudo pacman -S --needed flatpak
         else
           flatpk='N'
-          if exist flatpak; then
+          if exists flatpak; then
             echo '\e[31mwarning:\033[0m flatpak is installed'
           fi
 
-          if exist brave && ! grep -q MiddleClickAutoscroll \
+          if exists brave && ! grep -q MiddleClickAutoscroll \
             "$XDG_DATA_HOME/applications/brave-browser.desktop" 2>/dev/null; then
             \cp /usr/share/applications/brave-browser.desktop "$XDG_DATA_HOME/applications"
             sed -i 's/\(Exec=brave\)/\1 --enable-blink-features=MiddleClickAutoscroll/' \
@@ -331,7 +331,7 @@ arch-base() {
         fi
 
         if [[ "$EUID" != 0 ]]; then
-          if [[ "$flatpk" =~ '^[yY]' ]] && exist flatpak; then
+          if [[ "$flatpk" =~ '^[yY]' ]] && exists flatpak; then
             \mkdir -p "$XDG_DATA_HOME/icons"
             \mkdir -p "$XDG_DATA_HOME/flatpak/exports/share/applications"
             local qbt_tray='qbittorrent/qBittorrent/master/src/icons/qbittorrent-tray.svg'
@@ -460,8 +460,8 @@ arch-base() {
 
         Yes )
           # mpv config
-          if exist mpv || exist io.mpv.Mpv; then
-            exist mpv && local baseMpv="$XDG_CONFIG_HOME" ||
+          if exists mpv || exists io.mpv.Mpv; then
+            exists mpv && local baseMpv="$XDG_CONFIG_HOME" ||
               local baseMpv="$HOME/.var/app/io.mpv.Mpv/config"
 
             \mkdir -p "$baseMpv/mpv/{scripts,scripts-opts}"
@@ -548,7 +548,7 @@ arch-base() {
 
           # Theme
           install_theme() {
-            exist alacritty || exist plasmashell || exist gnome-shell || return
+            exists alacritty || exists plasmashell || exists gnome-shell || return
 
             local installTheme
             echo "Do you wish to install Theme script? [y/N]" && read installTheme
@@ -606,7 +606,7 @@ arch-base() {
           fi
 
           # Alacritty config
-          if exist alacritty; then
+          if exists alacritty; then
             \mkdir -p "$XDG_CONFIG_HOME/alacritty"
 
             fetch 'https://gitlab.com/brunolpsousa/dotfiles/-/raw/main/alacritty/alacritty.toml' \
@@ -624,7 +624,7 @@ arch-base() {
 
           # Tmux config
           # Vim color fix: https://gist.github.com/andersevenrud/015e61af2fd264371032763d4ed965b6
-          if exist tmux; then
+          if exists tmux; then
             local tmuxprefix tmuxbind
             \mkdir -p "$XDG_CONFIG_HOME/tmux"
             fetch 'https://gitlab.com/brunolpsousa/dotfiles/-/raw/main/tmux.conf' \
@@ -639,7 +639,7 @@ arch-base() {
           fi
 
           # Wezterm config
-          if exist wezterm || exist org.wezfurlong.wezterm; then
+          if exists wezterm || exists org.wezfurlong.wezterm; then
             \mkdir -p "$XDG_CONFIG_HOME/wezterm"
 
             fetch 'https://gitlab.com/brunolpsousa/dotfiles/-/raw/main/wezterm.lua' \
@@ -736,7 +736,7 @@ arch-base() {
         fi
 
         if [[ "$flatpk" =~ '^[yY]' ]]; then
-          exist flatpak || sh -c "${use_sudo} pacman -S flatpak"
+          exists flatpak || sh -c "${use_sudo} pacman -S flatpak"
           flatpak install \
             org.gnome.Loupe org.gnome.FileRoller org.gnome.Calculator org.gnome.Chess org.gnome.Mines
           flatpak override -u --filesystem=host org.gnome.FileRoller
