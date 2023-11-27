@@ -162,21 +162,25 @@ cimg() {
   setopt nullglob
   local current_dir="$PWD"
   local img_formats=(jpg jpeg png apng bmp svg tif tiff webp avif heic)
-  \mkdir -p ./cimg "$XDG_CACHE_HOME/cimg"
+  img_formats+=("${img_formats[@]:u}")
+  mkdir -p ./cimg "$XDG_CACHE_HOME/cimg"
 
   for f in "${img_formats[@]}"; do
     for i in *."$f"; do
-      [[ ! "$i" ]] || \mv "$i" ./cimg
+      [[ ! "$i" ]] || mv "$i" ./cimg
     done
+
+    [[ -d ./cimg && $(ls -A ./cimg) ]] || continue
+
     mogrify -format jxl ./cimg/*."$f" &&
-      find -path "./cimg/*.$f" | xargs -I '{}' mv '{}' "$XDG_CACHE_HOME/cimg"
+      find -path "./cimg/*.$f" | xargs -I '{}' mv -iv '{}' "$XDG_CACHE_HOME/cimg"
+
+    for i in ./cimg/*.jxl; do
+      [[ ! "$i" ]] || mv "$i" "$current_dir"
+    done
   done
 
-  for i in ./cimg/*.jxl; do
-    [[ ! "$i" ]] || \mv "$i" "$current_dir"
-  done
-
-  \rmdir -v ./cimg
+  rmdir -v ./cimg
 }
 
 vr() {
