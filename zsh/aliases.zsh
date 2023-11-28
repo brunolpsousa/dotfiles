@@ -450,8 +450,7 @@ alias paclog='grep -nC 2 --color=auto warning: /var/log/pacman.log'
 
 # Update .zshrc
 zupd() {
-  fetch https://gitlab.com/brunolpsousa/dotfiles/-/raw/main/zsh/.zshrc \
-    > "$ZDOTDIR/.zshrc.tmp"
+  fetch https://gitlab.com/brunolpsousa/dotfiles/-/raw/main/zsh/.zshrc > "$ZDOTDIR/.zshrc.tmp"
   [[ -s "$ZDOTDIR/.zshrc.tmp" ]] || { rm -I "$ZDOTDIR/.zshrc.tmp"; return 1 }
   \mv "$ZDOTDIR/.zshrc.tmp" "$ZDOTDIR/.zshrc"
   rm -I "$XDG_CONFIG_HOME"/zsh/*.zsh
@@ -510,8 +509,8 @@ urldecode() {
 
 # Convert a querystring into pretty JSON
 urlarray() {
-  python -c "import sys, json; from urllib.parse import parse_qs; print(json.dumps({k: q[0] \
-    if #len(q) == 1 else q for k, q in parse_qs(sys.stdin.read()).items()}), end='')" | json
+  python -c "import sys, json; from urllib.parse import parse_qs; print(json.dumps({k: q[0]
+    if len(q) == 1 else q for k, q in parse_qs(sys.stdin.read()).items()}), end='')" | json
 }
 
 # Display a list of supported colors

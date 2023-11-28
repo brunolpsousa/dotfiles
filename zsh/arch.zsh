@@ -249,9 +249,11 @@ ns() {
 
 arch-base() {
   [[ "$EUID" != 0 ]] && local use_sudo='sudo'
+
   local zenv=$(grep 'ZDOTDIR="\$HOME/.config/zsh"' /etc/zsh/zshenv 2>/dev/null)
   local zprof=$(grep 'source "\$ZDOTDIR/.zshrc"' /etc/zsh/zprofile 2>/dev/null)
   local yne flatpk
+
   if [[ -z $zenv || -z $zprof ]]; then
     echo 'Do you wish to configure zshenv and zprofile?'
     select yne in 'Yes' 'No' 'Exit'; do
@@ -298,7 +300,7 @@ arch-base() {
   select yne in 'Yes' 'No' 'Exit'; do
     case $yne in
       Yes )
-        $use_sudo sh -c "pacman -Syu --needed \
+        $use_sudo pacman -Syu --needed \
           fzf ripgrep neofetch yt-dlp man-db tldr \
           base-devel pkgstats reflector networkmanager \
           pipewire pipewire-alsa pipewire-pulse wireplumber \
@@ -310,7 +312,7 @@ arch-base() {
           $(case $(lscpu | awk '/Model name:/{print $3}') in
           AMD) echo -n 'amd-ucode';;
           Intel\(R\)) echo -n 'intel-ucode';;
-          esac)"
+          esac)
 
         echo 'Do you wish to use Flatpak [y/N]?' && read flatpk
 
@@ -319,7 +321,7 @@ arch-base() {
         else
           flatpk='N'
           if exists flatpak; then
-            echo '\e[31mwarning:\033[0m flatpak is installed'
+            echo '\e[31mwarning:\033[0m flatpak is installed\n'
           fi
 
           if exists brave && ! grep -q MiddleClickAutoscroll \
@@ -372,8 +374,8 @@ arch-base() {
             if [[ "$flpk_nvim" =~ '^[yY]' ]]; then
               flatpak install io.neovim.nvim org.freedesktop.Sdk.Extension.node18
               flatpak override -u --env=FLATPAK_ENABLE_SDK_EXT=node18 io.neovim.nvim
-              [[ ! -x /usr/bin/rg ]] || $use_sudo sh -c \
-                "\cp /usr/bin/rg /var/lib/flatpak/app/io.neovim.nvim/current/active/files/bin"
+              [[ ! -x /usr/bin/rg ]] || $use_sudo \
+                cp /usr/bin/rg /var/lib/flatpak/app/io.neovim.nvim/current/active/files/bin
             else
               sudo pacman -S --needed neovim npm
             fi
@@ -558,7 +560,7 @@ arch-base() {
             fetch 'https://gitlab.com/brunolpsousa/dotfiles/-/raw/main/zsh/theme.sh' \
               > "$XDG_DATA_HOME/zsh/theme.sh"
             chmod +x "$XDG_DATA_HOME/zsh/theme.sh"
-            sh -c "$XDG_DATA_HOME/zsh/theme.sh"
+            zsh "$XDG_DATA_HOME/zsh/theme.sh"
           fi
 
           # Nerd font config
@@ -685,16 +687,15 @@ arch-base() {
         local gve
         select gve in 'GNOME Boxes' 'Virt-Manager' 'None'; do
           case $gve in
-            GNOME\ Boxes ) sh -c "${use_sudo} pacman -S --needed gnome-boxes"; break;;
-            Virt-Manager )
-              sh -c "${use_sudo} pacman -S --needed \
-                virt-manager qemu-desktop libvirt edk2-ovmf dnsmasq"
-              break;;
+            GNOME\ Boxes ) $use_sudo pacman -S --needed gnome-boxes; break;;
+            Virt-Manager ) $use_sudo pacman -S --needed \
+              virt-manager qemu-desktop libvirt edk2-ovmf dnsmasq; break;;
             None ) break;;
           esac
         done
 
-        sh -c "${use_sudo} systemctl enable --now libvirtd; ${use_sudo} virsh net-autostart default"
+        $use_sudo systemctl enable --now libvirtd; $use_sudo virsh net-autostart default
+
         if [[ "$EUID" != 0 ]]; then
           [[ -z $(groups | grep libvirt) ]] && gpasswd -a $USER libvirt
           if ! grep -q "user = \"$USER\"" /etc/libvirt/qemu.conf; then
@@ -724,11 +725,11 @@ arch-base() {
   select gke in 'GNOME' 'KDE' 'Exit'; do
     case $gke in
 
-      GNOME ) sh -c "${use_sudo} pacman -S --needed \
+      GNOME ) $use_sudo pacman -S --needed \
           xdg-desktop-portal-gnome gst-plugin-pipewire gvfs-mtp \
           gnome-shell gnome-session gdm gnome-keyring gnome-control-center nautilus \
           gnome-disk-utility gnome-system-monitor gnome-tweaks gnome-themes-extra \
-          webp-pixbuf-loader ffmpegthumbnailer"
+          webp-pixbuf-loader ffmpegthumbnailer
 
         if [[ -z "$flatpk" ]]; then
           echo 'Do you wish to use Flatpak [y/N]?'
@@ -736,24 +737,23 @@ arch-base() {
         fi
 
         if [[ "$flatpk" =~ '^[yY]' ]]; then
-          exists flatpak || sh -c "${use_sudo} pacman -S flatpak"
-          flatpak install \
-            org.gnome.Loupe org.gnome.FileRoller org.gnome.Calculator org.gnome.Chess org.gnome.Mines
+          exists flatpak || $use_sudo pacman -S flatpak
+          flatpak install org.gnome.Loupe org.gnome.FileRoller org.gnome.Calculator \
+            org.gnome.Chess org.gnome.Mines
           flatpak override -u --filesystem=host org.gnome.FileRoller
         else
-          sh -c "${use_sudo} pacman -S --needed \
-            loupe file-roller gnome-calculator gnome-chess gnome-mines"
+          $use_sudo pacman -S --needed loupe file-roller gnome-calculator gnome-chess gnome-mines
         fi
 
         echo -e '[Unit]\nDescription=Change Wallpapers\nStartLimitIntervalSec=3' \
           '\nStartLimitBurst=5\n\n[Service]' \
           "\nExecStart=$XDG_DATA_HOME/zsh/chwp.sh\nRestart=always\nRestartSec=3" \
           '\n\n[Install]\nWantedBy=default.target' |
-          ${use_sudo} tee /etc/systemd/user/chwp.service >/dev/null
+          $use_sudo tee /etc/systemd/user/chwp.service >/dev/null
 
-        sh -c "${use_sudo} \
-          sed -i 's/#HandleLidSwitch=suspend/HandleLidSwitch=lock/' /etc/systemd/logind.conf"
-        sh -c "${use_sudo} chmod u+x /etc/systemd/user/chwp.service"
+        $use_sudo \
+          sed -i 's/#HandleLidSwitch=suspend/HandleLidSwitch=lock/' /etc/systemd/logind.conf
+        $use_sudo chmod u+x /etc/systemd/user/chwp.service
         sudo -u \
           gdm dbus-launch gsettings set org.gnome.desktop.peripherals.touchpad tap-to-click true
 
@@ -774,32 +774,31 @@ arch-base() {
         fi
         break;;
 
-      KDE ) sh -c "${use_sudo} pacman -S --needed \
+      KDE ) $use_sudo pacman -S --needed \
               xdg-desktop-portal-kde plasma-desktop plasma-wayland-session \
               qt5-wayland qt6-wayland sddm sddm-kcm powerdevil bluedevil plasma-nm plasma-pa \
               breeze-gtk kde-gtk-config kdialog khotkeys kinfocenter kscreen \
               plasma-disks plasma-firewall dolphin-plugins ark filelight \
               kcalc qt5-imageformats ffmpegthumbs plasma-systemmonitor kwallet-pam \
-              spectacle qt5-virtualkeyboard gwenview kcharselect okular"
+              spectacle qt5-virtualkeyboard gwenview kcharselect okular
 
         echo "\n>>> Do you wish to install KDE Games?\n"
-        sh -c "${use_sudo} pacman -S --needed \
-          bomber granatier kapman kblocks kfourinline kmines \
-          knavalbattle knetwalk kollision kpat ksnakeduel kspaceduel"
+        $use_sudo pacman -S --needed bomber granatier kapman kblocks kfourinline kmines \
+          knavalbattle knetwalk kollision kpat ksnakeduel kspaceduel
 
         [[ -f '/etc/sddm.conf.d/kde_settings.conf' ]] &&
           ! grep -q Breeze_Snow /etc/sddm.conf.d/kde_settings.conf &&
-          sh -c "${use_sudo} sed -i \
+          $use_sudo sed -i \
           '/^RebootCommand/ s/$/\nNumlock=on\nInputMethod=qtvirtualkeyboard/; /=breeze$/ s/$/\
-          \nCursorTheme=Breeze_Snow/' /etc/sddm.conf.d/kde_settings.conf"
+          \nCursorTheme=Breeze_Snow/' /etc/sddm.conf.d/kde_settings.conf
 
         echo -e '[Unit]\nDescription=Set Theme\n' \
           "\n[Service]\nExecStart=$XDG_DATA_HOME/zsh/theme.sh\n" |
-          ${use_sudo} tee /etc/systemd/user/theme.service >/dev/null
+          $use_sudo tee /etc/systemd/user/theme.service >/dev/null
         echo -e '[Unit]\nDescription=Set Theme\n\n[Timer]' \
           '\nOnCalendar=*-*-* 6:35:00\nOnCalendar=*-*-* 17:45:00\nPersistent=true' \
           '\nUnit=theme.service\n\n[Install]\nWantedBy=default.target' |
-          ${use_sudo} tee /etc/systemd/user/theme.timer >/dev/null
+          $use_sudo tee /etc/systemd/user/theme.timer >/dev/null
 
         # Map Meta (Super) to toggle overview
         kwriteconfig5 --file "$XDG_CONFIG_HOME/kwinrc" --group ModifierOnlyShortcuts --key Meta \

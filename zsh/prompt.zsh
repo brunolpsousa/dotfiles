@@ -358,7 +358,9 @@ spaceship::upsearch() {
 spaceship::extract::python() {
   local imports=$1 load=$2; shift 2
   local keys=("$@")
-  python -c "import $imports, functools; data=$load; print(next(filter(None, map(lambda key: functools.reduce(lambda obj, key: obj[key] if key in obj else {}, key.split('.'), data), ['${(j|','|)keys}'])), None))" 2>/dev/null
+  python -c "import $imports, functools; data=$load; print(next(filter(None, map(lambda key:
+  functools.reduce(lambda obj, key: obj[key] if key in obj else {}, key.split('.'), data),
+  ['${(j|','|)keys}'])), None))" 2>/dev/null
 }
 
 spaceship::extract::python::yaml() {
@@ -394,7 +396,8 @@ spaceship::extract::jq() {
 spaceship::extract::ruby() {
   local import=$1 load=$2; shift 2
   local keys=("$@")
-  ruby -r "$import" -e "puts ['${(j|','|)keys}'].map { |key| key.split('.').reduce($load) { |obj, key| obj[key] } }.find(&:itself)" 2>/dev/null
+  ruby -r "$import" -e "puts ['${(j|','|)keys}'].map
+  { |key| key.split('.').reduce($load) { |obj, key| obj[key] } }.find(&:itself)" 2>/dev/null
 }
 
 spaceship::extract::ruby::yaml() {
