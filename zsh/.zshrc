@@ -295,22 +295,27 @@ bindkey '^Z' ctrl-z-toggle
 exists() { (( ${+commands[$1]} )) }
 
 grepsh() {
-  if [[ "$1" =~ '^-[^qvoeE]' ]]; then
-    "${commands[grep]}" "$@"; return
-  elif [[ "$1" == '-q' ]]; then
-    shift; grepsh::out() { [[ "$1" =~ "$2" ]] && success=1 && break }
-  elif [[ "$1" == '-v' ]]; then
-    shift; grepsh::out() { [[ "$1" =~ "$2" ]] || echo "$1" && success=1 }
-  elif [[ "$1" =~ '^-[^\w\s]*o[^\w\s]*' ]]; then
-    shift; setopt BASH_REMATCH
-    grepsh::out() { [[ "$1" =~ "$2" ]] && echo "$BASH_REMATCH[1]" && success=1 }
-  else
-    grepsh::out() { [[ "$1" =~ "$2" ]] && echo "$1" && success=1 }
-  fi
+  local args=()
+  while :; do
+    [[ $1 =~ '^-' ]] && { args+=("$1"); shift } || break
+  done
 
   local input="$2" success
   [[ $2 ]] || input="$(</dev/stdin)"
   [[ -f "$2" ]] && input="$(<$2)"
+
+  if [[ ${#args} -gt 1 || ${#input} -gt 2500 || "${args[0]}" =~ '^-[^qvoeE]' ]]; then
+    "${commands[grep]}" "${args[@]}" "$1" <<< "$input"; return
+  elif [[ "${args[@]}" == '-q' ]]; then
+    grepsh::out() { [[ "$1" =~ "$2" ]] && success=1 && break }
+  elif [[ "${args[@]}" == '-v' ]]; then
+    grepsh::out() { [[ "$1" =~ "$2" ]] || echo "$1" && success=1 }
+  elif [[ "${args[@]}" =~ '^-[^\w\s]*o[^\w\s]*' ]]; then
+    setopt BASH_REMATCH
+    grepsh::out() { [[ "$1" =~ "$2" ]] && echo "$BASH_REMATCH[1]" && success=1 }
+  else
+    grepsh::out() { [[ "$1" =~ "$2" ]] && echo "$1" && success=1 }
+  fi
 
   while IFS= read -r line; do
     grepsh::out "$line" "$1"
