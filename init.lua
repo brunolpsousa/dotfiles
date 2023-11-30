@@ -455,7 +455,9 @@ if pcall(require, "lazy") then
 						local file_size =
 							tonumber(vim.api.nvim_exec2("echo getfsize(expand(@%))", { output = true })["output"])
 						if file_size > -2 and file_size <= 127830 then
-							require("codeium").setup({})
+							require("codeium").setup({
+								config_path = vim.fn.stdpath("config") .. "/codeium/config.json",
+							})
 						end
 					end,
 				},
