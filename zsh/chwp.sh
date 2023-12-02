@@ -25,14 +25,15 @@ while true; do
     [[ -f ${wallpapers[$i]} ]] || break
 
     while true; do
-      suspend_list=(steam)
+      isFullscreen=$(gsettings --schemadir \
+        "$XDG_DATA_HOME/gnome-shell/extensions/caffeine@patapon.info/schemas/" \
+        get org.gnome.shell.extensions.caffeine toggle-state
+      )
       keep_suspend=0
-      for s in "${suspend_list[@]}"; do
-        if pgrep "$s" >/dev/null; then
-          sleep 15m
-          keep_suspend=1
-        fi
-      done
+      if [[ "$isFullscreen" == true ]]; then
+        sleep 5m
+        keep_suspend=1
+      fi
       [[ $keep_suspend == 0 ]] && break
     done
 
