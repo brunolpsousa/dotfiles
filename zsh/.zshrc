@@ -10,7 +10,6 @@ export XDG_STATE_HOME="$HOME/.local/state"
 export ELECTRUMDIR="$XDG_DATA_HOME/electrum"
 export GNUPGHOME="$XDG_DATA_HOME/gnupg"
 export LESSHISTFILE="$XDG_STATE_HOME/lesshst"
-export MOZ_ENABLE_WAYLAND=1
 export QT_QPA_PLATFORM='wayland'
 export CARGO_HOME="$XDG_DATA_HOME/cargo"
 export DOCKER_CONFIG="$XDG_CONFIG_HOME/docker"
@@ -49,13 +48,13 @@ SSH_AUTH_SOCK="${XDG_RUNTIME_DIR}/gnupg/S.gpg-agent.ssh"
 [[ -d "$HOME/.local/bin" ]] && export PATH="$HOME/.local/bin:$PATH"
 [[ -d "$XDG_DATA_HOME/npm/bin" ]] && export PATH="$XDG_DATA_HOME/npm/bin:$PATH"
 [[ -d "$XDG_DATA_HOME/cargo/bin" ]] && export PATH="$XDG_DATA_HOME/cargo/bin:$PATH"
-[[ "$EUID" != 0 ]] && umask 022 && s_local='--user' || umask 002
-[[ "$LANG" == 'C'  || "$LANG" == '' ]] &&
+[[ "$EUID" != 0 ]] && { umask 022 && s_local='--user' } || umask 002
+[[ "$LANG" == 'C' || "$LANG" == '' ]] &&
   echo "$(date '+%Y-%m-%d %H:%M:%S') - The \$LANG ($LANG) variable is not set." >> "$HOME/.alert"
 (( ${+commands[plasmashell]} )) && export GTK_USE_PORTAL=0 || export QT_QPA_PLATFORMTHEME='gnome'
 
 systemctl $s_local import-environment EDITOR VISUAL \
-  XDG_CACHE_HOME XDG_CONFIG_HOME XDG_DATA_HOME XDG_STATE_HOME LS_COLORS MOZ_ENABLE_WAYLAND \
+  XDG_CACHE_HOME XDG_CONFIG_HOME XDG_DATA_HOME XDG_STATE_HOME LS_COLORS \
   QT_QPA_PLATFORM QT_QPA_PLATFORMTHEME GTK_USE_PORTAL 2>/dev/null; unset s_local
 #--------------------------------------------------------------------------------------------------#
 ############################################## General #############################################
@@ -163,23 +162,25 @@ key[PageDown]="${terminfo[knp]}"
 key[Shift-Tab]="${terminfo[kcbt]}"
 
 # setup key accordingly
-[[ -n "${key[Home]}"      ]] && bindkey -- "${key[Home]}"       beginning-of-line
-[[ -n "${key[Home]}"      ]] && bindkey -M vicmd "${key[Home]}" beginning-of-line
-[[ -n "${key[End]}"       ]] && bindkey -- "${key[End]}"        end-of-line
-[[ -n "${key[End]}"       ]] && bindkey -M vicmd "${key[End]}"  end-of-line
-[[ -n "${key[Insert]}"    ]] && bindkey -- "${key[Insert]}"     overwrite-mode
-[[ -n "${key[Backspace]}" ]] && bindkey -- "${key[Backspace]}"  backward-delete-char
-[[ -n "${key[Delete]}"    ]] && bindkey -- "${key[Delete]}"     delete-char
-[[ -n "${key[Up]}"        ]] && bindkey -- "${key[Up]}"         up-line-or-history
-[[ -n "${key[Down]}"      ]] && bindkey -- "${key[Down]}"       down-line-or-history
-[[ -n "${key[Left]}"      ]] && bindkey -- "${key[Left]}"       backward-char
-[[ -n "${key[Right]}"     ]] && bindkey -- "${key[Right]}"      forward-char
-[[ -n "${key[PageUp]}"    ]] && bindkey -- "${key[PageUp]}"     beginning-of-buffer-or-history
-[[ -n "${key[PageDown]}"  ]] && bindkey -- "${key[PageDown]}"   end-of-buffer-or-history
-[[ -n "${key[Shift-Tab]}" ]] && bindkey -- "${key[Shift-Tab]}"  reverse-menu-complete
+b=(-M vicmd)
+[[ -n "${key[Home]}"      ]] && bindkey -- "${key[Home]}"      beginning-of-line
+[[ -n "${key[Home]}"      ]] && bindkey $b "${key[Home]}"      beginning-of-line
+[[ -n "${key[End]}"       ]] && bindkey -- "${key[End]}"       end-of-line
+[[ -n "${key[End]}"       ]] && bindkey $b "${key[End]}"       end-of-line
+[[ -n "${key[Insert]}"    ]] && bindkey -- "${key[Insert]}"    overwrite-mode
+[[ -n "${key[Backspace]}" ]] && bindkey -- "${key[Backspace]}" backward-delete-char
+[[ -n "${key[Delete]}"    ]] && bindkey -- "${key[Delete]}"    delete-char
+[[ -n "${key[Up]}"        ]] && bindkey -- "${key[Up]}"        up-line-or-history
+[[ -n "${key[Down]}"      ]] && bindkey -- "${key[Down]}"      down-line-or-history
+[[ -n "${key[Left]}"      ]] && bindkey -- "${key[Left]}"      backward-char
+[[ -n "${key[Right]}"     ]] && bindkey -- "${key[Right]}"     forward-char
+[[ -n "${key[PageUp]}"    ]] && bindkey -- "${key[PageUp]}"    beginning-of-buffer-or-history
+[[ -n "${key[PageDown]}"  ]] && bindkey -- "${key[PageDown]}"  end-of-buffer-or-history
+[[ -n "${key[Shift-Tab]}" ]] && bindkey -- "${key[Shift-Tab]}" reverse-menu-complete
+unset b
 
-# Finally, make sure the terminal is in application mode, when zle is
-# active. Only then are the values from $terminfo valid.
+# Finally, make sure the terminal is in application mode, when zle is active.
+# Only then are the values from $terminfo valid.
 if (( ${+terminfo[smkx]} && ${+terminfo[rmkx]} )); then
   autoload -Uz add-zle-hook-widget
   function zle_application_mode_start { echoti smkx }
@@ -198,20 +199,20 @@ key[Control-Right]="${terminfo[kRIT5]}"
 
 # Tries to set Ctrl + Delete and Ctrl + Backspace to erase prev and next words,
 # but terminals are different:
-[[ -n "${key[Control-Backspace]}"  ]] && bindkey -- "${key[Control-Backspace]}" backward-kill-word
-[[ -n "${key[Control-Delete]}" ]] && bindkey -- "${key[Control-Delete]}" kill-word
+[[ -n "${key[Control-Backspace]}" ]] && bindkey -- "${key[Control-Backspace]}" backward-kill-word
+[[ -n "${key[Control-Delete]}"    ]] && bindkey -- "${key[Control-Delete]}"    kill-word
 
-bindkey '^H' backward-kill-word                           # Control + Backspace
-bindkey '^[[3^' kill-word                                 # Control + Delete
-bindkey '^[[3;5~' kill-word                               # Control + Delete
-bindkey '^[[7~' beginning-of-line                         # Home key
-bindkey '^[[H' beginning-of-line                          # Home key
-bindkey -M vicmd '^[[7~' beginning-of-line                # Home key
-bindkey -M vicmd '^[[H' beginning-of-line                 # Home key
-bindkey '^[[8~' end-of-line                               # End key
-bindkey '^[[F' end-of-line                                # End key
-bindkey -M vicmd '^[[8~' end-of-line                      # End key
-bindkey -M vicmd '^[[F' end-of-line                       # End key
+bindkey          '^H'      backward-kill-word               # Control + Backspace
+bindkey          '^[[3^'   kill-word                        # Control + Delete
+bindkey          '^[[3;5~' kill-word                        # Control + Delete
+bindkey          '^[[7~'   beginning-of-line                # Home key
+bindkey          '^[[H'    beginning-of-line                # Home key
+bindkey -M vicmd '^[[7~'   beginning-of-line                # Home key
+bindkey -M vicmd '^[[H'    beginning-of-line                # Home key
+bindkey          '^[[8~'   end-of-line                      # End key
+bindkey          '^[[F'    end-of-line                      # End key
+bindkey -M vicmd '^[[8~'   end-of-line                      # End key
+bindkey -M vicmd '^[[F'    end-of-line                      # End key
 #--------------------------------------------------------------------------------------------------#
 # Vim Mapping For Completion
 # https://thevaluable.dev/zsh-install-configure-mouseless/
@@ -241,7 +242,7 @@ done
 #--------------------------------------------------------------------------------------------------#
 # Vim cursor indicator
 # See https://ttssh2.osdn.jp/manual/4/en/usage/tips/vim.html for cursor shapes
-# 2 and 6 = blink; 1 and 5 = no blink
+# 1 and 5 = blink; 2 and 6 = no blink
 function zle-keymap-select {
   local cursor_block='\e[1 q'
   local cursor_beam='\e[5 q'
@@ -413,9 +414,9 @@ load_historySubstringSearch() {
   else
     echo 'Downloading zsh-history-substring-search...'
     fetch \
-      "https://raw.githubusercontent.com/zsh-users/zsh-history-substring-search/master/${plugin}" \
-      > "$XDG_DATA_HOME/zsh/${pluginName}"
-    source "$XDG_DATA_HOME/zsh/${pluginName}"
+      "https://raw.githubusercontent.com/zsh-users/zsh-history-substring-search/master/$plugin" \
+      > "$XDG_DATA_HOME/zsh/$plugin"
+    source "$XDG_DATA_HOME/zsh/$plugin"
   fi
 }
 if load_historySubstringSearch; then

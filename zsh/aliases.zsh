@@ -14,6 +14,7 @@ alias ln='ln -v'
 alias df='df -h'
 alias ip='ip -c'
 alias diff='diff -Nuar --color=auto'
+alias dust='du -sh * | sort -hr'
 alias ls='ls -v \
   --color=auto --hyperlink=auto --human-readable --literal --group-directories-first --classify'
 alias la='ls -v \
@@ -59,29 +60,28 @@ alias sign-ms='sudo sbctl sign -s /boot/EFI/Microsoft/Boot/bootmgfw.efi'
 ############################################## Extras ##############################################
 #--------------------------------------------------------------------------------------------------#
 # Archive Extraction
-# usage: ex <file>
 ex() {
-  if [[ -f "$1" ]] ; then
-    case "$1" in
-      *.tar.bz2) tar xjf    $1 ;;
-      *.tar.gz)  tar xzf    $1 ;;
-      *.bz2)     bunzip2    $1 ;;
-      *.rar)     unrar x    $1 ;;
-      *.gz)      gunzip     $1 ;;
-      *.tar)     tar xf     $1 ;;
-      *.tbz2)    tar xjf    $1 ;;
-      *.tgz)     tar xzf    $1 ;;
-      *.zip)     unzip      $1 ;;
-      *.Z)       uncompress $1 ;;
-      *.7Z)      7z x       $1 ;;
-      *.deb)     ar xf      $1 ;;
-      *.tar.xz)  tar xf     $1 ;;
-      *.tar.zst) unzstd     $1 ;;
-      *) echo "'$1' cannot be extracted" ;;
+  for f in "$@"; do
+    [[ -f "$f" ]] || { echo "\`$f\` is not a valid file"; continue }
+
+    case "$f" in
+      *.tar.bz2) tar xjf    "$f" ;;
+      *.tar.gz)  tar xzf    "$f" ;;
+      *.bz2)     bunzip2    "$f" ;;
+      *.rar)     unrar x    "$f" ;;
+      *.gz)      gunzip     "$f" ;;
+      *.tar)     tar xf     "$f" ;;
+      *.tbz2)    tar xjf    "$f" ;;
+      *.tgz)     tar xzf    "$f" ;;
+      *.zip)     unzip      "$f" ;;
+      *.Z)       uncompress "$f" ;;
+      *.7Z)      7z x       "$f" ;;
+      *.deb)     ar xf      "$f" ;;
+      *.tar.xz)  tar xf     "$f" ;;
+      *.tar.zst) unzstd     "$f" ;;
+      *) echo "\`$f\` cannot be extracted" ;;
     esac
-  else
-    echo "'$1' is not a valid file"
-  fi
+  done
 }
 
 # Portable shell through SSH
@@ -142,8 +142,7 @@ ssh() {
 # Usage: rm -rfv /foo | dot_progress
 dot() {
   local i=0
-  local line=''
-  while read line; do
+  while read; do
     i="$((i+1))"
     if [[ "${i}" == 25 ]]; then
       echo -n '.'
@@ -202,8 +201,7 @@ tomp3() {
     [[ -f "$f" ]] || continue
     ffmpeg -i "$f" -vn -ar 44100 -ac 2 -b:a 192k "./mp3_files/${f%.*}.mp3"
   done
-  \rmdir ./mp3_files &>/dev/null
-  return 0
+  [[ "$(ls -A ./mp3_files)" ]] || rmdir ./mp3_files &>/dev/null
 }
 
 # Convert media files to mp4
@@ -221,8 +219,7 @@ tomp4() {
     ffmpeg -i "$f" -vf "pad=ceil(iw/2)*2:ceil(ih/2)*2" \
       -vcodec "$codec" -crf 28 "./mp4_files/${f%.*}.mp4"
   done
-  \rmdir ./mp4_files &>/dev/null
-  return 0
+  [[ "$(ls -A ./mp4_files)" ]] || rmdir ./mp4_files &>/dev/null
 }
 
 # Print the decimal value of a number
