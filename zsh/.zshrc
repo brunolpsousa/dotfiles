@@ -485,13 +485,8 @@ xterm_fallback() {
 tmux_xterm() {
   zsh "$XDG_DATA_HOME/zsh/theme.sh" 2>/dev/null
 
-  if ! exists tmux; then
-    xterm_fallback; return
-  fi
-
-  case $TTY in
-    /dev/ttyS[0-9]*) local is_tty=1 ;;
-  esac
+  if ! exists tmux; then xterm_fallback; return; fi
+  case $TTY in /dev/ttyS[0-9]*) local is_tty=1 ;; esac
 
   local tmux_session="$(tmux list-sessions &>/dev/null | grepsh main)"
   [[ -z "$1" ]] && local args=("$HOME") || local args=("$@")
@@ -509,9 +504,7 @@ tmux_xterm() {
 "$@"
 
 tmux_attach() {
-  if ! exists tmux; then
-    echo 'error: `tmux` not found'; return 1
-  fi
+  if ! exists tmux; then echo 'error: `tmux` not found'; return 1; fi
 
   local tmux_session="$(tmux list-sessions &>/dev/null | grepsh main)"
   NEW_LINE_BEFORE_PROMPT=1; unset att_tmux

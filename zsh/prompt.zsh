@@ -88,16 +88,10 @@ prompt_set_title() {
   (( ${+EMACS} || ${+INSIDE_EMACS} )) && return
 
   # Don't set title over serial console.
-  case $TTY in
-    /dev/ttyS[0-9]*) return;;
-  esac
+  case $TTY in /dev/ttyS[0-9]*) return;; esac
 
-  # Show hostname if connected via SSH.
-  local hostname=
-  if [[ -n $PROMPT_SSH ]]; then
-    # Expand in-place in case ignore-escape is used.
-    hostname="${(%):-(%m) }"
-  fi
+  # Show hostname if connected via SSH. Expand in-place in case ignore-escape is used.
+  [[ $PROMPT_SSH ]] && local hostname="${(%):-(%m) }"
 
   local -a opts
   case $1 in
@@ -116,24 +110,22 @@ command_time_preexec() {
 }
 
 command_time_precmd() {
-  if [[ $timer ]]; then
-    local now=$(date +%s%3N)
-    local d_ms=$(($now-$timer))
-    local d_s=$((d_ms/1000))
-    local ms=$((d_ms%1000))
-    local s=$((d_s%60))
-    local m=$(((d_s/60)%60))
-    local h=$(((d_s/3600)%24))
-    local d=$((d_s/86400))
-    if ((d>0)); then ELAPSED=" %F{magenta}${d}d${h}h${m}m${s}s"
-    elif ((h>0)); then ELAPSED=" %F{red}${h}h${m}m${s}s"
-    elif ((m>0)); then ELAPSED=" %F{yellow}${m}m${s}s"
-    elif ((s>9)); then ELAPSED=" %F{green}${s}s"
-    elif ((s>0)); then ELAPSED=" %F{green}${s}.$((ms/100))s"
-    else ELAPSED=" %F{cyan}${ms}ms"
-    fi
-    unset timer
+  [[ $timer ]] || return
+
+  local now=$(date +%s%3N)
+  local d_ms=$((now-timer))
+  local d_s=$((d_ms/1000)) ms=$((d_ms%1000))
+  local s=$((d_s%60)) m=$(((d_s/60)%60)) h=$(((d_s/3600)%24)) d=$((d_s/86400))
+
+  if   ((d>0)); then ELAPSED=" %F{magenta}${d}d${h}h${m}m${s}s"
+  elif ((h>0)); then ELAPSED=" %F{red}${h}h${m}m${s}s"
+  elif ((m>0)); then ELAPSED=" %F{yellow}${m}m${s}s"
+  elif ((s>9)); then ELAPSED=" %F{green}${s}s"
+  elif ((s>0)); then ELAPSED=" %F{green}${s}.$((ms/100))s"
+  else               ELAPSED=" %F{cyan}${ms}ms"
   fi
+
+  unset timer
 }
 #--------------------------------------------------------------------------------------------------#
 # https://vincent.bernat.ch/en/blog/2019-zsh-async-vcs-info
@@ -157,18 +149,13 @@ prompt_git_info() {
 }
 
 prompt_git_info_done() {
-  local job="$1"
-  local return_code="$2"
-  local stdout="$3"
-  local more="$6"
-  if [[ $job == '[async]' ]]; then
-    if [[ $return_code -eq 2 ]]; then
-      # Need to restart the worker
-      # https://github.com/mengelbrecht/slimline/blob/master/lib/async.zsh
-      async_start_worker vbe_vcs_info
-      async_register_callback vbe_vcs_info prompt_git_info_done
-      return
-    fi
+  local job="$1" return_code="$2" stdout="$3" more="$6"
+  if [[ $job == '[async]' && $return_code -eq 2 ]]; then
+    # Need to restart the worker
+    # https://github.com/mengelbrecht/slimline/blob/master/lib/async.zsh
+    async_start_worker vbe_vcs_info
+    async_register_callback vbe_vcs_info prompt_git_info_done
+    return
   fi
   VCS_INFO_MSG="$stdout"
   zle reset-prompt
@@ -221,16 +208,11 @@ prompt_git_status() {
 }
 
 prompt_git_status_done() {
-  local job="$1"
-  local return_code="$2"
-  local stdout="$3"
-  local more="$6"
-  if [[ $job == '[async]' ]]; then
-    if [[ $return_code -eq 2 ]]; then
-      async_start_worker vbe_vcs_status
-      async_register_callback vbe_vcs_status prompt_git_status_done
-      return
-    fi
+  local job="$1" return_code="$2" stdout="$3" more="$6"
+  if [[ $job == '[async]' && $return_code -eq 2 ]]; then
+    async_start_worker vbe_vcs_status
+    async_register_callback vbe_vcs_status prompt_git_status_done
+    return
   fi
   VCS_STATUS_MSG="$stdout"
   zle reset-prompt
@@ -263,10 +245,12 @@ spaceship_stuff() {
   cd -q "$1"
   local SPACESHIP_PROMPT_DEFAULT_PREFIX=' '
   local SPACESHIP_PROMPT_DEFAULT_SUFFIX='%f%b'
-  local SS_LIST=(asdf hg package node bun deno react vue ruby python elm elixir xcode swift golang
-                perl php rust haskell scala kotlin java lua dart julia crystal docker docker_compose
-                gcloud azure dotnet ocaml vlang zig purescript erlang kubectl ansible terraform
-                pulumi ibmcloud ember flutter gradle maven)
+  local SS_LIST=(
+    asdf hg package node bun deno react vue ruby python elm elixir xcode swift golang
+    perl php rust haskell scala kotlin java lua dart julia crystal docker docker_compose
+    gcloud azure dotnet ocaml vlang zig purescript erlang kubectl ansible terraform
+    pulumi ibmcloud ember flutter gradle maven
+  )
 
   for async_section in "$SS_LIST[@]"; do
     local result="$(spaceship_$async_section)"
@@ -275,32 +259,22 @@ spaceship_stuff() {
 }
 
 spaceship_stuff_done() {
-  local job="$1"
-  local return_code="$2"
-  local stdout="$3"
-  local more="$6"
-  if [[ $job == '[async]' ]]; then
-    if [[ $return_code -eq 2 ]]; then
-      async_start_worker spaceship_stuff_loader
-      async_register_callback spaceship_stuff_loader spaceship_stuff_done
-      return
-    fi
+  local job="$1" return_code="$2" stdout="$3" more="$6"
+  if [[ $job == '[async]' && $return_code -eq 2 ]]; then
+    async_start_worker spaceship_stuff_loader
+    async_register_callback spaceship_stuff_loader spaceship_stuff_done
+    return
   fi
   SPACE_ASYNC="$stdout"
   zle reset-prompt
 }
 
 spaceship_battery_done() {
-  local job="$1"
-  local return_code="$2"
-  local stdout="$3"
-  local more="$6"
-  if [[ $job == '[async]' ]]; then
-    if [[ $return_code -eq 2 ]]; then
-      async_start_worker spaceship_battery_loader
-      async_register_callback spaceship_battery_loader spaceship_battery_done
-      return
-    fi
+  local job="$1" return_code="$2" stdout="$3" more="$6"
+  if [[ $job == '[async]' && $return_code -eq 2 ]]; then
+    async_start_worker spaceship_battery_loader
+    async_register_callback spaceship_battery_loader spaceship_battery_done
+    return
   fi
   SPACE_BATTERY="$stdout"
   zle reset-prompt
@@ -318,12 +292,7 @@ spaceship_precmd() {
 # https://github.com/spaceship-prompt/spaceship-prompt/blob/master/lib/utils.zsh
 alias spaceship::exists='exists'
 alias spaceship::grep='grepsh'
-
-spaceship::print() {
-  for i in "$@"; do
-    echo -n "$i"
-  done
-}
+spaceship::print() { for i in "$@"; do echo -n "$i"; done }
 
 spaceship::upsearch() {
   zparseopts -E -D \
