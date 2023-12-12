@@ -365,9 +365,22 @@ arch-base() {
                 "$XDG_DATA_HOME/flatpak/exports/share/applications/"
 
               sed -i \
-                's/\(Exec=\)\/usr\/bin\/flatpak/\1sh -c "rm ~\/.var\/app\/com.valvesoftware.Steam\/{Musics,Pictures}; \/usr\/bin\/flatpak/;
-                  /Exec=sh/ s/$/"/' \
+                's/\(Exec=\)\/usr\/bin\/flatpak/\1sh -c "rm ~\/.var\/app\/com.valvesoftware.Steam\/{Musics,Pictures}; nohup \/usr\/bin\/flatpak/;
+                  /Exec=sh/ s/$/ >\/dev\/null \& sleep 3 \&\& rm ~\/.var\/app\/com.valvesoftware.Steam\/{Musics,Pictures}"/' \
                 "$XDG_DATA_HOME/flatpak/exports/share/applications/com.valvesoftware.Steam.desktop"
+            fi
+
+            if ! grep -q "sh -c" \
+              "$XDG_DATA_HOME/flatpak/exports/share/applications/com.heroicgameslauncher.hgl.desktop" \
+              2>/dev/null; then
+              \cp \
+                '/var/lib/flatpak/app/com.heroicgameslauncher.hgl/current/active/export/share/applications/com.heroicgameslauncher.hgl.desktop' \
+                "$XDG_DATA_HOME/flatpak/exports/share/applications/"
+
+              sed -i \
+                's/\(Exec=\)\/usr\/bin\/flatpak/\1sh -c "rm ~\/.var\/app\/com.heroicgameslauncher.hgl\/{Desktop,Documents}; nohup \/usr\/bin\/flatpak/;
+                  /Exec=sh/ s/$/ >\/dev\/null \& sleep 3 \&\& rm ~\/.var\/app\/com.heroicgameslauncher.hgl\/{Desktop,Documents}"/' \
+                "$XDG_DATA_HOME/flatpak/exports/share/applications/com.heroicgameslauncher.hgl.desktop"
             fi
 
             echo 'Do you wish to install Flatpak Neovim [y/N]?' && read flpk_nvim
@@ -516,7 +529,7 @@ arch-base() {
           fi
 
           # Git config
-          if [[ ! -f $XDG_CONFIG_HOME/git/config ]]; then
+          if [[ ! -f "$XDG_CONFIG_HOME/git/config" ]]; then
             echo 'Do you wish to set up git?'
             select yne in 'Yes' 'No' 'Exit'; do
               case $yne in
