@@ -702,7 +702,7 @@ arch-base() {
           case $gve in
             GNOME\ Boxes ) $use_sudo pacman -S --needed gnome-boxes; break;;
             Virt-Manager ) $use_sudo pacman -S --needed \
-              virt-manager qemu-desktop libvirt edk2-ovmf dnsmasq; break;;
+              virt-manager qemu-desktop libvirt edk2-ovmf dnsmasq swtpm; break;;
             None ) break;;
           esac
         done
