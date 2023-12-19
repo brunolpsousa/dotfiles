@@ -430,17 +430,16 @@ refresh() {
     --download-timeout 2 --fastest 5 --sort rate --save /etc/pacman.d/mirrorlist --verbose
 }
 
-# Reset GNOME to default settings
+# Reset GNOME settings
 reset-gnome() {
-  if [[ -z $1 ]]; then
+  if [[ -z $1 || $1 =~ 'app(s)?grid' ]]; then
+    gsettings reset org.gnome.shell app-picker-layout
+  elif [[ $1 == 'all' ]]; then
     gsettings list-schemas | xargs -n 1 gsettings reset-recursively
   else
     gsettings list-schemas | grep "$1" | xargs -n 1 gsettings reset-recursively
   fi
 }
-
-# Reset GNOME Apps Grid
-alias reset-gnome-appgrid='gsettings reset org.gnome.shell app-picker-layout'
 
 # Display warnings from pacman
 alias paclog='grep -nC 2 --color=auto warning: /var/log/pacman.log'
