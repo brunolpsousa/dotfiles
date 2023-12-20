@@ -49,7 +49,6 @@ prompt_async_loader() {
   async_register_callback vbe_vcs_status prompt_git_status_done
 
   async_start_worker spaceship_stuff_loader
-  async_worker_eval spaceship_stuff_loader setopt extended_glob
   async_register_callback spaceship_stuff_loader spaceship_stuff_done
 
   async_start_worker spaceship_battery_loader
@@ -243,6 +242,7 @@ spaceship_noasync() {
 
 spaceship_stuff() {
   cd -q "$1"
+  setopt extended_glob
   local SPACESHIP_PROMPT_DEFAULT_PREFIX=' '
   local SPACESHIP_PROMPT_DEFAULT_SUFFIX='%f%b'
   local SS_LIST=(
@@ -282,8 +282,8 @@ spaceship_battery_done() {
 
 spaceship_precmd() {
   SPACE_NOASYNC="$(spaceship_noasync)"
-  async_flush_jobs spacship_stuff_loader
-  async_flush_jobs spacship_battery_loader
+  async_flush_jobs spaceship_stuff_loader
+  async_flush_jobs spaceship_battery_loader
   async_job spaceship_stuff_loader spaceship_stuff "$PWD"
   async_job spaceship_battery_loader spaceship_battery "$PWD"
 }
