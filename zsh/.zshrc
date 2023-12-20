@@ -51,11 +51,11 @@ SSH_AUTH_SOCK="${XDG_RUNTIME_DIR}/gnupg/S.gpg-agent.ssh"
 [[ "$EUID" != 0 ]] && { umask 022 && s_local='--user' } || umask 002
 [[ "$LANG" == 'C' || "$LANG" == '' ]] &&
   echo "$(date '+%Y-%m-%d %H:%M:%S') - The \$LANG ($LANG) variable is not set." >> "$HOME/.alert"
-(( ${+commands[plasmashell]} )) && export GTK_USE_PORTAL=0 || export QT_QPA_PLATFORMTHEME='gnome'
+(( ${+commands[plasmashell]} )) && export GTK_USE_PORTAL=0 || export QT_WAYLAND_DECORATION='adwaita'
 
 systemctl $s_local import-environment EDITOR VISUAL \
   XDG_CACHE_HOME XDG_CONFIG_HOME XDG_DATA_HOME XDG_STATE_HOME LS_COLORS \
-  QT_QPA_PLATFORM QT_QPA_PLATFORMTHEME GTK_USE_PORTAL 2>/dev/null; unset s_local
+  GTK_USE_PORTAL QT_WAYLAND_DECORATION 2>/dev/null; unset s_local
 #--------------------------------------------------------------------------------------------------#
 ############################################## General #############################################
 #--------------------------------------------------------------------------------------------------#
