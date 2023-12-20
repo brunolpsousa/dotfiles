@@ -95,7 +95,26 @@ SAVEHIST=$HISTSIZE
 "$ZDOTDIR" "$XDG_CACHE_HOME" "$XDG_CONFIG_HOME/zsh" "$XDG_STATE_HOME/zsh" >/dev/null 2>&1
 #--------------------------------------------------------------------------------------------------#
 # Completion
-autoload -Uz compinit && compinit -d "$XDG_CACHE_HOME/zcompdump"
+{
+  zcompdump="$XDG_CACHE_HOME/zcompdump"
+  if [[ -s "$zcompdump" && (! -s "${zcompdump}.zwc" || "$zcompdump" -nt "${zcompdump}.zwc") ]]; then
+    if mkdir "${zcompdump}.zwc.lock" 2>/dev/null; then
+      zcompile "$zcompdump"
+      rmdir  "${zcompdump}.zwc.lock" 2>/dev/null
+    fi
+  fi
+} &!
+
+autoload -Uz compinit
+_comp_path="$XDG_CACHE_HOME/zcompdump"
+if [[ $_comp_path(#qNmh-20) ]]; then
+  compinit -C -d "$_comp_path"
+else
+  mkdir -p "$_comp_path:h"
+  compinit -i -d "$_comp_path"
+  touch "$_comp_path"
+fi
+unset _comp_path
 zmodload zsh/complist
 
 # automatically load bash completion functions
