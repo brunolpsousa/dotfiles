@@ -103,15 +103,14 @@ prompt_set_title() {
 }
 #--------------------------------------------------------------------------------------------------#
 # Elapsed and execution time display for commands in ZSH
-# https://gist.github.com/knadh/123bca5cfdae8645db750bfb49cb44b0
 command_time_preexec() {
-  timer=$(date +%s%3N)
+  timer=${$((EPOCHREALTIME*1000))%.*}
 }
 
 command_time_precmd() {
   [[ $timer ]] || return
 
-  local now=$(date +%s%3N)
+  local now=${$((EPOCHREALTIME*1000))%.*}
   local d_ms=$((now-timer))
   local d_s=$((d_ms/1000)) ms=$((d_ms%1000))
   local s=$((d_s%60)) m=$(((d_s/60)%60)) h=$(((d_s/3600)%24)) d=$((d_s/86400))
