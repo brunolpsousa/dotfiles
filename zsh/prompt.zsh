@@ -33,7 +33,7 @@ prompt_preexec() {
 }
 
 prompt_precmd() {
-  [[ -n $NEW_LINE_BEFORE_PROMPT ]] && echo || NEW_LINE_BEFORE_PROMPT=1
+  [[ $NEW_LINE_BEFORE_PROMPT ]] && echo || NEW_LINE_BEFORE_PROMPT=1
   [[ ! -w . ]] && DIR_LOCK='%F{red}%f ' || unset DIR_LOCK
   prompt_set_title 'expand-prompt' '%~'
   command_time_precmd
@@ -149,7 +149,7 @@ prompt_git_info() {
 
 prompt_git_info_done() {
   local job="$1" return_code="$2" stdout="$3" more="$6"
-  if [[ $job == '[async]' && $return_code -eq 2 ]]; then
+  if [[ "$job" == '[async]' && "$return_code" -eq 2 ]]; then
     # Need to restart the worker
     # https://github.com/mengelbrecht/slimline/blob/master/lib/async.zsh
     async_start_worker vbe_vcs_info
@@ -188,19 +188,19 @@ prompt_git_status() {
     done <<< "$INDEX"
   }
 
-  git_loop '^\?\? ' "$ZSH_THEME_GIT_PROMPT_UNTRACKED"
-  git_loop '^A  |^M  |^MM ' "$ZSH_THEME_GIT_PROMPT_ADDED"
-  git_loop '^ M |^AM |^MM |^ T ' "$ZSH_THEME_GIT_PROMPT_MODIFIED"
-  git_loop '^R  ' "$ZSH_THEME_GIT_PROMPT_RENAMED"
-  git_loop '^ D |^D  |^AD ' "$ZSH_THEME_GIT_PROMPT_DELETED"
+  git_loop '^\?\? '               "$ZSH_THEME_GIT_PROMPT_UNTRACKED"
+  git_loop '^A  |^M  |^MM '       "$ZSH_THEME_GIT_PROMPT_ADDED"
+  git_loop '^ M |^AM |^MM |^ T '  "$ZSH_THEME_GIT_PROMPT_MODIFIED"
+  git_loop '^R  '                 "$ZSH_THEME_GIT_PROMPT_RENAMED"
+  git_loop '^ D |^D  |^AD '       "$ZSH_THEME_GIT_PROMPT_DELETED"
 
   if $(git rev-parse --verify refs/stash >/dev/null 2>&1); then
     STATUS+=" $ZSH_THEME_GIT_PROMPT_STASHED"
   fi
 
-  git_loop '^UU ' "$ZSH_THEME_GIT_PROMPT_UNMERGED"
-  git_loop '^## [^ ]+ .*ahead' "$ZSH_THEME_GIT_PROMPT_AHEAD"
-  git_loop '^## [^ ]+ .*behind' "$ZSH_THEME_GIT_PROMPT_BEHIND"
+  git_loop '^UU '                 "$ZSH_THEME_GIT_PROMPT_UNMERGED"
+  git_loop '^## [^ ]+ .*ahead'    "$ZSH_THEME_GIT_PROMPT_AHEAD"
+  git_loop '^## [^ ]+ .*behind'   "$ZSH_THEME_GIT_PROMPT_BEHIND"
   git_loop '^## [^ ]+ .*diverged' "$ZSH_THEME_GIT_PROMPT_DIVERGED"
 
   [[ "$STATUS" ]] && echo -n "$STATUS"
@@ -208,7 +208,7 @@ prompt_git_status() {
 
 prompt_git_status_done() {
   local job="$1" return_code="$2" stdout="$3" more="$6"
-  if [[ $job == '[async]' && $return_code -eq 2 ]]; then
+  if [[ "$job" == '[async]' && "$return_code" -eq 2 ]]; then
     async_start_worker vbe_vcs_status
     async_register_callback vbe_vcs_status prompt_git_status_done
     return
@@ -234,6 +234,7 @@ spaceship_noasync() {
   local SPACESHIP_PROMPT_DEFAULT_PREFIX=' '
   local SPACESHIP_PROMPT_DEFAULT_SUFFIX='%f%b'
   local SS_LIST=(jobs venv aws conda gnu_screen nix_shell)
+
   for noasync_section in "$SS_LIST[@]"; do
     local result="$(spaceship_$noasync_section)"
     [[ -z "$result" ]] || echo -n "$result"
@@ -260,7 +261,7 @@ spaceship_stuff() {
 
 spaceship_stuff_done() {
   local job="$1" return_code="$2" stdout="$3" more="$6"
-  if [[ $job == '[async]' && $return_code -eq 2 ]]; then
+  if [[ "$job" == '[async]' && "$return_code" -eq 2 ]]; then
     async_start_worker spaceship_stuff_loader
     async_register_callback spaceship_stuff_loader spaceship_stuff_done
     return
@@ -271,7 +272,7 @@ spaceship_stuff_done() {
 
 spaceship_battery_done() {
   local job="$1" return_code="$2" stdout="$3" more="$6"
-  if [[ $job == '[async]' && $return_code -eq 2 ]]; then
+  if [[ "$job" == '[async]' && "$return_code" -eq 2 ]]; then
     async_start_worker spaceship_battery_loader
     async_register_callback spaceship_battery_loader spaceship_battery_done
     return
