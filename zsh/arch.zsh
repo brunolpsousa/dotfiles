@@ -509,23 +509,13 @@ arch-base() {
           echo 'Do you wish to create Firefox config in "$HOME/chrome" [y/N]?'
           local firefoxcfg; read firefoxcfg
           if [[ $firefoxcfg =~ '^[yY]' ]]; then
-            \mkdir -p "$HOME/chrome"
-
-            echo '@-moz-document url(about:home), url(about:newtab), url(about:privatebrowsing) {' \
-              '\n  .click-target-container *,\n  .top-sites-list * {\n    color: #fff !important;' \
-              '\n    text-shadow: 2px 2px 2px #222 !important;\n  }\n\n  body::before {' \
-              '\n    content: '';\n    z-index: -1;\n    position: fixed;\n    top: 0;' \
-              '\n    left: 0;\n    background: #f9a no-repeat url(img) center;' \
-              '\n    background-size: cover;\n    width: 100vw;' \
-              '\n    height: 100vh;\n  }\n}' > "$HOME/chrome/userContent.css"
-
-            echo '/* #PlacesToolbarItems { filter: grayscale(1); } */\n#unified-extensions-button' \
-              '{\n  width: 0.1px;\n  padding-inline: 0 !important;\n}' \
-              '\n#unified-extensions-button > .toolbarbutton-icon {' \
-              '\n  width: 0 !important;\n}\n#private-browsing-indicator-with-label > label {' \
-              '\n  display: none;\n}' > "$HOME/chrome/userChrome.css"
-
-            ln -sf "$HOME/Pictures/Wallpapers/Module Abyss Lapis."* "$HOME/chrome/img" &>/dev/null
+            mkdir "$HOME/chrome"
+            fetch 'https://raw.githubusercontent.com/brunolpsousa/dotfiles/main/firefox/userChrome.css' \
+              > "$HOME/chrome/userChrome.css"
+            fetch 'https://raw.githubusercontent.com/brunolpsousa/dotfiles/main/firefox/userContent.css' \
+              > "$HOME/chrome/userContent.css"
+            fetch 'https://raw.githubusercontent.com/brunolpsousa/dotfiles/main/firefox/img' \
+              > "$HOME/chrome/img"
           fi
 
           # Git config
@@ -535,21 +525,21 @@ arch-base() {
               case $yne in
 
                 Yes )
-                  \mkdir -p "$XDG_CONFIG_HOME/git"
+                  mkdir "$XDG_CONFIG_HOME/git"
                   touch "$XDG_CONFIG_HOME/git/config"
                   git config --global init.defaultBranch main
 
                   local gitName
-                  echo 'Enter your name:'; read gitName
+                  echo -n 'Enter your name: '; read gitName
                   [[ -z $gitName ]] || git config --global user.name "$gitName"
 
                   local gitEmail
-                  echo 'Enter your e-mail:'; read gitEmail
+                  echo -n 'Enter your e-mail: '; read gitEmail
                   [[ -z $gitEmail ]] || git config --global user.email "$gitEmail"
 
                   gpg --list-keys --with-keygrip
                   local gitSigningKey
-                  echo 'Enter your signing key if you wish to define it'; read gitSigningKey
+                  echo -n 'Enter your signing key if you wish to define it: '; read gitSigningKey
                   [[ -n "$gitSigningKey" ]] &&
                     git config --global user.signingKey "$gitSigningKey" &&
                     git config --global commit.gpgsign true
@@ -578,7 +568,7 @@ arch-base() {
 
           # Nerd font config
           local font='JetBrainsMono'
-          local ver='3.0.2'
+          local ver='3.1.1'
           local nerdcfg
           if [[ ! $(find "$XDG_DATA_HOME/fonts" -name "$font*.ttf" 2>/dev/null) ]] &&
             ! pacman -Qi ttf-jetbrains-mono-nerd &>/dev/null; then
