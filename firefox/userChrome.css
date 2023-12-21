@@ -1,0 +1,33 @@
+/*
+	extensions.pocket.enabled -> false
+	browser.tabs.tabmanager.enabled -> false
+	browser.preferences.moreFromMozilla -> false
+	toolkit.legacyUserProfileCustomizations.stylesheets -> true
+*/
+
+/* ** Private browsing text and logo ** */
+
+/* Remove label and text */
+/* #private-browsing-indicator-with-label, .titlebar-spacer[type="post-tabs"] { display: none !important; } */
+
+/* Remove only text */
+#private-browsing-indicator-with-label > label,
+.titlebar-spacer[type='post-tabs'] {
+  display: none !important;
+}
+
+/* Removes nothing, just make it more compact */
+/* #private-browsing-indicator-with-label { margin-inline: 0 !important; } */
+
+/* ** Make favorites go B&W ** */
+/* #PlacesToolbarItems { filter: grayscale(1); } */
+
+/* ** Hide the extensions button ** */
+#unified-extensions-button {
+  width: 3px;
+  padding-inline: 0 !important;
+}
+
+#unified-extensions-button > .toolbarbutton-icon {
+  width: 0 !important;
+}
