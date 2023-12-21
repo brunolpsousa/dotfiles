@@ -439,6 +439,8 @@ load_historySubstringSearch() {
   fi
 }
 if load_historySubstringSearch; then
+  HISTORY_SUBSTRING_SEARCH_HIGHLIGHT_FOUND='fg=blue'
+  HISTORY_SUBSTRING_SEARCH_HIGHLIGHT_NOT_FOUND='fg=red'
   zmodload zsh/terminfo
   bindkey '^[[A' history-substring-search-up
   bindkey '^[[B' history-substring-search-down
