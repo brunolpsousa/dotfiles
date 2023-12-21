@@ -327,8 +327,8 @@ arch-base() {
           if exists brave && ! grep -q MiddleClickAutoscroll \
             "$XDG_DATA_HOME/applications/brave-browser.desktop" 2>/dev/null; then
             \cp /usr/share/applications/brave-browser.desktop "$XDG_DATA_HOME/applications"
-            sed -i 's/\(Exec=brave\)/\1 --enable-blink-features=MiddleClickAutoscroll/' \
-              "$XDG_DATA_HOME/share/applications/brave-browser.desktop"
+            sed -i 's/^\(Exec=brave\)/\1 --enable-blink-features=MiddleClickAutoscroll/' \
+              "$XDG_DATA_HOME/applications/brave-browser.desktop"
           fi
         fi
 
@@ -365,7 +365,7 @@ arch-base() {
                 "$XDG_DATA_HOME/flatpak/exports/share/applications/"
 
               sed -i \
-                's/\(Exec=\)\/usr\/bin\/flatpak/\1sh -c "rm ~\/.var\/app\/com.valvesoftware.Steam\/{Musics,Pictures}; nohup \/usr\/bin\/flatpak/;
+                's/^\(Exec=\)\/usr\/bin\/flatpak/\1sh -c "rm ~\/.var\/app\/com.valvesoftware.Steam\/{Musics,Pictures}; nohup \/usr\/bin\/flatpak/;
                   /Exec=sh/ s/$/ >\/dev\/null \& sleep 3 \&\& rm ~\/.var\/app\/com.valvesoftware.Steam\/{Musics,Pictures}"/' \
                 "$XDG_DATA_HOME/flatpak/exports/share/applications/com.valvesoftware.Steam.desktop"
             fi
@@ -378,7 +378,7 @@ arch-base() {
                 "$XDG_DATA_HOME/flatpak/exports/share/applications/"
 
               sed -i \
-                's/\(Exec=\)\/usr\/bin\/flatpak/\1sh -c "rm ~\/.var\/app\/com.heroicgameslauncher.hgl\/{Desktop,Documents}; nohup \/usr\/bin\/flatpak/;
+                's/^\(Exec=\)\/usr\/bin\/flatpak/\1sh -c "rm ~\/.var\/app\/com.heroicgameslauncher.hgl\/{Desktop,Documents}; nohup \/usr\/bin\/flatpak/;
                   /Exec=sh/ s/$/ >\/dev\/null \& sleep 3 \&\& rm ~\/.var\/app\/com.heroicgameslauncher.hgl\/{Desktop,Documents}"/' \
                 "$XDG_DATA_HOME/flatpak/exports/share/applications/com.heroicgameslauncher.hgl.desktop"
             fi
