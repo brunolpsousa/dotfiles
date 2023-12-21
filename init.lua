@@ -208,7 +208,8 @@ local function lsp_format(async, bufnr)
 	async = async or false
 	vim.lsp.buf.format({
 		filter = function(client)
-			if client.name == "tsserver" or client.name == "jsonls" then
+			local exclude = { "cssls", "jsonls", "tsserver" }
+			if vim.tbl_contains(exclude, client.name) then
 				return false
 			end
 			return true
