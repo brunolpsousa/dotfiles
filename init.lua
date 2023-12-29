@@ -453,8 +453,8 @@ if pcall(require, "lazy") then
 				{
 					"Exafunction/codeium.nvim",
 					config = function()
-						local ok, filesize = pcall(vim.loop.fs_stat, vim.api.nvim_buf_get_name(0))
-						filesize = ok and filesize ~= nil and filesize.size or 0
+						local _, filesize = pcall(vim.loop.fs_stat, vim.api.nvim_buf_get_name(0))
+						filesize = filesize and filesize.size or 0
 						if filesize <= 127830 then
 							require("codeium").setup({
 								config_path = vim.fn.stdpath("config") .. "/codeium/config.json",
@@ -718,8 +718,8 @@ if pcall(require, "lazy") then
 					buffers = tonumber(buffers.output)
 
 					local cond1 = width < 100
-					local cond2 = buffers ~= nil and buffers > 7
-					local cond3 = buffers ~= nil and buffers > 4 and width < 150
+					local cond2 = buffers and buffers > 7
+					local cond3 = buffers and buffers > 4 and width < 150
 
 					if cond1 or cond2 or cond3 then
 						return false
