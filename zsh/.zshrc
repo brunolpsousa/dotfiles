@@ -504,7 +504,7 @@ xterm_fallback() {
 }
 
 tmux_xterm() {
-  zsh "$XDG_DATA_HOME/zsh/theme.sh" 2>/dev/null
+  sh "$XDG_DATA_HOME/zsh/theme.sh" 2>/dev/null &
 
   if ! exists tmux; then xterm_fallback; return; fi
   case $TTY in /dev/ttyS[0-9]*) local is_tty=1 ;; esac
@@ -530,9 +530,9 @@ tmux_attach() {
   local tmux_session="$(tmux list-sessions &>/dev/null | grepsh main)"
   NEW_LINE_BEFORE_PROMPT=1; unset att_tmux
 
-  if grepsh -q attached "$tmux_session"; then
+  if grepsh -q attached <<< "$tmux_session"; then
     tmux neww -t=main -c "$PWD" && tmux a -t=main
-  elif [[ $tmux_session ]]; then
+  elif [[ "$tmux_session" ]]; then
     tmux a -t=main
   else
     tmux new -As main -c "$PWD"
