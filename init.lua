@@ -454,7 +454,8 @@ if pcall(require, "lazy") then
 					"Exafunction/codeium.nvim",
 					config = function()
 						local ok, filesize = pcall(vim.loop.fs_stat, vim.api.nvim_buf_get_name(0))
-						if ok and filesize.size <= 127830 then
+						filesize = ok and filesize ~= nil and filesize.size or 0
+						if filesize <= 127830 then
 							require("codeium").setup({
 								config_path = vim.fn.stdpath("config") .. "/codeium/config.json",
 							})
