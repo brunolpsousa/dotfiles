@@ -479,7 +479,7 @@ arch-base() {
             exists mpv && local baseMpv="$XDG_CONFIG_HOME" ||
               local baseMpv="$HOME/.var/app/io.mpv.Mpv/config"
 
-            \mkdir -p "$baseMpv/mpv/{scripts,scripts-opts}"
+            \mkdir -p "$baseMpv"/mpv/{scripts,scripts-opts}
             echo 'idle=yes\nvolume=25\nautofit-smaller=50%x50%\nautofit-larger=90%x90%' \
               > "$baseMpv/mpv/mpv.conf"
 
@@ -622,7 +622,7 @@ arch-base() {
               > "$XDG_CONFIG_HOME/alacritty/light.toml"
 
             case $(lscpu | awk '/Model name:/{print $3}') in Intel\(R\)) sed -i \
-              's/\(columns: \)156/\1115/g; s/\(lines: \)48/\132/g' \
+              's/\(columns = \)156/\1140/g; s/\(lines = \)43/\134/g' \
               "$XDG_CONFIG_HOME/alacritty/alacritty.toml";;
             esac
           fi
