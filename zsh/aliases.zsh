@@ -161,7 +161,7 @@ cimg() {
 
   setopt nullglob
   local current_dir="$PWD"
-  local img_formats=(jpg jpeg png apng bmp svg tif tiff webp avif heic)
+  local img_formats=(jpg jpeg png apng bmp tif tiff)
   img_formats+=("${img_formats[@]:u}")
   mkdir -p ./cimg "$XDG_CACHE_HOME/cimg"
 
