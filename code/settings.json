@@ -35,6 +35,8 @@
   "files.trimTrailingWhitespace": true,
   "git.enableSmartCommit": true,
   "git.openRepositoryInParentFolders": "always",
+  // "http.proxy": "",
+  // "http.proxyStrictSSL": false,
   "symbols.files.associations": {
     "*.module.ts": "nest",
     "*.guard.ts": "typescript",
