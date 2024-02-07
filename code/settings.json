@@ -61,6 +61,9 @@
     "javascript": "jsx"
   },
   "eslint.validate": ["javascript", "javascriptreact", "graphql"],
+  "prettier.singleQuote": true,
+  "prettier.jsxSingleQuote": true,
+  "prettier.semi": false,
   "json.schemaDownload.enable": true,
   "javascript.suggest.autoImports": true,
   "javascript.updateImportsOnFileMove.enabled": "always",
@@ -78,13 +81,19 @@
     "files.trimTrailingWhitespace": false
   },
   "[json]": {
-    "editor.defaultFormatter": "vscode.json-language-features"
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
   "[jsonc]": {
-    "editor.defaultFormatter": "vscode.json-language-features"
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
   "[javascript]": {
-    "editor.defaultFormatter": "vscode.typescript-language-features"
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[javascriptreact]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[typescript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
   "[typescriptreact]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
