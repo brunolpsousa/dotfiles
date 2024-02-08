@@ -21,16 +21,18 @@
   "editor.tabSize": 2,
   "explorer.fileNesting.enabled": true,
   "explorer.fileNesting.patterns": {
-    "package.json": ".eslint*, prettier*, tsconfig*, vite*, pnpm-lock*, bun.lockb, nest*",
-    "tailwind.config.js": "tailwind.config*, postcss.config*",
+    ".env": ".env*",
     ".env.local": ".env*",
-    ".env": ".env*"
+    "docker-compose.yml": "docker*, Docker*, .docker*",
+    "next.config.js": "next*",
+    "package.json": ".eslint*, prettier*, package-lock.json, tsconfig*, vite*, pnpm-lock*, bun.lockb, nest*",
+    "tailwind.config.js": "tailwind.config*, postcss.config*"
   },
   "explorer.sortOrder": "foldersNestsFiles",
   "files.associations": {
+    "*.css": "css",
     ".env.*": "dotenv",
-    ".prettierrc": "json",
-    "*.css": "css"
+    ".prettierrc": "json"
   },
   "files.trimTrailingWhitespace": true,
   "git.enableSmartCommit": true,
@@ -38,12 +40,12 @@
   // "http.proxy": "",
   // "http.proxyStrictSSL": false,
   "symbols.files.associations": {
-    "*.module.ts": "nest",
-    "*.guard.ts": "typescript",
-    "*.spec.ts": "ts-test",
+    ".env.example": "gear",
     "*.e2e-spec.ts": "ts-test",
-    "vitest.config.e2e.ts": "vite",
-    ".env.example": "gear"
+    "*.guard.ts": "typescript",
+    "*.module.ts": "nest",
+    "*.spec.ts": "ts-test",
+    "vitest.config.e2e.ts": "vite"
   },
   "terminal.integrated.fontFamily": "JetBrainsMono Nerd Font",
   "update.mode": "start",
@@ -54,6 +56,7 @@
   "workbench.editor.labelFormat": "short",
   "workbench.iconTheme": "symbols",
   "workbench.layoutControl.enabled": true,
+  "workbench.tree.renderIndentGuides": "always",
   "emmet.includeLanguages": {
     "javascript": "javascriptreact"
   },
