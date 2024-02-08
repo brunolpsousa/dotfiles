@@ -14,6 +14,7 @@
   "editor.linkedEditing": true,
   "editor.minimap.autohide": true,
   "editor.parameterHints.enabled": true,
+  "editor.renderWhitespace": "boundary",
   "editor.rulers": [80, 120],
   "editor.scrollbar.horizontal": "auto",
   "editor.scrollbar.vertical": "auto",
@@ -34,6 +35,9 @@
     ".env.*": "dotenv",
     ".prettierrc": "json"
   },
+  "files.eol": "\n",
+  "files.insertFinalNewline": true,
+  "files.trimFinalNewlines": true,
   "files.trimTrailingWhitespace": true,
   "git.enableSmartCommit": true,
   "git.openRepositoryInParentFolders": "always",
@@ -54,7 +58,6 @@
   "window.menuBarVisibility": "toggle",
   "workbench.activityBar.location": "top",
   "workbench.editor.labelFormat": "short",
-  "workbench.iconTheme": "symbols",
   "workbench.layoutControl.enabled": true,
   "workbench.tree.renderIndentGuides": "always",
   "emmet.includeLanguages": {
