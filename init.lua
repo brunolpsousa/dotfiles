@@ -251,8 +251,7 @@ vim.api.nvim_create_autocmd({ "BufWritePre" }, {
 			vim.cmd([[:silent %s/\s\+$//e]])
 		end
 
-		-- Remove comments with no subsequent content (# % ;; -- //)
-		-- Match comments at the beginning of the line or preceded by spaces/tabs
+		-- Remove empty comments (# % ;; -- //)
 		if remove_comments_on_save then
 			-- Don't remove `;;` in `sh` files as it can be used as an operator for `case`
 			if ft:find("sh") then
@@ -261,6 +260,9 @@ vim.api.nvim_create_autocmd({ "BufWritePre" }, {
 				vim.cmd([[:silent %s/\(^\|^\s\{}\)\(#\|%\|;;\|--\|\/\/\)$//e]])
 			end
 		end
+
+		-- Trim empty lines at eof
+		vim.cmd([[:silent! %s#\($\n\s*\)\+\%$##]])
 
 		if format_on_save then
 			local bufname = vim.api.nvim_buf_get_name(buf)
