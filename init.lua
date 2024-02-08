@@ -291,7 +291,7 @@ local function sysDarkStatus()
 			.. " 2>/dev/null"
 	)
 
-	if getBG == nil then
+	if not getBG then
 		return true
 	end
 
@@ -502,7 +502,7 @@ if pcall(require, "lazy") then
 					unpack = unpack or table.unpack
 					local line, col = unpack(vim.api.nvim_win_get_cursor(0))
 					return col ~= 0
-						and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match("%s") == nil
+						and not vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match("%s")
 				end
 
 				local cmp = require("cmp")
