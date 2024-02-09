@@ -36,7 +36,8 @@ keymap({ "n", "v" }, "<leader>s", "<cmd>noautocmd w<CR>", { desc = "Save without
 keymap("n", "<leader>S", "<cmd>wa<CR>", { desc = "Save all" })
 keymap("n", "<S-Q>", "<cmd>bd<CR>", { desc = "Close buffer" })
 keymap({ "n", "i" }, "<C-Q>", "<cmd>q<CR>", { desc = "Close window" })
-keymap("n", "<leader>q", "<cmd>qa<CR>", { desc = "Close all windows" })
+keymap("n", "<leader>q", "<cmd>%bd|e#|bd#<CR>", { desc = "Close all buffers except current" })
+keymap("n", "<leader>Q", "<cmd>qa<CR>", { desc = "Close all windows" })
 
 keymap("n", "<Tab>", "<cmd>bnext<CR>", { desc = "Next buffer" })
 keymap("n", "<S-Tab>", "<cmd>bprevious<CR>", { desc = "Previous buffer" })
