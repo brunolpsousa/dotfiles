@@ -1202,6 +1202,23 @@ if pcall(require, "lazy") then
 						opts.settings = {
 							workingDirectory = { mode = "auto" },
 						}
+
+						local util = require("lspconfig/util")
+						if util.path.exists("node_modules/eslint") then
+							return
+						end
+
+						local node_path = util.find_node_modules_ancestor(vim.fn.expand("%:p:h"))
+						if node_path and util.path.exists(node_path .. "/node_modules/eslint") then
+							return
+						end
+
+						local eslint_path = vim.fn.system("command -v eslint")
+						eslint_path = eslint_path:gsub("bin/eslint", "lib/node_modules")
+						eslint_path = eslint_path:gsub("%s+", "")
+						opts.settings = {
+							nodePath = eslint_path,
+						}
 					end
 
 					if server == "lua_ls" then
