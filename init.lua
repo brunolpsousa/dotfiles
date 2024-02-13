@@ -1390,12 +1390,28 @@ if pcall(require, "lazy") then
 						require("null-ls").builtins.formatting.black.with({ extra_args = { "--fast", "--preview" } }),
 						require("null-ls").builtins.formatting.prettier.with({
 							extra_filetypes = { "toml" },
-							extra_args = {
-								"--config-precedence=file-override",
-								"--no-semi",
-								"--single-quote",
-								"--jsx-single-quote",
-							},
+							extra_args = function()
+								local prettier_jsonc_args = {
+									"--parser",
+									"jsonc",
+									"--trailing-comma",
+									"none",
+								}
+								local prettier_args = {
+									"--config-precedence=file-override",
+									"--no-semi",
+									"--single-quote",
+									"--jsx-single-quote",
+								}
+								local buf = vim.api.nvim_get_current_buf()
+								local ft = vim.bo[buf].filetype
+								if ft == "jsonc" then
+									for _, v in ipairs(prettier_jsonc_args) do
+										table.insert(prettier_args, v)
+									end
+								end
+								return prettier_args
+							end,
 						}),
 					},
 				})
