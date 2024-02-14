@@ -1213,6 +1213,11 @@ if pcall(require, "lazy") then
 							return
 						end
 
+						local git_path = util.find_git_ancestor(vim.fn.expand("%:p:h"))
+						if git_path and util.path.exists(git_path .. "/node_modules/eslint") then
+							return
+						end
+
 						local eslint_path = vim.fn.system("command -v eslint")
 						eslint_path = eslint_path:gsub("bin/eslint", "lib/node_modules")
 						eslint_path = eslint_path:gsub("%s+", "")
