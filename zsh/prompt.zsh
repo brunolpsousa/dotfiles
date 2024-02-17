@@ -2273,7 +2273,7 @@ spaceship_python() {
 
   local py_version
 
-  if  [[ -n "$VIRTUAL_ENV" ]] || [[ $SPACESHIP_PYTHON_SHOW == always ]]; then
+  if [[ -n "$VIRTUAL_ENV" ]] || [[ $SPACESHIP_PYTHON_SHOW == always ]]; then
     py_version=${(@)$(python -V 2>&1)[2]}
   fi
 
