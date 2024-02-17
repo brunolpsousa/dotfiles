@@ -670,9 +670,8 @@ spaceship_battery() {
     battery_status=$battery_status_and_percent_array[1]:l
     battery_percent=$battery_status_and_percent_array[2]
 
-  # If battery is 0% charge, battery likely doesn't exist.
-    [[ $battery_percent == "0" ]] && return
-
+  # If battery is 0% or more than 100% charge, something is likely wrong
+    [[ $battery_percent -gt 0 && $battery_percent -le 100 ]] || return
   else
     return
   fi
@@ -681,9 +680,9 @@ spaceship_battery() {
   battery_percent="$(tr -d '%[,;]' <<< $battery_percent)"
 
   # Change color based on battery percentage
-  if [[ $battery_percent == 100 || $battery_status =~ "(charged|full)" ]]; then
+  if [[ $battery_percent -eq 100 || $battery_status =~ "(charged|full)" ]]; then
     battery_color="%F{blue}"
-  elif [[ $battery_percent > 49 ]]; then
+  elif [[ $battery_percent -ge 50 ]]; then
     battery_color="%F{green}"
   elif [[ $battery_percent -lt $SPACESHIP_BATTERY_THRESHOLD ]]; then
     battery_color="%F{red}"
