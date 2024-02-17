@@ -279,52 +279,6 @@ vim.api.nvim_create_autocmd({ "BufWritePre" }, {
 	end,
 })
 
--- Set theme based on system
--- https://flatpak.github.io/xdg-desktop-portal/#gdbus-org.freedesktop.portal.Settings
-local function sysDarkStatus()
-	-- Returns 0 for no preference; 1 for dark; 2 for light
-	local getBG = io.popen(
-		"gdbus call --session"
-			.. " --dest=org.freedesktop.portal.Desktop"
-			.. " --object-path=/org/freedesktop/portal/desktop"
-			.. " --method=org.freedesktop.portal.Settings.Read"
-			.. " org.freedesktop.appearance color-scheme"
-			.. " 2>/dev/null"
-	)
-
-	if not getBG then
-		return true
-	end
-
-	local result = string.match(getBG:read("*a"), " %d")
-	getBG:close()
-
-	if result == " 1" or result ~= " 0" and result ~= " 2" then
-		return true
-	end
-
-	return false
-end
-
--- https://github.com/will/bgwinch.nvim
-vim.api.nvim_create_autocmd("Signal", {
-	pattern = "SIGWINCH",
-	callback = function()
-		local currentTheme = vim.api.nvim_exec2("colorscheme", { output = true }).output
-		local isDark = sysDarkStatus()
-
-		if isDark and currentTheme == DarkTheme or not isDark and currentTheme == LightTheme then
-			return
-		end
-
-		vim.schedule(function()
-			local iMode = vim.api.nvim_get_mode()["mode"] == "i"
-			local keys = vim.api.nvim_replace_termcodes("<esc> ti", true, false, true)
-			vim.api.nvim_feedkeys(iMode and keys or " t", "m", true)
-		end)
-	end,
-})
-
 -- Plugins
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not vim.loop.fs_stat(lazypath) then
@@ -338,41 +292,45 @@ if not vim.loop.fs_stat(lazypath) then
 	})
 end
 
+local darkTheme = "nightfox"
+local lightTheme = "dayfox"
+
+local function setDarkTheme()
+	pcall(vim.cmd.colorscheme, darkTheme)
+	pcall(vim.cmd.colorscheme, darkTheme)
+	if pcall(require, "lualine") then
+		require("lualine").setup({ options = { theme = darkTheme } })
+	end
+end
+
+local function setLightTheme()
+	pcall(vim.cmd.colorscheme, lightTheme)
+	pcall(vim.cmd.colorscheme, lightTheme)
+	if pcall(require, "lualine") then
+		require("lualine").setup({ options = { theme = lightTheme } })
+	end
+end
+
+local function toggleTheme(keep)
+	local isDark = vim.opt.background:get() == "dark"
+	if keep then
+		isDark = not isDark
+	end
+	if isDark then
+		setLightTheme()
+	else
+		setDarkTheme()
+	end
+end
+
 vim.opt.rtp:prepend(lazypath)
 if pcall(require, "lazy") then
 	require("lazy").setup({
-
 		{
 			"EdenEast/nightfox.nvim",
 			name = "nightfox",
 			lazy = false,
 			priority = 1000,
-			init = function()
-				vim.api.nvim_create_user_command("SysTheme", function()
-					DarkTheme = "nightfox"
-					LightTheme = "dayfox"
-					local isDark = sysDarkStatus()
-
-					if not isDark then
-						vim.opt.background = "light"
-						pcall(vim.cmd.colorscheme, LightTheme)
-						pcall(vim.cmd.colorscheme, LightTheme)
-						if pcall(require, "lualine") then
-							require("lualine").setup({ options = { theme = LightTheme } })
-						end
-					else
-						vim.opt.background = "dark"
-						pcall(vim.cmd.colorscheme, DarkTheme)
-						pcall(vim.cmd.colorscheme, DarkTheme)
-						if pcall(require, "lualine") then
-							require("lualine").setup({ options = { theme = DarkTheme } })
-						end
-					end
-				end, {})
-
-				keymap({ "n", "v" }, "<leader>t", "<cmd>SysTheme<CR>", { desc = "Theme" })
-				pcall(vim.cmd, "SysTheme")
-			end,
 			opts = {
 				palettes = { nightfox = { bg1 = "#151f2c", bg3 = "#1c293a" }, dayfox = { bg3 = "#eeeaea" } },
 				groups = {
@@ -380,6 +338,33 @@ if pcall(require, "lazy") then
 					dayfox = { Whitespace = { fg = "#bec1ce" } },
 				},
 			},
+		},
+
+		{
+			"vimpostor/vim-lumen",
+			init = function()
+				vim.api.nvim_create_autocmd("User", {
+					pattern = "LumenLight",
+					callback = function()
+						local currentTheme = vim.api.nvim_exec2("colorscheme", { output = true }).output
+						if currentTheme == lightTheme then
+							return
+						end
+						setLightTheme()
+					end,
+				})
+
+				vim.api.nvim_create_autocmd("User", {
+					pattern = "LumenDark",
+					callback = function()
+						local currentTheme = vim.api.nvim_exec2("colorscheme", { output = true }).output
+						if currentTheme == darkTheme then
+							return
+						end
+						setDarkTheme()
+					end,
+				})
+			end,
 		},
 
 		{
@@ -1592,6 +1577,12 @@ if pcall(require, "lazy") then
 					},
 					r = {
 						name = "Session",
+					},
+					t = {
+						function()
+							toggleTheme()
+						end,
+						"Toggle theme",
 					},
 					x = {
 						name = "Plugins",

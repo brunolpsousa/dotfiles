@@ -61,15 +61,6 @@ ch_tmux() {
   tmux source-file "$tmux_config"
 }
 
-send_sig_to_editor() {
-  if [[ "$EDITOR" =~ 'nvim' ]]; then
-    EDITOR='nvim'
-  fi
-
-  pgrep "$EDITOR" >/dev/null || return
-  killall -SIGWINCH "$EDITOR"
-}
-
 ch_system() {
   light_mode() {
     if ! command -vp gnome-shell >/dev/null; then
@@ -120,5 +111,4 @@ ch_system() {
   ch_system "$@"
   ch_alacritty
   ch_tmux
-  send_sig_to_editor
 } &
