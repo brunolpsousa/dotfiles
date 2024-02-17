@@ -357,12 +357,14 @@ fetch() {
 ############################################## Plugins #############################################
 #--------------------------------------------------------------------------------------------------#
 # asdf
-asdf_paths=("/opt/asdf-vm/asdf.sh" "$HOME/.asdf/asdf.sh" "$XDG_DATA_HOME/asdf/asdf.sh")
+asdf_paths=("/opt/asdf-vm" "$HOME/.asdf" "$XDG_DATA_HOME/asdf")
 for p in "${asdf_paths[@]}"; do
-  source "$p" 2>/dev/null
-  if [[ "$ASDF_DIR" ]]; then
+  export ASDF_DIR="$p"
+  source "$p/asdf.sh" 2>/dev/null
+  if [[ "$?" -eq 0 ]]; then
     [[ -d "$XDG_DATA_HOME/asdf" ]] || mkdir "$XDG_DATA_HOME/asdf"
     fpath=(${ASDF_DIR}/completions $fpath)
+    export ASDF_DATA_DIR="$ASDF_DIR"
     export ASDF_NODEJS_LEGACY_FILE_DYNAMIC_STRATEGY="latest_available"
     export ASDF_DEFAULT_TOOL_VERSIONS_FILENAME=".local/share/asdf/tool-versions"
     break
