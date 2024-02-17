@@ -15,16 +15,8 @@ alias df='df -h'
 alias ip='ip -c'
 alias diff='diff -Nuar --color=auto'
 alias dust='du -sh * | sort -hr'
-alias ls='ls -v \
-  --color=auto --hyperlink=auto --human-readable --literal --group-directories-first --classify'
-alias la='ls -v \
-  --color=auto --hyperlink=auto --human-readable --literal --group-directories-first --classify \
-  --almost-all'
-alias ll='ls -lv \
-  --color=auto --hyperlink=auto --human-readable --literal --group-directories-first --classify'
-alias lla='ls -lv \
-  --color=auto --hyperlink=auto --human-readable --literal --group-directories-first --classify \
-  --almost-all'
+alias ls='ls -vhNF --color=auto --hyperlink=auto --group-directories-first'
+alias la='ls --almost-all'
 alias g='grep -n -C 3 --color=auto'
 alias grep='grep --color=auto'
 alias egrep='grep -E --color=auto'
@@ -82,6 +74,13 @@ ex() {
       *) echo "\`$f\` cannot be extracted" ;;
     esac
   done
+}
+
+# ls with numerical chmod permissions
+# https://stackoverflow.com/questions/1795976/can-the-unix-list-command-ls-output-numerical-chmod-permissions
+ll() {
+  ls -l --color=always --hyperlink=always "$@" | awk \
+    '{k=0;for(i=0;i<=8;i++)k+=((substr($1,i+2,1)~/[rwx]/) *2^(8-i));if(k)printf("%0o ",k);print}'
 }
 
 # Portable shell through SSH
