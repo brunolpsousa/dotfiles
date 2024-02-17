@@ -357,7 +357,17 @@ fetch() {
 ############################################## Plugins #############################################
 #--------------------------------------------------------------------------------------------------#
 # asdf
-source /opt/asdf-vm/asdf.sh 2>/dev/null
+asdf_paths=("/opt/asdf-vm/asdf.sh" "$HOME/.asdf/asdf.sh" "$XDG_DATA_HOME/asdf/asdf.sh")
+for p in "${asdf_paths[@]}"; do
+  source "$p" 2>/dev/null
+  if [[ "$ASDF_DIR" ]]; then
+    [[ -d "$XDG_DATA_HOME/asdf" ]] || mkdir "$XDG_DATA_HOME/asdf"
+    fpath=(${ASDF_DIR}/completions $fpath)
+    export ASDF_NODEJS_LEGACY_FILE_DYNAMIC_STRATEGY="latest_available"
+    export ASDF_DEFAULT_TOOL_VERSIONS_FILENAME=".local/share/asdf/tool-versions"
+    break
+  fi
+done
 #--------------------------------------------------------------------------------------------------#
 # Search repos for programs that can't be found
 source /usr/share/doc/pkgfile/command-not-found.zsh 2>/dev/null
