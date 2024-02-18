@@ -311,12 +311,8 @@ local function setLightTheme()
 	end
 end
 
-local function toggleTheme(keep)
-	local isDark = vim.opt.background:get() == "dark"
-	if keep then
-		isDark = not isDark
-	end
-	if isDark then
+local function toggleTheme()
+	if vim.opt.background:get() == "dark" then
 		setLightTheme()
 	else
 		setDarkTheme()
