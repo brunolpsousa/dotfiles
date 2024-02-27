@@ -998,9 +998,7 @@ if pcall(require, "lazy") then
 					init = function()
 						local packages = {
 							"black",
-							"flake8",
 							"prettier",
-							"shellcheck",
 							"stylua",
 						}
 
@@ -1366,10 +1364,6 @@ if pcall(require, "lazy") then
 				require("null-ls").setup({
 					debug = false,
 					sources = {
-						require("null-ls").builtins.diagnostics.flake8.with({
-							extra_args = { "--max-line-length=88", "--extend-ignore=E203" },
-						}),
-						require("null-ls").builtins.code_actions.shellcheck,
 						require("null-ls").builtins.diagnostics.zsh,
 						require("null-ls").builtins.formatting.stylua,
 						require("null-ls").builtins.formatting.google_java_format,
