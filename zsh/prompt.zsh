@@ -647,8 +647,8 @@ spaceship_battery() {
     [[ -z $battery ]] && return
 
     battery_data=$(upower -i $battery)
-    battery_percent="$(spaceship::grep percentage "$battery_data" | awk '{print $2}')"
-    battery_status="$(spaceship::grep state "$battery_data" | awk '{print $2}')"
+    battery_percent="$(spaceship::grep percentage <<< "$battery_data" | awk '{print $2}')"
+    battery_status="$(spaceship::grep state <<< "$battery_data" | awk '{print $2}')"
   elif spaceship::exists pmset; then
     battery_data=$(pmset -g batt | spaceship::grep "InternalBattery")
 
@@ -669,15 +669,15 @@ spaceship_battery() {
     battery_status_and_percent_array=("${(@s/:/)battery_status_and_percent}")
     battery_status=$battery_status_and_percent_array[1]:l
     battery_percent=$battery_status_and_percent_array[2]
-
-  # If battery is 0% or more than 100% charge, something is likely wrong
-    [[ $battery_percent -gt 0 && $battery_percent -le 100 ]] || return
   else
     return
   fi
 
   # Remove trailing % and symbols for comparison
   battery_percent="$(tr -d '%[,;]' <<< $battery_percent)"
+
+  # If battery is 0% or more than 100% charge, something is likely wrong
+  [[ $battery_percent -gt 0 && $battery_percent -le 100 ]] || return
 
   # Change color based on battery percentage
   if [[ $battery_percent -eq 100 || $battery_status =~ "(charged|full)" ]]; then
