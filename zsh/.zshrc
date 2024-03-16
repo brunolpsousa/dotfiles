@@ -531,7 +531,7 @@ tmux_xterm() {
 
   local tmux_session="$(tmux list-sessions &>/dev/null | grepsh main)"
   [[ -z "$1" ]] && local args=("$HOME") || local args=("$@")
-  [[ -n $tmux_session ]] || tmux new-session -ds main -c "$HOME" 2>/dev/null
+  [[ $tmux_session ]] || tmux new-session -ds main -c "$HOME" 2>/dev/null
 
   if grepsh -q attached "$tmux_session" && [[ -z $is_tty ]]; then
     unset att_tmux; tmux neww -t=main -c "$args[@]"
@@ -550,7 +550,7 @@ tmux_attach() {
   local tmux_session="$(tmux list-sessions &>/dev/null | grepsh main)"
   unset att_tmux
 
-  if [[ "$tmux_session" ]] && grepsh -q attached <<< "$tmux_session"; then
+  if [[ "$tmux_session" ]] && grepsh -q attached "$tmux_session"; then
     tmux neww -t=main -c "$PWD" && tmux a -t=main
   elif [[ "$tmux_session" ]]; then
     tmux a -t=main
