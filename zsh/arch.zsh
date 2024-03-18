@@ -260,9 +260,9 @@ arch-base() {
       case $yne in
         Yes )
           [[ -n $zenv ]] || echo '[[ -f "$HOME/.config/zsh/.zshrc" ]] && ' \
-            'ZDOTDIR="$HOME/.config/zsh" || ZDOTDIR="$HOME"' | \
+            'ZDOTDIR="$HOME/.config/zsh" || ZDOTDIR="$HOME"'             | \
             $use_sudo tee -a /etc/zsh/zshenv >/dev/null
-          [[ -n $zprof ]] || echo 'source "$ZDOTDIR/.zshrc"' | \
+          [[ -n $zprof ]] || echo 'source "$ZDOTDIR/.zshrc"'             | \
             $use_sudo tee -a /etc/zsh/zprofile >/dev/null;
           break;;
         No ) break;;
@@ -310,8 +310,8 @@ arch-base() {
           sbctl ufw iptables-nft dosfstools exfat-utils ntfs-3g unrar zip p7zip imagemagick \
           zsh-autosuggestions zsh-completions zsh-history-substring-search zsh-syntax-highlighting \
           $(case $(lscpu | awk '/Model name:/{print $3}') in
-          AMD) echo -n 'amd-ucode';;
-          Intel\(R\)) echo -n 'intel-ucode';;
+          AMD) echo -n 'amd-ucode libva-mesa-driver mesa-vdpau';;
+          Intel\(R\)) echo -n 'intel-ucode intel-media-driver libva-intel-driver';;
           esac)
 
         echo 'Do you wish to use Flatpak [y/N]?' && read flatpk
@@ -420,7 +420,7 @@ arch-base() {
     case $yne in
       Yes )
         $use_sudo sh -c "ufw enable; systemctl enable fstrim.timer systemd-oomd bluetooth ufw; \
-          echo -e 'vm.swappiness=10\nvm.vfs_cache_pressure=50\nvm.max_map_count=2147483642' \
+          echo -e 'vm.swappiness=10\nvm.vfs_cache_pressure=50\nvm.max_map_count=2147483642'    \
           > /etc/sysctl.d/99-sysctl.conf"
 
         if [[ "$EUID" != 0 ]] && ! grep -q "$USER" /etc/subuid; then
@@ -437,23 +437,23 @@ arch-base() {
 
   local PT='localectl --no-convert set-x11-keymap br pc105; setxkbmap -model pc105 -layout br;
     echo -e "LANG=en_US.UTF-8\nLANGUAGE=\"en_US\"\nLC_TYPE=pt_BR.UTF-8\nLC_NUMERIC=pt_BR.UTF-8\n" \
-    "LC_TIME=pt_BR.UTF-8\nLC_MONETARY=pt_BR.UTF-8\nLC_PAPER=pt_BR.UTF-8\n" \
-    "LC_MEASUREMENT=pt_BR.UTF-8" | tee /etc/locale.conf;
+            "LC_TIME=pt_BR.UTF-8\nLC_MONETARY=pt_BR.UTF-8\nLC_PAPER=pt_BR.UTF-8\n"                \
+            "LC_MEASUREMENT=pt_BR.UTF-8" | tee /etc/locale.conf;
     echo -e "KEYMAP=br-abnt2\nFONT=eurlatgr\nFONT_MAP=8859-1" | tee /etc/vconsole.conf'
 
   local US='localectl --no-convert set-x11-keymap us pc105 intl;
     setxkbmap -model pc105 -layout us -variant intl;
     echo -e "LANG=en_US.UTF-8\nLANGUAGE=\"en_US\"\nLC_TYPE=pt_BR.UTF-8\nLC_NUMERIC=pt_BR.UTF-8\n" \
-    "LC_TIME=pt_BR.UTF-8\nLC_MONETARY=pt_BR.UTF-8\nLC_PAPER=pt_BR.UTF-8\n" \
-    "LC_MEASUREMENT=pt_BR.UTF-8" | tee /etc/locale.conf;
+            "LC_TIME=pt_BR.UTF-8\nLC_MONETARY=pt_BR.UTF-8\nLC_PAPER=pt_BR.UTF-8\n"                \
+            "LC_MEASUREMENT=pt_BR.UTF-8" | tee /etc/locale.conf;
     echo -e "KEYMAP=us-acentos\nFONT=eurlatgr\nFONT_MAP=8859-1" | tee /etc/vconsole.conf'
 
   local both='localectl --no-convert set-x11-keymap us,br pc105 intl,;
     setxkbmap -model pc105 -layout us,br -variant intl,;
     echo -e "LANG=en_US.UTF-8\nLANGUAGE=\"en_US\"\nLC_TYPE=pt_BR.UTF-8\nLC_NUMERIC=pt_BR.UTF-8\n" \
-    "LC_TIME=pt_BR.UTF-8\nLC_MONETARY=pt_BR.UTF-8\nLC_PAPER=pt_BR.UTF-8\n"
-    "LC_MEASUREMENT=pt_BR.UTF-8" | tee /etc/locale.conf;
-    echo -e "KEYMAP=us-acentos\nKEYMAP_TOGGLE=br-abnt2\nFONT=eurlatgr\nFONT_MAP=8859-1" | \
+            "LC_TIME=pt_BR.UTF-8\nLC_MONETARY=pt_BR.UTF-8\nLC_PAPER=pt_BR.UTF-8\n"
+            "LC_MEASUREMENT=pt_BR.UTF-8" | tee /etc/locale.conf;
+    echo -e "KEYMAP=us-acentos\nKEYMAP_TOGGLE=br-abnt2\nFONT=eurlatgr\nFONT_MAP=8859-1" |         \
       tee /etc/vconsole.conf'
 
   local pubne
@@ -480,26 +480,28 @@ arch-base() {
               local baseMpv="$HOME/.var/app/io.mpv.Mpv/config"
 
             \mkdir -p "$baseMpv"/mpv/{scripts,scripts-opts}
-            echo 'idle=yes\nvolume=25\nautofit-smaller=50%x50%\nautofit-larger=90%x90%' \
-              > "$baseMpv/mpv/mpv.conf"
+            echo 'idle=yes\nvolume=25\nautofit-smaller=75%x75%\nautofit-larger=75%x75%'      \
+                 '\nvo=dmabuf-wayland\nhwdec=auto-safe\nhwdec-codecs=h264,vc1,hevc,vp8,vp9'  \
+                 '\nao=pipewire\nhls-bitrate=max\ngpu-context=wayland\nprofile=high-quality' \
+                 '\nvf=denoise_vaapi,scale_vaapi=hq' > "$baseMpv/mpv/mpv.conf"
 
-            echo 'Ctrl+q quit\nF11 cycle fullscreen\nENTER cycle fullscreen' \
-              '\nKP_ENTER cycle fullscreen\nWHEEL_UP osd-msg-bar seek 3' \
-              '\nWHEEL_DOWN osd-msg-bar seek -3\nLEFT osd-msg-bar seek -5' \
-              '\nRIGHT osd-msg-bar seek  5\nUP osd-msg-bar seek 15\nDOWN osd-msg-bar seek -15' \
-              '\nkp9 add volume -2\nkp0 add volume 2' > "$baseMpv/mpv/input.conf"
+            echo 'Ctrl+q quit\nF11 cycle fullscreen\nENTER cycle fullscreen'                      \
+                 '\nKP_ENTER cycle fullscreen\nWHEEL_UP osd-msg-bar seek 3'                       \
+                 '\nWHEEL_DOWN osd-msg-bar seek -3\nLEFT osd-msg-bar seek -5'                     \
+                 '\nRIGHT osd-msg-bar seek  5\nUP osd-msg-bar seek 15\nDOWN osd-msg-bar seek -15' \
+                 '\nkp9 add volume -2\nkp0 add volume 2' > "$baseMpv/mpv/input.conf"
 
-            fetch \
-              'https://raw.githubusercontent.com/brunolpsousa/mpv-nextfile/master/nextfile.lua' \
+            fetch                                                                                        \
+              'https://raw.githubusercontent.com/brunolpsousa/mpv-nextfile/master/nextfile.lua'          \
               > "$baseMpv/mpv/scripts/nextfile.lua"
-            fetch \
+            fetch                                                                                        \
               'https://raw.githubusercontent.com/jonniek/mpv-playlistmanager/master/playlistmanager.lua' \
               > "$baseMpv/mpv/scripts/playlistmanager.lua"
-            fetch \
-              'https://raw.githubusercontent.com/dfaker/VR-reversal/master/360plugin.lua' \
+            fetch                                                                                        \
+              'https://raw.githubusercontent.com/dfaker/VR-reversal/master/360plugin.lua'                \
               > "$baseMpv/mpv/scripts/360plugin.lua"
-            fetch \
-              'https://raw.githubusercontent.com/dfaker/VR-reversal/master/script-opts/360plugin.conf' \
+            fetch                                                                                        \
+              'https://raw.githubusercontent.com/dfaker/VR-reversal/master/script-opts/360plugin.conf'   \
               > "$baseMpv/mpv/scripts-opts/360plugin.conf"
 
             sed -i 's/\(key_loadfiles = "\)"/\1CTRL+l"/g' "$baseMpv/mpv/scripts/playlistmanager.lua"
@@ -510,11 +512,11 @@ arch-base() {
           local firefoxcfg; read firefoxcfg
           if [[ $firefoxcfg =~ '^[yY]' ]]; then
             mkdir "$HOME/chrome"
-            fetch 'https://raw.githubusercontent.com/brunolpsousa/dotfiles/main/firefox/userChrome.css' \
+            fetch 'https://raw.githubusercontent.com/brunolpsousa/dotfiles/main/firefox/userChrome.css'  \
               > "$HOME/chrome/userChrome.css"
             fetch 'https://raw.githubusercontent.com/brunolpsousa/dotfiles/main/firefox/userContent.css' \
               > "$HOME/chrome/userContent.css"
-            fetch 'https://raw.githubusercontent.com/brunolpsousa/dotfiles/main/firefox/img' \
+            fetch 'https://raw.githubusercontent.com/brunolpsousa/dotfiles/main/firefox/img'             \
               > "$HOME/chrome/img"
           fi
 
@@ -577,7 +579,7 @@ arch-base() {
               \mkdir -p "$XDG_DATA_HOME/fonts"
               echo 'Downloading Nerd Fonts...'
 
-              [[ -f "$XDG_CACHE_HOME/$font.zip" ]] || fetch \
+              [[ -f "$XDG_CACHE_HOME/$font.zip" ]] || fetch                                 \
                 "https://github.com/ryanoasis/nerd-fonts/releases/download/v$ver/$font.zip" \
                 > "$XDG_CACHE_HOME/$font.zip"
 
@@ -603,7 +605,7 @@ arch-base() {
               local baseNvim="$XDG_CONFIG_HOME"
             fi
 
-            [[ -f "$baseNvim/config/nvim/init.lua" ]] || fetch \
+            [[ -f "$baseNvim/config/nvim/init.lua" ]] || fetch               \
               'https://gitlab.com/brunolpsousa/dotfiles/-/raw/main/init.lua' \
               > "$baseNvim/nvim/init.lua"
 
@@ -616,13 +618,13 @@ arch-base() {
 
             fetch 'https://gitlab.com/brunolpsousa/dotfiles/-/raw/main/alacritty/alacritty.toml' \
               > "$XDG_CONFIG_HOME/alacritty/alacritty.toml"
-            fetch 'https://gitlab.com/brunolpsousa/dotfiles/-/raw/main/alacritty/dark.toml' \
+            fetch 'https://gitlab.com/brunolpsousa/dotfiles/-/raw/main/alacritty/dark.toml'      \
               > "$XDG_CONFIG_HOME/alacritty/dark.toml"
-            fetch 'https://gitlab.com/brunolpsousa/dotfiles/-/raw/main/alacritty/light.toml' \
+            fetch 'https://gitlab.com/brunolpsousa/dotfiles/-/raw/main/alacritty/light.toml'     \
               > "$XDG_CONFIG_HOME/alacritty/light.toml"
 
-            case $(lscpu | awk '/Model name:/{print $3}') in Intel\(R\)) sed -i \
-              's/\(columns = \)156/\1140/g; s/\(lines = \)43/\134/g' \
+            case $(lscpu | awk '/Model name:/{print $3}') in Intel\(R\)) sed -i                  \
+              's/\(columns = \)156/\1140/g; s/\(lines = \)43/\134/g'                             \
               "$XDG_CONFIG_HOME/alacritty/alacritty.toml";;
             esac
           fi
@@ -632,14 +634,14 @@ arch-base() {
           if exists tmux; then
             local tmuxprefix tmuxbind
             \mkdir -p "$XDG_CONFIG_HOME/tmux"
-            fetch 'https://gitlab.com/brunolpsousa/dotfiles/-/raw/main/tmux.conf' \
+            fetch 'https://gitlab.com/brunolpsousa/dotfiles/-/raw/main/tmux.conf'          \
               > "$XDG_CONFIG_HOME/tmux/tmux.conf"
             echo "Do you wish to remap tmux's prefix? [y/N]" && read tmuxprefix
             [[ $tmuxprefix =~ '^[yY]' ]] && echo 'Enter a modifier [C/M]:' && read tmuxmod \
               && echo 'Enter a char:' && read tmuxbind
 
-            [[ -n $tmuxbind ]] && echo "# remap prefix from C-b to $tmuxmod-$tmuxbind" \
-              "\nunbind C-b\nset-option -g prefix $tmuxmod-$tmuxbind" \
+            [[ -n $tmuxbind ]] && echo "# remap prefix from C-b to $tmuxmod-$tmuxbind"     \
+              "\nunbind C-b\nset-option -g prefix $tmuxmod-$tmuxbind"                      \
               "\nbind-key $tmuxmod-$tmuxbind send-prefix" >> "$XDG_CONFIG_HOME/tmux/tmux.conf"
           fi
 
@@ -647,7 +649,7 @@ arch-base() {
           if exists wezterm || exists org.wezfurlong.wezterm; then
             \mkdir -p "$XDG_CONFIG_HOME/wezterm"
 
-            fetch 'https://gitlab.com/brunolpsousa/dotfiles/-/raw/main/wezterm.lua' \
+            fetch 'https://gitlab.com/brunolpsousa/dotfiles/-/raw/main/wezterm.lua'       \
               > "$XDG_CONFIG_HOME/wezterm/wezterm.lua"
 
             case $(lscpu | awk '/Model name:/{print $3}') in
@@ -668,8 +670,8 @@ arch-base() {
               sudo tee '/usr/local/bin/xterm' >/dev/null
             sudo chmod +x '/usr/local/bin/xterm'
 
-            [[ ! -f '/bin/xterm' ]] || echo "$(date '+%Y-%m-%d %H:%M:%S') - " \
-              "Warning: /bin/xterm exists and overlaps with /usr/local/bin/xterm" \
+            [[ ! -f '/bin/xterm' ]] || echo "$(date '+%Y-%m-%d %H:%M:%S') - "                     \
+              "Warning: /bin/xterm exists and overlaps with /usr/local/bin/xterm"                 \
               >> "$HOME/.alert"
           fi
 
@@ -728,10 +730,10 @@ arch-base() {
   select gke in 'GNOME' 'KDE' 'Exit'; do
     case $gke in
 
-      GNOME ) $use_sudo pacman -S --needed \
-          xdg-desktop-portal-gnome gst-plugin-pipewire gvfs-mtp \
+      GNOME ) $use_sudo pacman -S --needed                                          \
+          xdg-desktop-portal-gnome gst-plugin-pipewire gvfs-mtp                     \
           gnome-shell gnome-session gdm gnome-keyring gnome-control-center nautilus \
-          gnome-disk-utility gnome-system-monitor gnome-tweaks gnome-themes-extra \
+          gnome-disk-utility gnome-system-monitor gnome-tweaks gnome-themes-extra   \
           webp-pixbuf-loader ffmpegthumbnailer
 
         if [[ -z "$flatpk" ]]; then
@@ -748,11 +750,11 @@ arch-base() {
           $use_sudo pacman -S --needed loupe file-roller gnome-calculator gnome-chess gnome-mines
         fi
 
-        echo -e '[Unit]\nDescription=Change Wallpapers\nStartLimitIntervalSec=3' \
-          '\nStartLimitBurst=5\n\n[Service]' \
-          "\nExecStart=$XDG_DATA_HOME/zsh/chwp.sh\nRestart=always\nRestartSec=3" \
-          '\n\n[Install]\nWantedBy=default.target' |
-          $use_sudo tee /etc/systemd/user/chwp.service >/dev/null
+        echo -e '[Unit]\nDescription=Change Wallpapers\nStartLimitIntervalSec=3'       \
+                '\nStartLimitBurst=5\n\n[Service]'                                     \
+                "\nExecStart=$XDG_DATA_HOME/zsh/chwp.sh\nRestart=always\nRestartSec=3" \
+                '\n\n[Install]\nWantedBy=default.target' |
+                $use_sudo tee /etc/systemd/user/chwp.service >/dev/null
 
         $use_sudo \
           sed -i 's/#HandleLidSwitch=suspend/HandleLidSwitch=lock/' /etc/systemd/logind.conf
@@ -763,7 +765,7 @@ arch-base() {
         if [[ "$EUID" != 0 ]]; then
           \mkdir -p "$XDG_CONFIG_HOME/zsh" "$XDG_DATA_HOME/nautilus/scripts"
 
-          [[ -f "$XDG_DATA_HOME/zsh/chwp.sh" ]] || fetch \
+          [[ -f "$XDG_DATA_HOME/zsh/chwp.sh" ]] || fetch                      \
             'https://gitlab.com/brunolpsousa/dotfiles/-/raw/main/zsh/chwp.sh' \
             > "$XDG_DATA_HOME/zsh/chwp.sh"
 
@@ -777,12 +779,12 @@ arch-base() {
         fi
         break;;
 
-      KDE ) $use_sudo pacman -S --needed \
-              xdg-desktop-portal-kde plasma-desktop plasma-wayland-session \
+      KDE ) $use_sudo pacman -S --needed                                                     \
+              xdg-desktop-portal-kde plasma-desktop plasma-wayland-session                   \
               qt5-wayland qt6-wayland sddm sddm-kcm powerdevil bluedevil plasma-nm plasma-pa \
-              breeze-gtk kde-gtk-config kdialog khotkeys kinfocenter kscreen \
-              plasma-disks plasma-firewall dolphin-plugins ark filelight \
-              kcalc qt5-imageformats ffmpegthumbs plasma-systemmonitor kwallet-pam \
+              breeze-gtk kde-gtk-config kdialog khotkeys kinfocenter kscreen                 \
+              plasma-disks plasma-firewall dolphin-plugins ark filelight                     \
+              kcalc qt5-imageformats ffmpegthumbs plasma-systemmonitor kwallet-pam           \
               spectacle qt5-virtualkeyboard gwenview kcharselect okular
 
         echo "\n>>> Do you wish to install KDE Games?\n"
@@ -795,16 +797,16 @@ arch-base() {
           '/^RebootCommand/ s/$/\nNumlock=on\nInputMethod=qtvirtualkeyboard/; /=breeze$/ s/$/\
           \nCursorTheme=Breeze_Snow/' /etc/sddm.conf.d/kde_settings.conf
 
-        echo -e '[Unit]\nDescription=Set Theme\n' \
-          "\n[Service]\nExecStart=$XDG_DATA_HOME/zsh/theme.sh\n" |
-          $use_sudo tee /etc/systemd/user/theme.service >/dev/null
-        echo -e '[Unit]\nDescription=Set Theme\n\n[Timer]' \
-          '\nOnCalendar=*-*-* 6:35:00\nOnCalendar=*-*-* 17:45:00\nPersistent=true' \
-          '\nUnit=theme.service\n\n[Install]\nWantedBy=default.target' |
-          $use_sudo tee /etc/systemd/user/theme.timer >/dev/null
+        echo -e '[Unit]\nDescription=Set Theme\n'                                        \
+                "\n[Service]\nExecStart=$XDG_DATA_HOME/zsh/theme.sh\n"                   |
+                $use_sudo tee /etc/systemd/user/theme.service >/dev/null
+        echo -e '[Unit]\nDescription=Set Theme\n\n[Timer]'                               \
+                '\nOnCalendar=*-*-* 6:35:00\nOnCalendar=*-*-* 17:45:00\nPersistent=true' \
+                '\nUnit=theme.service\n\n[Install]\nWantedBy=default.target'             |
+                $use_sudo tee /etc/systemd/user/theme.timer >/dev/null
 
         # Map Meta (Super) to toggle overview
-        kwriteconfig5 --file "$XDG_CONFIG_HOME/kwinrc" --group ModifierOnlyShortcuts --key Meta \
+        kwriteconfig5 --file "$XDG_CONFIG_HOME/kwinrc" --group ModifierOnlyShortcuts --key Meta         \
           "org.kde.kglobalaccel,/component/kwin,org.kde.kglobalaccel.Component,invokeShortcut,Overview" \
           && qdbus org.kde.KWin /KWin reconfigure
 
