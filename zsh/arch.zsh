@@ -545,6 +545,8 @@ arch-base() {
                   [[ -n "$gitSigningKey" ]] &&
                     git config --global user.signingKey "$gitSigningKey" &&
                     git config --global commit.gpgsign true
+                  git config --global alias.brcd 'branch --sort=-committerdate'
+                  git config --global core.autocrlf input
 
                   break;;
                 No ) break;;
