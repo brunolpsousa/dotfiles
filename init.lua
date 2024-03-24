@@ -85,6 +85,14 @@ local function toggle_theme()
 	set_dark_theme()
 end
 
+local diagnostic_goto = function(next, severity)
+	local go = next and vim.diagnostic.goto_next or vim.diagnostic.goto_prev
+	severity = severity and vim.diagnostic.severity[severity] or nil
+	return function()
+		go({ severity = severity })
+	end
+end
+
 local function lsp_format(async, bufnr)
 	async = async ~= true
 	vim.lsp.buf.format({
@@ -153,7 +161,9 @@ vim.api.nvim_create_autocmd({ "FileType" }, {
 
 vim.api.nvim_create_autocmd({ "VimResized" }, {
 	callback = function()
+		local current_tab = vim.fn.tabpagenr()
 		vim.cmd("tabdo wincmd =")
+		vim.cmd("tabnext " .. current_tab)
 	end,
 })
 
@@ -401,8 +411,12 @@ local lsp_keys = {
 
 	{ "<F2>", vim.lsp.buf.rename, desc = "Rename" },
 	{ "<leader>lr", vim.lsp.buf.rename, desc = "Rename" },
-	{ "<leader>lj", vim.diagnostic.goto_prev, desc = "Previous Diagnostic" },
-	{ "<leader>lk", vim.diagnostic.goto_next, desc = "Next Diagnostic" },
+	{ "[d", diagnostic_goto(false), desc = "Previous Diagnostic" },
+	{ "]d", diagnostic_goto(true), desc = "Next Diagnostic" },
+	{ "[e", diagnostic_goto(false, "ERROR"), desc = "Previous Error" },
+	{ "]e", diagnostic_goto(true, "ERROR"), desc = "Next Error" },
+	{ "[w", diagnostic_goto(false, "WARN"), desc = "Previous Warn" },
+	{ "]w", diagnostic_goto(true, "WARN"), desc = "Next Warn" },
 	{ "<leader>lh", vim.lsp.buf.signature_help, desc = "Signature Help" },
 	{ "<leader>la", vim.lsp.buf.code_action, desc = "Code Action" },
 	{ "<leader>lA", vim.lsp.codelens.run, desc = "CodeLens Action" },
