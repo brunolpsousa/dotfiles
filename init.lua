@@ -405,7 +405,7 @@ local lsp_keys = {
 	},
 	{
 		"gi",
-		'<cmd>lua require("telescope.builtin").lsp_implementations({ reuse_win = true })',
+		'<cmd>lua require("telescope.builtin").lsp_implementations({ reuse_win = true })<CR>',
 		desc = "Implementation",
 	},
 
@@ -428,12 +428,12 @@ local lsp_keys = {
 	{ "<leader>lW", "<cmd>Telescope lsp_workspace_diagnostics<CR>", desc = "Workspace Diagnostics" },
 	{
 		"<leader>ld",
-		'<cmd>lua require("telescope.builtin").lsp_type_definitions({ reuse_win = true })',
+		'<cmd>lua require("telescope.builtin").lsp_type_definitions({ reuse_win = true })<CR>',
 		desc = "Type Definition",
 	},
 	{
 		"<leader>ll",
-		"<cmd>lua vim.notify(vim.inspect(vim.lsp.buf.list_workspace_folders()))",
+		"<cmd>lua vim.notify(vim.inspect(vim.lsp.buf.list_workspace_folders()))<CR>",
 		desc = "List Workspace Folders",
 	},
 
