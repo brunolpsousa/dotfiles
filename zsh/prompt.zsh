@@ -227,7 +227,7 @@ prompt_git_status_precmd() {
   PROMPT_SSH="%F{yellow}${(%):-%m}%}ː%b%f" || unset PROMPT_SSH
 #--------------------------------------------------------------------------------------------------#
 # Some stuff borrowed from Spaceship
-# Updated in 2023.11.17
+# Updated in 2024.03.26
 
 spaceship_noasync() {
   local SPACESHIP_PROMPT_DEFAULT_PREFIX=' '
@@ -896,7 +896,7 @@ spaceship_docker() {
   fi
 
   local docker_context="$(spaceship_docker_context)"
-  local docker_context_section="$(spaceship::section::render $docker_context)"
+  local docker_context_section="$(spaceship::print $docker_context)"
 
   # Show Docker status only for Docker-specific folders or when connected to external host
   local docker_project_globs=('Dockerfile' '.devcontainer/Dockerfile' 'docker-compose.y*ml')
@@ -923,7 +923,7 @@ spaceship_docker() {
 
 # Docker Context
 spaceship_docker_context() {
-  local SPACESHIP_DOCKER_CONTEXT_SHOW="${SPACESHIP_DOCKER_CONTEXT_SHOW=true}"
+  local SPACESHIP_DOCKER_CONTEXT_SHOW="${SPACESHIP_DOCKER_CONTEXT_SHOW=false}"
   local SPACESHIP_DOCKER_COLOR="${SPACESHIP_DOCKER_COLOR="%F{cyan}"}"
   local SPACESHIP_DOCKER_CONTEXT_PREFIX="${SPACESHIP_DOCKER_CONTEXT_PREFIX=" ("}"
   local SPACESHIP_DOCKER_CONTEXT_SUFFIX="${SPACESHIP_DOCKER_CONTEXT_SUFFIX=")"}"
@@ -2209,8 +2209,8 @@ spaceship_pulumi() {
 
   spaceship::exists pulumi || return
 
-  # Show PULUMI Stack when exists
-  local pulumi_project=$(spaceship::upsearch Pulumi.y*ml)
+  # Show PULUMI Stack when exist
+  local pulumi_project="$(spaceship::upsearch Pulumi.yml Pulumi.yaml)"
   [[ -n "$pulumi_project" || -d .pulumi/stacks ]] || return
 
   local pulumi_stack=$(pulumi stack ls 2>/dev/null | \
