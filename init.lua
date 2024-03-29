@@ -1533,6 +1533,7 @@ if pcall(require, "lazy") then
 
 		{
 			"folke/todo-comments.nvim",
+			event = "VeryLazy",
 			dependencies = { "nvim-lua/plenary.nvim" },
 			opts = {},
 			-- stylua: ignore
@@ -1604,7 +1605,7 @@ if pcall(require, "lazy") then
 
 		{
 			"folke/which-key.nvim",
-			lazy = false,
+			event = "VeryLazy",
 			init = function()
 				vim.o.timeout = true
 				vim.o.timeoutlen = 300
