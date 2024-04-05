@@ -85,6 +85,11 @@ local function toggle_theme()
 	set_dark_theme()
 end
 
+local function toggle_inlay_hints()
+	local bufnr = vim.api.nvim_get_current_buf()
+	vim.lsp.inlay_hint.enable(bufnr, not vim.lsp.inlay_hint.is_enabled(bufnr))
+end
+
 local diagnostic_goto = function(next, severity)
 	local go = next and vim.diagnostic.goto_next or vim.diagnostic.goto_prev
 	severity = severity and vim.diagnostic.severity[severity] or nil
@@ -256,7 +261,7 @@ vim.api.nvim_create_autocmd({ "BufWritePre" }, {
 
 		if format_on_save then
 			local bufname = vim.api.nvim_buf_get_name(buf)
-			for _, e in pairs(exclude_fmt_on_save) do
+			for _, e in ipairs(exclude_fmt_on_save) do
 				if bufname:find(e) then
 					return
 				end
@@ -351,7 +356,7 @@ local keys = {
 	{
 		"<leader>fP",
 		"<cmd>lua require('telescope.builtin').colorscheme({enable_preview = true})<CR>",
-		"Colorscheme with Preview",
+		desc = "Colorscheme with Preview",
 	},
 
 	{ "<leader>lf", lsp_format, desc = "Format" },
@@ -541,7 +546,7 @@ if pcall(require, "lazy") then
 
 		{
 			"hrsh7th/nvim-cmp",
-			event = { "BufReadPre", "BufNewFile" },
+			event = { "InsertEnter" },
 			dependencies = {
 				"hrsh7th/cmp-buffer",
 				"hrsh7th/cmp-path",
@@ -1135,7 +1140,7 @@ if pcall(require, "lazy") then
 						},
 					}
 
-					for _, v in pairs(git_keys) do
+					for _, v in ipairs(git_keys) do
 						v.buffer = bufnr
 					end
 					set_keys(git_keys)
@@ -1158,7 +1163,7 @@ if pcall(require, "lazy") then
 						}
 
 						local installed_packages = require("mason-registry").get_installed_package_names()
-						for _, v in pairs(packages) do
+						for _, v in ipairs(packages) do
 							if not vim.tbl_contains(installed_packages, v) then
 								vim.cmd("MasonInstall " .. v)
 							end
@@ -1233,6 +1238,10 @@ if pcall(require, "lazy") then
 						require("nvim-navic").attach(client, bufnr)
 					end
 
+					-- if client.supports_method("textDocument/inlayHint") then
+					-- 	vim.lsp.inlay_hint.enable(bufnr, true)
+					-- end
+
 					if client.name == "eslint" then
 						vim.api.nvim_create_autocmd("BufWritePre", {
 							buffer = bufnr,
@@ -1241,15 +1250,13 @@ if pcall(require, "lazy") then
 					end
 
 					vim.api.nvim_buf_set_option(bufnr, "omnifunc", "v:lua.vim.lsp.omnifunc")
-					for _, v in pairs(lsp_keys) do
+					for _, v in ipairs(lsp_keys) do
 						v.buffer = bufnr
 					end
 					set_keys(lsp_keys)
 				end
 
-				for _, server in pairs(require("mason-lspconfig").get_installed_servers()) do
-					server = vim.split(server, "@")[1]
-
+				for _, server in ipairs(require("mason-lspconfig").get_installed_servers()) do
 					local opts = {
 						on_attach = on_attach,
 						capabilities = capabilities,
@@ -1262,17 +1269,17 @@ if pcall(require, "lazy") then
 
 						local util = require("lspconfig/util")
 						if util.path.exists("node_modules/eslint") then
-							return
+							goto continue
 						end
 
 						local node_path = util.find_node_modules_ancestor(vim.fn.expand("%:p:h"))
 						if node_path and util.path.exists(node_path .. "/node_modules/eslint") then
-							return
+							goto continue
 						end
 
 						local git_path = util.find_git_ancestor(vim.fn.expand("%:p:h"))
 						if git_path and util.path.exists(git_path .. "/node_modules/eslint") then
-							return
+							goto continue
 						end
 
 						local eslint_path = vim.fn.system("command -v eslint")
@@ -1317,6 +1324,7 @@ if pcall(require, "lazy") then
 					end
 
 					require("lspconfig")[server].setup(opts)
+					::continue::
 				end
 			end,
 		},
