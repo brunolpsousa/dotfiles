@@ -422,6 +422,10 @@ local lsp_keys = {
 	{ "]e", diagnostic_goto(true, "ERROR"), desc = "Next Error" },
 	{ "[w", diagnostic_goto(false, "WARN"), desc = "Previous Warn" },
 	{ "]w", diagnostic_goto(true, "WARN"), desc = "Next Warn" },
+	{ "[h", diagnostic_goto(false, "HINT"), desc = "Previous Hint" },
+	{ "]h", diagnostic_goto(true, "HINT"), desc = "Next Hint" },
+	{ "[i", diagnostic_goto(false, "INFO"), desc = "Previous Info" },
+	{ "]i", diagnostic_goto(true, "INFO"), desc = "Next Info" },
 	{ "<leader>lh", vim.lsp.buf.signature_help, desc = "Signature Help" },
 	{ "<leader>la", vim.lsp.buf.code_action, desc = "Code Action" },
 	{ "<leader>lA", vim.lsp.codelens.run, desc = "CodeLens Action" },
@@ -1026,6 +1030,10 @@ if pcall(require, "lazy") then
 			opts = {
 				symbol = "│",
 				options = { try_as_border = true },
+				mappings = {
+					goto_top = "[I",
+					goto_bottom = "]I",
+				},
 			},
 			init = function()
 				vim.api.nvim_create_autocmd("FileType", {
