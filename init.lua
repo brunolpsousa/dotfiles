@@ -1457,7 +1457,7 @@ if pcall(require, "lazy") then
 					end,
 				},
 				renderer = {
-					group_empty = true,
+					group_empty = false,
 					special_files = {},
 					highlight_diagnostics = true,
 					symlink_destination = false,
