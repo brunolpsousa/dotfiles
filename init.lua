@@ -50,6 +50,7 @@ local function set_keys(key)
 		local lhs = v[1]
 		local rhs = v[2]
 		local opts = {
+			buffer = v.buffer or nil,
 			desc = v.desc or nil,
 			expr = v.expr or nil,
 			nowait = v.nowait or nil,
@@ -85,10 +86,10 @@ local function toggle_theme()
 	set_dark_theme()
 end
 
-local function toggle_inlay_hints()
-	local bufnr = vim.api.nvim_get_current_buf()
-	vim.lsp.inlay_hint.enable(bufnr, not vim.lsp.inlay_hint.is_enabled(bufnr))
-end
+-- local function toggle_inlay_hints()
+-- 	local bufnr = vim.api.nvim_get_current_buf()
+-- 	vim.lsp.inlay_hint.enable(bufnr, not vim.lsp.inlay_hint.is_enabled(bufnr))
+-- end
 
 local diagnostic_goto = function(next, severity)
 	local go = next and vim.diagnostic.goto_next or vim.diagnostic.goto_prev
@@ -169,13 +170,6 @@ vim.api.nvim_create_autocmd({ "VimResized" }, {
 		local current_tab = vim.fn.tabpagenr()
 		vim.cmd("tabdo wincmd =")
 		vim.cmd("tabnext " .. current_tab)
-	end,
-})
-
-vim.api.nvim_create_autocmd({ "BufWritePost" }, {
-	pattern = { "*.java" },
-	callback = function()
-		vim.lsp.codelens.refresh()
 	end,
 })
 
@@ -752,7 +746,7 @@ if pcall(require, "lazy") then
 			dependencies = {
 				{
 					"JoosepAlviste/nvim-ts-context-commentstring",
-					event = "VeryLazy",
+					lazy = true,
 					init = function()
 						vim.g.skip_ts_context_commentstring_module = true
 					end,
@@ -778,7 +772,7 @@ if pcall(require, "lazy") then
 					return require("ts_context_commentstring.internal").calculate_commentstring({
 						key = type,
 						location = location,
-					})
+					}) or vim.bo.commentstring
 				end,
 			},
 		},
@@ -1157,6 +1151,21 @@ if pcall(require, "lazy") then
 		},
 
 		{
+			"echasnovski/mini.surround",
+			opts = {
+				mappings = {
+					add = "gsa",
+					delete = "gsd",
+					find = "gsf",
+					find_left = "gsF",
+					highlight = "gsh",
+					replace = "gsr",
+					update_n_lines = "gsn",
+				},
+			},
+		},
+
+		{
 			"neovim/nvim-lspconfig",
 			event = { "BufReadPre", "BufNewFile" },
 			dependencies = {
@@ -1250,11 +1259,49 @@ if pcall(require, "lazy") then
 					-- 	vim.lsp.inlay_hint.enable(bufnr, true)
 					-- end
 
+					if vim.lsp.codelens and client.supports_method("textDocument/codeLens") then
+						vim.lsp.codelens.refresh()
+						vim.api.nvim_create_autocmd({ "BufEnter", "CursorHold", "InsertLeave" }, {
+							buffer = bufnr,
+							callback = vim.lsp.codelens.refresh,
+						})
+					end
+
 					if client.name == "eslint" then
 						vim.api.nvim_create_autocmd("BufWritePre", {
 							buffer = bufnr,
 							command = "EslintFixAll",
 						})
+					end
+
+					local buf = vim.api.nvim_get_current_buf()
+					local ft = vim.bo[buf].filetype
+					if ft:find("typescript") then
+						local ts_keys = {
+							{
+								"<leader>lo",
+								function()
+									vim.lsp.buf.code_action({
+										apply = true,
+										context = { only = { "source.organizeImports.ts" }, diagnostics = {} },
+									})
+								end,
+								desc = "Organize Imports",
+								buffer = bufnr,
+							},
+							{
+								"<leader>lR",
+								function()
+									vim.lsp.buf.code_action({
+										apply = true,
+										context = { only = { "source.removeUnused.ts" }, diagnostics = {} },
+									})
+								end,
+								desc = "Remove Unused Imports",
+								buffer = bufnr,
+							},
+						}
+						set_keys(ts_keys)
 					end
 
 					vim.api.nvim_buf_set_option(bufnr, "omnifunc", "v:lua.vim.lsp.omnifunc")
@@ -1277,17 +1324,17 @@ if pcall(require, "lazy") then
 
 						local util = require("lspconfig/util")
 						if util.path.exists("node_modules/eslint") then
-							goto continue
+							goto lsp_setup
 						end
 
 						local node_path = util.find_node_modules_ancestor(vim.fn.expand("%:p:h"))
 						if node_path and util.path.exists(node_path .. "/node_modules/eslint") then
-							goto continue
+							goto lsp_setup
 						end
 
 						local git_path = util.find_git_ancestor(vim.fn.expand("%:p:h"))
 						if git_path and util.path.exists(git_path .. "/node_modules/eslint") then
-							goto continue
+							goto lsp_setup
 						end
 
 						local eslint_path = vim.fn.system("command -v eslint")
@@ -1331,8 +1378,8 @@ if pcall(require, "lazy") then
 						end
 					end
 
+					::lsp_setup::
 					require("lspconfig")[server].setup(opts)
-					::continue::
 				end
 			end,
 		},
@@ -1554,8 +1601,8 @@ if pcall(require, "lazy") then
 			opts = {},
 			-- stylua: ignore
 			keys = {
-				{ "]t", function() require("todo-comments").jump_next() end, desc = "Next todo comment", },
-				{ "[t", function() require("todo-comments").jump_prev() end, desc = "Previous todo comment", },
+				{ "]t", function() require("todo-comments").jump_next() end, desc = "Next todo comment" },
+				{ "[t", function() require("todo-comments").jump_prev() end, desc = "Previous todo comment" },
 			},
 		},
 
@@ -1628,16 +1675,19 @@ if pcall(require, "lazy") then
 			end,
 			config = function()
 				require("which-key").register({
-					g = { name = "Goto" },
+					["<leader>"] = {
+						d = { name = "Debug" },
+						f = { name = "Find" },
+						l = { name = "LSP" },
+						g = { name = "Git" },
+						r = { name = "Session" },
+						x = { name = "Plugins", l = { name = "Lazy" } },
+					},
+					g = { name = "Goto", s = { name = "Surround" } },
 				})
 				require("which-key").register({
-					d = { name = "Debug" },
-					f = { name = "Find" },
-					l = { name = "LSP" },
-					g = { name = "Git" },
-					r = { name = "Session" },
-					x = { name = "Plugins", l = { name = "Lazy" } },
-				}, { prefix = "<leader>" })
+					g = { name = "Goto", s = { name = "Surround" } },
+				}, { mode = "v" })
 			end,
 		},
 	})
