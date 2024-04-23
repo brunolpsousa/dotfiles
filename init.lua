@@ -99,19 +99,30 @@ local diagnostic_goto = function(next, severity)
 	end
 end
 
-local function lsp_format(async, bufnr)
-	async = async ~= true
+local function lsp_format(async)
+	async = async ~= false
+	local eslint = false
+
+	local lsp_active_clients = vim.lsp.buf_get_clients()
+	for _, v in ipairs(lsp_active_clients) do
+		if v.name == "eslint" then
+			async = false
+			eslint = true
+			break
+		end
+	end
+
 	vim.lsp.buf.format({
 		filter = function(client)
 			local exclude = { "cssls", "jsonls", "tsserver" }
-			if vim.tbl_contains(exclude, client.name) then
-				return false
-			end
-			return true
+			return not vim.tbl_contains(exclude, client.name)
 		end,
 		async = async,
-		bufnr = bufnr,
 	})
+
+	if eslint then
+		vim.cmd("EslintFixAll")
+	end
 end
 
 local format_on_save = true
@@ -257,12 +268,13 @@ vim.api.nvim_create_autocmd({ "BufWritePre" }, {
 			local bufname = vim.api.nvim_buf_get_name(buf)
 			for _, e in ipairs(exclude_fmt_on_save) do
 				if bufname:find(e) then
-					return
+					goto restore_cursor
 				end
 			end
-			lsp_format(true)
+			lsp_format(false)
 		end
 
+		::restore_cursor::
 		pcall(vim.api.nvim_win_set_cursor, 0, pos)
 	end,
 })
@@ -503,8 +515,7 @@ if pcall(require, "lazy") then
 				vim.api.nvim_create_autocmd("User", {
 					pattern = "LumenLight",
 					callback = function()
-						local current_theme = vim.api.nvim_exec2("colorscheme", { output = true }).output
-						if current_theme ~= light_theme then
+						if vim.g.colors_name ~= light_theme then
 							set_light_theme()
 						end
 					end,
@@ -513,8 +524,7 @@ if pcall(require, "lazy") then
 				vim.api.nvim_create_autocmd("User", {
 					pattern = "LumenDark",
 					callback = function()
-						local current_theme = vim.api.nvim_exec2("colorscheme", { output = true }).output
-						if current_theme ~= dark_theme then
+						if vim.g.colors_name ~= dark_theme then
 							set_dark_theme()
 						end
 					end,
@@ -859,20 +869,19 @@ if pcall(require, "lazy") then
 			opts = function()
 				local function hide_section()
 					local width = vim.fn.winwidth(0)
-					local buffers = vim.api.nvim_exec2(
-						"echo len(filter(range(1, bufnr('$')), 'buflisted(v:val)'))",
-						{ output = true }
-					)
-					buffers = tonumber(buffers.output)
+					local buffers = -1
+
+					for _, v in ipairs(vim.api.nvim_list_bufs()) do
+						if vim.api.nvim_buf_is_loaded(v) then
+							buffers = buffers + 1
+						end
+					end
 
 					local cond1 = width < 100
-					local cond2 = buffers and buffers > 7
-					local cond3 = buffers and buffers > 4 and width < 150
+					local cond2 = buffers > 7
+					local cond3 = buffers > 4 and width < 150
 
-					if cond1 or cond2 or cond3 then
-						return false
-					end
-					return true
+					return not (cond1 or cond2 or cond3)
 				end
 
 				local diagnostics = {
@@ -1267,13 +1276,6 @@ if pcall(require, "lazy") then
 						})
 					end
 
-					if client.name == "eslint" then
-						vim.api.nvim_create_autocmd("BufWritePre", {
-							buffer = bufnr,
-							command = "EslintFixAll",
-						})
-					end
-
 					local buf = vim.api.nvim_get_current_buf()
 					local ft = vim.bo[buf].filetype
 					if ft:find("typescript") then
@@ -1571,6 +1573,13 @@ if pcall(require, "lazy") then
 					defaults = { path_display = { "smart" }, file_ignore_patterns = { ".git/", "node_modules" } },
 					pickers = {
 						find_files = { hidden = true, no_ignore = false },
+						buffers = {
+							mappings = {
+								n = {
+									["<S-d>"] = "delete_buffer",
+								},
+							},
+						},
 					},
 					extensions = {
 						undo = {
