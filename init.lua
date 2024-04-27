@@ -4,6 +4,7 @@ vim.opt.termguicolors = true
 vim.opt.number = true
 vim.opt.relativenumber = true
 vim.opt.shiftwidth = 2
+vim.opt.shiftround = true
 vim.opt.tabstop = 2
 vim.opt.expandtab = true
 vim.opt.cursorline = true
@@ -33,7 +34,7 @@ vim.opt.pumheight = 15
 vim.opt.pumwidth = 3
 vim.opt.confirm = true
 vim.opt.signcolumn = "yes"
-vim.opt.virtualedit = "none"
+vim.opt.virtualedit = "block"
 vim.opt.splitkeep = "screen"
 vim.opt.spelllang = { "en_us", "pt_br" }
 vim.opt.wildmode = "longest:full,full"
@@ -981,7 +982,7 @@ if pcall(require, "lazy") then
 				delay = 200,
 				large_file_cutoff = 2000,
 				large_file_overrides = {
-					providers = { "lsp" },
+					providers = { "lsp", "treesitter" },
 				},
 				filetypes_denylist = {
 					"neo-tree",
@@ -1014,6 +1015,10 @@ if pcall(require, "lazy") then
 						kmap("[[", "prev", event.buf)
 					end,
 				})
+
+				vim.api.nvim_set_hl(0, "IlluminatedWordText", { link = "LspReferenceText" })
+				vim.api.nvim_set_hl(0, "IlluminatedWordRead", { link = "LspReferenceRead" })
+				vim.api.nvim_set_hl(0, "IlluminatedWordWrite", { link = "LspReferenceWrite" })
 			end,
 		},
 
