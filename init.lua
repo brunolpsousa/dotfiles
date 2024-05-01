@@ -158,6 +158,16 @@ local function toggle_search()
 	end
 end
 
+local function toggle_indent_blankline()
+	local _, ok = pcall(require, "ibl")
+	if not ok then
+		return
+	end
+	require("ibl").setup_buffer(0, {
+		enabled = not require("ibl.config").get_config(0).enabled,
+	})
+end
+
 -- Autocommands
 vim.api.nvim_create_autocmd({ "CursorHold" }, {
 	command = "checktime|rshada|wshada",
@@ -367,6 +377,7 @@ local keys = {
 	},
 
 	{ "<leader>lf", lsp_format, desc = "Format" },
+	{ "<leader>li", toggle_indent_blankline, desc = "Toggle indent-blankline" },
 	{ "<leader>lt", toggle_remove_comments_on_save, desc = "Toggle remove empty comments on save" },
 	{ "<leader>lT", toggle_format_on_save, desc = "Toggle format on save" },
 	{ "<leader>t", toggle_theme, desc = "Toggle theme" },
