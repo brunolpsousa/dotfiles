@@ -92,7 +92,7 @@ end
 -- 	vim.lsp.inlay_hint.enable(bufnr, not vim.lsp.inlay_hint.is_enabled(bufnr))
 -- end
 
-local diagnostic_goto = function(next, severity)
+local function diagnostic_goto(next, severity)
 	local go = next and vim.diagnostic.goto_next or vim.diagnostic.goto_prev
 	severity = severity and vim.diagnostic.severity[severity] or nil
 	return function()
@@ -104,8 +104,7 @@ local function lsp_format(async)
 	async = async ~= false
 	local eslint = false
 
-	local lsp_active_clients = vim.lsp.buf_get_clients()
-	for _, v in ipairs(lsp_active_clients) do
+	for _, v in ipairs(vim.lsp.buf_get_clients()) do
 		if v.name == "eslint" then
 			async = false
 			eslint = true
@@ -114,16 +113,85 @@ local function lsp_format(async)
 	end
 
 	vim.lsp.buf.format({
+		async = async,
 		filter = function(client)
 			local exclude = { "cssls", "jsonls", "tsserver" }
 			return not vim.tbl_contains(exclude, client.name)
 		end,
-		async = async,
 	})
 
 	if eslint then
 		vim.cmd("EslintFixAll")
 	end
+end
+
+local function lsp_on_rename(from, to)
+	local clients = vim.lsp.get_clients()
+	for _, client in ipairs(clients) do
+		if client.supports_method("workspace/willRenameFiles") then
+			local resp = client.request_sync("workspace/willRenameFiles", {
+				files = {
+					{
+						oldUri = vim.uri_from_fname(from),
+						newUri = vim.uri_from_fname(to),
+					},
+				},
+			}, 1000, 0)
+			if resp and resp.result then
+				vim.lsp.util.apply_workspace_edit(resp.result, client.offset_encoding)
+			end
+		end
+	end
+end
+
+local function find_root(buf_id, names, fallback)
+	local root_cache = {}
+	buf_id = buf_id or 0
+	names = names or { ".env", ".git", "node_modules", "Makefile" }
+	fallback = fallback or function()
+		return nil
+	end
+
+	local path = vim.api.nvim_buf_get_name(buf_id)
+	if path == "" then
+		return
+	end
+	local dir_path = vim.fs.dirname(path)
+
+	local res = root_cache[dir_path]
+	if res ~= nil then
+		return res
+	end
+
+	-- Find root
+	local root_file = vim.fs.find(names, { path = dir_path, upward = true })[1]
+	if root_file ~= nil then
+		res = vim.fs.dirname(root_file)
+	else
+		res = fallback(path)
+	end
+
+	-- Use absolute path to an existing directory
+	if type(res) ~= "string" then
+		return
+	end
+	res = vim.fn.fnamemodify(res, ":p")
+	if vim.fn.isdirectory(res) == 0 then
+		return
+	end
+
+	-- Cache result per directory path
+	root_cache[dir_path] = res
+
+	return res
+end
+
+local function set_root(data)
+	local root = find_root(data.buf)
+	if root == nil then
+		return
+	end
+	vim.fn.chdir(root)
 end
 
 local format_on_save = true
@@ -228,18 +296,28 @@ vim.api.nvim_create_autocmd({ "BufWritePre" }, {
 	end,
 })
 
--- Go to last loc when opening a buffer
 vim.api.nvim_create_autocmd("BufReadPost", {
-	callback = function(ev)
-		local exclude = { "diff", "gitcommit" }
-		local buf = ev.buf
-		if vim.tbl_contains(exclude, vim.bo[buf].filetype) then
+	once = true,
+	callback = function()
+		if vim.bo.buftype ~= "" then
 			return
 		end
-		local mark = vim.api.nvim_buf_get_mark(buf, '"')
-		local lcount = vim.api.nvim_buf_line_count(buf)
+		local exclude = { "diff", "gitcommit", "gitrebase" }
+
+		if vim.tbl_contains(exclude, vim.bo.filetype) then
+			return
+		end
+
+		local cursor_line = vim.api.nvim_win_get_cursor(0)[1]
+		if cursor_line > 1 then
+			return
+		end
+
+		local mark = vim.api.nvim_buf_get_mark(0, '"')
+		local lcount = vim.api.nvim_buf_line_count(0)
 		if mark[1] > 0 and mark[1] <= lcount then
 			pcall(vim.api.nvim_win_set_cursor, 0, mark)
+			vim.cmd("normal! zz")
 		end
 	end,
 })
@@ -289,6 +367,9 @@ vim.api.nvim_create_autocmd({ "BufWritePre" }, {
 		pcall(vim.api.nvim_win_set_cursor, 0, pos)
 	end,
 })
+
+vim.o.autochdir = false
+vim.api.nvim_create_autocmd("BufEnter", { callback = set_root })
 
 -- Keymaps
 local keys = {
@@ -352,20 +433,18 @@ local keys = {
 	{ "<leader>p", '"+p', mode = { "n", "v" }, desc = "Paste from clipboard" },
 	{ "<leader>P", '"+P', mode = { "n", "v" }, desc = "Paste from clipboard" },
 
-	{ "<leader>e", "<cmd>NvimTreeToggle<CR>", desc = "NvimTree" },
+	{ "<S-e>", ":e %:h/<C-D>", desc = "Edit file" },
 	{ "<leader>fb", "<cmd>Telescope buffers<CR>", desc = "Buffers" },
 	{ "<leader>fc", "<cmd>Telescope colorscheme<CR>", desc = "Colorscheme" },
-	{ "<leader>fC", "<cmd>Telescope commands<CR>", "Commands" },
-	{ "<leader>fe", ":e %:h/<C-D>", desc = "Edit file" },
-	{ "<leader>ff", "<cmd>Telescope find_files<CR>", desc = "Find file" },
-	{ "<leader>fF", "<cmd>NvimTreeFindFileToggle<CR>", desc = "Find file in NvimTree" },
+	{ "<leader>fC", "<cmd>Telescope commands<CR>", desc = "Commands" },
+	{ "<leader>ff", "<cmd>Telescope find_files<CR>", desc = "Files" },
 	{ "<leader>fg", "<cmd>Telescope live_grep<CR>", desc = "Text" },
 	{ "<leader>fh", "<cmd>Telescope help_tags<CR>", desc = "Help" },
 	{ "<leader>fH", "<cmd>Telescope highlights<CR>", desc = "Highlight groups" },
 	{ "<leader>fk", "<cmd>Telescope keymaps<CR>", desc = "Keymaps" },
 	{ "<leader>fm", "<cmd>Telescope man_pages<CR>", desc = "Man pages" },
 	{ "<leader>fp", "<cmd>Telescope projects<CR>", desc = "Projects" },
-	{ "<leader>fr", "<cmd>Telescope oldfiles<CR>", desc = "Open recent file" },
+	{ "<leader>fr", "<cmd>Telescope oldfiles<CR>", desc = "Recent files" },
 	{ "<leader>fR", "<cmd>Telescope registers<CR>", desc = "Registers" },
 	{ "<leader>fs", "<cmd>Telescope resume<CR>", desc = "Resume last search" },
 	{ "<leader>ft", "<cmd>TodoTelescope<CR>", desc = "TODO" },
@@ -694,8 +773,15 @@ if pcall(require, "lazy") then
 						["<C-U>"] = cmp.mapping.scroll_docs(-3),
 						["<C-D>"] = cmp.mapping.scroll_docs(3),
 						["<C-Space>"] = cmp.mapping.complete(),
-						["<C-C>"] = cmp.mapping.abort(),
+						["<C-C>"] = function(fallback)
+							cmp.abort()
+							fallback()
+						end,
 						["<CR>"] = cmp.mapping.confirm({ select = true }),
+						["<S-CR>"] = cmp.mapping.confirm({
+							behavior = cmp.ConfirmBehavior.Replace,
+							select = true,
+						}),
 						["<Tab>"] = cmp.mapping(function(fallback)
 							if cmp.visible() then
 								return cmp.select_next_item({ behavior = cmp.SelectBehavior.Insert })
@@ -900,13 +986,13 @@ if pcall(require, "lazy") then
 					"diagnostics",
 					sources = { "nvim_diagnostic" },
 					sections = { "error", "warn", "hint", "info" },
-					symbols = { error = " ", warn = " ", hint = " ", info = " " },
+					symbols = { error = " ", warn = " ", hint = " ", info = " " },
 					always_visible = false,
 				}
 
 				local diff = {
 					"diff",
-					symbols = { added = " ", modified = " ", removed = " " },
+					symbols = { added = " ", modified = " ", removed = " " },
 					source = function()
 						local gitsigns = vim.b.gitsigns_status_dict
 						if gitsigns then
@@ -946,7 +1032,7 @@ if pcall(require, "lazy") then
 								symbols = { modified = "●", readonly = "", unnamed = "" },
 								cond = function()
 									local buf = vim.api.nvim_get_current_buf()
-									return vim.api.nvim_buf_get_option(buf, "filetype") ~= "NvimTree"
+									return vim.api.nvim_buf_get_option(buf, "filetype") ~= "neo-tree"
 								end,
 							},
 							navic,
@@ -997,7 +1083,6 @@ if pcall(require, "lazy") then
 				},
 				filetypes_denylist = {
 					"neo-tree",
-					"NvimTree",
 					"lazy",
 					"mason",
 				},
@@ -1061,7 +1146,6 @@ if pcall(require, "lazy") then
 						"alpha",
 						"dashboard",
 						"neo-tree",
-						"NvimTree",
 						"Trouble",
 						"lazy",
 						"mason",
@@ -1237,8 +1321,8 @@ if pcall(require, "lazy") then
 				local signs = {
 					{ name = "DiagnosticSignError", text = "" },
 					{ name = "DiagnosticSignWarn", text = "" },
-					{ name = "DiagnosticSignHint", text = "" },
-					{ name = "DiagnosticSignInfo", text = "" },
+					{ name = "DiagnosticSignHint", text = "" },
+					{ name = "DiagnosticSignInfo", text = "" },
 				}
 
 				local config = {
@@ -1418,96 +1502,138 @@ if pcall(require, "lazy") then
 		},
 
 		{
-			"nvim-tree/nvim-tree.lua",
-			dependencies = { "nvim-tree/nvim-web-devicons" },
+			"nvim-neo-tree/neo-tree.nvim",
+			dependencies = {
+				"nvim-lua/plenary.nvim",
+				"nvim-tree/nvim-web-devicons",
+				"MunifTanjim/nui.nvim",
+			},
+			cmd = "Neotree",
+			keys = {
+				{
+					"<leader>e",
+					function()
+						require("neo-tree.command").execute({
+							toggle = true,
+							dir = find_root(nil, nil, function(path)
+								return vim.fs.dirname(path)
+							end),
+						})
+					end,
+					desc = "Explorer NeoTree",
+				},
+				{
+					"<leader>E",
+					function()
+						require("neo-tree.command").execute({
+							toggle = true,
+							dir = vim.uv.cwd(),
+						})
+					end,
+					desc = "Explorer NeoTree (CWD)",
+				},
+				{
+					"<leader>be",
+					function()
+						require("neo-tree.command").execute({ source = "buffers", toggle = true })
+					end,
+					desc = "Buffer Explorer",
+				},
+				{
+					"<leader>ge",
+					function()
+						require("neo-tree.command").execute({ source = "git_status", toggle = true })
+					end,
+					desc = "Git Explorer",
+				},
+			},
+			deactivate = function()
+				vim.cmd([[Neotree close]])
+			end,
 			init = function()
 				vim.g.loaded_netrw = 1
 				vim.g.loaded_netrwPlugin = 1
+				if vim.fn.argc(-1) == 1 then
+					local stat = vim.uv.fs_stat(vim.fn.argv(0))
+					if stat and stat.type == "directory" then
+						require("neo-tree")
+					end
+				end
 			end,
 			opts = {
-				disable_netrw = true,
-				sort = {
-					sorter = function(nodes)
-						local function natural_cmp(left, right)
-							if left.type == "link" then
-								local is_dir = vim.fn.isdirectory(left.name) == 1
-								-- stylua: ignore
-								if is_dir then left.type = "directory" else left.type = "file" end
-							end
-							if right.type == "link" then
-								local is_dir = vim.fn.isdirectory(right.name) == 1
-								-- stylua: ignore
-								if is_dir then right.type = "directory" else right.type = "file" end
-							end
-
-							if left.type ~= right.type then
-								return left.type < right.type
-							end
-
-							left = left.name:lower()
-							right = right.name:lower()
-
-							if left == right then
-								return false
-							end
-
-							for i = 1, math.max(string.len(left), string.len(right)), 1 do
-								local l = string.sub(left, i, -1)
-								local r = string.sub(right, i, -1)
-
-								if
-									type(tonumber(string.sub(l, 1, 1))) == "number"
-									and type(tonumber(string.sub(r, 1, 1))) == "number"
-								then
-									local l_number = tonumber(string.match(l, "^[0-9]+"))
-									local r_number = tonumber(string.match(r, "^[0-9]+"))
-
-									if l_number ~= r_number then
-										return l_number < r_number
-									end
-								elseif string.sub(l, 1, 1) ~= string.sub(r, 1, 1) then
-									return l < r
-								end
-							end
-						end
-
-						table.sort(nodes, natural_cmp)
-					end,
+				sources = { "filesystem", "buffers", "git_status", "document_symbols" },
+				open_files_do_not_replace_types = { "terminal", "Trouble", "trouble", "qf", "Outline" },
+				filesystem = {
+					bind_to_cwd = false,
+					follow_current_file = { enabled = true },
+					use_libuv_file_watcher = true,
+					hijack_netrw_behavior = "open_current",
 				},
-				renderer = {
-					group_empty = false,
-					special_files = {},
-					highlight_diagnostics = true,
-					symlink_destination = false,
-					indent_markers = { enable = true },
-					icons = {
-						git_placement = "after",
-						show = {
-							folder = false,
-							folder_arrow = true,
-						},
-						glyphs = {
-							git = {
-								untracked = "",
-								unstaged = "",
-							},
-						},
+				default_component_configs = {
+					indent = {
+						with_expanders = true,
+						expander_collapsed = "",
+						expander_expanded = "",
+						expander_highlight = "NeoTreeExpander",
+					},
+					modified = {
+						symbol = "●",
 					},
 				},
-				diagnostics = {
-					enable = true,
-					show_on_dirs = true,
-				},
-				filters = {
-					git_ignored = true,
-					custom = { "^.git$", "^node_modules$", "^.vscode$" },
-				},
-				actions = {
-					open_file = {
-						quit_on_open = true,
+				window = {
+					mappings = {
+						["<space>"] = "none",
+						["Y"] = {
+							function(state)
+								local node = state.tree:get_node()
+								local path = node:get_id()
+								vim.fn.setreg("+", path, "c")
+							end,
+							desc = "Copy Path to Clipboard",
+						},
+						["O"] = {
+							function(state)
+								require("lazy.util").open(state.tree:get_node().path, { system = true })
+							end,
+							desc = "Open with System Application",
+						},
+						["e"] = function()
+							vim.cmd("Neotree focus filesystem left")
+						end,
+						["b"] = function()
+							vim.cmd("Neotree focus buffers left")
+						end,
+						["g"] = function()
+							vim.cmd("Neotree focus git_status left")
+						end,
 					},
 				},
 			},
+			config = function(_, opts)
+				local function on_open()
+					require("neo-tree.command").execute({ action = "close" })
+				end
+				local function on_change(data)
+					lsp_on_rename(data.source, data.destination)
+				end
+
+				local events = require("neo-tree.events")
+				opts.event_handlers = opts.event_handlers or {}
+				vim.list_extend(opts.event_handlers, {
+					{ event = events.FILE_OPENED, handler = on_open },
+					{ event = events.FILE_MOVED, handler = on_change },
+					{ event = events.FILE_RENAMED, handler = on_change },
+				})
+				require("neo-tree").setup(opts)
+				vim.api.nvim_create_autocmd("TermClose", {
+					pattern = "*lazygit",
+					callback = function()
+						if package.loaded["neo-tree.sources.git_status"] then
+							require("neo-tree.sources.git_status").refresh()
+						end
+					end,
+				})
+			end,
 		},
 
 		{
@@ -1686,6 +1812,7 @@ if pcall(require, "lazy") then
 			config = function()
 				require("which-key").register({
 					["<leader>"] = {
+						b = { name = "Buffers" },
 						d = { name = "Debug" },
 						f = { name = "Find" },
 						l = { name = "LSP" },
