@@ -1072,7 +1072,20 @@ if pcall(require, "lazy") then
 								end,
 							},
 						},
-						lualine_b = { "branch" },
+						lualine_b = {
+							{
+								"branch",
+								fmt = function(str)
+									if str ~= "" then
+										if hide_section() then
+											return "" .. " " .. str
+										end
+										return ""
+									end
+								end,
+								icons_enabled = false,
+							},
+						},
 						lualine_c = { diagnostics, "%=", buffers },
 						lualine_x = {
 							diff,
@@ -1087,7 +1100,7 @@ if pcall(require, "lazy") then
 							},
 							{ require("lazy.status").updates, cond = require("lazy.status").has_updates },
 						},
-						lualine_y = { { "location", cond = hide_section } },
+						lualine_y = { { "location" } },
 						lualine_z = { "progress" },
 					},
 				})
@@ -1101,7 +1114,7 @@ if pcall(require, "lazy") then
 				delay = 200,
 				large_file_cutoff = 2000,
 				large_file_overrides = {
-					providers = { "lsp", "treesitter" },
+					providers = { "lsp" },
 				},
 				filetypes_denylist = {
 					"neo-tree",
