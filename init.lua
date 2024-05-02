@@ -1004,12 +1004,48 @@ if pcall(require, "lazy") then
 					return not (cond1 or cond2 or cond3)
 				end
 
+				local filename = {
+					"filename",
+					path = 1,
+					symbols = { modified = "●", readonly = "", unnamed = "" },
+					cond = function()
+						local buf = vim.api.nvim_get_current_buf()
+						return vim.api.nvim_buf_get_option(buf, "filetype") ~= "neo-tree"
+					end,
+				}
+
+				local navic = {
+					-- stylua: ignore
+					function() return require("nvim-navic").get_location() end,
+					cond = function()
+						return package.loaded["nvim-navic"] and require("nvim-navic").is_available()
+					end,
+					draw_empty = true,
+				}
+
+				local mode = {
+					"mode",
+					fmt = function(str)
+						if hide_section() then
+							return str
+						end
+						return str:sub(1, 1)
+					end,
+				}
+
 				local diagnostics = {
 					"diagnostics",
 					sources = { "nvim_diagnostic" },
 					sections = { "error", "warn", "hint", "info" },
 					symbols = { error = " ", warn = " ", hint = " ", info = " " },
 					always_visible = false,
+				}
+
+				local buffers = {
+					"buffers",
+					icons_enabled = false,
+					icon = { align = "left" },
+					symbols = { alternate_file = "" },
 				}
 
 				local diff = {
@@ -1025,82 +1061,28 @@ if pcall(require, "lazy") then
 							}
 						end
 					end,
-					cond = hide_section,
 				}
 
-				local buffers = {
-					"buffers",
-					icons_enabled = false,
-					icon = { align = "left" },
-					symbols = { alternate_file = "" },
-				}
-
-				local navic = {
-					-- stylua: ignore
-					function() return require("nvim-navic").get_location() end,
-					cond = function()
-						return package.loaded["nvim-navic"] and require("nvim-navic").is_available()
+				local dap_status = {
+					function()
+						return "  " .. require("dap").status()
 					end,
-					draw_empty = true,
+					cond = function()
+						return package.loaded["dap"] and require("dap").status() ~= ""
+					end,
 				}
+
+				local lazy_status = { require("lazy.status").updates, cond = require("lazy.status").has_updates }
 
 				require("lualine").setup({
 					options = { globalstatus = true, section_separators = "", component_separators = "" },
-					winbar = {
-						lualine_c = {
-							{
-								"filename",
-								path = 1,
-								symbols = { modified = "●", readonly = "", unnamed = "" },
-								cond = function()
-									local buf = vim.api.nvim_get_current_buf()
-									return vim.api.nvim_buf_get_option(buf, "filetype") ~= "neo-tree"
-								end,
-							},
-							navic,
-						},
-					},
+					winbar = { lualine_c = { filename, navic } },
 					sections = {
-						lualine_a = {
-							{
-								"mode",
-								fmt = function(str)
-									if hide_section() then
-										return str
-									end
-									return str:sub(1, 1)
-								end,
-							},
-						},
-						lualine_b = {
-							{
-								"branch",
-								fmt = function(str)
-									if str ~= "" then
-										if hide_section() then
-											return "" .. " " .. str
-										end
-										return ""
-									end
-								end,
-								icons_enabled = false,
-							},
-						},
+						lualine_a = { mode },
+						lualine_b = { "branch" },
 						lualine_c = { diagnostics, "%=", buffers },
-						lualine_x = {
-							diff,
-							"filetype",
-							{
-								function()
-									return "  " .. require("dap").status()
-								end,
-								cond = function()
-									return package.loaded["dap"] and require("dap").status() ~= ""
-								end,
-							},
-							{ require("lazy.status").updates, cond = require("lazy.status").has_updates },
-						},
-						lualine_y = { { "location" } },
+						lualine_x = { diff, "filetype", dap_status, lazy_status },
+						lualine_y = { "location" },
 						lualine_z = { "progress" },
 					},
 				})
