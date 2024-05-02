@@ -100,11 +100,28 @@ local function diagnostic_goto(next, severity)
 	end
 end
 
+-- TODO: remove
+local function lsp_get_clients(opts)
+	local ret = {}
+	if vim.lsp.get_clients then
+		vim.notify("Remove `lsp_get_clients`", 4)
+		ret = vim.lsp.get_clients(opts)
+	else
+		ret = vim.lsp.get_active_clients(opts)
+		if opts and opts.method then
+			ret = vim.tbl_filter(function(client)
+				return client.supports_method(opts.method, { bufnr = opts.bufnr })
+			end, ret)
+		end
+	end
+	return opts and opts.filter and vim.tbl_filter(opts.filter, ret) or ret
+end
+
 local function lsp_format(async)
 	async = async ~= false
 	local eslint = false
 
-	for _, v in ipairs(vim.lsp.buf_get_clients()) do
+	for _, v in ipairs(lsp_get_clients()) do
 		if v.name == "eslint" then
 			async = false
 			eslint = true
@@ -126,8 +143,7 @@ local function lsp_format(async)
 end
 
 local function lsp_on_rename(from, to)
-	local clients = vim.lsp.get_clients()
-	for _, client in ipairs(clients) do
+	for _, client in ipairs(lsp_get_clients()) do
 		if client.supports_method("workspace/willRenameFiles") then
 			local resp = client.request_sync("workspace/willRenameFiles", {
 				files = {
@@ -188,7 +204,7 @@ end
 
 local function set_root(data)
 	local root = find_root(data.buf)
-	if root == nil then
+	if not root then
 		return
 	end
 	vim.fn.chdir(root)
