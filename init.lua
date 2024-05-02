@@ -727,17 +727,15 @@ if pcall(require, "lazy") then
 				{
 					"Exafunction/codeium.nvim",
 					config = function()
-						local _, filesize = pcall(vim.loop.fs_stat, vim.api.nvim_buf_get_name(0))
-						filesize = filesize and filesize.size or 0
-						if filesize <= 127830 then
-							require("codeium").setup({
-								config_path = vim.fn.stdpath("config") .. "/codeium/config.json",
-							})
-						end
+						require("codeium").setup({
+							config_path = vim.fn.stdpath("config") .. "/codeium/config.json",
+						})
 					end,
 				},
 			},
 			config = function()
+				local cmp = require("cmp")
+				local ls = require("luasnip")
 				vim.opt.completeopt = { "menuone", "noselect" }
 
 				local kind_icons = {
@@ -777,8 +775,32 @@ if pcall(require, "lazy") then
 						and not vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match("%s")
 				end
 
-				local cmp = require("cmp")
-				local ls = require("luasnip")
+				local function bufIsBig(buf)
+					local _, filesize = pcall(vim.loop.fs_stat, vim.api.nvim_buf_get_name(buf or 0))
+					filesize = filesize and filesize.size or 0
+					return filesize >= 127830
+				end
+
+				local default_cmp_sources = {
+					{ name = "nvim_lsp" },
+					{ name = "nvim_lsp_signature_help" },
+					{ name = "luasnip" },
+					{ name = "tresitter" },
+					{ name = "buffer" },
+					{ name = "path" },
+				}
+
+				vim.api.nvim_create_autocmd("BufReadPre", {
+					callback = function(t)
+						local sources = default_cmp_sources
+						if not bufIsBig(t.buf) then
+							sources[#sources + 1] = { name = "codeium" }
+						end
+						cmp.setup.buffer({
+							sources = sources,
+						})
+					end,
+				})
 
 				cmp.setup({
 					snippet = {
@@ -855,14 +877,7 @@ if pcall(require, "lazy") then
 						end,
 					},
 
-					sources = {
-						{ name = "nvim_lsp" },
-						{ name = "nvim_lsp_signature_help" },
-						{ name = "luasnip" },
-						{ name = "codeium" },
-						{ name = "buffer" },
-						{ name = "path" },
-					},
+					sources = sources,
 
 					confirm_opts = { select = true },
 					experimental = { ghost_text = true },
