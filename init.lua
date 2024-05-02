@@ -87,11 +87,6 @@ local function toggle_theme()
 	set_dark_theme()
 end
 
--- local function toggle_inlay_hints()
--- 	local bufnr = vim.api.nvim_get_current_buf()
--- 	vim.lsp.inlay_hint.enable(bufnr, not vim.lsp.inlay_hint.is_enabled(bufnr))
--- end
-
 local function diagnostic_goto(next, severity)
 	local go = next and vim.diagnostic.goto_next or vim.diagnostic.goto_prev
 	severity = severity and vim.diagnostic.severity[severity] or nil
@@ -232,6 +227,17 @@ local function toggle_virtual_text()
 	vim.notify("Virtual text was " .. status)
 end
 
+local function toggle_inlay_hints()
+	if not vim.lsp.inlay_hint then
+		vim.notify("inlayHints is not available yet")
+		return
+	end
+	local bufnr = vim.api.nvim_get_current_buf()
+	local state = not vim.lsp.inlay_hint.is_enabled(bufnr)
+	vim.lsp.inlay_hint.enable(bufnr, state)
+	vim.notify("inlayHints was " .. state)
+end
+
 local function toggle_search()
 	if vim.g.search_hl then
 		vim.cmd("nohlsearch")
@@ -282,18 +288,18 @@ vim.api.nvim_create_autocmd({ "VimResized" }, {
 vim.api.nvim_create_autocmd({ "FileType" }, {
 	pattern = {
 		"PlenaryTestPopup",
+		"checkhealth",
 		"help",
 		"lspinfo",
 		"man",
+		"neotest-output",
+		"neotest-output-panel",
+		"neotest-summary",
 		"notify",
 		"qf",
 		"spectre_panel",
 		"startuptime",
 		"tsplayground",
-		"neotest-output",
-		"checkhealth",
-		"neotest-summary",
-		"neotest-output-panel",
 	},
 	callback = function(event)
 		vim.bo[event.buf].buflisted = false
@@ -540,6 +546,7 @@ local lsp_keys = {
 	{ "[i", diagnostic_goto(false, "INFO"), desc = "Previous Info" },
 	{ "]i", diagnostic_goto(true, "INFO"), desc = "Next Info" },
 	{ "<leader>lh", vim.lsp.buf.signature_help, desc = "Signature Help" },
+	{ "<leader>lI", toggle_inlay_hints, desc = "Toggle inlayHints" },
 	{ "<leader>la", vim.lsp.buf.code_action, desc = "Code Action" },
 	{ "<leader>lA", vim.lsp.codelens.run, desc = "CodeLens Action" },
 	{ "<leader>lq", "<cmd>Telescope loclist<CR>", desc = "Quickfix" },
@@ -1139,6 +1146,7 @@ if pcall(require, "lazy") then
 			event = { "BufReadPost", "BufNewFile" },
 			main = "ibl",
 			opts = {
+				enabled = false,
 				indent = { char = "│", tab_char = "│" },
 				scope = { enabled = true, show_start = false, show_end = false },
 			},
@@ -1380,9 +1388,9 @@ if pcall(require, "lazy") then
 						require("nvim-navic").attach(client, bufnr)
 					end
 
-					-- if client.supports_method("textDocument/inlayHint") then
-					-- 	vim.lsp.inlay_hint.enable(bufnr, true)
-					-- end
+					if vim.lsp.inlay_hint and client.supports_method("textDocument/inlayHint") then
+						vim.lsp.inlay_hint.enable(bufnr, true)
+					end
 
 					if vim.lsp.codelens and client.supports_method("textDocument/codeLens") then
 						vim.lsp.codelens.refresh()
