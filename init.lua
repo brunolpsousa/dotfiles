@@ -232,10 +232,9 @@ local function toggle_inlay_hints()
 		vim.notify("inlayHints is not available yet")
 		return
 	end
-	local bufnr = vim.api.nvim_get_current_buf()
-	local state = not vim.lsp.inlay_hint.is_enabled(bufnr)
-	vim.lsp.inlay_hint.enable(bufnr, state)
-	vim.notify("inlayHints was " .. state)
+	vim.lsp.inlay_hint.enable(0, nil)
+	local status = vim.lsp.inlay_hint.is_enabled(0) and "enabled" or "disabled"
+	vim.notify("inlayHints was " .. status)
 end
 
 local function toggle_search()
