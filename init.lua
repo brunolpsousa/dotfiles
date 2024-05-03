@@ -1718,6 +1718,14 @@ if pcall(require, "lazy") then
 		},
 
 		{
+			"rcarriga/nvim-notify",
+			init = function()
+				vim.notify = require("notify")
+			end,
+			opts = {},
+		},
+
+		{
 			"folke/persistence.nvim",
 			event = "BufReadPre",
 			opts = { options = { "buffers", "curdir", "tabpages", "winsize", "help", "globals", "skiprtp" } },
