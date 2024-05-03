@@ -769,6 +769,25 @@ if pcall(require, "lazy") then
 					Copilot = "",
 				}
 
+				local item_menu = {
+					nvim_lsp = "LSP",
+					codeium = "Codeium",
+					luasnip = "Snip",
+					buffer = "Buffer",
+					path = "Path",
+					emoji = "Emoji",
+				}
+
+				local cmp_default_sources = {
+					{ name = "nvim_lsp_signature_help" },
+					{ name = "nvim_lsp" },
+					{ name = "nvim_lua" },
+					{ name = "codeium" },
+					{ name = "luasnip" },
+					{ name = "buffer" },
+					{ name = "path" },
+				}
+
 				local function has_words_before()
 					unpack = unpack or table.unpack
 					local line, col = unpack(vim.api.nvim_win_get_cursor(0))
@@ -776,45 +795,8 @@ if pcall(require, "lazy") then
 						and not vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match("%s")
 				end
 
-				local function bufIsBig(buf)
-					local _, filesize = pcall(vim.loop.fs_stat, vim.api.nvim_buf_get_name(buf or 0))
-					filesize = filesize and filesize.size or 0
-					return filesize >= 127830
-				end
-
-				local default_cmp_sources = {
-					{ name = "nvim_lua" },
-					{ name = "nvim_lsp" },
-					{ name = "nvim_lsp_signature_help" },
-					{ name = "luasnip" },
-					{ name = "buffer" },
-					{ name = "path" },
-				}
-
-				vim.api.nvim_create_autocmd("BufReadPre", {
-					callback = function(t)
-						local sources = default_cmp_sources
-						if not bufIsBig(t.buf) then
-							sources[#sources + 1] = { name = "codeium" }
-						end
-						cmp.setup.buffer({
-							sources = sources,
-						})
-					end,
-				})
-
-				cmp.setup({
-					snippet = {
-						-- stylua: ignore
-						expand = function(args) ls.lsp_expand(args.body) end,
-					},
-
-					window = {
-						completion = cmp.config.window.bordered(),
-						documentation = cmp.config.window.bordered(),
-					},
-
-					mapping = cmp.mapping.preset.insert({
+				local function cmp_mapping()
+					return cmp.mapping.preset.insert({
 						["<C-U>"] = cmp.mapping.scroll_docs(-3),
 						["<C-D>"] = cmp.mapping.scroll_docs(3),
 						["<C-Space>"] = cmp.mapping.complete(),
@@ -843,43 +825,46 @@ if pcall(require, "lazy") then
 							end
 							fallback()
 						end, { "i", "s" }),
-					}),
+					})
+				end
 
+				local function cmp_format_with_tailwind(entry, vim_item)
+					if vim_item.kind == "Color" and entry.completion_item.documentation then
+						local _, _, r, g, b =
+							string.find(entry.completion_item.documentation, "^rgb%((%d+), (%d+), (%d+)")
+						if r then
+							local color = string.format("%02x", r)
+								.. string.format("%02x", g)
+								.. string.format("%02x", b)
+							local group = "Tw_" .. color
+							if vim.fn.hlID(group) < 1 then
+								vim.api.nvim_set_hl(0, group, { fg = "#" .. color })
+							end
+							vim_item.kind = "●"
+							vim_item.kind_hl_group = group
+						end
+					else
+						vim_item.kind = kind_icons[vim_item.kind]
+					end
+					vim_item.menu = (item_menu)[entry.source.name]
+					return vim_item
+				end
+
+				cmp.setup({
+					snippet = {
+						-- stylua: ignore
+						expand = function(args) ls.lsp_expand(args.body) end,
+					},
+					window = {
+						completion = cmp.config.window.bordered(),
+						documentation = cmp.config.window.bordered(),
+					},
+					mapping = cmp_mapping(),
 					formatting = {
 						fields = { "kind", "abbr", "menu" },
-
-						format = function(entry, vim_item)
-							if vim_item.kind == "Color" and entry.completion_item.documentation then
-								local _, _, r, g, b =
-									string.find(entry.completion_item.documentation, "^rgb%((%d+), (%d+), (%d+)")
-								if r then
-									local color = string.format("%02x", r)
-										.. string.format("%02x", g)
-										.. string.format("%02x", b)
-									local group = "Tw_" .. color
-									if vim.fn.hlID(group) < 1 then
-										vim.api.nvim_set_hl(0, group, { fg = "#" .. color })
-									end
-									vim_item.kind = "●"
-									vim_item.kind_hl_group = group
-								end
-							else
-								vim_item.kind = kind_icons[vim_item.kind]
-							end
-							vim_item.menu = ({
-								nvim_lsp = "LSP",
-								luasnip = "Snip",
-								codeium = "Codeium",
-								buffer = "Buffer",
-								path = "Path",
-								emoji = "Emoji",
-							})[entry.source.name]
-							return vim_item
-						end,
+						format = cmp_format_with_tailwind,
 					},
-
-					sources = sources,
-
+					sources = cmp_default_sources,
 					confirm_opts = { select = true },
 					experimental = { ghost_text = true },
 				})
