@@ -671,6 +671,7 @@ if pcall(require, "lazy") then
 			dependencies = {
 				"hrsh7th/cmp-buffer",
 				"hrsh7th/cmp-path",
+				"hrsh7th/cmp-nvim-lua",
 				"hrsh7th/cmp-nvim-lsp",
 				"hrsh7th/cmp-nvim-lsp-signature-help",
 				"roobert/tailwindcss-colorizer-cmp.nvim",
@@ -782,10 +783,10 @@ if pcall(require, "lazy") then
 				end
 
 				local default_cmp_sources = {
+					{ name = "nvim_lua" },
 					{ name = "nvim_lsp" },
 					{ name = "nvim_lsp_signature_help" },
 					{ name = "luasnip" },
-					{ name = "tresitter" },
 					{ name = "buffer" },
 					{ name = "path" },
 				}
