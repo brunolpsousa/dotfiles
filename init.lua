@@ -797,9 +797,9 @@ if pcall(require, "lazy") then
 
 				local function cmp_mapping()
 					return cmp.mapping.preset.insert({
+						["<C-Space>"] = cmp.mapping.complete(),
 						["<C-U>"] = cmp.mapping.scroll_docs(-3),
 						["<C-D>"] = cmp.mapping.scroll_docs(3),
-						["<C-Space>"] = cmp.mapping.complete(),
 						["<C-C>"] = function(fallback)
 							cmp.abort()
 							fallback()
@@ -1313,6 +1313,20 @@ if pcall(require, "lazy") then
 								vim.cmd("MasonInstall " .. v)
 							end
 						end
+
+						-- tailwindcss triggers completion on spaces which send the maximum number of completion items;
+						-- removing space from triggerCharacters can significantly improves performance
+						-- https://github.com/hrsh7th/nvim-cmp/issues/1828
+						vim.api.nvim_create_autocmd("LspAttach", {
+							callback = function()
+								for _, client in pairs((lsp_get_clients())) do
+									if client.name == "tailwindcss" then
+										client.server_capabilities.completionProvider.triggerCharacters =
+											{ '"', "'", "`", ".", "(", "[", "!", "/", ":" }
+									end
+								end
+							end,
+						})
 					end,
 					opts = {},
 				},
