@@ -1830,6 +1830,23 @@ if pcall(require, "lazy") then
 		},
 
 		{
+			"Wansmer/treesj",
+			keys = {
+				{
+					"<leader>lm",
+					function()
+						require("treesj").toggle()
+					end,
+					desc = "Split or Join code block with autodetect",
+				},
+			},
+			dependencies = { "nvim-treesitter/nvim-treesitter" },
+			opts = {
+				use_default_keymaps = false,
+			},
+		},
+
+		{
 			"folke/which-key.nvim",
 			event = "VeryLazy",
 			init = function()
