@@ -68,7 +68,7 @@ local function set_dark_theme()
 	pcall(vim.cmd.colorscheme, dark_theme)
 	pcall(vim.cmd.colorscheme, dark_theme)
 	if pcall(require, "lualine") then
-		require("lualine").setup({ options = { theme = dark_theme } })
+		require("lualine").setup({ options = { theme = "auto" } })
 	end
 end
 
@@ -76,7 +76,7 @@ local function set_light_theme()
 	pcall(vim.cmd.colorscheme, light_theme)
 	pcall(vim.cmd.colorscheme, light_theme)
 	if pcall(require, "lualine") then
-		require("lualine").setup({ options = { theme = light_theme } })
+		require("lualine").setup({ options = { theme = "auto" } })
 	end
 end
 
@@ -258,6 +258,9 @@ local function toggle_indent_blankline()
 end
 
 -- Autocommands
+vim.o.autochdir = false
+vim.api.nvim_create_autocmd("BufEnter", { callback = set_root })
+
 vim.api.nvim_create_autocmd({ "CursorHold" }, {
 	command = "checktime|rshada|wshada",
 })
@@ -388,9 +391,6 @@ vim.api.nvim_create_autocmd({ "BufWritePre" }, {
 		pcall(vim.api.nvim_win_set_cursor, 0, pos)
 	end,
 })
-
-vim.o.autochdir = false
-vim.api.nvim_create_autocmd("BufEnter", { callback = set_root })
 
 -- Keymaps
 local keys = {
@@ -1398,31 +1398,12 @@ if pcall(require, "lazy") then
 					local buf = vim.api.nvim_get_current_buf()
 					local ft = vim.bo[buf].filetype
 					if ft:find("typescript") then
-						local ts_keys = {
-							{
-								"<leader>lo",
-								function()
-									vim.lsp.buf.code_action({
-										apply = true,
-										context = { only = { "source.organizeImports.ts" }, diagnostics = {} },
-									})
-								end,
-								desc = "Organize Imports",
-								buffer = bufnr,
-							},
-							{
-								"<leader>lR",
-								function()
-									vim.lsp.buf.code_action({
-										apply = true,
-										context = { only = { "source.removeUnused.ts" }, diagnostics = {} },
-									})
-								end,
-								desc = "Remove Unused Imports",
-								buffer = bufnr,
-							},
+						-- stylua: ignore
+						local lsp_ts_keys = {
+							{ "<leader>lo", function() vim.lsp.buf.code_action({ apply = true, context = { only = { "source.organizeImports.ts" }, diagnostics = {} }, }) end, desc = "Organize Imports" },
+							{ "<leader>lR", function() vim.lsp.buf.code_action({ apply = true, context = { only = { "source.removeUnused.ts" }, diagnostics = {} }, }) end, desc = "Remove Unused Imports" },
 						}
-						set_keys(ts_keys)
+						set_keys(lsp_ts_keys)
 					end
 
 					vim.api.nvim_buf_set_option(bufnr, "omnifunc", "v:lua.vim.lsp.omnifunc")
