@@ -1469,11 +1469,39 @@ if pcall(require, "lazy") then
 									defaultConfig = { quote_style = "double" },
 								},
 								diagnostics = { globals = { "vim", "mp" } },
+								hint = { enable = true },
 								workspace = {
 									library = vim.api.nvim_get_runtime_file("", true),
 									checkThirdParty = false,
 								},
 								telemetry = { enable = false },
+							},
+						}
+					end
+
+					if server == "tsserver" then
+						opts.settings = {
+							javascript = {
+								inlayHints = {
+									includeInlayEnumMemberValueHints = true,
+									includeInlayFunctionLikeReturnTypeHints = true,
+									includeInlayFunctionParameterTypeHints = true,
+									includeInlayParameterNameHints = "all",
+									includeInlayParameterNameHintsWhenArgumentMatchesName = true,
+									includeInlayPropertyDeclarationTypeHints = true,
+									includeInlayVariableTypeHints = true,
+								},
+							},
+							typescript = {
+								inlayHints = {
+									includeInlayEnumMemberValueHints = true,
+									includeInlayFunctionLikeReturnTypeHints = true,
+									includeInlayFunctionParameterTypeHints = true,
+									includeInlayParameterNameHints = "all",
+									includeInlayParameterNameHintsWhenArgumentMatchesName = true,
+									includeInlayPropertyDeclarationTypeHints = true,
+									includeInlayVariableTypeHints = true,
+								},
 							},
 						}
 					end
