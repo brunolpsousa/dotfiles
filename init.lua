@@ -476,7 +476,7 @@ local keys = {
 		desc = "Colorscheme with Preview",
 	},
 
-	{ "<leader>lf", lsp_format, desc = "Format" },
+	{ "<leader>lf", lsp_format, desc = "Format", mode = { "n", "v" } },
 	{ "<leader>li", toggle_indent_blankline, desc = "Toggle indent-blankline" },
 	{ "<leader>lt", toggle_remove_comments_on_save, desc = "Toggle remove empty comments on save" },
 	{ "<leader>lT", toggle_format_on_save, desc = "Toggle format on save" },
@@ -1890,6 +1890,9 @@ if pcall(require, "lazy") then
 					g = { name = "Goto", s = { name = "Surround" } },
 				})
 				require("which-key").register({
+					["<leader>"] = {
+						l = { name = "LSP" },
+					},
 					g = { name = "Goto", s = { name = "Surround" } },
 				}, { mode = "v" })
 			end,
