@@ -726,6 +726,21 @@ if pcall(require, "lazy") then
 					end,
 				},
 				{
+					"zbirenbaum/copilot.lua",
+					cmd = "Copilot",
+					build = ":Copilot auth",
+					dependencies = { "zbirenbaum/copilot-cmp", opts = {} },
+					opts = {
+						panel = { enabled = false },
+						suggestion = { enabled = false },
+						filetypes = {
+							yaml = true,
+							markdown = true,
+							help = true,
+						},
+					},
+				},
+				{
 					"Exafunction/codeium.nvim",
 					config = function()
 						require("codeium").setup({
@@ -765,12 +780,13 @@ if pcall(require, "lazy") then
 					Event = "",
 					Operator = "󰆕",
 					TypeParameter = "󰊄",
-					Codeium = "󰚩",
 					Copilot = "",
+					Codeium = "󰚩",
 				}
 
 				local item_menu = {
 					nvim_lsp = "LSP",
+					copilot = "Copilot",
 					codeium = "Codeium",
 					luasnip = "Snip",
 					buffer = "Buffer",
@@ -782,6 +798,7 @@ if pcall(require, "lazy") then
 					{ name = "nvim_lsp_signature_help" },
 					{ name = "nvim_lsp" },
 					{ name = "nvim_lua" },
+					{ name = "copilot" },
 					{ name = "codeium" },
 					{ name = "luasnip" },
 					{ name = "buffer" },
