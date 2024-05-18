@@ -2001,16 +2001,13 @@ prompt_setup() {
   autoload -Uz colors && colors
   VIRTUAL_ENV_DISABLE_PROMPT=true
 
-  local p_prefix='${PROMPT_SSH}%(!'
-  local p_root_1='^%F{red}%n %F{white}%Bin ${DIR_LOCK}%F{yellow}%(4~|%-1~/.../%2~|%~)%f%b'
-  local p_root_2='${VCS_INFO_MSG}${VCS_STATUS_MSG} >%F{yellow}>%B%(?.%F{yellow}.%F{red})>%f%b'
-  local p_user_1='^%F{green}%n %F{white}%Bin ${DIR_LOCK}%F{cyan}%(4~|%-1~/.../%2~|%~)%f%b'
-  local p_user_2='${VCS_INFO_MSG}${VCS_STATUS_MSG} >%F{cyan}>%B%(?.%F{cyan}.%F{red})>)%f%b '
+  local arrow='>%(!.%F{yellow}>%B%F{%(?.yellow.red)}.%F{cyan}>%B%F{%(?.cyan.red)})>%f%b '
+  local ps_one_1='%(!^%F{red}%n %F{white}%Bin ${DIR_LOCK}%F{yellow}'
+  local ps_one_2='^%F{green}%n %F{white}%Bin ${DIR_LOCK}%F{cyan})%(4~|%-1~/.../%2~|%~)%f%b'
+  local r_ps_one='${SPACE_NOASYNC}${SPACE_ASYNC}${ELAPSED}${SPACE_BATTERY}'
 
-  local p_var_r='${SPACE_NOASYNC}${SPACE_ASYNC}${ELAPSED}${SPACE_BATTERY}'
-
-  PS1="${p_prefix}${p_root_1}${p_root_2}${p_user_1}${p_user_2}"
-  RPS1="${p_var_r} %246F%* %(?.%F{green}✓.%F{red}✗)%f%b"
+  PS1=$PROMPT_SSH$ps_one_1$ps_one_2'$VCS_INFO_MSG$VCS_STATUS_MSG'$'\n'$arrow
+  RPS1="$r_ps_one %246F%* %(?.%F{green}✓.%F{red}✗)%f%b"
 }
 #--------------------------------------------------------------------------------------------------#
 # Set terminal title
