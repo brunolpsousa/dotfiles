@@ -228,12 +228,9 @@ local function toggle_virtual_text()
 end
 
 local function toggle_inlay_hints()
-	if not vim.lsp.inlay_hint then
-		vim.notify("inlayHints is not available yet")
-		return
-	end
-	vim.lsp.inlay_hint.enable(0, nil)
-	local status = vim.lsp.inlay_hint.is_enabled(0) and "enabled" or "disabled"
+	local is_enabled = vim.lsp.inlay_hint.is_enabled({})
+	local status = is_enabled and "enabled" or "disabled"
+	vim.lsp.inlay_hint.enable(not is_enabled)
 	vim.notify("inlayHints was " .. status)
 end
 
@@ -1412,10 +1409,6 @@ if pcall(require, "lazy") then
 				local on_attach = function(client, bufnr)
 					if client.server_capabilities.documentSymbolProvider then
 						require("nvim-navic").attach(client, bufnr)
-					end
-
-					if vim.lsp.inlay_hint and client.supports_method("textDocument/inlayHint") then
-						vim.lsp.inlay_hint.enable(bufnr, true)
 					end
 
 					if vim.lsp.codelens and client.supports_method("textDocument/codeLens") then
