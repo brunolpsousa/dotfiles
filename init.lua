@@ -95,28 +95,11 @@ local function diagnostic_goto(next, severity)
 	end
 end
 
--- TODO: remove
-local function lsp_get_clients(opts)
-	local ret = {}
-	if vim.lsp.get_clients then
-		vim.notify("Remove `lsp_get_clients`", 4)
-		ret = vim.lsp.get_clients(opts)
-	else
-		ret = vim.lsp.get_active_clients(opts)
-		if opts and opts.method then
-			ret = vim.tbl_filter(function(client)
-				return client.supports_method(opts.method, { bufnr = opts.bufnr })
-			end, ret)
-		end
-	end
-	return opts and opts.filter and vim.tbl_filter(opts.filter, ret) or ret
-end
-
 local function lsp_format(async)
 	async = async ~= false
 	local eslint = false
 
-	for _, v in ipairs(lsp_get_clients()) do
+	for _, v in ipairs(vim.lsp.get_clients()) do
 		if v.name == "eslint" then
 			async = false
 			eslint = true
@@ -138,7 +121,7 @@ local function lsp_format(async)
 end
 
 local function lsp_on_rename(from, to)
-	for _, client in ipairs(lsp_get_clients()) do
+	for _, client in ipairs(vim.lsp.get_clients()) do
 		if client.supports_method("workspace/willRenameFiles") then
 			local resp = client.request_sync("workspace/willRenameFiles", {
 				files = {
@@ -725,7 +708,6 @@ if pcall(require, "lazy") then
 				{
 					"zbirenbaum/copilot.lua",
 					cmd = "Copilot",
-					build = ":Copilot auth",
 					dependencies = { "zbirenbaum/copilot-cmp", opts = {} },
 					opts = {
 						panel = { enabled = false },
@@ -1025,7 +1007,7 @@ if pcall(require, "lazy") then
 					symbols = { modified = "●", readonly = "", unnamed = "" },
 					cond = function()
 						local buf = vim.api.nvim_get_current_buf()
-						return vim.api.nvim_buf_get_option(buf, "filetype") ~= "neo-tree"
+						return vim.api.nvim_get_option_value("filetype", { buf = buf }) ~= "neo-tree"
 					end,
 				}
 
@@ -1265,7 +1247,7 @@ if pcall(require, "lazy") then
 						{
 							"<leader>gC",
 							"<cmd>Telescope git_bcommits<CR>",
-							desc = "Checkout commit(for current file)",
+							desc = "Checkout commit (for current file)",
 						},
 						{ "<leader>gh", ":<C-U>Gitsigns select_hunk<CR>", mode = { "o", "x" }, desc = "Select hunk" },
 						{
@@ -1333,7 +1315,7 @@ if pcall(require, "lazy") then
 						-- https://github.com/hrsh7th/nvim-cmp/issues/1828
 						vim.api.nvim_create_autocmd("LspAttach", {
 							callback = function()
-								for _, client in pairs((lsp_get_clients())) do
+								for _, client in pairs((vim.lsp.get_clients())) do
 									if client.name == "tailwindcss" then
 										client.server_capabilities.completionProvider.triggerCharacters =
 											{ '"', "'", "`", ".", "(", "[", "!", "/", ":" }
@@ -1411,26 +1393,18 @@ if pcall(require, "lazy") then
 						require("nvim-navic").attach(client, bufnr)
 					end
 
-					if vim.lsp.codelens and client.supports_method("textDocument/codeLens") then
-						vim.lsp.codelens.refresh()
-						vim.api.nvim_create_autocmd({ "BufEnter", "CursorHold", "InsertLeave" }, {
-							buffer = bufnr,
-							callback = vim.lsp.codelens.refresh,
-						})
-					end
-
 					local buf = vim.api.nvim_get_current_buf()
 					local ft = vim.bo[buf].filetype
 					if ft:find("typescript") then
 						-- stylua: ignore
 						local lsp_ts_keys = {
-							{ "<leader>lo", function() vim.lsp.buf.code_action({ apply = true, context = { only = { "source.organizeImports.ts" }, diagnostics = {} }, }) end, desc = "Organize Imports" },
-							{ "<leader>lR", function() vim.lsp.buf.code_action({ apply = true, context = { only = { "source.removeUnused.ts" }, diagnostics = {} }, }) end, desc = "Remove Unused Imports" },
+							{ "<leader>lo", function() vim.lsp.buf.code_action({ apply = true, context = { only = { "source.organizeImports" }, diagnostics = {} }, }) end, desc = "Organize Imports" },
+							{ "<leader>lR", function() vim.lsp.buf.code_action({ apply = true, context = { only = { "source.removeUnused" }, diagnostics = {} }, }) end, desc = "Remove Unused Imports" },
 						}
 						set_keys(lsp_ts_keys)
 					end
 
-					vim.api.nvim_buf_set_option(bufnr, "omnifunc", "v:lua.vim.lsp.omnifunc")
+					vim.api.nvim_set_option_value("omnifunc", "v:lua.vim.lsp.omnifunc", { buf = bufnr })
 					for _, v in ipairs(lsp_keys) do
 						v.buffer = bufnr
 					end
