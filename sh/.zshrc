@@ -1012,7 +1012,6 @@ zupd() {
   fetch https://gitlab.com/brunolpsousa/dotfiles/-/raw/main/sh/.zshrc > "$ZDOTDIR/.zshrc.tmp"
   [[ -s "$ZDOTDIR/.zshrc.tmp" ]] || { rm -I "$ZDOTDIR/.zshrc.tmp"; return 1 }
   \mv "$ZDOTDIR/.zshrc.tmp" "$ZDOTDIR/.zshrc"
-  rm -I "$XDG_CONFIG_HOME"/zsh/*.zsh
   exec zsh
 }
 
