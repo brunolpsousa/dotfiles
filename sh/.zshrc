@@ -2000,13 +2000,12 @@ prompt_setup() {
   autoload -Uz colors && colors
   VIRTUAL_ENV_DISABLE_PROMPT=true
 
-  local arrow='>%(!.%F{yellow}>%B%F{%(?.yellow.red)}.%F{cyan}>%B%F{%(?.cyan.red)})>%f%b '
-  local ps_one_1='%(!^%F{red}%n %F{white}%Bin ${DIR_LOCK}%F{yellow}'
-  local ps_one_2='^%F{green}%n %F{white}%Bin ${DIR_LOCK}%F{cyan})%(4~|%-1~/.../%2~|%~)%f%b'
-  local r_ps_one='${SPACE_NOASYNC}${SPACE_ASYNC}${ELAPSED}${SPACE_BATTERY}'
+  local arrow=' >%(!.%F{yellow}>%B%F{%(?.yellow.red)}.%F{cyan}>%B%F{%(?.cyan.red)})>%f%b '
+  local ps='${DIR_LOCK}%F{%(!^yellow^cyan)}%(4~|%-1~/.../%2~|%~)%f%b'
+  local rps='${SPACE_NOASYNC}${SPACE_ASYNC}${ELAPSED}${SPACE_BATTERY}'
 
-  PS1=$PROMPT_SSH$ps_one_1$ps_one_2'$VCS_INFO_MSG$VCS_STATUS_MSG'$'\n'$arrow
-  RPS1="$r_ps_one %246F%* %(?.%F{green}✓.%F{red}✗)%f%b"
+  PS1=$PROMPT_SSH$ps'$VCS_INFO_MSG$VCS_STATUS_MSG'$arrow
+  RPS1="$rps %246F%* %(?.%F{green}✓.%F{red}✗)%f%b"
 }
 #--------------------------------------------------------------------------------------------------#
 # Set terminal title
@@ -2060,7 +2059,7 @@ command_time_precmd() {
 # Display git info
 prompt_git_info() {
   cd -q "$1"
-  local ZSH_THEME_GIT_PROMPT_PREFIX='%F{white}%B on%b %242F:'
+  local ZSH_THEME_GIT_PROMPT_PREFIX=' %242F:'
   local ZSH_THEME_GIT_PROMPT_SUFFIX='%f'
 
   zstyle ':vcs_info:*' enable git
