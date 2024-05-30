@@ -1015,6 +1015,11 @@ zupd() {
   exec zsh
 }
 
+ompupd() {
+  [[ -d ~/.local/bin ]] || mkdir ~/.local/bin
+  fetch https://ohmyposh.dev/install.sh | bash -s -- -d ~/.local/bin
+}
+
 # Weather by wttr.in
 alias weather="fetch https://wttr.in"
 
@@ -4592,7 +4597,8 @@ spaceship_zig() {
   spaceship::print $result
 }
 
-prompt_setup
+# prompt_setup
+eval "$(oh-my-posh init zsh --config $ZDOTDIR/omp.json)"
 #--------------------------------------------------------------------------------------------------#
 ############################################## Alert ###############################################
 #--------------------------------------------------------------------------------------------------#
