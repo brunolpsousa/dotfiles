@@ -251,6 +251,12 @@ vim.api.nvim_create_autocmd({ "TextYankPost" }, {
 	end,
 })
 
+vim.api.nvim_create_autocmd("VimLeave", {
+	callback = function()
+		vim.cmd("set guicursor= | call chansend(v:stderr, '\x1b[ q')")
+	end,
+})
+
 vim.api.nvim_create_autocmd({ "FileType" }, {
 	pattern = { "gitcommit", "markdown" },
 	callback = function()
