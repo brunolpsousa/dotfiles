@@ -10,14 +10,14 @@
     "white": "#E0DEF4",
     "yellow": "#F3AE35"
   },
-  "console_title_template": "{{.PWD}}",
+  "console_title_template": "{{ .PWD }}",
   "secondary_prompt": {
     "foreground": "p:black",
-    "template": "<{{if .Root}}p:red{{end}},>\ue285</> "
+    "template": "<{{ if .Root }}p:red{{ end }},>\ue285</> "
   },
   "transient_prompt": {
     "foreground": "p:orange",
-    "template": "{{ .Folder }} <white,>></><{{if .Root }}yellow{{else}}cyan{{end}},>></><{{if .Code }}red{{ else if .Root }}yellow{{else}}cyan{{end}},><b>></b></> "
+    "template": "{{ .Folder }} <white,>></><{{ if .Root }}yellow{{ else }}cyan{{ end }},>></><{{ if .Code }}red{{ else if .Root }}yellow{{ else }}cyan{{ end }},><b>></b></> "
   },
   "blocks": [
     {
@@ -35,13 +35,13 @@
           "type": "session",
           "style": "plain",
           "foreground": "#ffffff",
-          "template": "{{ if .SSHSession }} <yellow,>{{.HostName}}</>:{{ end }}"
+          "template": "{{ if .SSHSession }} <yellow,>{{ .HostName }}</>:{{ end }}"
         },
         {
           "type": "session",
           "style": "plain",
           "foreground": "green",
-          "template": "{{ if .Root }}red{{end}}{{ .UserName }}</> <white,><b>in</b></> "
+          "template": "{{ if .Root }}red{{ end }}{{ .UserName }}</> <white,><b>in</b></> "
         },
         {
           "type": "path",
@@ -70,13 +70,13 @@
               "Untracked": "<218,>?%d</> "
             }
           },
-          "template": "<white,><b>on</b></> {{ .HEAD }}{{if .BranchStatus }} {{ .BranchStatus }}{{ end }}{{ if .Working.Changed }} {{ .Working.String }}{{ end }}{{ if and (.Working.Changed) (.Staging.Changed) }} |{{ end }}{{ if .Staging.Changed }} {{ .Staging.String }}{{ end }}{{ if .StashCount }} {{ end }} "
+          "template": "<white,><b>on</b></> {{ .HEAD }}{{ if .BranchStatus }} {{ .BranchStatus }}{{ end }}{{ if .Working.Changed }} {{ .Working.String }}{{ end }}{{ if and (.Working.Changed) (.Staging.Changed) }} |{{ end }}{{ if .Staging.Changed }} {{ .Staging.String }}{{ end }}{{ if .StashCount }} {{ end }} "
         },
         {
           "type": "fossil",
           "style": "plain",
           "foreground": "242",
-          "template": "<white,><b>on</b></> \ue725 {{.Branch}} {{.Status.String}} "
+          "template": "<white,><b>on</b></> \ue725 {{ .Branch }} {{ .Status.String }} "
         },
         {
           "type": "mercurial",
@@ -85,7 +85,7 @@
           "properties": {
             "newprop": ""
           },
-          "template": "<white,><b>on</b></> {{.Branch}} {{if .LocalCommitNumber}}({{.LocalCommitNumber}}:{{.ChangeSetIDShort}}){{end}}{{range .Bookmarks }} \uf02e {{.}}{{end}}{{range .Tags}} \uf02b {{.}}{{end}}{{if .Working.Changed}} \uf044 {{ .Working.String }}{{ end }} "
+          "template": "<white,><b>on</b></> {{ .Branch }} {{ if .LocalCommitNumber }}({{ .LocalCommitNumber }}:{{ .ChangeSetIDShort }}){{ end }}{{ range .Bookmarks }} \uf02e {{ . }}{{ end }}{{ range .Tags }} \uf02b {{ . }}{{ end }}{{ if .Working.Changed }} \uf044 {{ .Working.String }}{{ end }} "
         },
         {
           "type": "plastic",
@@ -114,12 +114,12 @@
           "properties": {
             "fetch_status": true
           },
-          "template": "<white,><b>on</b></> \ue0a0{{.Branch}} r{{.BaseRev}} {{.Working.String}}"
+          "template": "<white,><b>on</b></> \ue0a0{{ .Branch }} r{{ .BaseRev }} {{ .Working.String }}"
         },
         {
           "type": "text",
           "style": "plain",
-          "template": "><{{if .Root }}yellow{{else}}cyan{{end}},>></><{{if .Code }}red{{ else if .Root }}yellow{{else}}cyan{{end}},><b>></b></> "
+          "template": "><{{ if .Root }}yellow{{ else }}cyan{{ end }},>></><{{ if .Code }}red{{ else if .Root }}yellow{{ else }}cyan{{ end }},><b>></b></> "
         }
       ]
     },
@@ -131,7 +131,7 @@
           "type": "aws",
           "style": "plain",
           "foreground": "#FFA400",
-          "template": " {{.Profile}}{{if .Region}}@{{.Region}} {{end}}"
+          "template": " {{ .Profile }}{{ if .Region }}@{{ .Region }} {{ end }}"
         },
         {
           "type": "az",
@@ -153,7 +153,7 @@
           "type": "gcp",
           "style": "plain",
           "foreground": "#47888d",
-          "template": " {{.Project}} :: {{.Account}} "
+          "template": " {{ .Project }} :: {{ .Account }} "
         },
         {
           "type": "cds",
@@ -193,14 +193,14 @@
             "context_aliases": {
               "arn:aws:eks:eu-west-1:1234567890:cluster/posh": "posh"
             },
-            "template": "ﴱ {{.Context}}{{if .Namespace}} :: {{.Namespace}}{{end}} "
+            "template": "ﴱ {{ .Context }}{{ if .Namespace }} :: {{ .Namespace }}{{ end }} "
           }
         },
         {
           "type": "terraform",
           "style": "plain",
           "foreground": "#ebcc34",
-          "template": "{{.WorkspaceName}} "
+          "template": "{{ .WorkspaceName }} "
         },
         {
           "type": "talosctl",
@@ -212,7 +212,7 @@
           "type": "pulumi",
           "style": "plain",
           "foreground": "#662d91",
-          "template": "{{ .Stack }}{{if .User }} :: {{ .User }}@{{ end }}{{ if .URL }}{{ .URL }}{{ end }}"
+          "template": "{{ .Stack }}{{ if .User }} :: {{ .User }}@{{ end }}{{ if .URL }}{{ .URL }}{{ end }}"
         },
         {
           "type": "sitecore",
@@ -236,7 +236,7 @@
           "type": "project",
           "style": "plain",
           "foreground": "p:red",
-          "template": "{{ if and (not .Error) (.Version) }} {{.Version}} {{ end }}"
+          "template": "{{ if and (not .Error) (.Version) }} {{ .Version }} {{ end }}"
         },
         {
           "type": "bazel",
@@ -362,7 +362,7 @@
           "type": "deno",
           "style": "plain",
           "foreground": "#3C82F6",
-          "template": "{{if not .Error}} {{ .Full }} {{end}}"
+          "template": "{{ if not .Error }} {{ .Full }} {{ end }}"
         },
         {
           "type": "node",
@@ -398,7 +398,7 @@
           "type": "quasar",
           "style": "plain",
           "foreground": "#00B4FF",
-          "template": " {{.Full}}{{ if .HasVite }}  {{ .Vite.Version }}{{ end }} "
+          "template": " {{ .Full }}{{ if .HasVite }}  {{ .Vite.Version }}{{ end }} "
         },
         {
           "type": "r",
@@ -447,16 +447,16 @@
             "threshold": 100,
             "style": "round"
           },
-          "template": "<{{ if gt .Ms 86400000}}magenta{{ else if gt .Ms 3600000}}red{{ else if gt .Ms 60000}}yellow{{ else if gt .Ms 1000}}green{{end}},>{{ .FormattedMs }} </>"
+          "template": "<{{ if gt .Ms 86400000}}magenta{{ else if gt .Ms 3600000}}red{{ else if gt .Ms 60000}}yellow{{ else if gt .Ms 1000}}green{{ end }},>{{ .FormattedMs }} </>"
         },
         {
           "type": "battery",
           "style": "plain",
           "foreground": "green",
           "foreground_templates": [
-            "{{if and (gt 0 .Percentage) (lt 30 .Percentage)}}red{{end}}",
-            "{{if and (ge 30 .Percentage) (lt 50 .Percentage)}}yellow{{end}}",
-            "{{if eq \"Full\" .State.String}}blue{{end}}"
+            "{{ if and (gt 0 .Percentage) (lt 30 .Percentage)}}red{{ end }}",
+            "{{ if and (ge 30 .Percentage) (lt 50 .Percentage)}}yellow{{ end }}",
+            "{{ if eq \"Full\" .State.String }}blue{{ end }}"
           ],
           "properties": {
             "discharging_icon": "⇣",
