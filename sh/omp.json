@@ -458,8 +458,8 @@
           "style": "plain",
           "foreground": "green",
           "foreground_templates": [
-            "{{ if and (gt 0 .Percentage) (lt 30 .Percentage) }}red{{ end }}",
-            "{{ if and (ge 30 .Percentage) (lt 50 .Percentage) }}yellow{{ end }}",
+            "{{ if and (gt .Percentage 0) (lt .Percentage 30) }}red{{ end }}",
+            "{{ if and (ge .Percentage 30) (lt .Percentage 50) }}yellow{{ end }}",
             "{{ if eq \"Full\" .State.String }}blue{{ end }}"
           ],
           "properties": {
@@ -467,7 +467,7 @@
             "charging_icon": "⇡",
             "charged_icon": "•"
           },
-          "template": "{{ if and (not .Error) (or (eq \"Full\" .State.String) (eq \"Charging\" .State.String) (and (gt 0 .Percentage) (lt 30 .Percentage))) }}{{ .Icon }}{{ .Percentage }}% {{ end }}"
+          "template": "{{ if and (not .Error) (or (eq \"Full\" .State.String) (eq \"Charging\" .State.String) (and (gt .Percentage 0) (lt .Percentage 30))) }}{{ .Icon }}{{ .Percentage }}\uF295 {{ end }}"
         },
         {
           "type": "time",
