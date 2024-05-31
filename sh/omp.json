@@ -451,15 +451,15 @@
             "threshold": 100,
             "style": "round"
           },
-          "template": "<{{ if gt .Ms 86400000}}magenta{{ else if gt .Ms 3600000}}red{{ else if gt .Ms 60000}}yellow{{ else if gt .Ms 1000}}green{{ end }},>{{ .FormattedMs }} </>"
+          "template": "<{{ if gt .Ms 86400000 }}magenta{{ else if gt .Ms 3600000 }}red{{ else if gt .Ms 60000 }}yellow{{ else if gt .Ms 1000 }}green{{ end }},>{{ .FormattedMs }} </>"
         },
         {
           "type": "battery",
           "style": "plain",
           "foreground": "green",
           "foreground_templates": [
-            "{{ if and (gt 0 .Percentage) (lt 30 .Percentage)}}red{{ end }}",
-            "{{ if and (ge 30 .Percentage) (lt 50 .Percentage)}}yellow{{ end }}",
+            "{{ if and (gt 0 .Percentage) (lt 30 .Percentage) }}red{{ end }}",
+            "{{ if and (ge 30 .Percentage) (lt 50 .Percentage) }}yellow{{ end }}",
             "{{ if eq \"Full\" .State.String }}blue{{ end }}"
           ],
           "properties": {
