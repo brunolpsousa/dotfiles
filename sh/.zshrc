@@ -1008,7 +1008,7 @@ ompupd() {
   [[ -d "$HOME/.local/bin" ]] || (mkdir "$HOME/.local/bin" && export PATH="$HOME/.local/bin:$PATH")
   fetch https://ohmyposh.dev/install.sh > "$HOME/.local/bin/omp.tmp"
   [[ -s "$HOME/.local/bin/omp.tmp" ]] || { rm -I "$HOME/.local/bin/omp.tmp"; return 1 }
-  <("$HOME/.local/bin/omp.tmp") | bash -s -- -d "$HOME/.local/bin"
+  <"$HOME/.local/bin/omp.tmp" | bash -s -- -d "$HOME/.local/bin"
   rm -I "$HOME/.local/bin/omp.tmp"
   exec zsh
 }
