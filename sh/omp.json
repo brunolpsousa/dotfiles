@@ -74,7 +74,7 @@
               "Untracked": "<218,>?%d</> "
             }
           },
-          "template": "<white,><b>on</b></> <242,>{{ .HEAD }}</>{{ if .BranchStatus }} {{ .BranchStatus }}{{ end }}{{ if .Working.Changed }} {{ .Working.String }}{{ end }}{{ if and (.Working.Changed) (.Staging.Changed) }} |{{ end }}{{ if .Staging.Changed }} {{ .Staging.String }}{{ end }}{{ if .StashCount }} <cyan,></>{{ end }} "
+          "template": "<white,><b>on</b></> <242,>{{ .HEAD }}</>{{ if .BranchStatus }} {{ .BranchStatus }}{{ end }}{{ if .Staging.Changed }} <#CEFDA0,></> {{ .Staging.String }}{{ end }}{{ if and (.Working.Changed) (.Staging.Changed) }} <242,>|</>{{ end }}{{ if .Working.Changed }} <#FFEB3B,></> {{ .Working.String }}{{ end }}{{ if .StashCount }} <cyan,></>{{ end }} "
         },
         {
           "type": "fossil",
