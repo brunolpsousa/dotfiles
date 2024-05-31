@@ -190,15 +190,10 @@
           "template": "󰥧 {{ .Project }} "
         },
         {
-          "type": "kubectl",
+          "type": "helm",
           "style": "plain",
-          "foreground": "#ebcc34",
-          "properties": {
-            "context_aliases": {
-              "arn:aws:eks:eu-west-1:1234567890:cluster/posh": "posh"
-            },
-            "template": "ﴱ {{ .Context }}{{ if .Namespace }} :: {{ .Namespace }}{{ end }} "
-          }
+          "foreground": "#a7cae1",
+          "template": "Helm {{ .Version }} "
         },
         {
           "type": "terraform",
@@ -262,7 +257,7 @@
         },
         {
           "type": "ui5tooling",
-          "style": "powerline",
+          "style": "plain",
           "foreground": "#f5a834",
           "template": "ui5 {{ .Full }} "
         },
@@ -321,12 +316,6 @@
           "template": " {{ .Full }} "
         },
         {
-          "type": "helm",
-          "style": "powerline",
-          "foreground": "#a7cae1",
-          "template": "Helm {{ .Version }} "
-        },
-        {
           "type": "java",
           "style": "plain",
           "foreground": "#4063D8",
@@ -360,7 +349,7 @@
           "type": "react",
           "style": "plain",
           "foreground": "#81a1c1",
-          "template": " {{ .Full }} "
+          "template": "{{ if not .Error }} {{ .Full }} {{ end }}"
         },
         {
           "type": "deno",
