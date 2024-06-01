@@ -1923,13 +1923,33 @@ arch-base() {
 #--------------------------------------------------------------------------------------------------#
 ############################################## Prompt ##############################################
 #--------------------------------------------------------------------------------------------------#
-
 if exists starship; then
+  prompt_precmd() {
+    prompt_set_title 'expand-prompt' '%~'
+  }
+
+  prompt_set_title() {
+    setopt localoptions noshwordsplit
+    (( ${+EMACS} || ${+INSIDE_EMACS} )) && return
+    case $TTY in /dev/ttyS[0-9]*) return;; esac
+    [[ $PROMPT_SSH ]] && local hostname="${(%):-(%m) }"
+
+    local -a opts
+    case $1 in
+      expand-prompt) opts=(-P);;
+      ignore-escape) opts=(-r);;
+    esac
+    print -n $opts $'\e]0;'${hostname}${2}$'\a'
+  }
+
   if [[ ! -s "$ZDOTDIR/starship.toml" ]]; then
     fetch \
       'https://gitlab.com/brunolpsousa/dotfiles/-/raw/main/sh/starship.toml' > "$ZDOTDIR/starship.toml"
   fi
+
   [[ ! -s "$ZDOTDIR/starship.toml" ]] || export STARSHIP_CONFIG="$ZDOTDIR/starship.toml"
+
+  add-zsh-hook precmd prompt_precmd
   eval "$(starship init zsh)"
 else
   [[ -s "$ZDOTDIR/prompt.zsh" ]] ||
