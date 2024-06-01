@@ -1004,15 +1004,6 @@ zupd() {
   exec zsh
 }
 
-ompupd() {
-  [[ -d "$HOME/.local/bin" ]] || (mkdir "$HOME/.local/bin" && export PATH="$HOME/.local/bin:$PATH")
-  fetch https://ohmyposh.dev/install.sh > "$HOME/.local/bin/omp.tmp"
-  [[ -s "$HOME/.local/bin/omp.tmp" ]] || { rm -I "$HOME/.local/bin/omp.tmp"; return 1 }
-  <"$HOME/.local/bin/omp.tmp" | bash -s -- -d "$HOME/.local/bin"
-  rm -I "$HOME/.local/bin/omp.tmp"
-  exec zsh
-}
-
 # Weather by wttr.in
 alias weather="fetch https://wttr.in"
 
@@ -1932,25 +1923,23 @@ arch-base() {
 #--------------------------------------------------------------------------------------------------#
 ############################################## Prompt ##############################################
 #--------------------------------------------------------------------------------------------------#
-if [[ ! -s "$ZDOTDIR/omp.json" ]]; then
-  fetch 'https://gitlab.com/brunolpsousa/dotfiles/-/raw/main/sh/omp.json' > "$ZDOTDIR/omp.json"
-fi
 
-if ! exists oh-my-posh; then
-  ompupd
-fi
-
-exists oh-my-posh && eval "$(oh-my-posh init zsh --config $ZDOTDIR/omp.json)"
-
-if [[ ! -s "$ZDOTDIR/omp.json" ]] && ! exists oh-my-posh; then
+if exists starship; then
+  if [[ ! -s "$ZDOTDIR/starship.toml" ]]; then
+    fetch \
+      'https://gitlab.com/brunolpsousa/dotfiles/-/raw/main/sh/starship.toml' > "$ZDOTDIR/starship.toml"
+  fi
+  [[ ! -s "$ZDOTDIR/starship.toml" ]] || export STARSHIP_CONFIG="$ZDOTDIR/starship.toml"
+  eval "$(starship init zsh)"
+else
   [[ -s "$ZDOTDIR/prompt.zsh" ]] ||
     fetch 'https://gitlab.com/brunolpsousa/dotfiles/-/raw/main/sh/prompt.zsh' > "$ZDOTDIR/prompt.zsh"
-  [[ -s "$ZDOTDIR/prompt.zsh" ]] && source "$ZDOTDIR/prompt.zsh"
+  source "$ZDOTDIR/prompt.zsh"
 fi
 #--------------------------------------------------------------------------------------------------#
 ############################################## Alert ###############################################
 #--------------------------------------------------------------------------------------------------#
-[[ ! -s "$HOME/.alert" ]] || echo "\e[31m>\e[91m>\e[33m>\e[93m Check ~/.alert\n"
+[[ ! -s "$HOME/.alert" ]] || echo "\e[31m>\e[91m>\e[33m>\e[93m Check ~/.alert"
 #--------------------------------------------------------------------------------------------------#
 ########################################### END OF ZSHRC ###########################################
 #--------------------------------------------------------------------------------------------------#
