@@ -95,17 +95,19 @@ local function diagnostic_goto(next, severity)
 	end
 end
 
-local function lsp_format(async)
-	async = async ~= false
-	local eslint = false
+local function lsp_format(opts)
+	opts = opts or {}
+	local async = opts.async ~= false
+	local range = opts.range or nil
 
 	for _, v in ipairs(vim.lsp.get_clients()) do
 		if v.name == "eslint" then
 			async = false
-			eslint = true
 			break
 		end
 	end
+
+	require("conform").format({ async = async, lsp_fallback = true, range = range })
 
 	vim.lsp.buf.format({
 		async = async,
@@ -114,10 +116,6 @@ local function lsp_format(async)
 			return not vim.tbl_contains(exclude, client.name)
 		end,
 	})
-
-	if eslint then
-		vim.cmd("EslintFixAll")
-	end
 end
 
 local function lsp_on_rename(from, to)
@@ -188,7 +186,7 @@ local function set_root(data)
 	vim.fn.chdir(root)
 end
 
-local format_on_save = true
+local format_on_save = false
 local function toggle_format_on_save()
 	format_on_save = not format_on_save
 	local status = format_on_save and "enabled" or "disabled"
@@ -242,7 +240,7 @@ vim.o.autochdir = false
 vim.api.nvim_create_autocmd("BufEnter", { callback = set_root })
 
 vim.api.nvim_create_autocmd({ "CursorHold" }, {
-	command = "checktime|rshada|wshada",
+	command = "rshada|wshada",
 })
 
 vim.api.nvim_create_autocmd({ "TextYankPost" }, {
@@ -370,7 +368,7 @@ vim.api.nvim_create_autocmd({ "BufWritePre" }, {
 					goto restore_cursor
 				end
 			end
-			lsp_format(false)
+			lsp_format({ async = false })
 		end
 
 		::restore_cursor::
@@ -1304,7 +1302,6 @@ if pcall(require, "lazy") then
 					build = ":MasonUpdate",
 					init = function()
 						local packages = {
-							"black",
 							"prettier",
 							"stylua",
 						}
@@ -1342,10 +1339,12 @@ if pcall(require, "lazy") then
 							"eslint",
 							"html",
 							"jsonls",
+							"jdtls",
 							"lua_ls",
 							"pyright",
 							"tailwindcss",
 							"tsserver",
+							"volar",
 							"yamlls",
 						},
 						automatic_installation = true,
@@ -1675,52 +1674,37 @@ if pcall(require, "lazy") then
 		},
 
 		{
-			"nvimtools/none-ls.nvim",
+			"https://github.com/stevearc/conform.nvim",
 			event = { "BufReadPre", "BufNewFile" },
-			opts = function()
-				require("null-ls").setup({
-					debug = false,
-					sources = {
-						require("null-ls").builtins.diagnostics.zsh,
-						require("null-ls").builtins.formatting.stylua,
-						require("null-ls").builtins.formatting.google_java_format,
-						require("null-ls").builtins.formatting.black.with({ extra_args = { "--fast", "--preview" } }),
-						require("null-ls").builtins.formatting.prettier.with({
-							extra_filetypes = { "toml" },
-							extra_args = function()
-								local prettier_jsonc_args = {
-									"--parser",
-									"jsonc",
-									"--trailing-comma",
-									"none",
-								}
-								local prettier_args = {
-									"--config-precedence=file-override",
-									"--no-semi",
-									"--single-quote",
-									"--jsx-single-quote",
-								}
-								local buf = vim.api.nvim_get_current_buf()
-								local ft = vim.bo[buf].filetype
-								if ft == "jsonc" then
-									for _, v in ipairs(prettier_jsonc_args) do
-										table.insert(prettier_args, v)
-									end
-								end
-								return prettier_args
-							end,
-						}),
+			opts = {
+				format_on_save = {
+					lsp_fallback = true,
+					timeout_ms = 500,
+				},
+				formatters_by_ft = {
+					lua = { "stylua" },
+					javascript = { { "prettierd", "prettier" }, "eslint_d" },
+					typescript = { { "prettierd", "prettier" }, "eslint_d" },
+					toml = { { "prettierd", "prettier" } },
+					python = function(bufnr)
+						if require("conform").get_formatter_info("ruff_format", bufnr).available then
+							return { "ruff_format" }
+						else
+							return { "isort", "black" }
+						end
+					end,
+				},
+				formatters = {
+					black = { prepend_args = { "--fast", "--preview" } },
+					prettier = {
+						prepend_args = function()
+							if vim.bo[0].filetype == "jsonc" then
+								return { "--parser", "jsonc", "--trailing-comma", "none" }
+							end
+						end,
 					},
-				})
-			end,
-		},
-
-		{
-			"rcarriga/nvim-notify",
-			init = function()
-				vim.notify = require("notify")
-			end,
-			opts = {},
+				},
+			},
 		},
 
 		{
