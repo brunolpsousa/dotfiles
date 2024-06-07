@@ -1279,21 +1279,6 @@ if pcall(require, "lazy") then
 		},
 
 		{
-			"echasnovski/mini.surround",
-			opts = {
-				mappings = {
-					add = "gsa",
-					delete = "gsd",
-					find = "gsf",
-					find_left = "gsF",
-					highlight = "gsh",
-					replace = "gsr",
-					update_n_lines = "gsn",
-				},
-			},
-		},
-
-		{
 			"neovim/nvim-lspconfig",
 			event = { "BufReadPre", "BufNewFile" },
 			dependencies = {
@@ -1339,7 +1324,6 @@ if pcall(require, "lazy") then
 							"eslint",
 							"html",
 							"jsonls",
-							"jdtls",
 							"lua_ls",
 							"pyright",
 							"tailwindcss",
@@ -1861,13 +1845,13 @@ if pcall(require, "lazy") then
 						r = { name = "Session" },
 						x = { name = "Plugins", l = { name = "Lazy" } },
 					},
-					g = { name = "Goto", s = { name = "Surround" } },
+					g = { name = "Goto" },
 				})
 				require("which-key").register({
 					["<leader>"] = {
 						l = { name = "LSP" },
 					},
-					g = { name = "Goto", s = { name = "Surround" } },
+					g = { name = "Goto" },
 				}, { mode = "v" })
 			end,
 		},
