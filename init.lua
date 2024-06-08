@@ -1720,9 +1720,13 @@ if pcall(require, "lazy") then
 			},
 			config = function()
 				require("telescope").setup({
-					defaults = { path_display = { "smart" }, file_ignore_patterns = { ".git/", "node_modules" } },
+					defaults = {
+						path_display = { "smart" },
+						file_ignore_patterns = { ".git", ".venv", "node_modules" },
+					},
 					pickers = {
 						find_files = { hidden = true, no_ignore = false },
+						live_grep = { additional_args = { "--hidden" } },
 						buffers = {
 							mappings = {
 								n = {
