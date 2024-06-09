@@ -286,7 +286,7 @@ done
 # See https://ttssh2.osdn.jp/manual/4/en/usage/tips/vim.html for cursor shapes
 # 1 and 5 = blink; 2 and 6 = no blink
 function zle-keymap-select {
-  local cursor_block='\e[1 q'
+  local cursor_block='\e[2 q'
   local cursor_beam='\e[5 q'
   if [[ ${KEYMAP} == vicmd ]] ||
     [[ $1 = 'block' ]]; then
