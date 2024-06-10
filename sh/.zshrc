@@ -54,7 +54,7 @@ done
 export LS_COLORS='*.7z=38;5;40:*.WARC=38;5;40:*.a=38;5;40:*.arj=38;5;40:*.br=38;5;40:*.bz2=38;5;40:*.cpio=38;5;40:*.gz=38;5;40:*.lrz=38;5;40:*.lz=38;5;40:*.lzma=38;5;40:*.lzo=38;5;40:*.rar=38;5;40:*.s7z=38;5;40:*.sz=38;5;40:*.tar=38;5;40:*.tbz=38;5;40:*.tgz=38;5;40:*.warc=38;5;40:*.xz=38;5;40:*.z=38;5;40:*.zip=38;5;40:*.zipx=38;5;40:*.zoo=38;5;40:*.zpaq=38;5;40:*.zst=38;5;40:*.zstd=38;5;40:*.zz=38;5;40:*@.service=38;5;45:*AUTHORS=38;5;220;1:*CHANGELOG=38;5;220;1:*CHANGELOG.md=38;5;220;1:*CHANGES=38;5;220;1:*CODEOWNERS=38;5;220;1:*CONTRIBUTING=38;5;220;1:*CONTRIBUTING.md=38;5;220;1:*CONTRIBUTORS=38;5;220;1:*COPYING=38;5;220;1:*COPYRIGHT=38;5;220;1:*CodeResources=38;5;239:*Dockerfile=38;5;155:*HISTORY=38;5;220;1:*INSTALL=38;5;220;1:*LICENSE=38;5;220;1:*LICENSE.md=38;5;220;1:*LS_COLORS=48;5;89;38;5;197;1;3;4;7:*MANIFEST=38;5;243:*Makefile=38;5;155:*NOTICE=38;5;220;1:*PATENTS=38;5;220;1:*PkgInfo=38;5;239:*README=38;5;220;1:*README.md=38;5;220;1:*README.rst=38;5;220;1:*VERSION=38;5;220;1:*authorized_keys=1:*cfg=1:*conf=1:*config=1:*core=38;5;241:*id_dsa=38;5;192;3:*id_ecdsa=38;5;192;3:*id_ed25519=38;5;192;3:*id_rsa=38;5;192;3:*known_hosts=1:*lock=38;5;248:*lockfile=38;5;248:*pm_to_blib=38;5;240:*rc=1:*.1p=38;5;7:*.32x=38;5;213:*.3g2=38;5;115:*.3ga=38;5;137;1:*.3gp=38;5;115:*.3p=38;5;7:*.82p=38;5;121:*.83p=38;5;121:*.8eu=38;5;121:*.8xe=38;5;121:*.8xp=38;5;121:*.A64=38;5;213:*.BAT=38;5;172:*.BUP=38;5;241:*.C=38;5;81:*.CFUserTextEncoding=38;5;239:*.DS_Store=38;5;239:*.F=38;5;81:*.F03=38;5;81:*.F08=38;5;81:*.F90=38;5;81:*.F95=38;5;81:*.H=38;5;110:*.IFO=38;5;114:*.JPG=38;5;97:*.M=38;5;110:*.MOV=38;5;114:*.PDF=38;5;141:*.PFA=38;5;66:*.PL=38;5;160:*.R=38;5;49:*.RData=38;5;178:*.Rproj=38;5;11:*.S=38;5;110:*.S3M=38;5;137;1:*.SKIP=38;5;244:*.TIFF=38;5;97:*.VOB=38;5;115;1:*.a00=38;5;213:*.a52=38;5;213:*.a64=38;5;213:*.a78=38;5;213:*.aac=38;5;137;1:*.accdb=38;5;60:*.accde=38;5;60:*.accdr=38;5;60:*.accdt=38;5;60:*.adf=38;5;213:*.adoc=38;5;184:*.afm=38;5;66:*.agda=38;5;81:*.agdai=38;5;110:*.ahk=38;5;41:*.ai=38;5;99:*.aiff=38;5;136;1:*.alac=38;5;136;1:*.allow=38;5;112:*.am=38;5;242:*.amr=38;5;137;1:*.ape=38;5;136;1:*.apk=38;5;215:*.application=38;5;116:*.aria2=38;5;241:*.asc=38;5;192;3:*.asciidoc=38;5;184:*.asf=38;5;115:*.asm=38;5;81:*.ass=38;5;117:*.astro=38;5;135;1:*.atr=38;5;213:*.au=38;5;137;1:*.automount=38;5;45:*.avi=38;5;114:*.awk=38;5;172:*.bak=38;5;241:*.bash=38;5;172:*.bash_login=1:*.bash_logout=1:*.bash_profile=1:*.bat=38;5;172:*.bfe=38;5;192;3:*.bib=38;5;178:*.bin=38;5;124:*.bmp=38;5;97:*.bsp=38;5;215:*.c=38;5;81:*.c++=38;5;81:*.cab=38;5;215:*.caf=38;5;137;1:*.cap=38;5;29:*.car=38;5;57:*.cbr=38;5;141:*.cbz=38;5;141:*.cc=38;5;81:*.cda=38;5;136;1:*.cdi=38;5;213:*.cdr=38;5;97:*.chm=38;5;141:*.cjs=38;5;074;1:*.cl=38;5;81:*.clj=38;5;41:*.cljc=38;5;41:*.cljs=38;5;41:*.cljw=38;5;41:*.cnc=38;5;7:*.coffee=38;5;079;1:*.comp=38;5;136:*.cp=38;5;81:*.cpp=38;5;81:*.cr=38;5;81:*.crx=38;5;215:*.cs=38;5;81:*.css=38;5;105;1:*.csv=38;5;78:*.ctp=38;5;81:*.cue=38;5;116:*.cxx=38;5;81:*.dart=38;5;51:*.dat=38;5;137;1:*.db=38;5;60:*.deb=38;5;215:*.def=38;5;7:*.deny=38;5;196:*.description=38;5;116:*.device=38;5;45:*.dhall=38;5;178:*.dicom=38;5;97:*.diff=48;5;197;38;5;232:*.directory=38;5;116:*.divx=38;5;114:*.djvu=38;5;141:*.dll=38;5;241:*.dmg=38;5;215:*.dmp=38;5;29:*.doc=38;5;111:*.dockerignore=38;5;240:*.docm=38;5;111;4:*.docx=38;5;111:*.drw=38;5;99:*.dtd=38;5;178:*.dts=38;5;137;1:*.dump=38;5;241:*.dwg=38;5;216:*.dylib=38;5;241:*.ear=38;5;215:*.ejs=38;5;135;1:*.el=38;5;81:*.elc=38;5;241:*.eln=38;5;241:*.eml=38;5;90;1:*.enc=38;5;192;3:*.entitlements=1:*.epf=1:*.eps=38;5;99:*.epsf=38;5;99:*.epub=38;5;141:*.err=38;5;160;1:*.error=38;5;160;1:*.etx=38;5;184:*.ex=38;5;7:*.example=38;5;7:*.f=38;5;81:*.f03=38;5;81:*.f08=38;5;81:*.f4v=38;5;115:*.f90=38;5;81:*.f95=38;5;81:*.fcm=38;5;137;1:*.feature=38;5;7:*.fish=38;5;172:*.flac=38;5;136;1:*.flif=38;5;97:*.flv=38;5;115:*.fm2=38;5;213:*.fmp12=38;5;60:*.fnt=38;5;66:*.fon=38;5;66:*.for=38;5;81:*.fp7=38;5;60:*.frag=38;5;136:*.ftn=38;5;81:*.fvd=38;5;124:*.fxml=38;5;178:*.gb=38;5;213:*.gba=38;5;213:*.gbc=38;5;213:*.gbr=38;5;7:*.gel=38;5;213:*.gemspec=38;5;41:*.ger=38;5;7:*.gg=38;5;213:*.ggl=38;5;213:*.gif=38;5;97:*.git=38;5;197:*.gitattributes=38;5;240:*.github=38;5;197:*.gitignore=38;5;240:*.gitmodules=38;5;240:*.go=38;5;81:*.gp3=38;5;115:*.gp4=38;5;115:*.gpg=38;5;192;3:*.gs=38;5;81:*.h=38;5;110:*.h++=38;5;110:*.hi=38;5;110:*.hidden-color-scheme=1:*.hidden-tmTheme=1:*.hin=38;5;242:*.hjson=38;5;178:*.hpp=38;5;110:*.hs=38;5;81:*.htm=38;5;125;1:*.html=38;5;125;1:*.http=38;5;90;1:*.hxx=38;5;110:*.icns=38;5;97:*.ico=38;5;97:*.ics=38;5;7:*.ii=38;5;110:*.img=38;5;124:*.iml=38;5;166:*.in=38;5;242:*.info=38;5;184:*.ini=1:*.ipa=38;5;215:*.ipk=38;5;213:*.ipynb=38;5;41:*.iso=38;5;124:*.j64=38;5;213:*.jad=38;5;215:*.jar=38;5;215:*.java=38;5;079;1:*.jhtm=38;5;125;1:*.jpeg=38;5;97:*.jpg=38;5;97:*.js=38;5;074;1:*.jsm=38;5;079;1:*.json=38;5;178:*.json5=38;5;178:*.jsonc=38;5;178:*.jsonl=38;5;178:*.jsonnet=38;5;178:*.jsp=38;5;079;1:*.jsx=38;5;074;1:*.jxl=38;5;97:*.kak=38;5;172:*.key=38;5;166:*.lagda=38;5;81:*.lagda.md=38;5;81:*.lagda.rst=38;5;81:*.lagda.tex=38;5;81:*.last-run=1:*.less=38;5;105;1:*.lhs=38;5;81:*.libsonnet=38;5;142:*.lisp=38;5;81:*.lnk=38;5;39:*.localized=38;5;239:*.localstorage=38;5;60:*.log=38;5;190:*.lua=38;5;81:*.m=38;5;110:*.m2v=38;5;114:*.m3u=38;5;116:*.m3u8=38;5;116:*.m4=38;5;242:*.m4a=38;5;137;1:*.m4v=38;5;114:*.map=38;5;7:*.markdown=38;5;184:*.md=38;5;184:*.md5=38;5;116:*.mdb=38;5;60:*.mde=38;5;60:*.mdump=38;5;241:*.mdx=38;5;184:*.merged-ca-bundle=1:*.mf=38;5;7:*.mfasl=38;5;7:*.mht=38;5;125;1:*.mi=38;5;7:*.mid=38;5;136;1:*.midi=38;5;136;1:*.mjs=38;5;074;1:*.mkd=38;5;184:*.mkv=38;5;114:*.ml=38;5;81:*.mm=38;5;7:*.mobi=38;5;141:*.mod=38;5;137;1:*.moon=38;5;81:*.mount=38;5;45:*.mov=38;5;114:*.mp3=38;5;137;1:*.mp4=38;5;114:*.mp4a=38;5;137;1:*.mpeg=38;5;114:*.mpg=38;5;114:*.msg=38;5;178:*.msql=38;5;222:*.mtx=38;5;7:*.mustache=38;5;135;1:*.mysql=38;5;222:*.nc=38;5;60:*.ndjson=38;5;178:*.nds=38;5;213:*.nes=38;5;213:*.nfo=38;5;184:*.nib=38;5;57:*.nim=38;5;81:*.nimble=38;5;81:*.nix=38;5;155:*.norg=38;5;184:*.nrg=38;5;124:*.nth=38;5;97:*.numbers=38;5;112:*.o=38;5;241:*.odb=38;5;111:*.odp=38;5;166:*.ods=38;5;112:*.odt=38;5;111:*.oga=38;5;137;1:*.ogg=38;5;137;1:*.ogm=38;5;114:*.ogv=38;5;115:*.old=38;5;242:*.opus=38;5;137;1:*.org=38;5;184:*.orig=38;5;241:*.otf=38;5;66:*.out=38;5;242:*.p12=38;5;192;3:*.p7s=38;5;192;3:*.pacnew=38;5;33:*.pages=38;5;111:*.pak=38;5;215:*.part=38;5;239:*.patch=48;5;197;38;5;232;1:*.path=38;5;45:*.pbxproj=1:*.pc=38;5;7:*.pcap=38;5;29:*.pcb=38;5;7:*.pcf=1:*.pcm=38;5;136;1:*.pdf=38;5;141:*.pem=38;5;192;3:*.pfa=38;5;66:*.pfb=38;5;66:*.pfm=38;5;66:*.pgn=38;5;178:*.pgp=38;5;192;3:*.pgsql=38;5;222:*.php=38;5;81:*.pi=38;5;7:*.pid=38;5;248:*.pk3=38;5;215:*.pl=38;5;208:*.plist=1:*.plt=38;5;7:*.ply=38;5;216:*.pm=38;5;203:*.png=38;5;97:*.pod=38;5;184:*.pot=38;5;7:*.pps=38;5;166:*.ppt=38;5;166:*.ppts=38;5;166:*.pptsm=38;5;166;4:*.pptx=38;5;166:*.pptxm=38;5;166;4:*.profile=1:*.properties=38;5;116:*.prql=38;5;222:*.ps=38;5;99:*.psd=38;5;97:*.psf=1:*.pug=38;5;135;1:*.pxd=38;5;97:*.pxm=38;5;97:*.py=38;5;41:*.pyc=38;5;240:*.qcow=38;5;124:*.r=38;5;49:*.r[0-9]{0,2}=38;5;239:*.rake=38;5;155:*.rb=38;5;41:*.rdata=38;5;178:*.rdf=38;5;7:*.rkt=38;5;81:*.rlib=38;5;241:*.rmvb=38;5;114:*.rnc=38;5;178:*.rng=38;5;178:*.rom=38;5;213:*.rpm=38;5;215:*.rs=38;5;81:*.rss=38;5;178:*.rst=38;5;184:*.rstheme=1:*.rtf=38;5;111:*.ru=38;5;7:*.s=38;5;110:*.s3m=38;5;137;1:*.sample=38;5;114:*.sass=38;5;105;1:*.sassc=38;5;244:*.sav=38;5;213:*.sc=38;5;41:*.scala=38;5;41:*.scan=38;5;242:*.sch=38;5;7:*.scm=38;5;7:*.scpt=38;5;219:*.scss=38;5;105;1:*.sed=38;5;172:*.service=38;5;45:*.sfv=38;5;116:*.sgml=38;5;178:*.sh=38;5;172:*.sid=38;5;137;1:*.sig=38;5;192;3:*.signature=38;5;192;3:*.sis=38;5;7:*.sms=38;5;213:*.snapshot=38;5;45:*.socket=38;5;45:*.sparseimage=38;5;124:*.spl=38;5;7:*.spv=38;5;217:*.sql=38;5;222:*.sqlite=38;5;60:*.srt=38;5;117:*.ssa=38;5;117:*.st=38;5;213:*.stackdump=38;5;241:*.state=38;5;248:*.stderr=38;5;160;1:*.stl=38;5;216:*.storyboard=38;5;196:*.strings=1:*.sty=38;5;7:*.sub=38;5;117:*.sublime-build=1:*.sublime-commands=1:*.sublime-keymap=1:*.sublime-project=1:*.sublime-settings=1:*.sublime-snippet=1:*.sublime-workspace=1:*.sug=38;5;7:*.sup=38;5;117:*.svelte=38;5;135;1:*.svg=38;5;99:*.swap=38;5;45:*.swift=38;5;219:*.swo=38;5;244:*.swp=38;5;244:*.sx=38;5;81:*.t=38;5;114:*.target=38;5;45:*.tcc=38;5;110:*.tcl=38;5;64;1:*.tdy=38;5;7:*.tex=38;5;184:*.textile=38;5;184:*.tf=38;5;168:*.tfm=38;5;7:*.tfnt=38;5;7:*.tfstate=38;5;168:*.tfvars=38;5;168:*.tg=38;5;7:*.theme=38;5;116:*.tif=38;5;97:*.tiff=38;5;97:*.timer=38;5;45:*.tmTheme=1:*.tmp=38;5;244:*.toast=38;5;124:*.toml=38;5;178:*.torrent=38;5;116:*.ts=38;5;074;1:*.tsv=38;5;78:*.tsx=38;5;074;1:*.ttf=38;5;66:*.twig=38;5;81:*.txt=38;5;253:*.typelib=38;5;60:*.un~=38;5;241:*.urlview=38;5;116:*.user-ca-bundle=1:*.v=38;5;81:*.vala=38;5;81:*.vapi=38;5;81:*.vb=38;5;81:*.vba=38;5;81:*.vbs=38;5;81:*.vcard=38;5;7:*.vcd=38;5;124:*.vcf=38;5;7:*.vdf=38;5;215:*.vdi=38;5;124:*.vert=38;5;136:*.vfd=38;5;124:*.vhd=38;5;124:*.vhdx=38;5;124:*.vim=38;5;172:*.viminfo=1:*.vmdk=38;5;124:*.vob=38;5;115;1:*.vpk=38;5;215:*.vtt=38;5;117:*.vue=38;5;135;1:*.war=38;5;215:*.wav=38;5;136;1:*.webloc=38;5;116:*.webm=38;5;115:*.webp=38;5;97:*.wgsl=38;5;97:*.wma=38;5;137;1:*.wmv=38;5;114:*.woff=38;5;66:*.woff2=38;5;66:*.wrl=38;5;216:*.wv=38;5;136;1:*.wvc=38;5;136;1:*.xcconfig=1:*.xcf=38;5;7:*.xcsettings=1:*.xcuserstate=1:*.xcworkspacedata=1:*.xib=38;5;208:*.xla=38;5;76:*.xln=38;5;7:*.xls=38;5;112:*.xlsx=38;5;112:*.xlsxm=38;5;112;4:*.xltm=38;5;73;4:*.xltx=38;5;73:*.xml=38;5;178:*.xpi=38;5;215:*.xpm=38;5;97:*.xsd=38;5;178:*.xsh=38;5;41:*.yaml=38;5;178:*.yml=38;5;178:*.z[0-9]{0,2}=38;5;239:*.zcompdump=38;5;241:*.zig=38;5;81:*.zlogin=1:*.zlogout=1:*.zprofile=1:*.zsh=38;5;172:*.zshenv=1:*.zwc=38;5;241:*.zx[0-9]{0,2}=38;5;239:bd=38;5;68:ca=38;5;17:cd=38;5;113;1:di=38;5;30:do=38;5;127:ex=38;5;208;1:pi=38;5;126:fi=0:ln=target:mh=38;5;222;1:no=0:or=48;5;196;38;5;232;1:ow=38;5;220;1:sg=48;5;3;38;5;0:su=38;5;220;1;3;100;1:so=38;5;197:st=38;5;86;48;5;234:tw=48;5;235;38;5;139;3:'
 
 # Make SSH work with GNUPG
-[[ -d "$GNUPGHOME" ]] || { mkdir -p "$GNUPGHOME" && chmod 700 "$GNUPGHOME" }
+[[ -d "$GNUPGHOME" ]] || { mkdir -p "$GNUPGHOME" && chmod 700 "$GNUPGHOME"; }
 unset SSH_AGENT_PID
 if [ "${gnupg_SSH_AUTH_SOCK_by:-0}" -ne $$ ]; then
   export SSH_AUTH_SOCK="$(gpgconf --list-dirs agent-ssh-socket)"
@@ -66,7 +66,7 @@ gpg-connect-agent updatestartuptty /bye >/dev/null 2>&1
 [[ -d "$HOME/.local/bin" ]] && export PATH="$HOME/.local/bin:$PATH"
 [[ -d "$XDG_DATA_HOME/npm/bin" ]] && export PATH="$XDG_DATA_HOME/npm/bin:$PATH"
 [[ -d "$XDG_DATA_HOME/cargo/bin" ]] && export PATH="$XDG_DATA_HOME/cargo/bin:$PATH"
-[[ "$EUID" != 0 ]] && { umask 022 && s_local='--user' } || umask 002
+[[ "$EUID" != 0 ]] && { umask 022 && s_local='--user'; } || umask 002
 [[ "$LANG" == 'C' || "$LANG" == '' ]] &&
   echo "$(date '+%Y-%m-%d %H:%M:%S') - The \$LANG ($LANG) variable is not set." >> "$HOME/.alert"
 (( ${+commands[plasmashell]} )) && export GTK_USE_PORTAL=0 || export QT_WAYLAND_DECORATION='adwaita'
@@ -340,7 +340,7 @@ exists() { (( ${+commands[$1]} )) }
 grepsh() {
   local args=()
   while :; do
-    [[ $1 =~ '^-' ]] && { args+=("$1"); shift } || break
+    [[ $1 =~ '^-' ]] && { args+=("$1"); shift; } || break
   done
 
   local input="$2" success
@@ -350,14 +350,14 @@ grepsh() {
   if [[ ${#args} -gt 1 || ${#input} -gt 2500 || "${args[0]}" =~ '^-[^qvoeE]' ]]; then
     "${commands[grep]}" "${args[@]}" "$1" <<< "$input"; return
   elif [[ "${args[@]}" == '-q' ]]; then
-    grepsh::out() { [[ "$1" =~ "$2" ]] && success=1 && break }
+    grepsh::out() { [[ "$1" =~ "$2" ]] && success=1 && break; }
   elif [[ "${args[@]}" == '-v' ]]; then
-    grepsh::out() { [[ "$1" =~ "$2" ]] || echo "$1" && success=1 }
+    grepsh::out() { [[ "$1" =~ "$2" ]] || echo "$1" && success=1; }
   elif [[ "${args[@]}" =~ '^-[^\w\s]*o[^\w\s]*' ]]; then
     setopt BASH_REMATCH
-    grepsh::out() { [[ "$1" =~ "$2" ]] && echo "$BASH_REMATCH[1]" && success=1 }
+    grepsh::out() { [[ "$1" =~ "$2" ]] && echo "$BASH_REMATCH[1]" && success=1; }
   else
-    grepsh::out() { [[ "$1" =~ "$2" ]] && echo "$1" && success=1 }
+    grepsh::out() { [[ "$1" =~ "$2" ]] && echo "$1" && success=1; }
   fi
 
   while IFS= read -r line; do
@@ -617,7 +617,7 @@ alias sign-ms='sudo sbctl sign -s /boot/EFI/Microsoft/Boot/bootmgfw.efi'
 # Archive Extraction
 ex() {
   for f in "$@"; do
-    [[ -f "$f" ]] || { echo "\`$f\` is not a valid file"; continue }
+    [[ -f "$f" ]] || { echo "\`$f\` is not a valid file"; continue; }
 
     case "$f" in
       *.tar.bz2) tar xjf    "$f" ;;
@@ -786,7 +786,7 @@ tomp4() {
 
 # Print the decimal value of a number
 todec() {
-  [[ $1 == '-s' ]] && { local silent=1; shift }
+  [[ $1 == '-s' ]] && { local silent=1; shift; }
   local p_base bs=$1; bs=${bs//-/}
 
   case $bs in
@@ -816,7 +816,7 @@ todec() {
 
 # Print values in different bases of a decimal number
 dec() {
-  [[ $1 == '-s' ]] && { local silent=1; shift }
+  [[ $1 == '-s' ]] && { local silent=1; shift; }
   local p_base bs=$1; bs=${bs//-/}
 
   case $bs in
@@ -829,7 +829,7 @@ dec() {
   esac
 
   [[ -z $2 || $bs -le 1 && ! $bs =~ '^[au]$' ]] &&
-    { echo 'Usage: dec <base> <number>'; return 1 }; shift
+    { echo 'Usage: dec <base> <number>'; return 1; }; shift
 
   local nums="$*" result=()
   [[ $bs =~ '^[au]$' ]] || p_base="base $bs"
@@ -860,9 +860,9 @@ dec() {
 
 # Print most common conversions for a given number
 num() {
-  { [[ $1 -eq 10 ]] || todec "$1" "$2" &>/dev/null } &&
-    { [[ $1 =~ '[aA]' || $1 -eq 16 ]] || dec "$1" "$2" &>/dev/null } ||
-    { echo 'Usage: num <base> <number>'; return 1 }
+  { [[ $1 -eq 10 ]] || todec "$1" "$2" &>/dev/null; } &&
+    { [[ $1 =~ '[aA]' || $1 -eq 16 ]] || dec "$1" "$2" &>/dev/null; } ||
+    { echo 'Usage: num <base> <number>'; return 1; }
 
   local bs=$1; shift
   [[ $bs -eq 10 ]] && local decimal=("$@") || local decimal=($(todec -s $bs "$@"))
@@ -945,7 +945,7 @@ cal() {
   "${commands[cal]}" "$@"
 }
 
-#Compile and run Java code
+# Compile and run Java code
 # https://stackoverflow.com/questions/10986794/remove-part-of-path-on-unix
 jvr() {
   local current_dir="$PWD"
@@ -962,7 +962,7 @@ jvc() {
 }
 
 # Unlock user after failed login attempt
-unlock() { [[ -n "$1" ]] && faillock --user "$1" --reset || echo 'Usage: unlock <user>' }
+unlock() { [[ -n "$1" ]] && faillock --user "$1" --reset || echo 'Usage: unlock <user>'; }
 
 # Display system install date
 arch-date() {
@@ -1009,7 +1009,7 @@ alias paclog='grep -nC 2 --color=auto warning: /var/log/pacman.log'
 # Update .zshrc
 zupd() {
   fetch https://gitlab.com/brunolpsousa/dotfiles/-/raw/main/sh/.zshrc > "$ZDOTDIR/.zshrc.tmp"
-  [[ -s "$ZDOTDIR/.zshrc.tmp" ]] || { rm -I "$ZDOTDIR/.zshrc.tmp"; return 1 }
+  [[ -s "$ZDOTDIR/.zshrc.tmp" ]] || { rm -I "$ZDOTDIR/.zshrc.tmp"; return 1; }
   \mv "$ZDOTDIR/.zshrc.tmp" "$ZDOTDIR/.zshrc"
   exec zsh
 }
@@ -1109,7 +1109,7 @@ lscolors() {
 # https://stackoverflow.com/questions/5947742/how-to-change-the-output-color-of-echo-in-linux
 
 # Reset
-Color_Off='\033[0m'       # Text Reset
+NC='\033[0m'              # Text Reset
 
 # Regular Colors
 Black='\033[0;30m'        # Black
@@ -1184,39 +1184,39 @@ On_IWhite='\033[0;107m'   # White
 # Git prompt meaning
 gprompt() {
   echo "\n--> Git prompt meaning:\n
-  \tꞏAdded $Green\t\t+$Color_Off
-  \tꞏModified $Blue\t$Color_Off
-  \tꞏRenamed \t$fg[magenta]➜$Color_Off
-  \tꞏDeleted $Red\t-$Color_Off
-  \tꞏUntracked \t$IPurple?$Color_Off
-  \tꞏUnmerged $Yellow\t═$Color_Off
-  \tꞏStashed $Cyan\t≡$Color_Off
-  \tꞏBehind $Red\t$Color_Off
-  \tꞏAhead $Green\t\t$Color_Off"
+  \tꞏAdded $Green\t\t+$NC
+  \tꞏModified $Blue\t$NC
+  \tꞏRenamed \t$fg[magenta]➜$NC
+  \tꞏDeleted $Red\t-$NC
+  \tꞏUntracked \t$IPurple?$NC
+  \tꞏUnmerged $Yellow\t═$NC
+  \tꞏStashed $Cyan\t$NC
+  \tꞏAhead $Green\t\t$NC
+  \tꞏBehind $Red\t$NC"
 }
 
 games() {
   echo "\n$IYellow ### Games and Emulators ###\n
-    $Yellow DeSmuME:$Color_Off Nintendo DS emulator
-    $Yellow Dolphin Emulator:$Color_Off GameCube and Wii emulator
-    $Yellow DOSBox:$Color_Off DOS Games emulator
-    $Yellow FCEUX:$Color_Off" \
+    $Yellow DeSmuME:$NC Nintendo DS emulator
+    $Yellow Dolphin Emulator:$NC GameCube and Wii emulator
+    $Yellow DOSBox:$NC DOS Games emulator
+    $Yellow FCEUX:$NC" \
       "Nintendo Entertainment System (NES), Famicom, and Famicom Disk System (FDS) emulator
-    $Yellow Yuzu:$Color_Off Nintendo Switch
-    $Yellow Gens/GS:$Color_Off Sega Mega Drive emulator
-    $Yellow PCSXR | ePSXe:$Color_Off PlayStation Emulator
-    $Yellow PCSX2:$Color_Off Playstation 2 emulator
-    $Yellow PPSSPP:$Color_Off PSP emulator
-    $Yellow Stella:$Color_Off Atari 2600 VCS emulator
-    $Yellow VBA-M:$Color_Off Gameboy and GameboyAdvance emulator
-    $Yellow Yabause:$Color_Off Sega Saturn Emulator
-    $Yellow ZSNES:$Color_Off Super Nintendo emulator
-    $Yellow RetroArch:$Color_Off Reference frontend for the libretro API
-    $Yellow Antimicro:$Color_Off" \
+    $Yellow Yuzu:$NC Nintendo Switch
+    $Yellow Gens/GS:$NC Sega Mega Drive emulator
+    $Yellow PCSXR | ePSXe:$NC PlayStation Emulator
+    $Yellow PCSX2:$NC Playstation 2 emulator
+    $Yellow PPSSPP:$NC PSP emulator
+    $Yellow Stella:$NC Atari 2600 VCS emulator
+    $Yellow VBA-M:$NC Gameboy and GameboyAdvance emulator
+    $Yellow Yabause:$NC Sega Saturn Emulator
+    $Yellow ZSNES:$NC Super Nintendo emulator
+    $Yellow RetroArch:$NC Reference frontend for the libretro API
+    $Yellow Antimicro:$NC" \
       "Graphical program used to map keyboard buttons and mouse controls to a gamepad
-    $Yellow sc-controller:$Color_Off" \
+    $Yellow sc-controller:$NC" \
       "User-mode driver, mapper and GTK3 based GUI for Steam Controller, DS4 and others
-    $Yellow 0ad:$Color_Off Cross-platform, 3D and historically-based real-time strategy game"
+    $Yellow 0ad:$NC Cross-platform, 3D and historically-based real-time strategy game"
 }
 
 gnome-extensions() {
@@ -1230,125 +1230,125 @@ gnome-extensions() {
 # Vim Cheatsheet
 ns() {
   echo "\n\t$IWhite### Navigation ###
-  ${IBlack}[${BIBlue}N$IBlack]$Color_Off B|b   - Prev word
-  ${IBlack}[${BIBlue}N$IBlack]$Color_Off W|w   - Next word
-  ${IBlack}[${BIBlue}N$IBlack]$Color_Off ge|e  - Prev|next end of word
-  ${IBlack}[${BIBlue}N$IBlack]$Color_Off ^     - BOL (after whitespace)
-  ${IBlack}[${BIBlue}N$IBlack]$Color_Off T|t   - Find prev
-  ${IBlack}[${BIBlue}N$IBlack]$Color_Off F|f   - Find next
-  ${IBlack}[${BIBlue}N$IBlack]$Color_Off ;|,   - Repeat previous f|t|F|T
-  ${IBlack}[${BIBlue}N$IBlack]$Color_Off #|*   - Prev|next word under cursor
-  ${IBlack}[${BIPurple}V$IBlack]$Color_Off {|}   - Jump to prev|next paragraph
-  ${IBlack}[${BIBlue}N$IBlack]$Color_Off ]s|[s - Next|prev spelling
-  ${IBlack}[${BIBlue}N$IBlack]$Color_Off z=    - Spelling suggestions
+  ${IBlack}[${BIBlue}N$IBlack]$NC B|b   - Prev word
+  ${IBlack}[${BIBlue}N$IBlack]$NC W|w   - Next word
+  ${IBlack}[${BIBlue}N$IBlack]$NC ge|e  - Prev|next end of word
+  ${IBlack}[${BIBlue}N$IBlack]$NC ^     - BOL (after whitespace)
+  ${IBlack}[${BIBlue}N$IBlack]$NC T|t   - Find prev
+  ${IBlack}[${BIBlue}N$IBlack]$NC F|f   - Find next
+  ${IBlack}[${BIBlue}N$IBlack]$NC ;|,   - Repeat previous f|t|F|T
+  ${IBlack}[${BIBlue}N$IBlack]$NC #|*   - Prev|next word under cursor
+  ${IBlack}[${BIPurple}V$IBlack]$NC {|}   - Jump to prev|next paragraph
+  ${IBlack}[${BIBlue}N$IBlack]$NC ]s|[s - Next|prev spelling
+  ${IBlack}[${BIBlue}N$IBlack]$NC z=    - Spelling suggestions
   \n\t$IWhite### Windows ###
-  ${IBlack}[${BIBlue}N$IBlack]$Color_Off C-h|j|k|l - Window navigation
-  ${IBlack}[${BIBlue}N$IBlack]$Color_Off C-ws|wv   - Split h|v
-  ${IBlack}[${BIBlue}N$IBlack]$Color_Off C-Arrows  - Resize windows
-  ${IBlack}[${BIBlue}N$IBlack]$Color_Off TAB|S-TAB - Buffer navigation
+  ${IBlack}[${BIBlue}N$IBlack]$NC C-h|j|k|l - Window navigation
+  ${IBlack}[${BIBlue}N$IBlack]$NC C-ws|wv   - Split h|v
+  ${IBlack}[${BIBlue}N$IBlack]$NC C-Arrows  - Resize windows
+  ${IBlack}[${BIBlue}N$IBlack]$NC TAB|S-TAB - Buffer navigation
   \n\t$IWhite### Editing ###
-  ${IBlack}[${BIBlue}N$IBlack]$Color_Off U|C-r   - Undo|Redo changes
-  ${IBlack}[${BIBlue}N$IBlack]$Color_Off g-|g+   - Undo|Redo branches
-  ${IBlack}[${BIBlue}N$IBlack]$Color_Off S|s     - Delete line|char and insert
-  ${IBlack}[${BIBlue}N$IBlack]$Color_Off C       - Delete until EOL and insert
-  ${IBlack}[${BIBlue}N$IBlack]$Color_Off <o>iw   - Opr inner word
-  ${IBlack}[${BIBlue}N$IBlack]$Color_Off <o>ip   - Opr inner paragraph
-  ${IBlack}[${BIBlue}N$IBlack]$Color_Off <o>a\"   - Opr around quotes
-  ${IBlack}[${BIBlue}N$IBlack]$Color_Off ]p      - Paste and adjust indent
-  ${IBlack}[${BIBlue}N$IBlack]$Color_Off d/hello - Delete until hello
-  ${IBlack}[${BIBlue}N$IBlack]$Color_Off J       - Join line
-  ${IBlack}[${BIPurple}V$IBlack]$Color_Off U/u     - Uppercase|lowercase
-  ${IBlack}[${BIBlue}N$IBlack]$Color_Off ~       - Switch case
-  ${IBlack}[${BIBlue}N$IBlack]$Color_Off C-a     - Increase number
-  ${IBlack}[${BIBlue}N$IBlack]$Color_Off C-x     - Decrease number
-  ${IBlack}[${BIBlue}N$IBlack]$Color_Off <|>|=   - Indent right|left|auto
-  ${IBlack}[${BIBlue}N$IBlack]$Color_Off gg=G    - Re-indent entire buffer
-  ${IBlack}[${BIBlue}N$IBlack]$Color_Off SPC-/   - Comment
+  ${IBlack}[${BIBlue}N$IBlack]$NC U|C-r   - Undo|Redo changes
+  ${IBlack}[${BIBlue}N$IBlack]$NC g-|g+   - Undo|Redo branches
+  ${IBlack}[${BIBlue}N$IBlack]$NC S|s     - Delete line|char and insert
+  ${IBlack}[${BIBlue}N$IBlack]$NC C       - Delete until EOL and insert
+  ${IBlack}[${BIBlue}N$IBlack]$NC <o>iw   - Opr inner word
+  ${IBlack}[${BIBlue}N$IBlack]$NC <o>ip   - Opr inner paragraph
+  ${IBlack}[${BIBlue}N$IBlack]$NC <o>a\"   - Opr around quotes
+  ${IBlack}[${BIBlue}N$IBlack]$NC ]p      - Paste and adjust indent
+  ${IBlack}[${BIBlue}N$IBlack]$NC d/hello - Delete until hello
+  ${IBlack}[${BIBlue}N$IBlack]$NC J       - Join line
+  ${IBlack}[${BIPurple}V$IBlack]$NC U/u     - Uppercase|lowercase
+  ${IBlack}[${BIBlue}N$IBlack]$NC ~       - Switch case
+  ${IBlack}[${BIBlue}N$IBlack]$NC C-a     - Increase number
+  ${IBlack}[${BIBlue}N$IBlack]$NC C-x     - Decrease number
+  ${IBlack}[${BIBlue}N$IBlack]$NC <|>|=   - Indent right|left|auto
+  ${IBlack}[${BIBlue}N$IBlack]$NC gg=G    - Re-indent entire buffer
+  ${IBlack}[${BIBlue}N$IBlack]$NC SPC-/   - Comment
   \n\t$IWhite### Insert ###
-  ${IBlack}[${BIGreen}I$IBlack]$Color_Off C-r0 - Paste last yanked
-  ${IBlack}[${BIGreen}I$IBlack]$Color_Off C-h  - Delete char before cursor
-  ${IBlack}[${BIGreen}I$IBlack]$Color_Off C-w  - Delete word before cursor
-  ${IBlack}[${BIGreen}I$IBlack]$Color_Off C-j  - Begin new line
-  ${IBlack}[${BIGreen}I$IBlack]$Color_Off C-t  - Indent line
-  ${IBlack}[${BIGreen}I$IBlack]$Color_Off C-d  - De-indent line
-  ${IBlack}[${BIGreen}I$IBlack]$Color_Off C-n  - Insert next match
-  ${IBlack}[${BIGreen}I$IBlack]$Color_Off C-p  - Insert previous match
-  ${IBlack}[${BIGreen}I$IBlack]$Color_Off C-rx - Insert the contents of register x
-  ${IBlack}[${BIGreen}I$IBlack]$Color_Off C-ox - Temporarily enter normal mode to issue cmd x
+  ${IBlack}[${BIGreen}I$IBlack]$NC C-r0 - Paste last yanked
+  ${IBlack}[${BIGreen}I$IBlack]$NC C-h  - Delete char before cursor
+  ${IBlack}[${BIGreen}I$IBlack]$NC C-w  - Delete word before cursor
+  ${IBlack}[${BIGreen}I$IBlack]$NC C-j  - Begin new line
+  ${IBlack}[${BIGreen}I$IBlack]$NC C-t  - Indent line
+  ${IBlack}[${BIGreen}I$IBlack]$NC C-d  - De-indent line
+  ${IBlack}[${BIGreen}I$IBlack]$NC C-n  - Insert next match
+  ${IBlack}[${BIGreen}I$IBlack]$NC C-p  - Insert previous match
+  ${IBlack}[${BIGreen}I$IBlack]$NC C-rx - Insert the contents of register x
+  ${IBlack}[${BIGreen}I$IBlack]$NC C-ox - Temporarily enter normal mode to issue cmd x
   \n\t$IWhite### Telescope ###
-  ${IBlack}[${BIBlue}N$IBlack]$Color_Off SPC-e  - Netrw
-  ${IBlack}[${BIBlue}N$IBlack]$Color_Off SPC-fe - Edit file
-  ${IBlack}[${BIBlue}N$IBlack]$Color_Off SPC-ff - Find file
-  ${IBlack}[${BIBlue}N$IBlack]$Color_Off SPC-ft - Find text
-  ${IBlack}[${BIBlue}N$IBlack]$Color_Off SPC-fp - Find project
-  ${IBlack}[${BIBlue}N$IBlack]$Color_Off SPC-fb - Find buffer
+  ${IBlack}[${BIBlue}N$IBlack]$NC SPC-e  - Netrw
+  ${IBlack}[${BIBlue}N$IBlack]$NC SPC-fe - Edit file
+  ${IBlack}[${BIBlue}N$IBlack]$NC SPC-ff - Find file
+  ${IBlack}[${BIBlue}N$IBlack]$NC SPC-ft - Find text
+  ${IBlack}[${BIBlue}N$IBlack]$NC SPC-fp - Find project
+  ${IBlack}[${BIBlue}N$IBlack]$NC SPC-fb - Find buffer
   \n\t$IWhite### LSP ###
-  ${IBlack}[${BIBlue}N$IBlack]$Color_Off gi     - Implementation
-  ${IBlack}[${BIBlue}N$IBlack]$Color_Off gr     - References
-  ${IBlack}[${BIBlue}N$IBlack]$Color_Off gl     - Float
-  ${IBlack}[${BIBlue}N$IBlack]$Color_Off K      - Hover
-  ${IBlack}[${BIBlue}N$IBlack]$Color_Off gD     - Declaration
-  ${IBlack}[${BIBlue}N$IBlack]$Color_Off gd     - Definition
-  ${IBlack}[${BIBlue}N$IBlack]$Color_Off SPC-ld - Type Definition
-  ${IBlack}[${BIBlue}N$IBlack]$Color_Off SPC-lf - Format
-  ${IBlack}[${BIBlue}N$IBlack]$Color_Off SPC-la - Code action
-  ${IBlack}[${BIBlue}N$IBlack]$Color_Off SPC-lj - Diagnostic - next
-  ${IBlack}[${BIBlue}N$IBlack]$Color_Off SPC-lk - Diagnostic - prev
-  ${IBlack}[${BIBlue}N$IBlack]$Color_Off SPC-lr - Rename
-  ${IBlack}[${BIBlue}N$IBlack]$Color_Off SPC-lh - Signature help
-  ${IBlack}[${BIBlue}N$IBlack]$Color_Off SPC-lq - Quickfix
+  ${IBlack}[${BIBlue}N$IBlack]$NC gi     - Implementation
+  ${IBlack}[${BIBlue}N$IBlack]$NC gr     - References
+  ${IBlack}[${BIBlue}N$IBlack]$NC gl     - Float
+  ${IBlack}[${BIBlue}N$IBlack]$NC K      - Hover
+  ${IBlack}[${BIBlue}N$IBlack]$NC gD     - Declaration
+  ${IBlack}[${BIBlue}N$IBlack]$NC gd     - Definition
+  ${IBlack}[${BIBlue}N$IBlack]$NC SPC-ld - Type Definition
+  ${IBlack}[${BIBlue}N$IBlack]$NC SPC-lf - Format
+  ${IBlack}[${BIBlue}N$IBlack]$NC SPC-la - Code action
+  ${IBlack}[${BIBlue}N$IBlack]$NC SPC-lj - Diagnostic - next
+  ${IBlack}[${BIBlue}N$IBlack]$NC SPC-lk - Diagnostic - prev
+  ${IBlack}[${BIBlue}N$IBlack]$NC SPC-lr - Rename
+  ${IBlack}[${BIBlue}N$IBlack]$NC SPC-lh - Signature help
+  ${IBlack}[${BIBlue}N$IBlack]$NC SPC-lq - Quickfix
   \n\t$IWhite### CMP ###
-  ${IBlack}[${BIGreen}I$IBlack]$Color_Off C-c   - Close CMP
-  ${IBlack}[${BIGreen}I$IBlack]$Color_Off C-SPC - Complete CMP
-  ${IBlack}[${BIGreen}I$IBlack]$Color_Off C-d|u - Scroll docs
-  ${IBlack}[${BIGreen}I$IBlack]$Color_Off TAB   - Next snip
-  ${IBlack}[${BIGreen}I$IBlack]$Color_Off S-TAB - Prev snip
+  ${IBlack}[${BIGreen}I$IBlack]$NC C-c   - Close CMP
+  ${IBlack}[${BIGreen}I$IBlack]$NC C-SPC - Complete CMP
+  ${IBlack}[${BIGreen}I$IBlack]$NC C-d|u - Scroll docs
+  ${IBlack}[${BIGreen}I$IBlack]$NC TAB   - Next snip
+  ${IBlack}[${BIGreen}I$IBlack]$NC S-TAB - Prev snip
   \n\t$IWhite### DAP ###
-  ${IBlack}[${BIBlue}N$IBlack]$Color_Off SPC-dt - Toggle breakpoint
-  ${IBlack}[${BIBlue}N$IBlack]$Color_Off SPC-dc - Continue
-  ${IBlack}[${BIBlue}N$IBlack]$Color_Off SPC-di - Step into
-  ${IBlack}[${BIBlue}N$IBlack]$Color_Off SPC-do - Step over
-  ${IBlack}[${BIBlue}N$IBlack]$Color_Off SPC-du - Step out
-  ${IBlack}[${BIBlue}N$IBlack]$Color_Off SPC-dr - REPL
-  ${IBlack}[${BIBlue}N$IBlack]$Color_Off SPC-dl - Run last
-  ${IBlack}[${BIBlue}N$IBlack]$Color_Off SPC-dU - Toggle DapUI
-  ${IBlack}[${BIBlue}N$IBlack]$Color_Off SPC-dT - Terminate
+  ${IBlack}[${BIBlue}N$IBlack]$NC SPC-dt - Toggle breakpoint
+  ${IBlack}[${BIBlue}N$IBlack]$NC SPC-dc - Continue
+  ${IBlack}[${BIBlue}N$IBlack]$NC SPC-di - Step into
+  ${IBlack}[${BIBlue}N$IBlack]$NC SPC-do - Step over
+  ${IBlack}[${BIBlue}N$IBlack]$NC SPC-du - Step out
+  ${IBlack}[${BIBlue}N$IBlack]$NC SPC-dr - REPL
+  ${IBlack}[${BIBlue}N$IBlack]$NC SPC-dl - Run last
+  ${IBlack}[${BIBlue}N$IBlack]$NC SPC-dU - Toggle DapUI
+  ${IBlack}[${BIBlue}N$IBlack]$NC SPC-dT - Terminate
   \n\t$IWhite### General ###
-  ${IBlack}[${BIBlue}N$IBlack]$Color_Off C-q         - Quit
-  ${IBlack}[${BIBlue}N$IBlack]$Color_Off C-s         - Save
-  ${IBlack}[${BIBlue}N$IBlack]$Color_Off S-q         - Close buffer
-  ${IBlack}[${BIBlue}N$IBlack]$Color_Off SPC-q       - Close all
-  ${IBlack}[${BIBlue}N$IBlack]$Color_Off SPC-Q       - Force close buffer
-  ${IBlack}[${BIBlue}N$IBlack]$Color_Off SPC-s       - Save without formatting
-  ${IBlack}[${BIBlue}N$IBlack]$Color_Off SPC-S       - Save all
-  ${IBlack}[${BIBlue}N$IBlack]$Color_Off :e          - Edit file
-  ${IBlack}[${BIBlue}N$IBlack]$Color_Off :saveas     - Save file as
-  ${IBlack}[${BIBlue}N$IBlack]$Color_Off :earlier 1m - Time travel
+  ${IBlack}[${BIBlue}N$IBlack]$NC C-q         - Quit
+  ${IBlack}[${BIBlue}N$IBlack]$NC C-s         - Save
+  ${IBlack}[${BIBlue}N$IBlack]$NC S-q         - Close buffer
+  ${IBlack}[${BIBlue}N$IBlack]$NC SPC-q       - Close all
+  ${IBlack}[${BIBlue}N$IBlack]$NC SPC-Q       - Force close buffer
+  ${IBlack}[${BIBlue}N$IBlack]$NC SPC-s       - Save without formatting
+  ${IBlack}[${BIBlue}N$IBlack]$NC SPC-S       - Save all
+  ${IBlack}[${BIBlue}N$IBlack]$NC :e          - Edit file
+  ${IBlack}[${BIBlue}N$IBlack]$NC :saveas     - Save file as
+  ${IBlack}[${BIBlue}N$IBlack]$NC :earlier 1m - Time travel
   \n\t$IWhite### Macros ###
-  ${IBlack}[${BIBlue}N$IBlack]$Color_Off qa - Record macro a
-  ${IBlack}[${BIBlue}N$IBlack]$Color_Off q  - Stop recording macro
-  ${IBlack}[${BIBlue}N$IBlack]$Color_Off @a - Run macro a
-  ${IBlack}[${BIBlue}N$IBlack]$Color_Off @@ - Rerun last runned macro
+  ${IBlack}[${BIBlue}N$IBlack]$NC qa - Record macro a
+  ${IBlack}[${BIBlue}N$IBlack]$NC q  - Stop recording macro
+  ${IBlack}[${BIBlue}N$IBlack]$NC @a - Run macro a
+  ${IBlack}[${BIBlue}N$IBlack]$NC @@ - Rerun last runned macro
   \n\t$IWhite### Commands ###
-  ${IBlack}[${BIYellow}C$BIBlack]$Color_Off :r !<shell>       - Read in output of shell
-  ${IBlack}[${BIYellow}C$BIBlack]$Color_Off :sort | %!uniq -u - Remove duplicate lines
-  ${IBlack}[${BIYellow}C$BIBlack]$Color_Off :%!cat -n         - Number the lines in the file
-  ${IBlack}[${BIYellow}C$BIBlack]$Color_Off" \
+  ${IBlack}[${BIYellow}C$BIBlack]$NC :r !<shell>       - Read in output of shell
+  ${IBlack}[${BIYellow}C$BIBlack]$NC :sort | %!uniq -u - Remove duplicate lines
+  ${IBlack}[${BIYellow}C$BIBlack]$NC :%!cat -n         - Number the lines in the file
+  ${IBlack}[${BIYellow}C$BIBlack]$NC" \
     ":%s/old/new/gc    - Replace all throughout file with confirmations
-  ${IBlack}[${BIYellow}C$BIBlack]$Color_Off :g/foo/d          - Delete lines containing foo
-  ${IBlack}[${BIYellow}C$BIBlack]$Color_Off :g!/foo/d         - Delete lines not containing foo
-  ${IBlack}[${BIYellow}C$BIBlack]$Color_Off :g/^\s*$/d        - Delete all blank lines
-  ${IBlack}[${BIYellow}C$BIBlack]$Color_Off :g/foo/t$         - Copy lines containing foo to EOF
-  ${IBlack}[${BIYellow}C$BIBlack]$Color_Off :g/foo/m$         - Move lines containing foo to EOF
-  ${IBlack}[${BIYellow}C$BIBlack]$Color_Off :g/^/m0           - Reverse a file
-  ${IBlack}[${BIYellow}C$BIBlack]$Color_Off :g/^/t.           - Duplicate every line
+  ${IBlack}[${BIYellow}C$BIBlack]$NC :g/foo/d          - Delete lines containing foo
+  ${IBlack}[${BIYellow}C$BIBlack]$NC :g!/foo/d         - Delete lines not containing foo
+  ${IBlack}[${BIYellow}C$BIBlack]$NC :g/^\s*$/d        - Delete all blank lines
+  ${IBlack}[${BIYellow}C$BIBlack]$NC :g/foo/t$         - Copy lines containing foo to EOF
+  ${IBlack}[${BIYellow}C$BIBlack]$NC :g/foo/m$         - Move lines containing foo to EOF
+  ${IBlack}[${BIYellow}C$BIBlack]$NC :g/^/m0           - Reverse a file
+  ${IBlack}[${BIYellow}C$BIBlack]$NC :g/^/t.           - Duplicate every line
   \n\t$IWhite### Flags ###
-  ${IBlack}[${BIYellow}C$BIBlack]$Color_Off g - Replace all occurrences
-  ${IBlack}[${BIYellow}C$BIBlack]$Color_Off i - Ignore case
-  ${IBlack}[${BIYellow}C$BIBlack]$Color_Off I - Don't ignore case
-  ${IBlack}[${BIYellow}C$BIBlack]$Color_Off c - Confirm each substitution
+  ${IBlack}[${BIYellow}C$BIBlack]$NC g - Replace all occurrences
+  ${IBlack}[${BIYellow}C$BIBlack]$NC i - Ignore case
+  ${IBlack}[${BIYellow}C$BIBlack]$NC I - Don't ignore case
+  ${IBlack}[${BIYellow}C$BIBlack]$NC c - Confirm each substitution
   \n${IBlack}Vim Cheat Sheet:" \
-    "https://vim.rtorr.com$Color_Off\n${IBlack}QuickRef.ME: https://quickref.me/vim$Color_Off"
+    "https://vim.rtorr.com$NC\n${IBlack}QuickRef.ME: https://quickref.me/vim$NC"
 }
 
 arch-base() {
@@ -2058,8 +2058,8 @@ command_time_precmd() {
 # Display git info
 prompt_git_info() {
   cd -q "$1"
-  local ZSH_THEME_GIT_PROMPT_PREFIX='%F{white}%B on%b %242F:'
-  local ZSH_THEME_GIT_PROMPT_SUFFIX='%f'
+  local GIT_PROMPT_PREFIX='%F{white}%B on%b %242F:'
+  local GIT_PROMPT_SUFFIX='%f'
 
   zstyle ':vcs_info:*' enable git
   zstyle ':vcs_info:*' use-simple true
@@ -2071,7 +2071,7 @@ prompt_git_info() {
 
   [[ -z "$vcs_info_msg_2_" ]] || local vcs_action="::$vcs_info_msg_2_"
   [[ -z "$vcs_info_msg_0_" ]] || echo -n \
-    "$ZSH_THEME_GIT_PROMPT_PREFIX${vcs_info_msg_0_//\%/%%}$vcs_action$ZSH_THEME_GIT_PROMPT_SUFFIX"
+    "$GIT_PROMPT_PREFIX${vcs_info_msg_0_//\%/%%}$vcs_action$GIT_PROMPT_SUFFIX"
 }
 
 prompt_git_info_done() {
@@ -2097,16 +2097,16 @@ prompt_git_status() {
   cd -q "$1"
   local INDEX STATUS
   INDEX=$(git status --porcelain -b 2>/dev/null)
-  local ZSH_THEME_GIT_PROMPT_ADDED='%F{green}+%f'
-  local ZSH_THEME_GIT_PROMPT_MODIFIED='%F{blue}%f'
-  local ZSH_THEME_GIT_PROMPT_DELETED='%F{red}-%f'
-  local ZSH_THEME_GIT_PROMPT_RENAMED='%F{magenta}➜%f'
-  local ZSH_THEME_GIT_PROMPT_UNMERGED='%F{yellow}═%f'
-  local ZSH_THEME_GIT_PROMPT_UNTRACKED='%218F?%f'
-  local ZSH_THEME_GIT_PROMPT_STASHED='%B%F{cyan}%f%b'
-  local ZSH_THEME_GIT_PROMPT_AHEAD='%B%F{green}%f%b'
-  local ZSH_THEME_GIT_PROMPT_BEHIND='%B%F{red}%f%b'
-  local ZSH_THEME_GIT_PROMPT_DIVERGED='%B%F{magenta}⇕%f%b'
+  local GIT_PROMPT_ADDED='%F{green}+%f'
+  local GIT_PROMPT_MODIFIED='%F{blue}%f'
+  local GIT_PROMPT_DELETED='%F{red}-%f'
+  local GIT_PROMPT_RENAMED='%F{magenta}➜%f'
+  local GIT_PROMPT_UNMERGED='%F{yellow}═%f'
+  local GIT_PROMPT_UNTRACKED='%218F?%f'
+  local GIT_PROMPT_STASHED='%B%F{cyan}%f%b'
+  local GIT_PROMPT_AHEAD='%B%F{green}%f%b'
+  local GIT_PROMPT_BEHIND='%B%F{red}%f%b'
+  local GIT_PROMPT_DIVERGED='%B%F{magenta}⇕%f%b'
 
   git_loop() {
     while IFS= read -r line; do
@@ -2116,21 +2116,21 @@ prompt_git_status() {
     done <<< "$INDEX"
   }
 
-  git_loop '^## [^ ]+ .*ahead'    "$ZSH_THEME_GIT_PROMPT_AHEAD"
-  git_loop '^## [^ ]+ .*behind'   "$ZSH_THEME_GIT_PROMPT_BEHIND"
-  git_loop '^## [^ ]+ .*diverged' "$ZSH_THEME_GIT_PROMPT_DIVERGED"
+  git_loop '^## [^ ]+ .*ahead'    "$GIT_PROMPT_AHEAD"
+  git_loop '^## [^ ]+ .*behind'   "$GIT_PROMPT_BEHIND"
+  git_loop '^## [^ ]+ .*diverged' "$GIT_PROMPT_DIVERGED"
 
-  git_loop '^\?\? '               "$ZSH_THEME_GIT_PROMPT_UNTRACKED"
-  git_loop '^A  |^M  |^MM '       "$ZSH_THEME_GIT_PROMPT_ADDED"
-  git_loop '^ M |^AM |^MM |^ T '  "$ZSH_THEME_GIT_PROMPT_MODIFIED"
-  git_loop '^R  '                 "$ZSH_THEME_GIT_PROMPT_RENAMED"
-  git_loop '^ D |^D  |^AD '       "$ZSH_THEME_GIT_PROMPT_DELETED"
+  git_loop '^\?\? '               "$GIT_PROMPT_UNTRACKED"
+  git_loop '^A  |^M  '            "$GIT_PROMPT_ADDED"
+  git_loop '^ M |^AM |^MM |^ T '  "$GIT_PROMPT_MODIFIED"
+  git_loop '^R  '                 "$GIT_PROMPT_RENAMED"
+  git_loop '^ D |^D  |^AD '       "$GIT_PROMPT_DELETED"
 
   if $(git rev-parse --verify refs/stash >/dev/null 2>&1); then
     STATUS+=" $ZSH_THEME_GIT_PROMPT_STASHED"
   fi
 
-  git_loop '^UU '                 "$ZSH_THEME_GIT_PROMPT_UNMERGED"
+  git_loop '^UU '                 "$GIT_PROMPT_UNMERGED"
 
   [[ "$STATUS" ]] && echo -n "$STATUS"
 }
@@ -2154,7 +2154,7 @@ prompt_git_status_precmd() {
 # SSH
 # https://github.com/agkozak/agkozak-zsh-prompt/blob/master/agkozak-zsh-prompt.plugin.zsh
 [[ -n ${SSH_CONNECTION-}${SSH_CLIENT-}${SSH_TTY-} ]] &&
-  PROMPT_SSH="%F{yellow}${(%):-%m}%}ː%b%f" || unset PROMPT_SSH
+  PROMPT_SSH="%F{yellow}${(%):-%m}%}%b%fː" || unset PROMPT_SSH
 #--------------------------------------------------------------------------------------------------#
 # Some stuff borrowed from Spaceship
 # Updated 2024.06.03
@@ -2386,22 +2386,22 @@ spaceship::extract() {
 # Updated 2024.06.03
 # https://github.com/CurryEleison/zsh-asdf-prompt
 spaceship_asdf() {
-  local ZSH_THEME_ASDF_PROMPT_PREFIX="%{$fg_bold[magenta]%}{"
-  local ZSH_THEME_ASDF_PROMPT_POSTFIX="}%{$reset_color%} "
-  local ZSH_THEME_ASDF_PROMPT_FILTER='COMPACT'
-  local ZSH_THEME_ASDF_PROMPT_VERSION_DETAIL='MINOR'
-  local ZSH_THEME_ASDF_PROMPT_VERSION_RESOLUTION='NONE'
+  local ASDF_PROMPT_PREFIX="%{$fg_bold[magenta]%}{"
+  local ASDF_PROMPT_POSTFIX="}%{$reset_color%} "
+  local ASDF_PROMPT_FILTER='COMPACT'
+  local ASDF_PROMPT_VERSION_DETAIL='MINOR'
+  local ASDF_PROMPT_VERSION_RESOLUTION='NONE'
 
   # If asdf isn't present nothing to do
   (( ${+commands[asdf]} )) || return 0
   local currenttools=$(asdf current 2>/dev/null)
   local toolvers_fname=${ASDF_DEFAULT_TOOL_VERSIONS_FILENAME-.tool-versions}
   # Decide how we filter what is shown
-  if [[ $ZSH_THEME_ASDF_PROMPT_FILTER != "ALL" ]]; then
+  if [[ $ASDF_PROMPT_FILTER != "ALL" ]]; then
     currenttools=$(spaceship::grep -v ' system ' $currenttools)
   fi
-  if [[ -z "${ZSH_THEME_ASDF_PROMPT_FILTER// }" \
-      || $ZSH_THEME_ASDF_PROMPT_FILTER == "COMPACT" ]]; then
+  if [[ -z "${ASDF_PROMPT_FILTER// }" \
+      || $ASDF_PROMPT_FILTER == "COMPACT" ]]; then
     currenttools=$(spaceship::grep -v "$HOME/$toolvers_fname" $currenttools)
   fi
 
@@ -2411,9 +2411,9 @@ spaceship_asdf() {
   local toolslist=$(echo $currenttools | awk '{ print $1 }')
   local versionslist
   # Decide if we do semi-major version (default) or full version info
-  if [[ $ZSH_THEME_ASDF_PROMPT_VERSION_DETAIL == "PATCH" ]]; then
+  if [[ $ASDF_PROMPT_VERSION_DETAIL == "PATCH" ]]; then
     versionslist=$(echo $currenttools | awk '{ print $2 }' - )
-  elif [[ $ZSH_THEME_ASDF_PROMPT_VERSION_DETAIL == "MAJOR" ]]; then
+  elif [[ $ASDF_PROMPT_VERSION_DETAIL == "MAJOR" ]]; then
     versionslist=$(echo $currenttools | awk '{ print $2 }' - \
       | sed -E 's/([^\.]*)(\.[^\.]*)(\..*)/\1/g'  \
       | sed 's/system/s/g' )
@@ -2424,7 +2424,7 @@ spaceship_asdf() {
   fi
   # Decide if we want to print out origins or not (default)
   local originslist
-  if [[ $ZSH_THEME_ASDF_PROMPT_VERSION_RESOLUTION == "COMPACT" ]]; then
+  if [[ $ASDF_PROMPT_VERSION_RESOLUTION == "COMPACT" ]]; then
     originslist=$(echo $currenttools \
       | awk '{ $1=$2=""; print $0 }' \
       | sed 's/^ *//g' \
@@ -2447,8 +2447,8 @@ spaceship_asdf() {
     || (echo $multilinesummary | sed -e ':a' -e 'N' -e '$!ba' -e 's/\n/, /g'))
 
   # Oddly formatted to avoid spurious spaces
-  echo -n "${ZSH_THEME_ASDF_PROMPT_PREFIX-\{}"\
-  "${asdfsummary}${ZSH_THEME_ASDF_PROMPT_POSTFIX-\}}"
+  echo -n "${ASDF_PROMPT_PREFIX-\{}"\
+  "${asdfsummary}${ASDF_PROMPT_POSTFIX-\}}"
 }
 #--------------------------------------------------------------------------------------------------#
 # https://github.com/spaceship-prompt/spaceship-prompt/tree/master/sections
