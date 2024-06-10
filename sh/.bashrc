@@ -1015,15 +1015,49 @@ prompt_parse_git_dirty() {
   local GIT_PROMPT_DIVERGED="$BIPurple⇕$NC"
 
   while IFS= read -r line; do
-    [[ "$line" =~ ^##[[:space:]][^[[:space:]]]+[[:space:]].*ahead                                 ]] && STATUS+=" $GIT_PROMPT_AHEAD"
-    [[ "$line" =~ ^##[[:space:]][^[[:space:]]]+[[:space:]].*behind                                ]] && STATUS+=" $GIT_PROMPT_BEHIND"
-    [[ "$line" =~ ^##[[:space:]][^[[:space:]]]+[[:space:]].*diverged                              ]] && STATUS+=" $GIT_PROMPT_DIVERGED"
-    [[ "$line" =~ ^\?\?[[:space:]]                                                                ]] && STATUS+=" $GIT_PROMPT_UNTRACKED"
-    [[ "$line" =~ ^A[[:space:]][[:space:]]|^M[[:space:]][[:space:]]|^MM[[:space:]]                ]] && STATUS+=" $GIT_PROMPT_ADDED"
-    [[ "$line" =~ ^[[:space:]]M[[:space:]]|^AM[[:space:]]|^MM[[:space:]]|^[[:space:]]T[[:space:]] ]] && STATUS+=" $GIT_PROMPT_MODIFIED"
-    [[ "$line" =~ ^R[[:space:]][[:space:]]                                                        ]] && STATUS+=" $GIT_PROMPT_RENAMED"
-    [[ "$line" =~ ^[[:space:]]D[[:space:]]|^D[[:space:]][[:space:]]|^AD[[:space:]]                ]] && STATUS+=" $GIT_PROMPT_DELETED"
-    [[ "$line" =~ ^UU[[:space:]]                                                                  ]] && STATUS+=" $GIT_PROMPT_UNMERGED"
+    if [[ "$line" =~ ^##[[:space:]][^[[:space:]]]+[[:space:]].*ahead ]]; then
+      STATUS+=" $GIT_PROMPT_AHEAD"; break
+    fi
+  done <<< "$INDEX"
+  while IFS= read -r line; do
+    if [[ "$line" =~ ^##[[:space:]][^[[:space:]]]+[[:space:]].*behind ]]; then
+      STATUS+=" $GIT_PROMPT_BEHIND"; break
+    fi
+  done <<< "$INDEX"
+  while IFS= read -r line; do
+    if [[ "$line" =~ ^##[[:space:]][^[[:space:]]]+[[:space:]].*diverged ]]; then
+      STATUS+=" $GIT_PROMPT_DIVERGED"; break
+    fi
+  done <<< "$INDEX"
+  while IFS= read -r line; do
+    if [[ "$line" =~ ^\?\?[[:space:]] ]]; then
+      STATUS+=" $GIT_PROMPT_UNTRACKED"; break
+    fi
+  done <<< "$INDEX"
+  while IFS= read -r line; do
+    if [[ "$line" =~ ^A[[:space:]][[:space:]]|^M[[:space:]][[:space:]] ]]; then
+      STATUS+=" $GIT_PROMPT_ADDED"; break
+    fi
+  done <<< "$INDEX"
+  while IFS= read -r line; do
+    if [[ "$line" =~ ^[[:space:]]M[[:space:]]|^AM[[:space:]]|^MM[[:space:]]|^[[:space:]]T[[:space:]] ]]; then
+      STATUS+=" $GIT_PROMPT_MODIFIED"; break
+    fi
+  done <<< "$INDEX"
+  while IFS= read -r line; do
+    if [[ "$line" =~ ^R[[:space:]][[:space:]] ]]; then
+      STATUS+=" $GIT_PROMPT_RENAMED"; break
+    fi
+  done <<< "$INDEX"
+  while IFS= read -r line; do
+    if [[ "$line" =~ ^[[:space:]]D[[:space:]]|^D[[:space:]][[:space:]]|^AD[[:space:]] ]]; then
+      STATUS+=" $GIT_PROMPT_DELETED"; break
+    fi
+  done <<< "$INDEX"
+  while IFS= read -r line; do
+    if [[ "$line" =~ ^UU[[:space:]] ]]; then
+      STATUS+=" $GIT_PROMPT_UNMERGED"; break
+    fi
   done <<< "$INDEX"
 
   if $(git rev-parse --verify refs/stash >/dev/null 2>&1); then
