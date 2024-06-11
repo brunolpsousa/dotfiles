@@ -822,15 +822,16 @@ On_IWhite='\001\033[0;107m\002'   # White
 # Git prompt meaning
 gprompt() {
   echo "\n--> Git prompt meaning:\n
+  \tꞏAhead $Green\t\t$NC
+  \tꞏBehind $Red\t$NC
+  \tꞏDiverged $BIPurple⇕$NC
+  \tꞏUntracked \t$IPurple?$NC
   \tꞏAdded $Green\t\t+$NC
   \tꞏModified $Blue\t$NC
   \tꞏRenamed \t$fg[magenta]➜$NC
   \tꞏDeleted $Red\t-$NC
-  \tꞏUntracked \t$IPurple?$NC
   \tꞏUnmerged $Yellow\t═$NC
-  \tꞏStashed $Cyan\t$NC
-  \tꞏAhead $Green\t\t$NC
-  \tꞏBehind $Red\t$NC"
+  \tꞏStashed $Cyan\t$NC"
 }
 
 games() {
