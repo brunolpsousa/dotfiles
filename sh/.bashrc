@@ -1021,8 +1021,8 @@ prompt_parse_git_dirty() {
   local GIT_PROMPT_MODIFIED="$Blue$NC"
   local GIT_PROMPT_RENAMED="$BIRed➜$NC"
   local GIT_PROMPT_DELETED="$Red-$NC"
-  local GIT_PROMPT_UNMERGED="$Yellow═$NC"
   local GIT_PROMPT_STASHED="$BICyan$NC"
+  local GIT_PROMPT_UNMERGED="$Yellow═$NC"
 
   local GIT_PROMPT_AHEAD_REGEX=(^##[[:space:]][^\ ]+[[:space:]].*ahead)
   local GIT_PROMPT_BEHIND_REGEX=(^##[[:space:]][^\ ]+[[:space:]].*behind)
@@ -1042,11 +1042,12 @@ prompt_parse_git_dirty() {
   prompt_parse_git_dirty_loop "$GIT_PROMPT_MODIFIED_REGEX"  "$GIT_PROMPT_MODIFIED"
   prompt_parse_git_dirty_loop "$GIT_PROMPT_RENAMED_REGEX"   "$GIT_PROMPT_RENAMED"
   prompt_parse_git_dirty_loop "$GIT_PROMPT_DELETED_REGEX"   "$GIT_PROMPT_DELETED"
-  prompt_parse_git_dirty_loop "$GIT_PROMPT_UNMERGED_REGEX"  "$GIT_PROMPT_UNMERGED"
 
   if $(git rev-parse --verify refs/stash >/dev/null 2>&1); then
     STATUS+=" $GIT_PROMPT_STASHED"
   fi
+
+  prompt_parse_git_dirty_loop "$GIT_PROMPT_UNMERGED_REGEX"  "$GIT_PROMPT_UNMERGED"
 
   [[ "$STATUS" ]] && echo -ne "$STATUS"
 }
