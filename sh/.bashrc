@@ -1015,17 +1015,17 @@ prompt_parse_git_dirty() {
   local GIT_PROMPT_DIVERGED="$BIPurple⇕$NC"
 
   while IFS= read -r line; do
-    if [[ "$line" =~ ^##[[:space:]][^[[:space:]]]+[[:space:]].*ahead ]]; then
+    if [[ "$line" =~ ^##[[:space:]][^\ ]+[[:space:]].*ahead ]]; then
       STATUS+=" $GIT_PROMPT_AHEAD"; break
     fi
   done <<< "$INDEX"
   while IFS= read -r line; do
-    if [[ "$line" =~ ^##[[:space:]][^[[:space:]]]+[[:space:]].*behind ]]; then
+    if [[ "$line" =~ ^##[[:space:]][^\ ]+[[:space:]].*behind ]]; then
       STATUS+=" $GIT_PROMPT_BEHIND"; break
     fi
   done <<< "$INDEX"
   while IFS= read -r line; do
-    if [[ "$line" =~ ^##[[:space:]][^[[:space:]]]+[[:space:]].*diverged ]]; then
+    if [[ "$line" =~ ^##[[:space:]][^\ ]+[[:space:]].*diverged ]]; then
       STATUS+=" $GIT_PROMPT_DIVERGED"; break
     fi
   done <<< "$INDEX"
