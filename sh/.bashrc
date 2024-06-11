@@ -997,7 +997,7 @@ prompt_dir_lock() {
 
 prompt_parse_git_branch() {
   local gbranch=$(git rev-parse --abbrev-ref HEAD 2>/dev/null)
-  [[ $gbranch ]] && echo -ne "${BWhite}on$NC ${IBlack}:$gbranch$NC"
+  [[ $gbranch ]] && echo -ne " ${BWhite}on$NC ${IBlack}:$gbranch$NC"
 }
 
 prompt_parse_git_dirty() {
@@ -1064,7 +1064,7 @@ prompt_parse_git_dirty() {
     STATUS+=" $GIT_PROMPT_STASHED"
   fi
 
-  [[ "$STATUS" ]] && echo -ne "$STATUS "
+  [[ "$STATUS" ]] && echo -ne "$STATUS"
 }
 
 prompt_arrow() {
@@ -1089,13 +1089,13 @@ PROMPT_COMMAND='export PROMPT_COMMAND=echo;echo -ne "\033]0;$PWD\a"'
 
 # Dir
 PROMPT_DIRTRIM=2
-PS1=$PS1${BWhite}in' $(prompt_dir_lock)'${Cyan}$'\w'"$NC "
+PS1=$PS1${BWhite}in' $(prompt_dir_lock)'${Cyan}$'\w'"$NC"
 
 # Git
 PS1=$PS1'$(prompt_parse_git_branch)$(prompt_parse_git_dirty)'
 
 # Arrow
-PS1=$PS1'$(prompt_arrow)'
+PS1=$PS1' $(prompt_arrow)'
 #--------------------------------------------------------------------------------------------------#
 ############################################## Alert ###############################################
 #--------------------------------------------------------------------------------------------------#
