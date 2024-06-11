@@ -1000,65 +1000,48 @@ prompt_parse_git_branch() {
   [[ $gbranch ]] && echo -ne " ${BWhite}on$NC ${IBlack}:$gbranch$NC"
 }
 
+prompt_parse_git_dirty_loop() {
+  while IFS= read -r line; do
+    if [[ "$line" =~ $1 ]]; then
+      STATUS+=" $2"; break
+    fi
+  done <<< "$INDEX"
+}
+
 prompt_parse_git_dirty() {
   local INDEX STATUS
   INDEX=$(git status --porcelain -b 2>/dev/null)
-  local GIT_PROMPT_ADDED="$Green+$NC"
-  local GIT_PROMPT_MODIFIED="$Blue$NC"
-  local GIT_PROMPT_DELETED="$Red-$NC"
-  local GIT_PROMPT_RENAMED="$BIRed➜$NC"
-  local GIT_PROMPT_UNMERGED="$Yellow═$NC"
-  local GIT_PROMPT_UNTRACKED="$IPurple?$NC"
-  local GIT_PROMPT_STASHED="$BICyan$NC"
+
   local GIT_PROMPT_AHEAD="$BIGreen$NC"
   local GIT_PROMPT_BEHIND="$BRed$NC"
   local GIT_PROMPT_DIVERGED="$BIPurple⇕$NC"
+  local GIT_PROMPT_UNTRACKED="$IPurple?$NC"
+  local GIT_PROMPT_ADDED="$Green+$NC"
+  local GIT_PROMPT_MODIFIED="$Blue$NC"
+  local GIT_PROMPT_RENAMED="$BIRed➜$NC"
+  local GIT_PROMPT_DELETED="$Red-$NC"
+  local GIT_PROMPT_UNMERGED="$Yellow═$NC"
+  local GIT_PROMPT_STASHED="$BICyan$NC"
 
-  while IFS= read -r line; do
-    if [[ "$line" =~ ^##[[:space:]][^\ ]+[[:space:]].*ahead ]]; then
-      STATUS+=" $GIT_PROMPT_AHEAD"; break
-    fi
-  done <<< "$INDEX"
-  while IFS= read -r line; do
-    if [[ "$line" =~ ^##[[:space:]][^\ ]+[[:space:]].*behind ]]; then
-      STATUS+=" $GIT_PROMPT_BEHIND"; break
-    fi
-  done <<< "$INDEX"
-  while IFS= read -r line; do
-    if [[ "$line" =~ ^##[[:space:]][^\ ]+[[:space:]].*diverged ]]; then
-      STATUS+=" $GIT_PROMPT_DIVERGED"; break
-    fi
-  done <<< "$INDEX"
-  while IFS= read -r line; do
-    if [[ "$line" =~ ^\?\?[[:space:]] ]]; then
-      STATUS+=" $GIT_PROMPT_UNTRACKED"; break
-    fi
-  done <<< "$INDEX"
-  while IFS= read -r line; do
-    if [[ "$line" =~ ^A[[:space:]][[:space:]]|^M[[:space:]][[:space:]] ]]; then
-      STATUS+=" $GIT_PROMPT_ADDED"; break
-    fi
-  done <<< "$INDEX"
-  while IFS= read -r line; do
-    if [[ "$line" =~ ^[[:space:]]M[[:space:]]|^AM[[:space:]]|^MM[[:space:]]|^[[:space:]]T[[:space:]] ]]; then
-      STATUS+=" $GIT_PROMPT_MODIFIED"; break
-    fi
-  done <<< "$INDEX"
-  while IFS= read -r line; do
-    if [[ "$line" =~ ^R[[:space:]][[:space:]] ]]; then
-      STATUS+=" $GIT_PROMPT_RENAMED"; break
-    fi
-  done <<< "$INDEX"
-  while IFS= read -r line; do
-    if [[ "$line" =~ ^[[:space:]]D[[:space:]]|^D[[:space:]][[:space:]]|^AD[[:space:]] ]]; then
-      STATUS+=" $GIT_PROMPT_DELETED"; break
-    fi
-  done <<< "$INDEX"
-  while IFS= read -r line; do
-    if [[ "$line" =~ ^UU[[:space:]] ]]; then
-      STATUS+=" $GIT_PROMPT_UNMERGED"; break
-    fi
-  done <<< "$INDEX"
+  local GIT_PROMPT_AHEAD_REGEX=(^##[[:space:]][^\ ]+[[:space:]].*ahead)
+  local GIT_PROMPT_BEHIND_REGEX=(^##[[:space:]][^\ ]+[[:space:]].*behind)
+  local GIT_PROMPT_DIVERGED_REGEX=(^##[[:space:]][^\ ]+[[:space:]].*diverged)
+  local GIT_PROMPT_UNTRACKED_REGEX=(^\?\?[[:space:]])
+  local GIT_PROMPT_ADDED_REGEX=(^A[[:space:]][[:space:]]\|^M[[:space:]][[:space:]])
+  local GIT_PROMPT_MODIFIED_REGEX=(^[[:space:]]M[[:space:]]\|^AM[[:space:]]\|^MM[[:space:]]\|^[[:space:]]T[[:space:]])
+  local GIT_PROMPT_RENAMED_REGEX=(^R[[:space:]][[:space:]])
+  local GIT_PROMPT_DELETED_REGEX=(^[[:space:]]D[[:space:]]\|^D[[:space:]][[:space:]]\|^AD[[:space:]])
+  local GIT_PROMPT_UNMERGED_REGEX=(^UU[[:space:]])
+
+  prompt_parse_git_dirty_loop "$GIT_PROMPT_AHEAD_REGEX"     "$GIT_PROMPT_AHEAD"
+  prompt_parse_git_dirty_loop "$GIT_PROMPT_BEHIND_REGEX"    "$GIT_PROMPT_BEHIND"
+  prompt_parse_git_dirty_loop "$GIT_PROMPT_DIVERGED_REGEX"  "$GIT_PROMPT_DIVERGED"
+  prompt_parse_git_dirty_loop "$GIT_PROMPT_UNTRACKED_REGEX" "$GIT_PROMPT_UNTRACKED"
+  prompt_parse_git_dirty_loop "$GIT_PROMPT_ADDED_REGEX"     "$GIT_PROMPT_ADDED"
+  prompt_parse_git_dirty_loop "$GIT_PROMPT_MODIFIED_REGEX"  "$GIT_PROMPT_MODIFIED"
+  prompt_parse_git_dirty_loop "$GIT_PROMPT_RENAMED_REGEX"   "$GIT_PROMPT_RENAMED"
+  prompt_parse_git_dirty_loop "$GIT_PROMPT_DELETED_REGEX"   "$GIT_PROMPT_DELETED"
+  prompt_parse_git_dirty_loop "$GIT_PROMPT_UNMERGED_REGEX"  "$GIT_PROMPT_UNMERGED"
 
   if $(git rev-parse --verify refs/stash >/dev/null 2>&1); then
     STATUS+=" $GIT_PROMPT_STASHED"
