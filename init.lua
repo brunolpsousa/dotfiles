@@ -243,6 +243,14 @@ vim.api.nvim_create_autocmd({ "CursorHold" }, {
 	command = "rshada|wshada",
 })
 
+vim.api.nvim_create_autocmd({ "VimEnter", "InsertLeave" }, {
+	command = "set relativenumber",
+})
+
+vim.api.nvim_create_autocmd({ "InsertEnter" }, {
+	command = "set number norelativenumber",
+})
+
 vim.api.nvim_create_autocmd({ "TextYankPost" }, {
 	callback = function()
 		vim.highlight.on_yank({ higroup = "Visual", timeout = 200 })
