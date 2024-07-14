@@ -1,6 +1,7 @@
 {
   "breadcrumbs.enabled": true,
   "cSpell.language": "en,pt",
+  "diffEditor.codeLens": true,
   "editor.accessibilitySupport": "off",
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": "explicit"
@@ -8,18 +9,25 @@
   "editor.fontFamily": "'JetBrainsMono Nerd Font', 'Droid Sans Mono', 'monospace', monospace",
   "editor.fontLigatures": false,
   "editor.formatOnPaste": false,
-  "editor.formatOnSave": true,
+  "editor.formatOnSave": false,
+  "editor.formatOnSaveMode": "modificationsIfAvailable",
+  "editor.hover.enabled": false,
+  "editor.inlayHints.padding": true,
   "editor.inlayHints.fontFamily": "JetBrainsMono Nerd Font",
   "editor.inlineSuggest.enabled": true,
   "editor.linkedEditing": true,
   "editor.minimap.autohide": true,
   "editor.parameterHints.enabled": true,
   "editor.renderWhitespace": "boundary",
-  "editor.rulers": [80, 120],
+  "editor.rulers": [
+    80,
+    120
+  ],
   "editor.scrollbar.horizontal": "auto",
   "editor.scrollbar.vertical": "auto",
   "editor.semanticHighlighting.enabled": false,
   "editor.tabSize": 2,
+  "editor.tabCompletion": "on",
   "explorer.fileNesting.enabled": true,
   "explorer.fileNesting.patterns": {
     ".env": ".env*",
@@ -41,8 +49,8 @@
   "files.trimTrailingWhitespace": true,
   "git.enableSmartCommit": true,
   "git.openRepositoryInParentFolders": "always",
-  // "http.proxy": "",
-  // "http.proxyStrictSSL": false,
+  "eraseMe_http.proxy": "",
+  "eraseMe_http.proxyStrictSSL": false,
   "symbols.files.associations": {
     ".env.example": "gear",
     "*.e2e-spec.ts": "ts-test",
@@ -51,13 +59,17 @@
     "*.spec.ts": "ts-test",
     "vitest.config.e2e.ts": "vite"
   },
+  "prisma.showPrismaDataPlatformNotification": false,
+  "redhat.telemetry.enabled": false,
   "terminal.integrated.fontFamily": "JetBrainsMono Nerd Font",
+  "terminal.integrated.defaultProfile.windows": "Git Bash",
   "update.mode": "start",
   "update.showReleaseNotes": false,
   "window.commandCenter": true,
   "window.menuBarVisibility": "toggle",
   "workbench.activityBar.location": "top",
   "workbench.editor.labelFormat": "short",
+  "workbench.iconTheme": "symbols",
   "workbench.layoutControl.enabled": true,
   "workbench.tree.renderIndentGuides": "always",
   "emmet.includeLanguages": {
@@ -66,7 +78,11 @@
   "emmet.syntaxProfiles": {
     "javascript": "jsx"
   },
-  "eslint.validate": ["javascript", "javascriptreact", "graphql"],
+  "eslint.validate": [
+    "javascript",
+    "javascriptreact",
+    "graphql"
+  ],
   "prettier.singleQuote": true,
   "prettier.jsxSingleQuote": true,
   "prettier.semi": false,
@@ -77,7 +93,10 @@
   "typescript.updateImportsOnFileMove.enabled": "always",
   "typescript.tsserver.log": "off",
   "tailwindCSS.experimental.classRegex": [
-    ["tv\\(([^)]*)\\)", "[\"'`]([^\"'`]*).*?[\"'`]"]
+    [
+      "tv\\(([^)]*)\\)",
+      "[\"'`]([^\"'`]*).*?[\"'`]"
+    ]
   ],
   "[html]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
@@ -102,6 +121,12 @@
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
   "[typescriptreact]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[vue]": {
+    "editor.defaultFormatter": "Vue.volar"
+  },
+  "[dockercompose]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   }
 }
