@@ -1835,24 +1835,22 @@ if pcall(require, "lazy") then
 				vim.o.timeoutlen = 300
 			end,
 			config = function()
-				require("which-key").register({
-					["<leader>"] = {
-						b = { name = "Buffers" },
-						d = { name = "Debug" },
-						f = { name = "Find" },
-						l = { name = "LSP" },
-						g = { name = "Git" },
-						r = { name = "Session" },
-						x = { name = "Plugins", l = { name = "Lazy" } },
+				require("which-key").add({
+					{
+						mode = { "v" },
+						{ "<leader>l", group = "LSP" },
+						{ "g", group = "Goto" },
 					},
-					g = { name = "Goto" },
+					{ "<leader>b", group = "Buffers" },
+					{ "<leader>d", group = "Debug" },
+					{ "<leader>f", group = "Find" },
+					{ "<leader>l", group = "LSP" },
+					{ "<leader>g", group = "Git" },
+					{ "<leader>r", group = "Session" },
+					{ "<leader>x", group = "Plugins" },
+					{ "<leader>xl", group = "Lazy" },
+					{ "g", group = "Goto" },
 				})
-				require("which-key").register({
-					["<leader>"] = {
-						l = { name = "LSP" },
-					},
-					g = { name = "Goto" },
-				}, { mode = "v" })
 			end,
 		},
 	})
