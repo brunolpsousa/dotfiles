@@ -221,7 +221,7 @@ end)
 wez.on("update-right-status", function(window)
 	window:set_right_status(wez.format({
 		{ Attribute = { Intensity = "Bold" } },
-		{ Text = wez.strftime(" %A, %d %B %Y %H:%M ") },
+		{ Text = wez.strftime(" %A, %d %B %Y %H:%M ") .. window:active_workspace() },
 	}))
 end)
 
@@ -233,29 +233,30 @@ for host, _ in pairs(wez.enumerate_ssh_hosts()) do
 	})
 end
 
-return {
-	show_update_window = false,
+local config = {
 	check_for_updates = false,
 	exit_behavior = "Close",
-	window_close_confirmation = "NeverPrompt",
 	initial_cols = 166,
 	initial_rows = 48,
 	enable_scroll_bar = false,
 	audible_bell = "Disabled",
 	ssh_domains = ssh_domains,
+	unix_domains = { { name = "unix" } },
+	default_gui_startup_args = { "connect", "unix", "--workspace", "main" },
+	default_workspace = "main",
 	warn_about_missing_glyphs = false,
 	font = wez.font_with_fallback({ {
 		family = "JetBrainsMono Nerd Font Mono",
 		weight = "Medium",
 	} }),
-	-- freetype_load_target = "Light",
-	-- freetype_render_target = "HorizontalLcd",
+	freetype_load_target = "Light",
+	freetype_render_target = "HorizontalLcd",
 	font_size = 10,
 	line_height = 1.0,
 	tab_bar_at_bottom = true,
 	use_fancy_tab_bar = false,
 	show_new_tab_button_in_tab_bar = false,
-	hide_tab_bar_if_only_one_tab = true,
+	hide_tab_bar_if_only_one_tab = false,
 	window_background_opacity = 0.95,
 	foreground_text_hsb = {
 		hue = 1.0,
@@ -342,7 +343,7 @@ return {
 		{ key = "Enter", mods = "ALT", action = act.ToggleFullScreen },
 		{ key = "=", mods = "CTRL", action = act.IncreaseFontSize },
 		{ key = "-", mods = "CTRL", action = act.DecreaseFontSize },
-		{ key = "0", mods = "CTRL", action = act.ResetFontSize },
+		{ key = "0", mods = "CTRL", action = act.ResetFontAndWindowSize },
 		{ key = "l", mods = "SHIFT|CTRL", action = act.ShowDebugOverlay },
 
 		{ key = "LeftArrow", mods = "ALT", action = act.ActivatePaneDirection("Left") },
@@ -367,5 +368,78 @@ return {
 		{ key = "7", mods = "ALT", action = act({ ActivateTab = 6 }) },
 		{ key = "8", mods = "ALT", action = act({ ActivateTab = 7 }) },
 		{ key = "9", mods = "ALT", action = act({ ActivateTab = -1 }) },
+
+		{ key = "n", mods = "CTRL", action = act.SwitchWorkspaceRelative(1) },
+		{ key = "p", mods = "CTRL", action = act.SwitchWorkspaceRelative(-1) },
+
+		{
+			key = "N",
+			mods = "CTRL|SHIFT",
+			action = act.PromptInputLine({
+				description = wez.format({
+					{ Attribute = { Intensity = "Bold" } },
+					{ Foreground = { AnsiColor = "Fuchsia" } },
+					{ Text = "Enter name for new workspace" },
+				}),
+				action = wez.action_callback(function(window, pane, line)
+					if line then
+						window:perform_action(
+							act.SwitchToWorkspace({
+								name = line,
+							}),
+							pane
+						)
+					end
+				end),
+			}),
+		},
+		{
+			key = "S",
+			mods = "CTRL|SHIFT",
+			action = wez.action_callback(function(window, pane)
+				local home = wez.home_dir
+				local workspaces = {
+					{ id = home, label = "Home" },
+					{ id = home .. "/work", label = "Work" },
+					{ id = home .. "/personal", label = "Personal" },
+					{ id = home .. "/.config", label = "Config" },
+				}
+
+				window:perform_action(
+					act.InputSelector({
+						action = wez.action_callback(function(inner_window, inner_pane, id, label)
+							if not id and not label then
+								wez.log_info("cancelled")
+							else
+								wez.log_info("id = " .. id)
+								wez.log_info("label = " .. label)
+								inner_window:perform_action(
+									act.SwitchToWorkspace({
+										name = label,
+										spawn = {
+											label = "Workspace: " .. label,
+											cwd = id,
+										},
+									}),
+									inner_pane
+								)
+							end
+						end),
+						title = "Choose Workspace",
+						choices = workspaces,
+						fuzzy = true,
+						fuzzy_description = "Fuzzy find and/or make a workspace",
+					}),
+					pane
+				)
+			end),
+		},
+		{
+			key = "9",
+			mods = "ALT",
+			action = act.ShowLauncherArgs({ flags = "FUZZY|WORKSPACES" }),
+		},
 	},
 }
+
+return config
