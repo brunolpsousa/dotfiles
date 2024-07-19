@@ -41,7 +41,7 @@
           "type": "session",
           "style": "plain",
           "foreground": "green",
-          "template": "{{ if .Root }}red{{ end }}{{ .UserName }}</> <white,><b>in</b></> "
+          "template": "<{{ if .Root }}red{{ end }},>{{ .UserName }}</> <white,><b>in</b></> "
         },
         {
           "type": "path",
@@ -65,7 +65,9 @@
             "branch_icon": ":",
             "branch_identical_icon": "",
             "fetch_status": true,
-            "ignore_submodules": { "*": "all" },
+            "ignore_submodules": {
+              "*": "all"
+            },
             "status_formats": {
               "Unmerged": "<p:yellow,>X%d</> ",
               "Deleted": "<p:red,>-%d</> ",
