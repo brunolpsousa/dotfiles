@@ -1186,7 +1186,7 @@ gprompt() {
   echo "\n--> Git prompt meaning:\n
   \tꞏAhead $Green\t\t$NC
   \tꞏBehind $Red\t$NC
-  \tꞏDiverged $BIPurple⇕$NC
+  \tꞏDiverged \t$BIPurple⇕$NC
   \tꞏUntracked \t$IPurple?$NC
   \tꞏAdded $Green\t\t+$NC
   \tꞏModified $Blue\t$NC
