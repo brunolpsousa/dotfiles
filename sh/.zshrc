@@ -3571,9 +3571,7 @@ spaceship_julia() {
   local SPACESHIP_JULIA_SYMBOL="${SPACESHIP_JULIA_SYMBOL="ஃ "}"
   local SPACESHIP_JULIA_COLOR="${SPACESHIP_JULIA_COLOR="%F{green}"}"
 
-  [[ $SPACESHIP_JULIA_SHOW == false ]] && return
-
-  spaceship::exists julia || return
+  [[ $SPACESHIP_JULIA_SHOW == true ]] && spaceship::exists julia || return
 
   # If there are julia files in current directory
   local is_julia_project="$(spaceship::upsearch Project.toml JuliaProject.toml Manifest.toml)"
@@ -3626,7 +3624,7 @@ spaceship_kubectl() {
   local SPACESHIP_KUBECTL_PREFIX="${SPACESHIP_KUBECTL_PREFIX="$SPACESHIP_PROMPT_DEFAULT_PREFIX"}"
   local SPACESHIP_KUBECTL_SUFFIX="${SPACESHIP_KUBECTL_SUFFIX="$SPACESHIP_PROMPT_DEFAULT_SUFFIX"}"
   local SPACESHIP_KUBECTL_COLOR="${SPACESHIP_KUBECTL_COLOR="%F{white}"}"
-  local SPACESHIP_KUBECTL_SYMBOL="${SPACESHIP_KUBECTL_SYMBOL="☸️  "}"
+  local SPACESHIP_KUBECTL_SYMBOL="${SPACESHIP_KUBECTL_SYMBOL="☸️ "}"
 
   [[ $SPACESHIP_KUBECTL_SHOW == false ]] && return
   spaceship::exists kubectl || return
@@ -3635,6 +3633,7 @@ spaceship_kubectl() {
   local kubectl_context="$(spaceship_kubectl_context)"
 
   [[ -z $kubectl_version && -z $kubectl_context ]] && return
+  [[ $kubectl_version && $kubectl_context ]] && kubectl_version="$kubectl_version "
 
   local result=(
     $SPACESHIP_KUBECTL_COLOR
@@ -3649,7 +3648,7 @@ spaceship_kubectl() {
 
 # Kubectl version
 spaceship_kubectl_version() {
-  local SPACESHIP_KUBECTL_VERSION_SHOW="${SPACESHIP_KUBECTL_VERSION_SHOW=true}"
+  local SPACESHIP_KUBECTL_VERSION_SHOW="${SPACESHIP_KUBECTL_VERSION_SHOW=false}"
   local SPACESHIP_KUBECTL_VERSION_PREFIX="${SPACESHIP_KUBECTL_VERSION_PREFIX=""}"
   local SPACESHIP_KUBECTL_VERSION_SUFFIX="$SPACESHIP_PROMPT_DEFAULT_SUFFIX"
   local SPACESHIP_KUBECTL_VERSION_COLOR="${SPACESHIP_KUBECTL_VERSION_COLOR="%F{cyan}"}"
@@ -3683,6 +3682,7 @@ spaceship_kubectl_context() {
   local SPACESHIP_KUBECONTEXT_PREFIX="${SPACESHIP_KUBECONTEXT_PREFIX=""}"
   local SPACESHIP_KUBECONTEXT_SUFFIX="${SPACESHIP_PROMPT_DEFAULT_SUFFIX}"
   local SPACESHIP_KUBECONTEXT_COLOR="${SPACESHIP_KUBECONTEXT_COLOR="%F{cyan}"}"
+  local SPACESHIP_KUBECONTEXT_CONTEXT_SHOW="${SPACESHIP_KUBECONTEXT_CONTEXT_SHOW=false}"
   local SPACESHIP_KUBECONTEXT_NAMESPACE_SHOW="${SPACESHIP_KUBECONTEXT_NAMESPACE_SHOW=true}"
   local SPACESHIP_KUBECONTEXT_COLOR_GROUPS=(${SPACESHIP_KUBECONTEXT_COLOR_GROUPS=})
 
@@ -3694,8 +3694,11 @@ spaceship_kubectl_context() {
   if [[ $SPACESHIP_KUBECONTEXT_NAMESPACE_SHOW == true ]]; then
     local kube_namespace=$(kubectl config view --minify \
       --output 'jsonpath={..namespace}' 2>/dev/null)
-    [[ -n $kube_namespace && "$kube_namespace" != "default" ]] &&
-      kube_context="$kube_context ($kube_namespace)"
+    if [[ $kube_namespace && "$kube_namespace" != "default" ]]; then
+      [[ $SPACESHIP_KUBECONTEXT_CONTEXT_SHOW == true ]] &&
+        kube_context="$kube_context ($kube_namespace)"  ||
+        kube_context="$kube_namespace"
+    fi
   fi
 
   # Apply custom color to section if $kube_context matches a pattern defined in
@@ -3765,19 +3768,17 @@ spaceship_maven() {
 
   local maven_dir maven_exe
 
-  if maven_dir=$(spaceship::maven::find_maven_wrapper "$(pwd -P)") && [[ -n "$maven_dir" ]]; then
+  if maven_dir=$(spaceship::maven::find_maven_wrapper "$(pwd -P)") &&
+    [[ "$maven_dir" ]] && spaceship::exists "$maven_dir/mvnw"; then
     maven_exe="$maven_dir/mvnw"
   elif spaceship::exists mvn &&
-      maven_dir=$(spaceship::maven::find_pom "$(pwd -P)") && [[ -n "$maven_dir" ]]; then
+    maven_dir=$(spaceship::maven::find_pom "$(pwd -P)") && [[ "$maven_dir" ]]; then
     maven_exe="mvn"
   else
     return
   fi
 
-  local maven_version
-
-  maven_version=$(spaceship::maven::version "$maven_exe")
-
+  local maven_version=$(spaceship::maven::version "$maven_exe")
   [[ "$maven_version" == "$SPACESHIP_MAVEN_DEFAULT_VERSION" ]] && return
 
   local result=(
@@ -3792,31 +3793,25 @@ spaceship_maven() {
 
 spaceship::maven::find_pom() {
   local root="$1"
-
   while [ "$root" ] && [ ! -f "$root/pom.xml" ]; do
     root="${root%/*}"
   done
-
   print "$root"
 }
 
 spaceship::maven::find_maven_wrapper() {
   local root="$1"
-
   while [ "$root" ] && [ ! -f "$root/mvnw" ]; do
     root="${root%/*}"
   done
-
   print "$root"
 }
 
 spaceship::maven::version() {
   local maven_exe="$1" maven_version_output maven_version
-
   maven_version_output=$("$maven_exe" --version 2>/dev/null)
   maven_version=$(echo "$maven_version_output" | awk '{ if ($2 ~ /^Maven/) { print "v" $3 } }')
-
-  print maven "$maven_version"
+  print "$maven_version"
 }
 
 # Nix can be used to provide some kind of virtual environment through the nix-shell command.
