@@ -118,7 +118,7 @@ SAVEHIST=$HISTSIZE
   if [[ -s "$zcompdump" && (! -s "${zcompdump}.zwc" || "$zcompdump" -nt "${zcompdump}.zwc") ]]; then
     if mkdir "${zcompdump}.zwc.lock" 2>/dev/null; then
       zcompile "$zcompdump"
-      rmdir  "${zcompdump}.zwc.lock" 2>/dev/null
+      rmdir "${zcompdump}.zwc.lock" 2>/dev/null
     fi
   fi
 } &!
@@ -3624,7 +3624,7 @@ spaceship_kubectl() {
   local SPACESHIP_KUBECTL_PREFIX="${SPACESHIP_KUBECTL_PREFIX="$SPACESHIP_PROMPT_DEFAULT_PREFIX"}"
   local SPACESHIP_KUBECTL_SUFFIX="${SPACESHIP_KUBECTL_SUFFIX="$SPACESHIP_PROMPT_DEFAULT_SUFFIX"}"
   local SPACESHIP_KUBECTL_COLOR="${SPACESHIP_KUBECTL_COLOR="%F{white}"}"
-  local SPACESHIP_KUBECTL_SYMBOL="${SPACESHIP_KUBECTL_SYMBOL="☸️ "}"
+  local SPACESHIP_KUBECTL_SYMBOL="${SPACESHIP_KUBECTL_SYMBOL="⎈ "}"
 
   [[ $SPACESHIP_KUBECTL_SHOW == false ]] && return
   spaceship::exists kubectl || return
