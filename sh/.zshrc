@@ -2128,7 +2128,7 @@ prompt_git_status() {
   git_loop '^ D |^D  |^AD '       "$GIT_PROMPT_DELETED"
 
   if $(git rev-parse --verify refs/stash >/dev/null 2>&1); then
-    STATUS+=" $ZSH_THEME_GIT_PROMPT_STASHED"
+    STATUS+=" $GIT_PROMPT_STASHED"
   fi
 
   git_loop '^UU '                 "$GIT_PROMPT_UNMERGED"
