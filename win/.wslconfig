@@ -1,3 +1,23 @@
+# https://github.com/microsoft/WSL/issues/4851
+# Settings apply across all Linux distros running on WSL 2
 [wsl2]
-networkingMode=mirrored
-dnsTunneling=true
+
+# (CAUSED ISSUE) Turn on default connection to bind WSL 2 localhost to Windows localhost
+# localhostforwarding=true
+
+# (CAUSED ISSUE) Switch networking mode to mirrored
+networkingMode=mirrored # bridged, mirrored, nat (default), none, virtioproxy
+# hostAddressLoopback=true
+# ipv6 = false
+# dhcp = true
+# dnsTunneling=true
+
+# Disables nested virtualization
+nestedVirtualization=false
+
+# Turns on output console showing contents of dmesg when opening a WSL 2 distro for debugging
+# debugConsole=true
+
+# Enable experimental features
+[experimental]
+# sparseVhd=true
