@@ -61,6 +61,8 @@
   },
   "prisma.showPrismaDataPlatformNotification": false,
   "redhat.telemetry.enabled": false,
+  "remote.autoForwardPortsSource": "hybrid",
+  "spring-boot.ls.problem.application-properties.PROP_UNKNOWN_PROPERTY": "IGNORE",
   "terminal.integrated.fontFamily": "JetBrainsMono Nerd Font",
   "terminal.integrated.cursorStyle": "line",
   "terminal.integrated.cursorBlinking": true,
@@ -107,10 +109,13 @@
   "typescript.tsserver.log": "off",
   "tailwindCSS.experimental.classRegex": [
     [
-      "tv\\(([^)]*)\\)",
-      "[\"'`]([^\"'`]*).*?[\"'`]"
+      "tv\\(([^)])\\)",
+      "[\"']([^\"']).*?[\"'`]"
     ]
   ],
+  "[dockercompose]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
   "[html]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
@@ -138,8 +143,5 @@
   },
   "[vue]": {
     "editor.defaultFormatter": "Vue.volar"
-  },
-  "[dockercompose]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
   }
 }
