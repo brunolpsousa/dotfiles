@@ -1102,6 +1102,39 @@ lscolors() {
     done
   fi
 }
+
+# Docker
+alias drmi='docker rmi $(docker images --filter "dangling=true" -q --no-trunc)'
+
+dcatalog() {
+  [[ $1 ]] || { echo No registry provided; exit 1 };
+  local registry=$(cut -d '/' -f 1 <<< $1)
+  curl -s "https://$registry/v2/_catalog"
+}
+
+dtags() {
+  [[ $1 ]] || { echo No registry/image provided; exit 1 };
+  local registry=$(cut -d '/' -f 1 <<< $1)
+  local image=${$(cut -d ':' -f 1 <<< $1)//#*\/}
+  curl -s "https://$registry/v2/$image/tags/list"
+}
+
+drrmi() {
+  [[ $1 ]] || { echo No registry/image:tag provided; exit 1 };
+  local registry=$(cut -d '/' -f 1 <<< $1)
+  local image=${$(cut -d ':' -f 1 <<< $1)//#*\/}
+  local tag=$(cut -d ':' -f 2 <<< $1)
+  [[ $registry && $image && $tag ]] || { echo Not enough args; exit 1 };
+  local url="https://$registry/v2/$image/manifests"
+  local hash=$(curl -s "$url/$tag" -H \
+    'Accept: application/vnd.docker.distribution.manifest.v2+json' | grep -m 1 -oe 'sha256:\w*')
+
+  [[ $hash ]] || { echo No hash found for "$image:$tag"; return 1; }
+
+  echo Removing $image:$tag with hash $hash from $url...
+
+  curl -sX DELETE "$url/$hash" $2
+}
 #--------------------------------------------------------------------------------------------------#
 ############################################ Arch Config ###########################################
 #--------------------------------------------------------------------------------------------------#
