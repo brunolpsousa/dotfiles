@@ -1,7 +1,9 @@
 {
   "breadcrumbs.enabled": true,
   "cSpell.language": "en,pt",
+  "console-ninja.featureSet": "Community",
   "diffEditor.codeLens": true,
+  "diffEditor.ignoreTrimWhitespace": false,
   "editor.accessibilitySupport": "off",
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": "explicit"
@@ -30,17 +32,19 @@
   "editor.tabCompletion": "on",
   "explorer.fileNesting.enabled": true,
   "explorer.fileNesting.patterns": {
-    ".env": ".env*",
-    ".env.local": ".env*",
-    "docker-compose.yml": "docker*, Docker*, .docker*",
-    "next.config.js": "next*",
-    "package.json": ".eslint*, prettier*, package-lock.json, tsconfig*, vite*, pnpm-lock*, bun.lockb, nest*",
-    "tailwind.config.js": "tailwind.config*, postcss.config*"
+    ".env": ".env*, env*",
+    "Dockerfile": "Docker*, docker*, .docker*",
+    "next.config.js": "next*, .next*",
+    "package.json": "package-lock.json, tsconfig*, vite*, pnpm-lock*, bun.lockb",
+    ".eslintrc": "eslint*, .eslint*, prettier*, .prettier*, .editorconfig",
+    ".eslintrc.js": "eslint*, .eslint*, prettier*, .prettier*, .editorconfig",
+    "eslint.config.js": "eslint*, .eslint*, prettier*, .prettier*, .editorconfig",
+    "tailwind.config.js": "tailwind*, postcss*",
+    "README.md": "*.md"
   },
   "explorer.sortOrder": "foldersNestsFiles",
   "files.associations": {
-    "*.css": "css",
-    ".env.*": "dotenv",
+    ".env*": "properties",
     ".prettierrc": "json"
   },
   "files.eol": "\n",
@@ -63,6 +67,7 @@
   "redhat.telemetry.enabled": false,
   "remote.autoForwardPortsSource": "hybrid",
   "spring-boot.ls.problem.application-properties.PROP_UNKNOWN_PROPERTY": "IGNORE",
+  "terminal.integrated.env.linux": {},
   "terminal.integrated.fontFamily": "JetBrainsMono Nerd Font",
   "terminal.integrated.cursorStyle": "line",
   "terminal.integrated.cursorBlinking": true,
