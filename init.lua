@@ -717,20 +717,20 @@ if pcall(require, "lazy") then
 						ls.setup({ history = true, update_events = { "TextChanged", "TextChangedI" } })
 					end,
 				},
-				{
-					"zbirenbaum/copilot.lua",
-					cmd = "Copilot",
-					dependencies = { "zbirenbaum/copilot-cmp", opts = {} },
-					opts = {
-						panel = { enabled = false },
-						suggestion = { enabled = false },
-						filetypes = {
-							yaml = true,
-							markdown = true,
-							help = true,
-						},
-					},
-				},
+				-- {
+				-- 	"zbirenbaum/copilot.lua",
+				-- 	cmd = "Copilot",
+				-- 	dependencies = { "zbirenbaum/copilot-cmp", opts = {} },
+				-- 	opts = {
+				-- 		panel = { enabled = false },
+				-- 		suggestion = { enabled = false },
+				-- 		filetypes = {
+				-- 			yaml = true,
+				-- 			markdown = true,
+				-- 			help = true,
+				-- 		},
+				-- 	},
+				-- },
 				{
 					"Exafunction/codeium.nvim",
 					config = function()
@@ -1316,15 +1316,10 @@ if pcall(require, "lazy") then
 					opts = {
 						ensure_installed = {
 							"bashls",
-							"cssls",
 							"eslint",
-							"html",
 							"jsonls",
 							"lua_ls",
-							"pyright",
-							"tailwindcss",
-							"tsserver",
-							"volar",
+							"ts_ls",
 							"yamlls",
 						},
 						automatic_installation = true,
