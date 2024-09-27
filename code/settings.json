@@ -12,7 +12,7 @@
   "editor.fontLigatures": false,
   "editor.formatOnPaste": false,
   "editor.formatOnSave": true,
-  "editor.formatOnSaveMode": "modificationsIfAvailable",
+  ".editor.formatOnSaveMode": "modificationsIfAvailable",
   "editor.hover.enabled": false,
   "editor.inlayHints.padding": true,
   "editor.inlayHints.fontFamily": "JetBrainsMono Nerd Font",
@@ -103,6 +103,9 @@
     "javascriptreact",
     "graphql"
   ],
+  "java.compile.nullAnalysis.mode": "automatic",
+  "java.configuration.updateBuildConfiguration": "automatic",
+  "java.format.settings.profile": "GoogleStyle",
   "json.schemaDownload.enable": true,
   ".prettier.singleQuote": true,
   ".prettier.jsxSingleQuote": true,
@@ -127,6 +130,9 @@
   "[markdown]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode",
     "files.trimTrailingWhitespace": false
+  },
+  "[java]": {
+    "editor.defaultFormatter": "redhat.java"
   },
   "[json]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
