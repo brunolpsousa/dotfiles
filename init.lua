@@ -107,12 +107,12 @@ local function lsp_format(opts)
 		end
 	end
 
-	require("conform").format({ async = async, lsp_fallback = true, range = range })
+	require("conform").format({ async = async, lsp_fallback = true, range = range, stop_after_first = false })
 
 	vim.lsp.buf.format({
 		async = async,
 		filter = function(client)
-			local exclude = { "cssls", "jsonls", "tsserver" }
+			local exclude = { "cssls", "jsonls", "ts_ls", "yamlls" }
 			return not vim.tbl_contains(exclude, client.name)
 		end,
 	})
@@ -1443,7 +1443,7 @@ if pcall(require, "lazy") then
 						}
 					end
 
-					if server == "tsserver" then
+					if server == "ts_ls" then
 						opts.settings = {
 							javascript = {
 								inlayHints = {
@@ -1653,14 +1653,16 @@ if pcall(require, "lazy") then
 			event = { "BufReadPre", "BufNewFile" },
 			opts = {
 				format_on_save = {
-					lsp_fallback = true,
-					timeout_ms = 500,
+					lsp_fallback = false,
+					timeout_ms = 2000,
 				},
 				formatters_by_ft = {
 					lua = { "stylua" },
-					javascript = { { "prettierd", "prettier" }, "eslint_d" },
-					typescript = { { "prettierd", "prettier" }, "eslint_d" },
-					toml = { { "prettierd", "prettier" } },
+					json = { "prettierd", "prettier" },
+					jsonc = { "prettierd", "prettier" },
+					javascript = { "prettierd", "prettier", "eslint_d" },
+					typescript = { "prettierd", "prettier", "eslint_d" },
+					yaml = { "prettierd", "prettier" },
 					python = function(bufnr)
 						if require("conform").get_formatter_info("ruff_format", bufnr).available then
 							return { "ruff_format" }
