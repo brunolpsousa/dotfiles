@@ -21,10 +21,7 @@
   "editor.minimap.autohide": true,
   "editor.parameterHints.enabled": true,
   "editor.renderWhitespace": "boundary",
-  "editor.rulers": [
-    80,
-    120
-  ],
+  "editor.rulers": [80, 120],
   "editor.scrollbar.horizontal": "auto",
   "editor.scrollbar.vertical": "hidden",
   "editor.semanticHighlighting.enabled": false,
@@ -98,11 +95,7 @@
   "emmet.syntaxProfiles": {
     "javascript": "jsx"
   },
-  "eslint.validate": [
-    "javascript",
-    "javascriptreact",
-    "graphql"
-  ],
+  "eslint.validate": ["javascript", "javascriptreact", "graphql"],
   "java.compile.nullAnalysis.mode": "automatic",
   "java.configuration.updateBuildConfiguration": "automatic",
   "java.format.settings.profile": "GoogleStyle",
@@ -116,10 +109,7 @@
   "typescript.updateImportsOnFileMove.enabled": "always",
   "typescript.tsserver.log": "off",
   "tailwindCSS.experimental.classRegex": [
-    [
-      "tv\\(([^)])\\)",
-      "[\"']([^\"']).*?[\"'`]"
-    ]
+    ["tv\\(([^)])\\)", "[\"']([^\"']).*?[\"'`]"]
   ],
   "[dockercompose]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
