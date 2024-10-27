@@ -240,7 +240,7 @@ vim.o.autochdir = false
 vim.api.nvim_create_autocmd("BufEnter", { callback = set_root })
 
 vim.api.nvim_create_autocmd({ "CursorHold" }, {
-	command = "rshada|wshada",
+	command = "checktime|rshada|wshada",
 })
 
 vim.api.nvim_create_autocmd({ "VimEnter", "InsertLeave" }, {
