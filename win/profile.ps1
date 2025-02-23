@@ -11,6 +11,39 @@ $EDITOR = if (Test-CommandExists nvim) { 'nvim' }
           else { 'notepad' }
 Set-Alias -Name v -Value $EDITOR
 
+
+# https://www.reddit.com/r/antiwork/comments/vyzn7k/it_department_detected_use_of_the_caffeine_app/
+
+# If you stop working at 5pm (17:00) then you could use this:
+# $peaceout = (get-date 17:00)
+# idle ($peaceout - (get-date)).TotalMinutes
+
+function idle {
+    param(
+    	[int]$Duration = -1 # Duration in Minutes
+    )
+    $wshell = New-Object -ComObject wscript.shell;
+    
+    'Press CTRL+C to cancel.'
+    $idle = $true
+    
+    while ($idle) {
+    	$wshell.SendKeys('+')
+    	if ($Duration -eq 0) {
+    		$idle = $false
+    		'Time Expired.'
+    		break
+    	}
+    	elseif ($Duration -gt 0) {
+    		write-host -NoNewline "`r$Duration min(s) remaining."
+    		$Duration--
+    	}
+    
+    	Start-Sleep 60
+    }
+}
+
+
 function touch($file) { "" | Out-File $file -Encoding ASCII }
 
 function ff($name) {
@@ -170,4 +203,4 @@ Register-ArgumentCompleter -Native -CommandName dotnet -ScriptBlock $scriptblock
 # }
 # Invoke-Expression (&starship init powershell)
 
-oh-my-posh init pwsh --config $HOME\.config\omp.json | Invoke-Expression
+# oh-my-posh init pwsh --config $HOME\.config\omp.json | Invoke-Expression

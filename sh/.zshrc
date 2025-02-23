@@ -1680,10 +1680,14 @@ arch-base() {
 
                   gpg --list-keys --with-keygrip
                   local gitSigningKey
-                  echo -n 'Enter your signing key if you wish to define it: '; read gitSigningKey
-                  [[ -n "$gitSigningKey" ]] &&
+                  local gitKeygrip
+                  echo -n 'Enter your signing key: '; read gitSigningKey;
+                  echo -n 'Enter the keygrip of your signing key: '; read gitKeygrip;
+                  [[ "$gitSigningKey" && "$gitKeygrip" ]] && touch "$GNUPGHOME/{gpg-agent.conf,sshcontrol}" &&
                     git config --global user.signingKey "$gitSigningKey" &&
-                    git config --global commit.gpgsign true
+                    git config --global commit.gpgsign true &&
+                    echo "$gitKeygrip" >> "$GNUPGHOME/sshcontrol" &&
+                    echo -e 'enable-ssh-support\ndefault-cache-ttl 28800\nmax-cache-ttl 86400\ndefault-cache-ttl-ssh 28800 max-cache-ttl-ssh 86400' >> "$GNUPGHOME/gpg-agent.conf"
                   git config --global alias.brcd 'branch --sort=-committerdate'
                   git config --global core.autocrlf input
 
