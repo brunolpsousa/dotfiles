@@ -7,27 +7,29 @@
 
 /* ** Private browsing text and logo ** */
 
-/* Remove label and text */
-/* #private-browsing-indicator-with-label, .titlebar-spacer[type="post-tabs"] { display: none !important; } */
-
-/* Remove only text */
-#private-browsing-indicator-with-label > label,
-.titlebar-spacer[type='post-tabs'] {
-  display: none !important;
+/* Replaces hamburger menu with private label */
+:root[privatebrowsingmode="temporary"] #PanelUI-menu-button {
+  list-style-image: url("chrome://global/skin/icons/indicator-private-browsing.svg") !important;
 }
 
+/* Removes label and text */
+.private-browsing-indicator-with-label { display: none; }
+
+/* Removes only text */
+/* .private-browsing-indicator-with-label > label { display: none; } */
+
 /* Removes nothing, just make it more compact */
-/* #private-browsing-indicator-with-label { margin-inline: 0 !important; } */
+/* .private-browsing-indicator-with-label { margin-inline: 0 !important; } */
 
 /* ** Make favorites go B&W ** */
 /* #PlacesToolbarItems { filter: grayscale(1); } */
 
 /* ** Hide the extensions button ** */
-/* #unified-extensions-button { */
-/*   width: 3px; */
-/*   padding-inline: 0 !important; */
-/* } */
+#unified-extensions-button {
+  width: 3px;
+  padding-inline: 0 !important;
+}
 
-/* #unified-extensions-button > .toolbarbutton-icon { */
-/*   width: 0 !important; */
-/* } */
+#unified-extensions-button > .toolbarbutton-icon {
+  width: 0 !important;
+}
