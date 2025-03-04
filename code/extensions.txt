@@ -1,3 +1,4 @@
+bradlc.vscode-tailwindcss
 dbaeumer.vscode-eslint
 eamodio.gitlens
 editorconfig.editorconfig
@@ -6,7 +7,8 @@ github.copilot
 github.copilot-chat
 gruntfuggly.todo-tree
 mechatroner.rainbow-csv
-ms-azuretools.vscode-docker
+ms-vsliveshare.vsliveshare
+mtxr.sqltools
 redhat.java
 usernamehw.errorlens
 visualstudioexptteam.intellicode-api-usage-examples
@@ -22,4 +24,4 @@ vscjava.vscode-maven
 vscjava.vscode-spring-boot-dashboard
 vscjava.vscode-spring-initializr
 vue.volar
-wallabyjs.console-ninja
+yoavbls.pretty-ts-errors

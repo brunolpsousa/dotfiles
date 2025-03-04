@@ -36,12 +36,14 @@
     ".eslintrc": "eslint*, .eslint*, prettier*, .prettier*, .editorconfig",
     ".eslintrc.js": "eslint*, .eslint*, prettier*, .prettier*, .editorconfig",
     "eslint.config.js": "eslint*, .eslint*, prettier*, .prettier*, .editorconfig",
+    "eslint.config.mjs": "eslint*, .eslint*, prettier*, .prettier*, .editorconfig",
     "tailwind.config.js": "tailwind*, postcss*",
     "README.md": "*.md"
   },
   "explorer.sortOrder": "foldersNestsFiles",
   "files.associations": {
     ".env*": "properties",
+    "env.*": "properties",
     ".prettierrc": "json"
   },
   "files.eol": "\n",
@@ -144,5 +146,8 @@
   },
   "[vue]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[sql]": {
+    "editor.defaultFormatter": "mtxr.sqltools"
   }
 }
