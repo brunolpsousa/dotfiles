@@ -1416,10 +1416,10 @@ arch-base() {
     select yne in 'Yes' 'No' 'Exit'; do
       case $yne in
         Yes )
-          [[ -n $zenv ]] || echo '[[ -f "$HOME/.config/zsh/.zshrc" ]] && ' \
-            'ZDOTDIR="$HOME/.config/zsh" || ZDOTDIR="$HOME"'             | \
+          [[ $zenv ]] || echo '[[ -f "$HOME/.config/zsh/.zshrc" ]] &&' \
+            'ZDOTDIR="$HOME/.config/zsh" || ZDOTDIR="$HOME"'         | \
             $use_sudo tee -a /etc/zsh/zshenv >/dev/null
-          [[ -n $zprof ]] || echo 'source "$ZDOTDIR/.zshrc"'             | \
+          [[ -n $zprof ]] || echo 'source "$ZDOTDIR/.zshrc"'         | \
             $use_sudo tee -a /etc/zsh/zprofile >/dev/null;
           break;;
         No ) break;;
