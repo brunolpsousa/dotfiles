@@ -1,0 +1,53 @@
+{
+  "timeStamp": 1744516796097,
+  "version": "1.63.2",
+  "userSettings": {
+    "advancedUserEnabled": true,
+    "cloudStorageEnabled": true,
+    "externalLists": "https://gitflic.ru/project/magnolia1234/bypass-paywalls-clean-filters/blob/raw?file=bpc-paywall-filter.txt\nhttps://gitlab.com/magnolia1234/bypass-paywalls-clean-filters/-/raw/main/bpc-paywall-filter.txt\nhttps://raw.githubusercontent.com/DandelionSprout/adfilt/master/ClearURLs%20for%20uBo/clear_urls_uboified.txt\nhttps://raw.githubusercontent.com/DandelionSprout/adfilt/master/LegitimateURLShortener.txt",
+    "importedLists": [
+      "https://gitflic.ru/project/magnolia1234/bypass-paywalls-clean-filters/blob/raw?file=bpc-paywall-filter.txt",
+      "https://gitlab.com/magnolia1234/bypass-paywalls-clean-filters/-/raw/main/bpc-paywall-filter.txt",
+      "https://raw.githubusercontent.com/DandelionSprout/adfilt/master/ClearURLs%20for%20uBo/clear_urls_uboified.txt",
+      "https://raw.githubusercontent.com/DandelionSprout/adfilt/master/LegitimateURLShortener.txt"
+    ],
+    "popupPanelSections": 31
+  },
+  "selectedFilterLists": [
+    "user-filters",
+    "ublock-filters",
+    "ublock-badware",
+    "ublock-privacy",
+    "ublock-quick-fixes",
+    "ublock-unbreak",
+    "easylist",
+    "easyprivacy",
+    "adguard-spyware-url",
+    "urlhaus-1",
+    "curben-phishing",
+    "plowe-0",
+    "fanboy-cookiemonster",
+    "ublock-cookies-easylist",
+    "fanboy-social",
+    "fanboy-thirdparty_social",
+    "easylist-chat",
+    "easylist-newsletters",
+    "easylist-notifications",
+    "easylist-annoyances",
+    "ublock-annoyances",
+    "spa-1",
+    "https://raw.githubusercontent.com/DandelionSprout/adfilt/master/LegitimateURLShortener.txt",
+    "https://gitflic.ru/project/magnolia1234/bypass-paywalls-clean-filters/blob/raw?file=bpc-paywall-filter.txt"
+  ],
+  "hiddenSettings": {
+    "userResourcesLocation": "https://raw.githubusercontent.com/pixeltris/TwitchAdSolutions/b3bd44e8d59fa03fa591fe291c2f4957951dbd52/video-swap-new/video-swap-new-ublock-origin.js"
+  },
+  "whitelist": [
+    "chrome-extension-scheme",
+    "moz-extension-scheme"
+  ],
+  "dynamicFilteringString": "behind-the-scene * * noop\nbehind-the-scene * inline-script noop\nbehind-the-scene * 1p-script noop\nbehind-the-scene * 3p-script noop\nbehind-the-scene * 3p-frame noop\nbehind-the-scene * image noop\nbehind-the-scene * 3p noop\n* facebook.com * block\n* facebook.net * block\n* fbcdn.net * block\n* gravatar.com * block\n* instagram.com * block\nfacebook.com facebook.com * noop\nfacebook.com facebook.net * noop\nfacebook.com fbcdn.net * noop\ninstagram.com facebook.com * noop\ninstagram.com facebook.net * noop\ninstagram.com fbcdn.net * noop\ninstagram.com instagram.com * noop\nthreads.net fbcdn.net * noop\ntributario.com.br * 1p-script block\napi.whatsapp.com static.xx.fbcdn.net * noop",
+  "urlFilteringString": "",
+  "hostnameSwitchesString": "no-large-media: behind-the-scene false\nno-csp-reports: * true",
+  "userFilters": "! https://raw.githubusercontent.com/DandelionSprout/adfilt/master/LegitimateURLShortener.txt\n! https://gitflic.ru/project/magnolia1234/bypass-paywalls-clean-filters/blob/raw?file=bpc-paywall-filter.txt\n! https://github.com/pixeltris/TwitchAdSolutions\n! https://raw.githubusercontent.com/pixeltris/TwitchAdSolutions/b3bd44e8d59fa03fa591fe291c2f4957951dbd52/video-swap-new/video-swap-new-ublock-origin.js\n\ntwitch.tv##+js(twitch-videoad)\n\n||rdstation.com.br$3p,badfilter\n||vlibras.gov.br^$domain=gov.br|jus.br|org.br\naccounts.google.com/gsi/*\ndiscord.com/api/v9/track\ndiscord.com/api/v9/science\ndiscord.com/api/v9/applications/detectable\n\nasuracomic.net###radix-\\:R1l7rrpuuduja\\:\nasuracomic.net##.data-\\[state\\=open\\]\\:fade-in-0.data-\\[state\\=closed\\]\\:fade-out-0.data-\\[state\\=closed\\]\\:animate-out.data-\\[state\\=open\\]\\:animate-in.bg-black\\/80.z-50.inset-0.fixed\ncsgetto.love##.modal-start\ndev.to###page-content-inner > .crayons-layout__comments-billboard.pb-4.js-billboard-container > div\ndraft5.gg##.WarningLGPD__WarnBox-sc-1vbea4a-1\nfreebitco.in##.daily_jackpot_main_container_div\nfreebitco.in###bottom_user_ads_container\nfreebitco.in###exchange_bcc_link\nfreebitco.in###exchange_btg_link\nfreebitco.in###free_play_payout_table\nfreebitco.in###play_without_captcha_container\nfreebitco.in###wait > .cross_promo_msg_div\nfreebitco.in##.open.reveal-modal\nfreebitco.in##.reveal-modal-bg\nfreebitco.in###deposit_promo_message_regular\nfreebitco.in###deposit_promo_message_mobile\nmodeloinicial.com.br##.text-center.lgpd\nmercadolivre.com.br##.onboarding-cp\nweb.whatsapp.com###side > div:nth-of-type(4)\n\n! dark-theme-hn.md\n! https://gist.github.com/alex-jitbit/a3d57d97003d33295e430cc2b3b134fa\nnews.ycombinator.com##body:style(background: #222)\nnews.ycombinator.com##td:style(color: #ddd !important)\nnews.ycombinator.com##table:style(background-color: #222)\nnews.ycombinator.com##div.toptext:style(color: #ddd)\nnews.ycombinator.com##span.c00:style(color: #ddd !important)\nnews.ycombinator.com##a:style(color: #ffa000 !important)\nnews.ycombinator.com##span#karma:style(color: #faa000 !important)\nnews.ycombinator.com##span.pagetop:style(color: #ddd !important)\nnews.ycombinator.com##textarea:style(color: #ddd !important; background: inherit; )\nnews.ycombinator.com###hnmain:style(background: #222 !important)"
+}
