@@ -722,9 +722,12 @@ cimg() {
     return 1
   fi
 
+  local ext=$([[ $1 ]] && echo $1 || echo jxl)
+
   setopt nullglob
   local current_dir="$PWD"
   local img_formats=(jpg jpeg png apng bmp tif tiff)
+  [[ $ext = jxl ]] || img_formats+=(jxl)
   img_formats+=("${img_formats[@]:u}")
   mkdir -p ./cimg "$XDG_CACHE_HOME/cimg"
 
@@ -735,10 +738,10 @@ cimg() {
 
     [[ -d ./cimg && $(ls -A ./cimg) ]] || continue
 
-    mogrify -format jxl ./cimg/*."$f" &&
+    mogrify -format $ext ./cimg/*."$f" &&
       find -path "./cimg/*.$f" | xargs -I '{}' mv -iv '{}' "$XDG_CACHE_HOME/cimg"
 
-    for i in ./cimg/*.jxl; do
+    for i in ./cimg/*.$ext; do
       [[ ! "$i" ]] || mv "$i" "$current_dir"
     done
   done
