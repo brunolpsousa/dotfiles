@@ -1108,22 +1108,24 @@ lscolors() {
 }
 
 # Docker
-alias drmi='docker rmi $(docker images --filter "dangling=true" -q --no-trunc)'
+alias docker-ip="docker network inspect bridge -f '{{range .IPAM.Config}}{{.Gateway}}{{end}}'"
 
-dcatalog() {
+alias docker-rmi='docker rmi $(docker images --filter "dangling=true" -q --no-trunc)'
+
+docker-catalog() {
   [[ $1 ]] || { echo No registry provided; exit 1 };
   local registry=$(cut -d '/' -f 1 <<< $1)
   curl -s "https://$registry/v2/_catalog"
 }
 
-dtags() {
+docker-tags() {
   [[ $1 ]] || { echo No registry/image provided; exit 1 };
   local registry=$(cut -d '/' -f 1 <<< $1)
   local image=${$(cut -d ':' -f 1 <<< $1)//#*\/}
   curl -s "https://$registry/v2/$image/tags/list"
 }
 
-drrmi() {
+docker-rrmi() {
   [[ $1 ]] || { echo No registry/image:tag provided; exit 1 };
   local registry=$(cut -d '/' -f 1 <<< $1)
   local image=${$(cut -d ':' -f 1 <<< $1)//#*\/}
