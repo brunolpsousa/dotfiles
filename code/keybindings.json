@@ -1,7 +1,31 @@
-// Place your key bindings in this file to override the defaults
 [
   {
     "key": "ctrl+shift+f4",
     "command": "workbench.action.closeOtherEditors"
+  },
+  {
+    "key": "ctrl+f1",
+    "command": "editor.action.showHover",
+    "when": "editorTextFocus"
+  },
+  {
+    "key": "f1",
+    "command": "editor.action.showDefinitionPreviewHover",
+    "when": "editorTextFocus"
+  },
+  {
+    "key": "f1",
+    "command": "editor.debug.action.showDebugHover",
+    "when": "editorTextFocus && inDebugMode"
+  },
+  {
+    "key": "f1",
+    "command": "workbench.action.showHover",
+    "when": "!editorTextFocus"
+  },
+  {
+    "key": "f1",
+    "command": "list.showHover",
+    "when": "listFocus && !inputFocus && !treestickyScrollFocused"
   }
 ]

@@ -15,7 +15,7 @@
   ".editor.formatOnSaveMode": "modificationsIfAvailable",
   "editor.hover.enabled": false,
   "editor.hover.sticky": true,
-  "editor.hover.delay": 1200,
+  "editor.hover.delay": 10000,
   "editor.inlayHints.padding": true,
   "editor.inlayHints.fontFamily": "JetBrainsMono Nerd Font",
   "editor.inlineSuggest.enabled": true,
