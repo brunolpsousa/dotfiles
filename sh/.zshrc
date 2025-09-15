@@ -1282,7 +1282,8 @@ gnome-extensions() {
     - Appindicator Support\n https://extensions.gnome.org/extension/615/appindicator-support
     - Caffeine:\n https://extensions.gnome.org/extension/517/caffeine
     - Night Theme Switcher\n https://extensions.gnome.org/extension/2236/night-theme-switcher
-    - Pano\n https://extensions.gnome.org/extension/5278/pano/"
+    - Clipboard Indicator\n https://extensions.gnome.org/extension/779/clipboard-indicator
+    - Pano\n https://extensions.gnome.org/extension/5278/pano"
 }
 
 # Vim Cheatsheet
