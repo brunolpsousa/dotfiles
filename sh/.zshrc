@@ -1028,18 +1028,28 @@ alias top10='print -l ${(o)history%% *} | uniq -c | sort -nr | head -n 10'
 alias wifi='nmcli device wifi'
 
 # White neofetch
-alias nfetch='neofetch --colors 15 15 15 15 15 15 --ascii_colors 15 15 --ascii_bold on \
-  --os_arch off --speed_shorthand on --gtk_shorthand on --refresh_rate on --cpu_temp C \
-  --disk_percent on --memory_percent on --disable cols'
+# alias nfetch='neofetch --colors 15 15 15 15 15 15 --ascii_colors 15 15 --ascii_bold on \
+#   --os_arch off --speed_shorthand on --gtk_shorthand on --refresh_rate on --cpu_temp C \
+#   --disk_percent on --memory_percent on --disable cols'
 
-# Neofetch with old Arch logo
-alias ofetch='neofetch --colors 7 7 --ascii_distro Arch_old --ascii_colors 8 7 --os_arch off \
-  --speed_shorthand on --gtk_shorthand on --refresh_rate on --cpu_temp C --disk_percent on \
-  --memory_percent on --disable font disk term cols'
+# # Neofetch with old Arch logo
+# alias ofetch='neofetch --colors 7 7 --ascii_distro Arch_old --ascii_colors 8 7 --os_arch off \
+#   --speed_shorthand on --gtk_shorthand on --refresh_rate on --cpu_temp C --disk_percent on \
+#   --memory_percent on --disable font disk term cols'
 
-# Neofetch with Windows logo (WSL)
-alias wfetch='neofetch --ascii_distro Windows7 --os_arch off --speed_shorthand on --cpu_temp C \
-  --gtk_shorthand on --refresh_rate on --disk_percent on --memory_percent on --disable cols'
+# # Neofetch with Windows logo (WSL)
+# alias wfetch='neofetch --ascii_distro Windows7 --os_arch off --speed_shorthand on --cpu_temp C \
+#   --gtk_shorthand on --refresh_rate on --disk_percent on --memory_percent on --disable cols'
+
+sf() {
+  local options=(2 6 10 12 20 25 26)
+  local len=${#options}
+  # local idx = $(shuf -i 1-$len -n 1)
+  local idx=$(((RANDOM % len) + 1))
+
+  fastfetch --logo-color-1 white --logo-color-2 white -c \
+    /usr/share/fastfetch/presets/examples/${options[idx]}.jsonc
+}
 
 # Set a reasonable terminal size
 alias ssterm="printf '\e[8;32;112t'"
@@ -1464,13 +1474,13 @@ arch-base() {
     case $yne in
       Yes )
         $use_sudo pacman -Syu --needed \
-          fzf ripgrep neofetch yt-dlp man-db tldr \
+          fzf ripgrep fastfetch yt-dlp man-db tldr \
           base-devel pkgstats reflector networkmanager \
           pipewire pipewire-alsa pipewire-pulse wireplumber \
           android-udev android-tools zsh ttf-jetbrains-mono-nerd \
           xdg-desktop-portal xdg-desktop-portal-gtk lib32-gst-plugins-good \
           hunspell-en_US gsfonts noto-fonts noto-fonts-cjk noto-fonts-emoji \
-          sbctl ufw iptables-nft dosfstools exfat-utils ntfs-3g unrar zip p7zip imagemagick \
+          sbctl ufw iptables-nft dosfstools exfat-utils ntfs-3g unrar zip p7zip imagemagick tmux \
           zsh-autosuggestions zsh-completions zsh-history-substring-search zsh-syntax-highlighting \
           $(case $(lscpu | awk '/Model name:/{print $3}') in
           AMD) echo -n 'amd-ucode libva-mesa-driver mesa-vdpau';;
@@ -1548,8 +1558,8 @@ arch-base() {
 
             echo 'Do you wish to install Flatpak Neovim [y/N]?' && read flpk_nvim
             if [[ "$flpk_nvim" =~ '^[yY]' ]]; then
-              flatpak install io.neovim.nvim org.freedesktop.Sdk.Extension.node18
-              flatpak override -u --env=FLATPAK_ENABLE_SDK_EXT=node18 io.neovim.nvim
+              flatpak install io.neovim.nvim org.freedesktop.Sdk.Extension.node20
+              flatpak override -u --env=FLATPAK_ENABLE_SDK_EXT=node20 io.neovim.nvim
               [[ ! -x /usr/bin/rg ]] || $use_sudo \
                 cp /usr/bin/rg /var/lib/flatpak/app/io.neovim.nvim/current/active/files/bin
             else
@@ -1614,7 +1624,7 @@ arch-base() {
   local both='localectl --no-convert set-x11-keymap us,br pc105 intl,;
     setxkbmap -model pc105 -layout us,br -variant intl,;
     echo -e "LANG=en_US.UTF-8\nLANGUAGE=\"en_US\"\nLC_TYPE=pt_BR.UTF-8\nLC_NUMERIC=pt_BR.UTF-8\n" \
-            "LC_TIME=pt_BR.UTF-8\nLC_MONETARY=pt_BR.UTF-8\nLC_PAPER=pt_BR.UTF-8\n"
+            "LC_TIME=pt_BR.UTF-8\nLC_MONETARY=pt_BR.UTF-8\nLC_PAPER=pt_BR.UTF-8\n"                \
             "LC_MEASUREMENT=pt_BR.UTF-8" | tee /etc/locale.conf;
     echo -e "KEYMAP=us-acentos\nKEYMAP_TOGGLE=br-abnt2\nFONT=eurlatgr\nFONT_MAP=8859-1" |         \
       tee /etc/vconsole.conf'
@@ -1774,8 +1784,8 @@ arch-base() {
               local baseNvim="$XDG_CONFIG_HOME"
             fi
 
-            [[ -f "$baseNvim/config/nvim/init.lua" ]] || fetch               \
-              'https://gitlab.com/brunolpsousa/dotfiles/-/raw/main/init.lua' \
+            [[ -f "$baseNvim/config/nvim/init.lua" ]] || \mkdir -p "$baseNvim/config/nvim" &&    \
+	      fetch 'https://gitlab.com/brunolpsousa/dotfiles/-/raw/main/init.lua'               \
               > "$baseNvim/nvim/init.lua"
 
             \mkdir -p "$baseNvim/nvim/spell"
