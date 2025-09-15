@@ -2194,7 +2194,7 @@ prompt_git_status() {
   git_loop '^## [^ ]+ .*diverged' "$GIT_PROMPT_DIVERGED"
 
   git_loop '^\?\? '               "$GIT_PROMPT_UNTRACKED"
-  git_loop '^A  |^M  '            "$GIT_PROMPT_ADDED"
+  git_loop '^A  |^M  |^MM '       "$GIT_PROMPT_ADDED"
   git_loop '^ M |^AM |^MM |^ T '  "$GIT_PROMPT_MODIFIED"
   git_loop '^R  '                 "$GIT_PROMPT_RENAMED"
   git_loop '^ D |^D  |^AD '       "$GIT_PROMPT_DELETED"
